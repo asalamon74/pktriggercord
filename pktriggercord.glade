@@ -768,7 +768,7 @@ JPEG</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
     <property name="program_name">PK-TriggerCord</property>
-    <property name="version">0.7</property>
+    <property name="version">0.70.00</property>
     <property name="copyright" translatable="yes">(c) 2011 Andras
     Salamon. Based on PkRemote (c) 2008 Pontus Lidman</property>
     <property name="comments" translatable="yes">Remote control software for Pentax DSLR cameras.
