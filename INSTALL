@@ -1,0 +1,15 @@
+pkTriggerCord installation
+
+make clean
+make
+make install
+
+If you don't need the GUI, you can compile only the commandline
+interface:
+
+make cli
+
+If you'd like to debug the program:
+
+make clean
+make debug
