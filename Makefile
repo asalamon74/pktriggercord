@@ -9,6 +9,8 @@ cli: pktriggercord-cli
 install: install-app
 
 OBJS = pslr.o pslr_scsi.o
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL pentax.rules samsung.rules pslr_scsi.h pslr_scsi.c pslr.h pslr.c pktriggercord.c pktriggercord-cli.c pktriggercord.glade
+TARDIR = pktriggercord
 
 pslr.o: pslr_scsi.o pslr.c pslr.h
 
@@ -51,3 +53,8 @@ uninstall:
 	rm -f /etc/udev/samsung.rules
 	rm -f /etc/udev/rules.d/025_samsung.rules
 
+srcdist: Makefile
+	mkdir $(TARDIR)
+	cp $(SOURCE_PACKAGE_FILES) $(TARDIR)/
+	tar cf - $(TARDIR) | gzip > pkTriggerCord.src.tar.gz
+	rm -rf $(TARDIR)
