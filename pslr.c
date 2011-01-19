@@ -909,8 +909,6 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, uint8_t *buf, pslr_status *s
         // 0xBC focus point selection 0 - auto, 1 - manual, 2 - center
 
         //DPRINT("Test - ISO  %d  \n", status->current_iso);
-        DPRINT("Test - ExposureMode  %d  \n", status->exposure_mode);
-        DPRINT("Test - UserMode  %d  \n", status->user_mode_flag);
         return PSLR_OK;
 }
 
