@@ -432,7 +432,6 @@ void print_status_info( pslr_status status ) {
     printf("current aperture: %d/%d\n", status.current_aperture.nom, status.current_aperture.denom);
     printf("lens max aperture: %d/%d\n", status.lens_max_aperture.nom, status.lens_max_aperture.denom);
     printf("lens min aperture: %d/%d\n", status.lens_min_aperture.nom, status.lens_min_aperture.denom);
-    printf("current zoom: %d/%d\n", status.current_zoom.nom, status.current_zoom.denom);
     printf("set shutter speed: %d/%d\n", status.set_shutter_speed.nom, status.set_shutter_speed.denom);
     printf("set aperture: %d/%d\n", status.set_aperture.nom, status.set_aperture.denom);
     printf("set iso: %d\n", status.set_iso);

@@ -186,7 +186,6 @@ typedef struct {
     pslr_rational_t current_aperture;
     pslr_rational_t lens_max_aperture;
     pslr_rational_t lens_min_aperture;
-    pslr_rational_t current_zoom;
     pslr_rational_t set_shutter_speed;
     pslr_rational_t set_aperture;
     uint32_t set_iso;

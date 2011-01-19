@@ -737,8 +737,6 @@ static int ipslr_status_parse_k10d(ipslr_handle_t *p, uint8_t *buf, pslr_status 
         status->lens_min_aperture.denom = get_uint32(&buf[0x130]);
         status->lens_max_aperture.nom = get_uint32(&buf[0x134]);
         status->lens_max_aperture.denom = get_uint32(&buf[0x138]);
-        status->current_zoom.nom = get_uint32(&buf[0x16c]);
-        status->current_zoom.denom = get_uint32(&buf[0x170]);
         status->set_aperture.nom = get_uint32(&buf[0x34]);
         status->set_aperture.denom = get_uint32(&buf[0x38]);
         status->set_shutter_speed.nom = get_uint32(&buf[0x2c]);
@@ -785,8 +783,6 @@ static int ipslr_status_parse_k20d(ipslr_handle_t *p, uint8_t *buf, pslr_status 
         status->lens_min_aperture.denom = get_uint32(&buf[0x144]); //d
         status->lens_max_aperture.nom = get_uint32(&buf[0x148]); //d
         status->lens_max_aperture.denom = get_uint32(&buf[0x14B]); //d
-        status->current_zoom.nom = get_uint32(&buf[0x180]); //d
-        status->current_zoom.denom = get_uint32(&buf[0x184]); //d
         status->set_aperture.nom = get_uint32(&buf[0x34]); //d
         status->set_aperture.denom = get_uint32(&buf[0x38]); //d
         status->set_shutter_speed.nom = get_uint32(&buf[0x2c]); //d
@@ -861,8 +857,6 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, uint8_t *buf, pslr_status *s
         status->lens_min_aperture.denom = get_uint32(&buf[0x148]); //d
         status->lens_max_aperture.nom = get_uint32(&buf[0x14C]); //d
         status->lens_max_aperture.denom = get_uint32(&buf[0x150]); //d
-        status->current_zoom.nom = get_uint32(&buf[0x198]); //d
-        status->current_zoom.denom = get_uint32(&buf[0x19C]); //d
         status->set_aperture.nom = get_uint32(&buf[0x3C]); //d
         status->set_aperture.denom = get_uint32(&buf[0x40]); //d
         status->set_shutter_speed.nom = get_uint32(&buf[0x34]); //d

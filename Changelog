@@ -1,4 +1,5 @@
 version 0.70.01
+	Deleted useless current_zoom field
 	More commandline status info
 
 version 0.70.00 ( 2011-01-17)
