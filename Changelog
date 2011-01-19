@@ -1,4 +1,4 @@
-version 0.70.01
+version 0.70.01 ( 2011-01-19 )
 	File format support for commandline interface (--file_format)
 	GUI bugfix
 	Deleted useless current_zoom field
