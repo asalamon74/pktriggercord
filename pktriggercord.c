@@ -41,13 +41,6 @@
 
 #define MAX_BUFFERS 9
 
-typedef enum {
-    PLUGIN_FILE_FORMAT_PEF,
-    PLUGIN_FILE_FORMAT_DNG,
-    PLUGIN_FILE_FORMAT_JPEG,
-    PLUGIN_FILE_FORMAT_MAX
-} plugin_file_format;
-
 static struct {
     char *autosave_path;
 } plugin_config;
@@ -366,6 +359,14 @@ int common_init(void)
     gtk_statusbar_push(statusbar, sbar_connect_ctx, "No camera connected.");
 
     gdk_window_set_events(widget->window, GDK_ALL_EVENTS_MASK);
+
+    GtkComboBox *pw = (GtkComboBox*)glade_xml_get_widget(xml, "file_format_combo");
+
+    int i;
+    for (i = 0; i<sizeof(file_formats) / sizeof (file_formats[0]); i++) {
+        gtk_combo_box_append_text(GTK_COMBO_BOX(pw), file_formats[i].file_format_name);                 	
+    }
+
     
     init_controls(NULL, NULL);
 
@@ -1777,17 +1778,17 @@ static void save_buffer(int bufno, const char *filename)
     pw = glade_xml_get_widget(xml, "file_format_combo");
     filefmt = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
 
-    if (filefmt != PLUGIN_FILE_FORMAT_JPEG)
+    if (filefmt != USER_FILE_FORMAT_JPEG)
     {
 	// FIXME K20D,K-x is 14MP
         resolution = PSLR_JPEG_RESOLUTION_10M;
     }
 
-    if (filefmt == PLUGIN_FILE_FORMAT_PEF)
+    if (filefmt == USER_FILE_FORMAT_PEF) {
       imagetype = PSLR_BUF_PEF;
-    else if (filefmt == PLUGIN_FILE_FORMAT_DNG)
+    } else if (filefmt == USER_FILE_FORMAT_DNG) {
       imagetype = PSLR_BUF_DNG;
-    else {
+    } else {
       imagetype = pslr_get_jpeg_buffer_type( camhandle, quality );
     }
     DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, resolution);
@@ -1907,15 +1908,15 @@ static void file_format_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 {
     int val = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
     switch (val) {
-    case PLUGIN_FILE_FORMAT_PEF:
+    case USER_FILE_FORMAT_PEF:
         pslr_set_image_format(camhandle, PSLR_IMAGE_FORMAT_RAW);
         pslr_set_raw_format(camhandle, PSLR_RAW_FORMAT_PEF);
         break;
-    case PLUGIN_FILE_FORMAT_DNG:
+    case USER_FILE_FORMAT_DNG:
         pslr_set_image_format(camhandle, PSLR_IMAGE_FORMAT_RAW);
         pslr_set_raw_format(camhandle, PSLR_RAW_FORMAT_DNG);
         break;
-    case PLUGIN_FILE_FORMAT_JPEG:
+    case USER_FILE_FORMAT_JPEG:
         pslr_set_image_format(camhandle, PSLR_IMAGE_FORMAT_JPEG);
         break;
     default:
@@ -1971,12 +1972,13 @@ static int file_format(pslr_status *st)
     int rawfmt = st->raw_format;
     int imgfmt = st->image_format;
     if (imgfmt == PSLR_IMAGE_FORMAT_JPEG) {
-        return PLUGIN_FILE_FORMAT_JPEG;
+        return USER_FILE_FORMAT_JPEG;
     } else {
-        if (rawfmt == PSLR_RAW_FORMAT_PEF)
-            return PLUGIN_FILE_FORMAT_PEF;
-        else
-            return PLUGIN_FILE_FORMAT_DNG;
+        if (rawfmt == PSLR_RAW_FORMAT_PEF) {
+            return USER_FILE_FORMAT_PEF;
+        } else {
+            return USER_FILE_FORMAT_DNG;
+	}
     }
 }
 

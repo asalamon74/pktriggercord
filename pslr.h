@@ -115,6 +115,20 @@ typedef enum {
 } pslr_image_format_t;
 
 typedef enum {
+    USER_FILE_FORMAT_PEF,
+    USER_FILE_FORMAT_DNG,
+    USER_FILE_FORMAT_JPEG,
+    USER_FILE_FORMAT_MAX
+} user_file_format;
+
+typedef struct {
+    user_file_format uff;
+    char file_format_name[4];
+} user_file_format_t;
+
+user_file_format_t file_formats[3];
+
+typedef enum {
     PSLR_CUSTOM_EV_STEPS_1_2,
     PSLR_CUSTOM_EV_STEPS_1_3,
     PSLR_CUSTOM_EV_STEPS_MAX

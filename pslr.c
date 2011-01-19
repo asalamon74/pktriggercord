@@ -131,6 +131,13 @@ static bool is_kx(ipslr_handle_t *p);
 
 static pslr_progress_callback_t progress_callback = NULL;
 
+user_file_format_t file_formats[3] = {
+    { USER_FILE_FORMAT_PEF, "PEF"},
+    { USER_FILE_FORMAT_DNG, "DNG"},
+    { USER_FILE_FORMAT_JPEG, "JPEG"},
+};
+
+
 static ipslr_model_info_t camera_models[] = {
     { PSLR_ID1_K20D, PSLR_ID2_K20D, "K20D", 412},
     { PSLR_ID1_K10D, PSLR_ID2_K10D, "K10D", 392},
