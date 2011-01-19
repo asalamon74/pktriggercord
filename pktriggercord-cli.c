@@ -427,12 +427,34 @@ void CLOSE(pslr_handle_t camhandle, int exit_value) {
 }
 
 void print_status_info( pslr_status status ) {    
-    // TODO: print other values as well
-    printf("\ncurrent_iso: %d\n", status.current_iso);
-    printf("current_shutter_speed: %d/%d\n", status.current_shutter_speed.nom, status.current_shutter_speed.denom);
-    printf("set_iso: %d\n", status.set_iso);
-    printf("exposure_mode: %d\n", status.exposure_mode);
-    printf("user_mode: %d\n", status.user_mode_flag);
+    printf("\ncurrent iso: %d\n", status.current_iso);
+    printf("current shutter speed: %d/%d\n", status.current_shutter_speed.nom, status.current_shutter_speed.denom);
+    printf("current aperture: %d/%d\n", status.current_aperture.nom, status.current_aperture.denom);
+    printf("lens max aperture: %d/%d\n", status.lens_max_aperture.nom, status.lens_max_aperture.denom);
+    printf("lens min aperture: %d/%d\n", status.lens_min_aperture.nom, status.lens_min_aperture.denom);
+    printf("current zoom: %d/%d\n", status.current_zoom.nom, status.current_zoom.denom);
+    printf("set shutter speed: %d/%d\n", status.set_shutter_speed.nom, status.set_shutter_speed.denom);
+    printf("set aperture: %d/%d\n", status.set_aperture.nom, status.set_aperture.denom);
+    printf("set iso: %d\n", status.set_iso);
+    printf("jpeg resolution: %d\n", status.jpeg_resolution);
+    printf("jpeg saturation: %d\n", status.jpeg_saturation);
+    printf("jpeg quality: %d\n", status.jpeg_quality);
+    printf("jpeg contrast: %d\n", status.jpeg_contrast);
+    printf("jpeg sharpness: %d\n", status.jpeg_sharpness);
+    printf("jpeg image mode: %d\n", status.jpeg_image_mode);
+    printf("zoom: %d/%d\n", status.zoom.nom, status.zoom.denom);
+    printf("focus: %d\n", status.focus);
+    printf("image format: %d\n", status.image_format);
+    printf("raw format: %d\n", status.raw_format);
+    printf("light meter flags: %d\n", status.light_meter_flags);
+    printf("ec: %d/%d\n", status.ec.nom, status.ec.denom);
+    printf("custom ev steps: %d\n", status.custom_ev_steps);
+    printf("custom sensitivity steps: %d\n", status.custom_sensitivity_steps);
+    printf("exposure mode: %d\n", status.exposure_mode);
+    printf("user mode flag: %d\n", status.user_mode_flag);
+    printf("af point select: %d\n", status.af_point_select);
+    printf("selected af point: %d\n", status.selected_af_point);
+    printf("focused af point: %d\n", status.focused_af_point);
 }
 
 void usage(char *name) {
@@ -457,7 +479,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 }
 
 void version(char *name) {
-    printf("\n%s 0.70.00\n\n\
+    printf("\n%s 0.70.01\n\n\
 Copyright (C) 2011 Andras Salamon\n\
 License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
