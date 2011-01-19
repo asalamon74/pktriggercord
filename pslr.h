@@ -123,10 +123,13 @@ typedef enum {
 
 typedef struct {
     user_file_format uff;
-    char file_format_name[4];
+    const char *file_format_name;
+    const char *extension;
 } user_file_format_t;
 
 user_file_format_t file_formats[3];
+
+user_file_format_t *get_file_format_t( user_file_format uff );
 
 typedef enum {
     PSLR_CUSTOM_EV_STEPS_1_2,
