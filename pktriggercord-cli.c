@@ -48,6 +48,7 @@ static struct option const longopts[] ={
     {"aperture", required_argument, NULL, 'a'},
     {"shutter_speed", required_argument, NULL, 't'},
     {"iso", required_argument, NULL, 'i'},
+    {"file_format", required_argument, NULL, 1},
     {"output_file", required_argument, NULL, 'o'},
     {"help", no_argument, NULL, 'h'},
     {"version", no_argument, NULL, 'v'},
@@ -58,20 +59,20 @@ static struct option const longopts[] ={
     { NULL, 0, NULL, 0}
 };
 
-int save_buffer(pslr_handle_t, int, int, pslr_status*);
+int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, pslr_jpeg_quality_t);
 void print_status_info(pslr_status status);
 void usage(char*);
 void version(char*);
 void CLOSE(pslr_handle_t, int);
 
-int open_file(char* output_file, int frameNo) {
+int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
     int ofd = -1;
     char fileName[256];
 
     if (!output_file) {
         ofd = 1;
-    } else {
-        snprintf(fileName, 256, "%s-%04d.dng", output_file, frameNo);
+    } else {       
+        snprintf(fileName, 256, "%s-%04d.%s", output_file, frameNo, ufft.extension);
         ofd = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, 0664);
         if (ofd == -1) {
             fprintf(stderr, "Could not open %s\n", output_file);
@@ -92,6 +93,7 @@ int main(int argc, char **argv) {
     int optc, fd, i;
     pslr_handle_t camhandle;
     pslr_status status;
+    user_file_format uff = USER_FILE_FORMAT_DNG;
     pslr_exposure_mode_t EM = PSLR_EXPOSURE_MODE_MAX;
     pslr_jpeg_resolution_t R = PSLR_JPEG_RESOLUTION_MAX;
     pslr_jpeg_quality_t Q = PSLR_JPEG_QUALITY_MAX;
@@ -114,6 +116,25 @@ int main(int argc, char **argv) {
             case 'v':
                 version(argv[0]);
                 exit(0);
+            case 1:
+                for (i = 0; i < strlen(optarg); i++) {
+                    optarg[i] = toupper(optarg[i]);
+                }
+                if (!strcmp(optarg, "DNG")) {
+                    uff = USER_FILE_FORMAT_DNG;
+                    break;
+                } else if (!strcmp(optarg, "PEF")) {
+                    uff = USER_FILE_FORMAT_PEF;
+                    break;
+                } else if (!strcmp(optarg, "JPEG") || !strcmp(optarg, "JPG")) {
+                    uff = USER_FILE_FORMAT_JPEG;
+                    break;
+                } else {
+                    fprintf(stderr, "%s: Invalid file format.\n", argv[0]);
+                    exit(-1);
+                }
+                break;
+
             case 's':
                 status_info = true;
                 break;
@@ -366,8 +387,9 @@ int main(int argc, char **argv) {
     time_t prev_time=0;
     time_t current_time=0;
     long long int waitsec=0;
+    user_file_format_t ufft = *get_file_format_t(uff);
     for (frameNo = 0; frameNo < frames; ++frameNo) {
-        fd = open_file(output_file, frameNo);
+        fd = open_file(output_file, frameNo, ufft);
 	prev_time=current_time;
 	current_time = time(NULL);
 	if( frameNo > 0 ) {
@@ -380,7 +402,7 @@ int main(int argc, char **argv) {
 	current_time = time(NULL);
         pslr_shutter(camhandle);
         pslr_get_status(camhandle, &status);
-        while (save_buffer(camhandle, (int) 0, fd, &status)) usleep(10000);
+        while (save_buffer(camhandle, (int) 0, fd, &status, uff, Q)) usleep(10000);
         pslr_delete_buffer(camhandle, (int) 0);
         if (fd != 1) {
             close(fd);
@@ -392,14 +414,20 @@ int main(int argc, char **argv) {
 
 }
 
-int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status) {
+int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status, user_file_format filefmt,pslr_jpeg_quality_t jpeg_quality) {
 
     pslr_buffer_type imagetype;
     uint8_t buf[65536];
     uint32_t length;
     uint32_t current;
 
-    imagetype = PSLR_BUF_DNG;
+    if (filefmt == USER_FILE_FORMAT_PEF) {
+      imagetype = PSLR_BUF_PEF;
+    } else if (filefmt == USER_FILE_FORMAT_DNG) {
+      imagetype = PSLR_BUF_DNG;
+    } else {
+      imagetype = pslr_get_jpeg_buffer_type( camhandle, jpeg_quality );
+    }
 
     DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, status->jpeg_resolution);
 
@@ -471,6 +499,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -s, --status			        print status info\n\
   -F, --frames=NUMBER			number of frames\n\
   -d, --delay=SECONDS			delay between the frames (seconds)\n\
+      --file_format=FORMAT		valid values: PEF, DNG, JPEG\n\
   -o, --output_file=FILE		send output to FILE instead of stdout\n\
   -v, --version				display version information and exit\n\
   -h, --help				display this help and exit\n\

@@ -132,11 +132,10 @@ static bool is_kx(ipslr_handle_t *p);
 static pslr_progress_callback_t progress_callback = NULL;
 
 user_file_format_t file_formats[3] = {
-    { USER_FILE_FORMAT_PEF, "PEF"},
-    { USER_FILE_FORMAT_DNG, "DNG"},
-    { USER_FILE_FORMAT_JPEG, "JPEG"},
+    { USER_FILE_FORMAT_PEF, "PEF", "pef"},
+    { USER_FILE_FORMAT_DNG, "DNG", "dng"},
+    { USER_FILE_FORMAT_JPEG, "JPEG", "jpg"},
 };
-
 
 static ipslr_model_info_t camera_models[] = {
     { PSLR_ID1_K20D, PSLR_ID2_K20D, "K20D", 412},
@@ -151,6 +150,17 @@ static ipslr_model_info_t camera_models[] = {
     { PSLR_ID1_GX20, PSLR_ID2_GX20, "GX20", 412},
     { PSLR_ID1_KX, PSLR_ID2_KX, "K-x", 436},
 };
+
+user_file_format_t *get_file_format_t( user_file_format uff ) {
+    int i;    
+    for (i = 0; i<sizeof(file_formats) / sizeof(file_formats[0]); i++) {
+        if (file_formats[i].uff == uff) {
+            return &file_formats[i];
+        }
+    }
+    return NULL;
+}
+
 
 static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
     switch( exp ) {
