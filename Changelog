@@ -1,4 +1,5 @@
 version 0.70.01
+	GUI bugfix
 	Deleted useless current_zoom field
 	More commandline status info
 
