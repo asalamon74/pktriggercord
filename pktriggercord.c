@@ -130,7 +130,7 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old);
 static void which_iso_table(pslr_status *st, const int **table, int *steps);
 static void which_ec_table(pslr_status *st, const int **table, int *steps);
 static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, int py);
-static int file_format(pslr_status *st);
+static user_file_format file_format(pslr_status *st);
 
 static void save_buffer(int bufno, const char *filename);
 
@@ -837,7 +837,6 @@ static bool auto_save_check(int format, int buffer)
     gboolean autodelete;
     const gchar *filebase;
     gint counter;
-    const char *fmtstrings[3] = { "pef", "dng", "jpg" };
     int ret;
     GtkSpinButton *spin;
     char *old_path = NULL;
@@ -880,7 +879,7 @@ static bool auto_save_check(int format, int buffer)
     while (gtk_events_pending())
         gtk_main_iteration();
 
-    snprintf(filename, sizeof(filename), "%s%04d.%s", filebase, counter, fmtstrings[format]);
+    snprintf(filename, sizeof(filename), "%s%04d.%s", filebase, counter, file_formats[format].extension);
     DPRINT("Save buffer %d\n", buffer);
     gtk_progress_bar_set_text(pbar, filename);
     save_buffer(buffer, filename);
@@ -1968,7 +1967,7 @@ static void which_ec_table(pslr_status *st, const int **table, int *steps)
     assert(*steps);
 }
 
-static int file_format(pslr_status *st)
+static user_file_format file_format(pslr_status *st)
 {
     int rawfmt = st->raw_format;
     int imgfmt = st->image_format;
