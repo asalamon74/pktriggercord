@@ -17,8 +17,8 @@ pslr.o: pslr_scsi.o pslr.c pslr.h
 pktriggercord-cli: pktriggercord-cli.c $(OBJS)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@ -L. 
 
-debug: CFLAGS+=-DDEBUG 
-GUI_CFLAGS+=-DDEBUG
+debug: CFLAGS+=-DDEBUG
+debug: GUI_CFLAGS+=-DDEBUG
 
 debug: all
 
