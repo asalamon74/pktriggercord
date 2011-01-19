@@ -53,7 +53,7 @@ uninstall:
 	rm -f /etc/udev/samsung.rules
 	rm -f /etc/udev/rules.d/025_samsung.rules
 
-srcdist: Makefile
+srcdist: Makefile clean
 	mkdir $(TARDIR)
 	cp $(SOURCE_PACKAGE_FILES) $(TARDIR)/
 	tar cf - $(TARDIR) | gzip > pkTriggerCord.src.tar.gz
