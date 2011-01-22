@@ -926,6 +926,8 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->auto_iso_min = get_uint32(&buf[0x6C]);
         status->auto_iso_max = get_uint32(&buf[0x70]);
         status->drive_mode = get_uint32(&buf[0x5C]);
+        status->bracket_ev = get_uint32(&buf[0x50]);
+	// 0x58 bracket picture count ?
         // 0x158 current ev?
         // 0xB8 0 - MF, 1 - AF.S, 2 - AF.C
         // 0xB4, 0xC4 - metering mode, 0 - matrix, 1 - center weighted, 2 - spot

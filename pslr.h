@@ -244,6 +244,7 @@ typedef struct {
     uint32_t auto_iso_min;
     uint32_t auto_iso_max;
     uint32_t drive_mode;
+    uint32_t bracket_ev;
 } pslr_status;
 
 typedef struct {
