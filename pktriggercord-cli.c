@@ -89,14 +89,13 @@ int main(int argc, char **argv) {
     const char *MODEL;
     char *MODESTRING = NULL;
     char *resolution = NULL;
-    char *quality = NULL;
+    pslr_jpeg_quality_t quality = -1;
     int optc, fd, i;
     pslr_handle_t camhandle;
     pslr_status status;
     user_file_format uff = USER_FILE_FORMAT_DNG;
     pslr_exposure_mode_t EM = PSLR_EXPOSURE_MODE_MAX;
     pslr_jpeg_resolution_t R = PSLR_JPEG_RESOLUTION_MAX;
-    pslr_jpeg_quality_t Q = PSLR_JPEG_QUALITY_MAX;
     pslr_rational_t aperture = {0, 0};
     pslr_rational_t shutter_speed = {0, 0};
     uint32_t iso = 0;
@@ -196,7 +195,12 @@ int main(int argc, char **argv) {
             case 'q':
 
                 DPRINT("quality=%s\n", optarg);
-                quality = optarg;
+                quality  = PSLR_JPEG_QUALITY_MAX - atoi(optarg);
+                if (!quality) {
+                    fprintf(stderr, "%s: Invalid jpeg quality\n", argv[0]);
+                    exit(-1);
+                }
+
                 break;
                 /* Valid quality values depend on camera model, so we'll check it later */
 
@@ -324,18 +328,11 @@ int main(int argc, char **argv) {
         pslr_set_jpeg_resolution(camhandle, R);
     }
 
-
-    if (quality) {
-        if (!strcmp(quality, "4")) Q = PSLR_JPEG_QUALITY_4;
-        else if (!strcmp(quality, "3")) Q = PSLR_JPEG_QUALITY_3;
-        else if (!strcmp(quality, "2")) Q = PSLR_JPEG_QUALITY_2;
-        else if (!strcmp(quality, "1")) Q = PSLR_JPEG_QUALITY_1;
-
-        if (Q == PSLR_JPEG_QUALITY_MAX || (!IS_K20D && Q == PSLR_JPEG_QUALITY_4)) {
-            if (IS_K20D) fprintf(stderr, "%s: Valid quality values are 4, 3, 2 and 1.\n", argv[0]);
-            else fprintf(stderr, "%s: Valid quality values are 3, 2 and 1.\n", argv[0]);
+    if (quality>-1) {
+        if (quality == PSLR_JPEG_QUALITY_MAX || (!quality < PSLR_JPEG_QUALITY_MAX - pslr_get_model_jpeg_stars(camhandle))) {
+            fprintf(stderr, "%s: Invalid jpeg quality setting.\n", argv[0]);
         }
-        pslr_set_jpeg_quality(camhandle, Q);
+        pslr_set_jpeg_quality(camhandle, quality);
     }
 
 
@@ -402,7 +399,7 @@ int main(int argc, char **argv) {
 	current_time = time(NULL);
         pslr_shutter(camhandle);
         pslr_get_status(camhandle, &status);
-        while (save_buffer(camhandle, (int) 0, fd, &status, uff, Q)) usleep(10000);
+        while (save_buffer(camhandle, (int) 0, fd, &status, uff, quality)) usleep(10000);
         pslr_delete_buffer(camhandle, (int) 0);
         if (fd != 1) {
             close(fd);
@@ -507,7 +504,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 }
 
 void version(char *name) {
-    printf("\n%s 0.70.01\n\n\
+    printf("\n%s 0.70.02\n\n\
 Copyright (C) 2011 Andras Salamon\n\
 License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\

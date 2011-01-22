@@ -282,6 +282,7 @@ int pslr_set_exposure_mode(pslr_handle_t h, pslr_exposure_mode_t mode);
 int pslr_select_af_point(pslr_handle_t h, uint32_t point);
 
 const char *pslr_camera_name(pslr_handle_t h);
+int pslr_get_model_jpeg_stars(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
 
