@@ -81,6 +81,7 @@ typedef struct {
     uint32_t id2;
     const char *name;
     int buffer_size;
+    int jpeg_stars; // 3 or 4
 } ipslr_model_info_t;
 
 typedef struct {
@@ -138,17 +139,17 @@ user_file_format_t file_formats[3] = {
 };
 
 static ipslr_model_info_t camera_models[] = {
-    { PSLR_ID1_K20D, PSLR_ID2_K20D, "K20D", 412},
-    { PSLR_ID1_K10D, PSLR_ID2_K10D, "K10D", 392},
-    { PSLR_ID1_K110D, PSLR_ID2_K110D, "K110D", 0},
-    { PSLR_ID1_K100D, PSLR_ID2_K100D, "K100D", 0},
-    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 0},
-    { PSLR_ID1_IST_DL, PSLR_ID2_IST_DL, "*ist DL", 0},
-    { PSLR_ID1_IST_DS, PSLR_ID2_IST_DS, "*ist DS", 0x108},
-    { PSLR_ID1_IST_D, PSLR_ID2_IST_D, "*ist D", 0},
-    { PSLR_ID1_GX10, PSLR_ID2_GX10, "GX10", 392},
-    { PSLR_ID1_GX20, PSLR_ID2_GX20, "GX20", 412},
-    { PSLR_ID1_KX, PSLR_ID2_KX, "K-x", 436},
+    { PSLR_ID1_K20D, PSLR_ID2_K20D, "K20D", 412, 4},
+    { PSLR_ID1_K10D, PSLR_ID2_K10D, "K10D", 392, 3 },
+    { PSLR_ID1_K110D, PSLR_ID2_K110D, "K110D", 0, 0},
+    { PSLR_ID1_K100D, PSLR_ID2_K100D, "K100D", 0, 0},
+    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 0, 0},
+    { PSLR_ID1_IST_DL, PSLR_ID2_IST_DL, "*ist DL", 0, 0},
+    { PSLR_ID1_IST_DS, PSLR_ID2_IST_DS, "*ist DS", 0x108, 3},
+    { PSLR_ID1_IST_D, PSLR_ID2_IST_D, "*ist D", 0, 0},
+    { PSLR_ID1_GX10, PSLR_ID2_GX10, "GX10", 392, 0},
+    { PSLR_ID1_GX20, PSLR_ID2_GX20, "GX20", 412, 4},
+    { PSLR_ID1_KX, PSLR_ID2_KX, "K-x", 436, 3},
 };
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
@@ -361,16 +362,21 @@ int pslr_set_ec(pslr_handle_t h, pslr_rational_t value) {
     return PSLR_OK;
 }
 
+int _get_hw_jpeg_quality( ipslr_model_info_t *model, pslr_jpeg_quality_t quality) {
+    return quality - (PSLR_JPEG_QUALITY_MAX - model->jpeg_stars);
+}
+
+pslr_jpeg_quality_t _get_user_jpeg_quality( ipslr_model_info_t *model, int hwqual ) {
+    return hwqual + (PSLR_JPEG_QUALITY_MAX - model->jpeg_stars);
+}
+
 int pslr_set_jpeg_quality(pslr_handle_t h, pslr_jpeg_quality_t quality) {
     int hwqual;
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (quality >= PSLR_JPEG_QUALITY_MAX)
+    if (quality >= PSLR_JPEG_QUALITY_MAX) {
         return PSLR_PARAM;
-    if (is_k20d(p)) {
-        hwqual = quality;
-    } else {
-        hwqual = quality - 1;
     }
+    hwqual = _get_hw_jpeg_quality( p->model, quality );
     CHECK(ipslr_cmd_00_09(p, 1));
     CHECK(ipslr_write_args(p, 2, 1, hwqual));
     CHECK(command(p->fd, 0x18, 0x13, 0x08));
@@ -635,6 +641,11 @@ int pslr_select_af_point(pslr_handle_t h, uint32_t point) {
     return PSLR_OK;
 }
 
+int pslr_get_model_jpeg_stars(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->jpeg_stars;
+}
+
 const char *pslr_camera_name(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     int ret;
@@ -655,14 +666,7 @@ const char *pslr_camera_name(pslr_handle_t h) {
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-
-    pslr_buffer_type ret;
-    if (is_k20d(p)) {
-        ret = quality + 2;
-    } else {
-        ret = quality + 1;
-    }
-    return ret;
+    return 2 + _get_hw_jpeg_quality( p->model, quality );
 }
 
 /* ----------------------------------------------------------------------- */
@@ -763,7 +767,7 @@ static int ipslr_status_parse_k10d(ipslr_handle_t *p, uint8_t *buf, pslr_status 
         status->jpeg_contrast = get_uint32(&buf[0x94]);
         status->jpeg_sharpness = get_uint32(&buf[0x90]);
         status->jpeg_saturation = get_uint32(&buf[0x8c]);
-        status->jpeg_quality = 1 + get_uint32(&buf[0x80]);
+        status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x80]));
         status->jpeg_image_mode = get_uint32(&buf[0x88]);
         status->zoom.nom = get_uint32(&buf[0x16c]);
         status->zoom.denom = get_uint32(&buf[0x170]);
@@ -809,7 +813,7 @@ static int ipslr_status_parse_k20d(ipslr_handle_t *p, uint8_t *buf, pslr_status 
         status->jpeg_contrast = get_uint32(&buf[0x94]); // commands do now work for it?
         status->jpeg_sharpness = get_uint32(&buf[0x90]); // commands do now work for it?
         status->jpeg_saturation = get_uint32(&buf[0x8c]); // commands do now work for it?
-        status->jpeg_quality = get_uint32(&buf[0x80]); //d
+        status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x80])); //d
         status->jpeg_image_mode = get_uint32(&buf[0x88]); //d
         status->zoom.nom = get_uint32(&buf[0x180]); //d
         status->zoom.denom = get_uint32(&buf[0x184]); //d
@@ -883,7 +887,7 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, uint8_t *buf, pslr_status *s
         status->jpeg_contrast = get_uint32(&buf[0x9C]); // commands do now work for it?
         status->jpeg_sharpness = get_uint32(&buf[0x98]); // commands do now work for it?
         status->jpeg_saturation = get_uint32(&buf[0x94]); // commands do now work for it?
-        status->jpeg_quality = 1 + get_uint32(&buf[0x88]); //d
+        status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x88])); //d
         status->jpeg_image_mode = get_uint32(&buf[0x90]); //d
         status->zoom.nom = get_uint32(&buf[0x198]); //d
         status->zoom.denom = get_uint32(&buf[0x19C]); //d

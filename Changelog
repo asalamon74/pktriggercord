@@ -1,3 +1,6 @@
+version 0.70.02
+	Better handling of jpeg quality
+
 version 0.70.01 ( 2011-01-19 )
 	File format support for commandline interface (--file_format)
 	GUI bugfix

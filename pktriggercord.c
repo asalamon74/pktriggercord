@@ -1676,8 +1676,9 @@ static void jpeg_quality_combo_changed_cb(GtkCombo *combo, gpointer user_data)
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
     if (status_new == NULL || status_new->jpeg_quality != val) {
         ret = pslr_set_jpeg_quality(camhandle, val);
-        if (ret != PSLR_OK)
+        if (ret != PSLR_OK) {
             DPRINT("Set JPEG quality failed.\n");
+        }
     }
 }
 
