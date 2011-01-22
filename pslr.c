@@ -925,6 +925,7 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->focused_af_point = get_uint32(&buf[0x168]); //d, unsure about it, a lot is changing when the camera focuses
         status->auto_iso_min = get_uint32(&buf[0x6C]);
         status->auto_iso_max = get_uint32(&buf[0x70]);
+        status->drive_mode = get_uint32(&buf[0x5C]);
         // 0x158 current ev?
         // 0xB8 0 - MF, 1 - AF.S, 2 - AF.C
         // 0xB4, 0xC4 - metering mode, 0 - matrix, 1 - center weighted, 2 - spot
