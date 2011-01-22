@@ -246,6 +246,8 @@ int pslr_shutter(pslr_handle_t h);
 int pslr_focus(pslr_handle_t h);
 
 int pslr_get_status(pslr_handle_t h, pslr_status *sbuf);
+int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf);
+
 int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution,
                     uint8_t **pdata, uint32_t *pdatalen);
 
@@ -283,7 +285,10 @@ int pslr_select_af_point(pslr_handle_t h, uint32_t point);
 
 const char *pslr_camera_name(pslr_handle_t h);
 int pslr_get_model_jpeg_stars(pslr_handle_t h);
+int pslr_get_model_buffer_size(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
+
+void hexdump(uint8_t *buf, uint32_t bufLen);
 
 #endif

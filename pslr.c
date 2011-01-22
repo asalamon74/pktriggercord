@@ -50,6 +50,7 @@
                      * memory allocation error from sg driver */
 #define BLOCK_RETRY 3 /* Number of retries, since we can occasionally
                        * get SCSI errors when downloading data */
+#define MAX_STATUS_BUF_SIZE 436
 
 #define CHECK(x) do {                           \
         int __r;                                \
@@ -94,6 +95,7 @@ typedef struct {
     ipslr_segment_t segments[MAX_SEGMENTS];
     uint32_t segment_count;
     uint32_t offset;
+    uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
 } ipslr_handle_t;
 
 ipslr_handle_t pslr;
@@ -309,6 +311,13 @@ int pslr_get_status(pslr_handle_t h, pslr_status *ps) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     CHECK(ipslr_status_full(p, &p->status));
     memcpy(ps, &p->status, sizeof (pslr_status));
+    return PSLR_OK;
+}
+
+int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    CHECK(ipslr_status_full(p, &p->status));
+    memcpy(st_buf, p->status_buffer, MAX_STATUS_BUF_SIZE);
     return PSLR_OK;
 }
 
@@ -646,6 +655,11 @@ int pslr_get_model_jpeg_stars(pslr_handle_t h) {
     return p->model->jpeg_stars;
 }
 
+int pslr_get_model_buffer_size(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->buffer_size;
+}
+
 const char *pslr_camera_name(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     int ret;
@@ -716,7 +730,6 @@ static int ipslr_status(ipslr_handle_t *p, uint8_t *buf) {
     }
 }
 
-#define MAX_STATUS_BUF_SIZE 436
 #ifdef DEBUG
 static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
 static int first = 1;
@@ -744,8 +757,9 @@ static void ipslr_status_diff(uint8_t *buf) {
 }
 #endif
 
-static int ipslr_status_parse_k10d(ipslr_handle_t *p, uint8_t *buf, pslr_status *status, int n) {
+static int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n) {
         /* K10D status block */
+    uint8_t *buf = p->status_buffer;
         CHECK(read_result(p->fd, buf, n));
         memset(status, 0, sizeof (*status));
         status->bufmask = buf[0x16] << 8 | buf[0x17];
@@ -787,8 +801,9 @@ static int ipslr_status_parse_k10d(ipslr_handle_t *p, uint8_t *buf, pslr_status 
         return PSLR_OK;
 }
 
-static int ipslr_status_parse_k20d(ipslr_handle_t *p, uint8_t *buf, pslr_status *status, int n) {
-        /* K20D status block */
+static int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n) {
+
+    uint8_t *buf = p->status_buffer;
         CHECK(read_result(p->fd, buf, n));
 #ifdef DEBUG
         ipslr_status_diff(buf);
@@ -840,7 +855,9 @@ static int ipslr_status_parse_k20d(ipslr_handle_t *p, uint8_t *buf, pslr_status 
 
 }
 
-static int ipslr_status_parse_istds(ipslr_handle_t *p, uint8_t *buf, pslr_status *status, int n) {
+static int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n) {
+
+    uint8_t *buf = p->status_buffer;
         /* *ist DS status block */
         memset(status, 0, sizeof (*status));
         status->bufmask = get_uint32(&buf[0x10]);
@@ -856,7 +873,9 @@ static int ipslr_status_parse_istds(ipslr_handle_t *p, uint8_t *buf, pslr_status
         return PSLR_OK;
 }
 
-static int ipslr_status_parse_kx(ipslr_handle_t *p, uint8_t *buf, pslr_status *status, int n) {
+static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
+
+    uint8_t *buf = p->status_buffer;
         /* K-x status block */
         CHECK(read_result(p->fd, buf, n));
 
@@ -918,7 +937,6 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, uint8_t *buf, pslr_status *s
 
 static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     int n;
-    uint8_t buf[MAX_STATUS_BUF_SIZE];
     CHECK(command(p->fd, 0, 8, 0));
     n = get_result(p->fd);
 
@@ -929,13 +947,13 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
 
     int ret;
     if (p->model && is_k10d(p)) {
-	ret =  ipslr_status_parse_k10d(p, buf, status, n);
+	ret =  ipslr_status_parse_k10d(p, status, n);
     } else if (p->model && is_k20d(p)) {
-	ret =  ipslr_status_parse_k20d(p, buf, status, n);
+	ret =  ipslr_status_parse_k20d(p, status, n);
     } else if (p->model && is_istds(p)) {
-	ret =  ipslr_status_parse_istds(p, buf, status, n);
+	ret =  ipslr_status_parse_istds(p, status, n);
     } else if (p->model && is_kx(p)) {
-	ret =  ipslr_status_parse_kx(p, buf, status, n);
+	ret =  ipslr_status_parse_kx(p, status, n);
     } else {
         /* Unknown camera */
 	ret = PSLR_OK;
@@ -1280,16 +1298,20 @@ static int read_result(int fd, uint8_t *buf, uint32_t n) {
 void hexdump(uint8_t *buf, uint32_t bufLen) {
     int i;
     for (i = 0; i < bufLen; i++) {
-        if (i % 16 == 0)
-            DPRINT("0x%04x | ", i);
-        DPRINT("%02x ", buf[i]);
-        if (i % 8 == 7)
-            DPRINT(" ");
-        if (i % 16 == 15)
-            DPRINT("\n");
+        if (i % 16 == 0) {
+            printf("0x%04x | ", i);
+	}
+        printf("%02x ", buf[i]);
+        if (i % 8 == 7) {
+            printf(" ");
+	}
+        if (i % 16 == 15) {
+            printf("\n");
+	}
     }
-    if (i % 16 != 15)
-        DPRINT("\n");
+    if (i % 16 != 15) {
+        printf("\n");
+    }
 }
 
 /* ----------------------------------------------------------------------- */
