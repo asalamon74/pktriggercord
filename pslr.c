@@ -333,42 +333,37 @@ int pslr_set_progress_callback(pslr_handle_t h, pslr_progress_callback_t cb, uin
     return PSLR_OK;
 }
 
+int ipslr_handle_command_x18( ipslr_handle_t *p, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3) {
+    if( cmd9_wrap ) {
+        CHECK(ipslr_cmd_00_09(p, 1));
+    }
+    CHECK(ipslr_write_args(p, argnum, arg1, arg2, arg3));
+    CHECK(command(p->fd, 0x18, subcommand, 4 * argnum));
+    CHECK(get_status(p->fd));
+    if( cmd9_wrap ) {
+        CHECK(ipslr_cmd_00_09(p, 2));
+    }
+    return PSLR_OK;
+}
+
 int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    CHECK(ipslr_write_args(p, 2, value.nom, value.denom));
-    CHECK(command(p->fd, 0x18, 0x16, 0x08));
-    CHECK(get_status(p->fd));
-    return PSLR_OK;
+    return ipslr_handle_command_x18( p, false, 0x16, 2, value.nom, value.denom, 0);
 }
 
 int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    CHECK(ipslr_write_args(p, 3, value.nom, value.denom, 0));
-    CHECK(command(p->fd, 0x18, 0x17, 0x0c));
-    CHECK(get_status(p->fd));
-    return PSLR_OK;
+    return ipslr_handle_command_x18( p, false, 0x17, 3, value.nom, value.denom, 0);
 }
 
 int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint32_t auto_max_value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    /* TODO: if cmd 00 09 fails? */
-    CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 3, value, auto_min_value, auto_max_value));
-    CHECK(command(p->fd, 0x18, 0x15, 0x0c));
-    CHECK(get_status(p->fd));
-    CHECK(ipslr_cmd_00_09(p, 2));
-    return PSLR_OK;
+    return ipslr_handle_command_x18( p, true, 0x15, 3, value, auto_min_value, auto_max_value);
 }
 
 int pslr_set_ec(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    /* TODO: if cmd 00 09 fails? */
-    CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 3, value.nom, value.denom));
-    CHECK(command(p->fd, 0x18, 0x18, 0x08));
-    CHECK(get_status(p->fd));
-    CHECK(ipslr_cmd_00_09(p, 2));
-    return PSLR_OK;
+    return ipslr_handle_command_x18( p, true, 0x18, 2, value.nom, value.denom, 0);
 }
 
 int _get_hw_jpeg_quality( ipslr_model_info_t *model, pslr_jpeg_quality_t quality) {
@@ -386,97 +381,69 @@ int pslr_set_jpeg_quality(pslr_handle_t h, pslr_jpeg_quality_t quality) {
         return PSLR_PARAM;
     }
     hwqual = _get_hw_jpeg_quality( p->model, quality );
-    CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 2, 1, hwqual));
-    CHECK(command(p->fd, 0x18, 0x13, 0x08));
-    CHECK(get_status(p->fd));
-    CHECK(ipslr_cmd_00_09(p, 2));
-    return PSLR_OK;
+    return ipslr_handle_command_x18( p, true, 0x13, 2, 1, hwqual, 0);
 }
 
 int pslr_set_jpeg_resolution(pslr_handle_t h, pslr_jpeg_resolution_t resolution) {
     int hwres;
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (resolution >= PSLR_JPEG_RESOLUTION_MAX)
+    if (resolution >= PSLR_JPEG_RESOLUTION_MAX) {
         return PSLR_PARAM;
+    }
     if (is_k20d(p) || is_kx(p)) {
         hwres = resolution;
     } else {
         hwres = resolution - 1;
     }
-    CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 2, 1, hwres));
-    CHECK(command(p->fd, 0x18, 0x14, 0x08));
-    CHECK(get_status(p->fd));
-    CHECK(ipslr_cmd_00_09(p, 2));
-    return PSLR_OK;
+    return ipslr_handle_command_x18( p, true, 0x14, 2, 1, hwres, 0);
 }
 
 int pslr_set_jpeg_image_mode(pslr_handle_t h, pslr_jpeg_image_mode_t image_mode) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (image_mode < 0 || image_mode > PSLR_JPEG_IMAGE_MODE_MAX)
+    if (image_mode < 0 || image_mode > PSLR_JPEG_IMAGE_MODE_MAX) {
         return PSLR_PARAM;
-
-    CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 1, image_mode));
-    CHECK(command(p->fd, 0x18, 0x1b, 0x04));
-    CHECK(get_status(p->fd));
-    CHECK(ipslr_cmd_00_09(p, 2));
-    return PSLR_OK;
+    }
+    return ipslr_handle_command_x18( p, true, 0x1b, 1, image_mode, 0, 0);
 }
 
 int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (sharpness < 0 || sharpness > 6)
+    if (sharpness < 0 || sharpness > 6) {
         return PSLR_PARAM;
-    CHECK(ipslr_write_args(p, 2, 0, sharpness));
-    CHECK(command(p->fd, 0x18, 0x21, 0x08));
-    CHECK(get_status(p->fd));
-    return PSLR_OK;
+    }
+    return ipslr_handle_command_x18( p, false, 0x21, 2, 0, sharpness, 0);
 }
 
 int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (contrast < 0 || contrast > 6)
+    if (contrast < 0 || contrast > 6) {
         return PSLR_PARAM;
-    CHECK(ipslr_write_args(p, 2, 0, contrast));
-    CHECK(command(p->fd, 0x18, 0x22, 0x08));
-    CHECK(get_status(p->fd));
-    return PSLR_OK;
+    }
+    return ipslr_handle_command_x18( p, false, 0x22, 2, 0, contrast, 0);
 }
 
 int pslr_set_jpeg_saturation(pslr_handle_t h, int32_t saturation) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (saturation < 0 || saturation > 6)
+    if (saturation < 0 || saturation > 6) {
         return PSLR_PARAM;
-    CHECK(ipslr_write_args(p, 2, 0, saturation));
-    CHECK(command(p->fd, 0x18, 0x20, 0x08));
-    CHECK(get_status(p->fd));
-    return PSLR_OK;
+    }
+    return ipslr_handle_command_x18( p, false, 0x20, 2, 0, saturation, 0);
 }
 
 int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (format < 0 || format > PSLR_IMAGE_FORMAT_MAX)
+    if (format < 0 || format > PSLR_IMAGE_FORMAT_MAX) {
         return PSLR_PARAM;
-    CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 2, 1, format));
-    CHECK(command(p->fd, 0x18, 0x12, 0x08));
-    CHECK(get_status(p->fd));
-    CHECK(ipslr_cmd_00_09(p, 2));
-    return PSLR_OK;
+    }
+    return ipslr_handle_command_x18( p, true, 0x12, 2, 1, format, 0);
 }
 
 int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (format < 0 || format > PSLR_RAW_FORMAT_MAX)
+    if (format < 0 || format > PSLR_RAW_FORMAT_MAX) {
         return PSLR_PARAM;
-    CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 2, 1, format));
-    CHECK(command(p->fd, 0x18, 0x1f, 0x08));
-    CHECK(get_status(p->fd));
-    CHECK(ipslr_cmd_00_09(p, 2));
-    return PSLR_OK;
+    }
+    return ipslr_handle_command_x18( p, true, 0x1f, 2, 1, format, 0);
 }
 
 int pslr_delete_buffer(pslr_handle_t h, int bufno) {
@@ -509,15 +476,10 @@ int pslr_ae_lock(pslr_handle_t h, bool lock) {
 int pslr_set_exposure_mode(pslr_handle_t h, pslr_exposure_mode_t mode) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
 
-    if (mode < 0 || mode >= PSLR_EXPOSURE_MODE_MAX)
+    if (mode < 0 || mode >= PSLR_EXPOSURE_MODE_MAX) {
         return PSLR_PARAM;
-
-    CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 2, 1, mode));
-    CHECK(command(p->fd, 0x18, 0x01, 0x08));
-    CHECK(get_status(p->fd));
-    CHECK(ipslr_cmd_00_09(p, 2));
-    return PSLR_OK;
+    }
+    return ipslr_handle_command_x18( p, true, 0x01, 2, 1, mode, 0);
 }
 
 int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int bufres) {
@@ -642,12 +604,7 @@ void pslr_buffer_close(pslr_handle_t h) {
 
 int pslr_select_af_point(pslr_handle_t h, uint32_t point) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 1, point));
-    CHECK(command(p->fd, 0x18, 0x07, 0x04));
-    CHECK(get_status(p->fd));
-    CHECK(ipslr_cmd_00_09(p, 2));
-    return PSLR_OK;
+    return ipslr_handle_command_x18( p, true, 0x07, 1, point, 0, 0);
 }
 
 int pslr_get_model_jpeg_stars(pslr_handle_t h) {
