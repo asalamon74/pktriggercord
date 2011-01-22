@@ -497,6 +497,7 @@ void print_status_info( pslr_status status ) {
     printf("custom sensitivity steps: %d\n", status.custom_sensitivity_steps);
     printf("exposure mode: %d\n", status.exposure_mode);
     printf("user mode flag: %d\n", status.user_mode_flag);
+    printf("af mode: %d\n", status.af_mode);
     printf("af point select: %d\n", status.af_point_select);
     printf("selected af point: %d\n", status.selected_af_point);
     printf("focused af point: %d\n", status.focused_af_point);
