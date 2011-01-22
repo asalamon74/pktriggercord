@@ -500,7 +500,8 @@ void print_status_info( pslr_status status ) {
     printf("af point select: %d\n", status.af_point_select);
     printf("selected af point: %d\n", status.selected_af_point);
     printf("focused af point: %d\n", status.focused_af_point);
-    printf("drive_mode: %d\n", status.drive_mode);
+    printf("drive mode: %d\n", status.drive_mode);
+    printf("bracket ev: %d\n", status.bracket_ev);
 }
 
 void usage(char *name) {
