@@ -1200,7 +1200,7 @@ gboolean main_drawing_area_button_press_event_cb(GtkWidget *drawing_area,
             gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);            
             while (gtk_events_pending())
                 gtk_main_iteration();
-            if (status_new && status_new->af_point_select == PSLR_AF_POINT_SEL_SEL) {
+            if (status_new && status_new->af_point_select == PSLR_AF_POINT_SEL_SELECT) {
                 ret = pslr_select_af_point(camhandle, 1 << i);
                 if (ret != PSLR_OK)
                     DPRINT("Could not select AF point %d\n", i);

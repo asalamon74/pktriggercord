@@ -878,7 +878,7 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->exposure_mode = get_uint32(&buf[0xb4]); //d
         status->user_mode_flag = get_uint32(&buf[0x24]); //d
         status->af_mode = get_uint32(&buf[0xC0]);
-        status->af_point_select = get_uint32(&buf[0xc4]); // not sure
+        status->af_point_select = get_uint32(&buf[0xc4]);
         status->selected_af_point = get_uint32(&buf[0xc8]); //d
         status->focused_af_point = get_uint32(&buf[0x168]); //d, unsure about it, a lot is changing when the camera focuses
         status->auto_iso_min = get_uint32(&buf[0x6C]);

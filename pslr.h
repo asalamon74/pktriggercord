@@ -185,11 +185,11 @@ typedef enum {
     PSLR_GUI_EXPOSURE_MODE_MAX
 } pslr_gui_exposure_mode_t;
 
-
 typedef enum {
-    PSLR_AF_POINT_SEL_AUTO,
-    PSLR_AF_POINT_SEL_SEL,
-    PSLR_AF_POINT_SEL_CENTER,
+    PSLR_AF_POINT_SEL_AUTO_5,
+    PSLR_AF_POINT_SEL_SELECT,
+    PSLR_AF_POINT_SEL_SPOT,
+    PSLR_AF_POINT_SEL_AUTO_11, // maybe not for all cameras
     PSLR_AF_POINT_SEL_MAX
 } pslr_af_point_sel_t;
 
