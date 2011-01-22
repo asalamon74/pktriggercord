@@ -205,7 +205,7 @@ typedef struct {
     pslr_rational_t lens_min_aperture;
     pslr_rational_t set_shutter_speed;
     pslr_rational_t set_aperture;
-    uint32_t set_iso;
+    uint32_t fixed_iso;
     uint32_t jpeg_resolution;
     uint32_t jpeg_saturation;
     uint32_t jpeg_quality;
@@ -258,7 +258,7 @@ int pslr_set_progress_callback(pslr_handle_t h, pslr_progress_callback_t cb,
 
 int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value);
 int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value);
-int pslr_set_iso(pslr_handle_t h, uint32_t value);
+int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint32_t auto_max_value);
 int pslr_set_ec(pslr_handle_t h, pslr_rational_t value);
 
 int pslr_set_jpeg_quality(pslr_handle_t h, pslr_jpeg_quality_t quality);
