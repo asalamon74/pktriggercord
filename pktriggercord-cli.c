@@ -53,6 +53,7 @@ static struct option const longopts[] ={
     {"help", no_argument, NULL, 'h'},
     {"version", no_argument, NULL, 'v'},
     {"status", no_argument, NULL, 's'},
+    {"status_hex", no_argument, NULL, 2},
     {"frames", required_argument, NULL, 'F'},
     {"delay", required_argument, NULL, 'd'},
     {"auto_focus", no_argument, NULL, 'f'},
@@ -104,8 +105,9 @@ int main(int argc, char **argv) {
     int delay = 0;
     bool auto_focus = false;
     bool status_info = false;
+    bool status_hex_info = false;
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:d:t:o:i:F:fhvs", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:d:t:o:1:i:F:fhvs2", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
@@ -136,6 +138,10 @@ int main(int argc, char **argv) {
 
             case 's':
                 status_info = true;
+                break;
+
+            case 2:
+                status_hex_info = true;
                 break;
 
                 /***************************************************************/
@@ -375,7 +381,13 @@ int main(int argc, char **argv) {
         pslr_focus(camhandle);
     }
     
-    if( status_info ) {
+    if( status_hex_info || status_info ) {
+	if( status_hex_info ) {
+            int bufsize = pslr_get_model_buffer_size( camhandle );
+	    uint8_t status_buffer[bufsize];
+	    pslr_get_status_buffer(camhandle, status_buffer);
+	    hexdump( status_buffer, bufsize );
+        }
 	pslr_get_status(camhandle, &status);
 	print_status_info( status );
 	exit(0);
@@ -494,6 +506,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -q, --quality=QUALITY			valid values are 1, 2 and 3\n\
   -f, --auto_focus			autofocus\n\
   -s, --status			        print status info\n\
+      --status_hex			print status hex info\n\
   -F, --frames=NUMBER			number of frames\n\
   -d, --delay=SECONDS			delay between the frames (seconds)\n\
       --file_format=FORMAT		valid values: PEF, DNG, JPEG\n\
