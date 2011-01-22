@@ -502,6 +502,7 @@ void print_status_info( pslr_status status ) {
     printf("focused af point: %d\n", status.focused_af_point);
     printf("drive mode: %d\n", status.drive_mode);
     printf("bracket ev: %d\n", status.bracket_ev);
+    printf("shake reduction: %s\n", status.shake_reduction > 0 ? "on" : "off");
 }
 
 void usage(char *name) {

@@ -884,6 +884,8 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->auto_iso_max = get_uint32(&buf[0x70]);
         status->drive_mode = get_uint32(&buf[0x5C]);
         status->bracket_ev = get_uint32(&buf[0x50]);
+        status->shake_reduction = get_uint32(&buf[0xE0]);
+
 	// 0x58 bracket picture count ?
         // 0x158 current ev?
         // 0xB8 0 - MF, 1 - AF.S, 2 - AF.C
