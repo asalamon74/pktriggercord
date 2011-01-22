@@ -225,6 +225,8 @@ typedef struct {
     uint32_t af_point_select;
     uint32_t selected_af_point;
     uint32_t focused_af_point;
+    uint32_t auto_iso_min;
+    uint32_t auto_iso_max;
 } pslr_status;
 
 typedef struct {

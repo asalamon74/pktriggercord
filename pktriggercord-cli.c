@@ -465,6 +465,7 @@ void CLOSE(pslr_handle_t camhandle, int exit_value) {
 
 void print_status_info( pslr_status status ) {    
     printf("\ncurrent iso: %d\n", status.current_iso);
+    printf("auto iso: %d-%d\n", status.auto_iso_min,status.auto_iso_max);
     printf("current shutter speed: %d/%d\n", status.current_shutter_speed.nom, status.current_shutter_speed.denom);
     printf("current aperture: %d/%d\n", status.current_aperture.nom, status.current_aperture.denom);
     printf("lens max aperture: %d/%d\n", status.lens_max_aperture.nom, status.lens_max_aperture.denom);
