@@ -100,6 +100,8 @@ int main(int argc, char **argv) {
     pslr_rational_t aperture = {0, 0};
     pslr_rational_t shutter_speed = {0, 0};
     uint32_t iso = 0;
+    uint32_t auto_iso_min = 0;
+    uint32_t auto_iso_max = 0;
     bool IS_K20D = false;
     int frames = 1;
     int delay = 0;
@@ -293,10 +295,14 @@ int main(int argc, char **argv) {
                 break;
 
             case 'i':
+                if (sscanf(optarg, "%d-%d%c", &auto_iso_min, &auto_iso_max, &C) != 2) {
+		    auto_iso_min = 0;
+		    auto_iso_max = 0;
+                    iso = atoi(optarg);
+		}
 
-                iso = atoi(optarg);
-                DPRINT("iso=%d\n", iso);
-                if (!iso) {
+                DPRINT("iso=%d auto_iso=%d-%d\n", iso, auto_iso_min, auto_iso_max);
+                if (iso==0 && auto_iso_min==0) {
                     fprintf(stderr, "%s: Invalid iso value\n", argv[0]);
                     exit(-1);
                 }
@@ -347,7 +353,9 @@ int main(int argc, char **argv) {
 
     if (EM != PSLR_EXPOSURE_MODE_MAX) pslr_set_exposure_mode(camhandle, EM);
 
-    if (iso) pslr_set_iso(camhandle, iso);
+    if (iso >0 || auto_iso_min >0) {
+	pslr_set_iso(camhandle, iso, auto_iso_min, auto_iso_max);
+    }
 
     /* For some reason, resolution is not set until we read the status: */
     pslr_get_status(camhandle, &status);
@@ -465,14 +473,14 @@ void CLOSE(pslr_handle_t camhandle, int exit_value) {
 
 void print_status_info( pslr_status status ) {    
     printf("\ncurrent iso: %d\n", status.current_iso);
-    printf("auto iso: %d-%d\n", status.auto_iso_min,status.auto_iso_max);
     printf("current shutter speed: %d/%d\n", status.current_shutter_speed.nom, status.current_shutter_speed.denom);
     printf("current aperture: %d/%d\n", status.current_aperture.nom, status.current_aperture.denom);
     printf("lens max aperture: %d/%d\n", status.lens_max_aperture.nom, status.lens_max_aperture.denom);
     printf("lens min aperture: %d/%d\n", status.lens_min_aperture.nom, status.lens_min_aperture.denom);
     printf("set shutter speed: %d/%d\n", status.set_shutter_speed.nom, status.set_shutter_speed.denom);
     printf("set aperture: %d/%d\n", status.set_aperture.nom, status.set_aperture.denom);
-    printf("set iso: %d\n", status.set_iso);
+    printf("fixed iso: %d\n", status.fixed_iso);
+    printf("auto iso: %d-%d\n", status.auto_iso_min,status.auto_iso_max);
     printf("jpeg resolution: %d\n", status.jpeg_resolution);
     printf("jpeg saturation: %d\n", status.jpeg_saturation);
     printf("jpeg quality: %d\n", status.jpeg_quality);
@@ -499,7 +507,7 @@ void usage(char *name) {
 Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
   -m, --exposure_mode=MODE		valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
-  -i, --iso=ISO\n\
+  -i, --iso=ISO                         single value (400) or interval (200-800)\n\
   -a, --aperture=APERTURE\n\
   -t, --shutter_speed=SHUTTER SPEED	values can be given in rational form (eg. 1/90)\n\
 					or decimal form (eg. 0.8)\n\

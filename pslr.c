@@ -349,11 +349,11 @@ int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value) {
     return PSLR_OK;
 }
 
-int pslr_set_iso(pslr_handle_t h, uint32_t value) {
+int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint32_t auto_max_value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     /* TODO: if cmd 00 09 fails? */
     CHECK(ipslr_cmd_00_09(p, 1));
-    CHECK(ipslr_write_args(p, 3, value, 0, 0));
+    CHECK(ipslr_write_args(p, 3, value, auto_min_value, auto_max_value));
     CHECK(command(p->fd, 0x18, 0x15, 0x0c));
     CHECK(get_status(p->fd));
     CHECK(ipslr_cmd_00_09(p, 2));
@@ -776,7 +776,7 @@ static int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n
         status->set_aperture.denom = get_uint32(&buf[0x38]);
         status->set_shutter_speed.nom = get_uint32(&buf[0x2c]);
         status->set_shutter_speed.denom = get_uint32(&buf[0x30]);
-        status->set_iso = get_uint32(&buf[0x60]);
+        status->fixed_iso = get_uint32(&buf[0x60]);
         status->jpeg_resolution = 1 + get_uint32(&buf[0x7c]);
         status->jpeg_contrast = get_uint32(&buf[0x94]);
         status->jpeg_sharpness = get_uint32(&buf[0x90]);
@@ -823,7 +823,7 @@ static int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n
         status->set_aperture.denom = get_uint32(&buf[0x38]); //d
         status->set_shutter_speed.nom = get_uint32(&buf[0x2c]); //d
         status->set_shutter_speed.denom = get_uint32(&buf[0x30]); //d
-        status->set_iso = get_uint32(&buf[0x60]); //d
+        status->fixed_iso = get_uint32(&buf[0x60]); //d
         status->jpeg_resolution = get_uint32(&buf[0x7c]); //d
         status->jpeg_contrast = get_uint32(&buf[0x94]); // commands do now work for it?
         status->jpeg_sharpness = get_uint32(&buf[0x90]); // commands do now work for it?
@@ -901,7 +901,7 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->set_aperture.denom = get_uint32(&buf[0x40]); //d
         status->set_shutter_speed.nom = get_uint32(&buf[0x34]); //d
         status->set_shutter_speed.denom = get_uint32(&buf[0x38]); //d
-        status->set_iso = get_uint32(&buf[0x68]); //d
+        status->fixed_iso = get_uint32(&buf[0x68]); //d
         status->jpeg_resolution = get_uint32(&buf[0x84]); //d
         status->jpeg_contrast = get_uint32(&buf[0x9C]); // commands do now work for it?
         status->jpeg_sharpness = get_uint32(&buf[0x98]); // commands do now work for it?

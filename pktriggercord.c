@@ -458,7 +458,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
         assert(steps);
         gtk_range_set_range(GTK_RANGE(pw), 0.0, (gdouble) (steps-1));
         for (i=0; i<steps; i++) {
-            if (tbl[i] >= st_new->set_iso) {
+            if (tbl[i] >= st_new->fixed_iso) {
                 current_iso = i;
                 break;
             }
@@ -1607,14 +1607,14 @@ static void iso_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
     which_iso_table(status_new, &tbl, &steps);
     assert(idx >= 0);
     assert(idx <= steps);
-    DPRINT("cam iso = %d\n", status_new->set_iso);
+    DPRINT("cam iso = %d\n", status_new->fixed_iso);
     DPRINT("iso->%d\n", tbl[idx]);
     /* If the known camera iso is same as new slider value, then the
      * slider change came from the camera (via init_controls), not
      * user change, and we should NOT send any new value to the
      * camera; for example the Fn menu will be exited if we do. */
-    if (status_new->set_iso != tbl[idx]) {
-        ret = pslr_set_iso(camhandle, tbl[idx]);
+    if (status_new->fixed_iso != tbl[idx]) {
+        ret = pslr_set_iso(camhandle, tbl[idx], 0, 0);
         if (ret != PSLR_OK) {
             DPRINT("Set ISO failed: %d\n", ret);
         }
