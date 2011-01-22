@@ -1,0 +1,13 @@
+Known bugs of pkTriggerCord:
+
+  Setting jpeg sharpness/contrast/saturation has no effect.
+
+  Program assumes jpeg sharpness/contrast/saturation values to be
+  between 0 and 6 (displayed as -3 +3 ). Pentax K-x has values 
+  between 0 and 8 (displayed as -4 +4 ). Probably the range is
+  camera-specific. 
+
+  Downloading jpeg with non-maximal resolution does not work.
+
+  Setting exposure mode has no effect ( maybe it's not a bug only it's
+  not allowed ).
