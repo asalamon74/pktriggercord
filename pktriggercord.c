@@ -1684,7 +1684,7 @@ static void jpeg_quality_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 
 static void jpeg_image_mode_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 {
-  pslr_jpeg_image_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
+    pslr_jpeg_image_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
     int ret;
     assert(val >= 0);
     assert(val < PSLR_JPEG_IMAGE_MODE_MAX);
@@ -1692,8 +1692,9 @@ static void jpeg_image_mode_combo_changed_cb(GtkCombo *combo, gpointer user_data
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
     if (status_new == NULL || status_new->jpeg_image_mode != val) {
         ret = pslr_set_jpeg_image_mode(camhandle, val);
-        if (ret != PSLR_OK)
+        if (ret != PSLR_OK) {
             DPRINT("Set JPEG image mode failed.\n");
+        }
     }
 }
 

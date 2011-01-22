@@ -3,6 +3,7 @@ version 0.70.02
 	Added hex info to commandline interface (--status_hex)
 	Reading auto iso range (K-x only)
 	Setting auto iso range (commandline only)
+	Added new jpeg images modes
 
 version 0.70.01 ( 2011-01-19 )
 	File format support for commandline interface (--file_format)
