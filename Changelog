@@ -8,6 +8,7 @@ version 0.70.02
 	Reading bracket ev (K-x only)
 	Reading shake reduction (K-x only)
 	Reading af mode (K-x only)
+	Autofocus mode bugfix
 
 version 0.70.01 ( 2011-01-19 )
 	File format support for commandline interface (--file_format)
