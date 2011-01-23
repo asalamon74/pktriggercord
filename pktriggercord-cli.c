@@ -389,6 +389,11 @@ int main(int argc, char **argv) {
         pslr_focus(camhandle);
     }
     
+#ifdef DEBUG
+// 0x09
+//    pslr_test( camhandle, true, 0x19, 3, 4,2,3);
+#endif
+
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {
             int bufsize = pslr_get_model_buffer_size( camhandle );
