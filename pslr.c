@@ -346,6 +346,13 @@ int ipslr_handle_command_x18( ipslr_handle_t *p, bool cmd9_wrap, int subcommand,
     return PSLR_OK;
 }
 
+#ifdef DEBUG
+int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return ipslr_handle_command_x18( p, cmd9_wrap, subcommand, argnum, arg1, arg2, arg3);
+}
+#endif
+
 int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, false, 0x16, 2, value.nom, value.denom, 0);
@@ -364,6 +371,11 @@ int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint3
 int pslr_set_ec(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, true, 0x18, 2, value.nom, value.denom, 0);
+}
+
+int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode, uint32_t wb_adjust_mg, uint32_t wb_adjust_ba) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return ipslr_handle_command_x18( p, true, 0x10, 3, wb_mode, wb_adjust_mg, wb_adjust_ba);
 }
 
 int _get_hw_jpeg_quality( ipslr_model_info_t *model, pslr_jpeg_quality_t quality) {
