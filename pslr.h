@@ -201,6 +201,23 @@ typedef enum {
     PSLR_AF_MODE_MAX,
 } pslr_af_mode_t;
 
+typedef enum {
+    PSLR_WHITE_BALANCE_MODE_AUTO,
+    PSLR_WHITE_BALANCE_MODE_DAYLIGHT,
+    PSLR_WHITE_BALANCE_MODE_SHADE,
+    PSLR_WHITE_BALANCE_MODE_CLOUDY,
+    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_DAYLIGHT_COLOR,
+    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_DAYLIGHT_WHITE,
+    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_COOL_WHITE,
+    PSLR_WHITE_BALANCE_MODE_TUNGSTEN,
+    PSLR_WHITE_BALANCE_MODE_FLASH,
+    PSLR_WHITE_BALANCE_MODE_MANUAL,
+    // a few items are missing here
+    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_WARM_WHITE = 0x0F,
+    PSLR_WHITE_BALANCE_MODE_CTE = 0x10,
+    PSLR_WHITE_BALANCE_MODE_MAX = 0x11
+} pslr_white_balance_mode_t;
+
 
 typedef struct {
     int32_t nom;
@@ -256,6 +273,9 @@ typedef struct {
     uint32_t drive_mode;
     uint32_t bracket_ev;
     uint32_t shake_reduction;
+    uint32_t white_balance_mode;
+    uint32_t white_balance_adjust_mg;
+    uint32_t white_balance_adjust_ba;
 } pslr_status;
 
 typedef struct {

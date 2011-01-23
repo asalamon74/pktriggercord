@@ -886,7 +886,9 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->drive_mode = get_uint32(&buf[0x5C]);
         status->bracket_ev = get_uint32(&buf[0x50]);
         status->shake_reduction = get_uint32(&buf[0xE0]);
-
+        status->white_balance_mode = get_uint32(&buf[0x74]);
+        status->white_balance_adjust_mg = get_uint32(&buf[0x78]); // 0: M7 7: 0 14: G7
+        status->white_balance_adjust_ba = get_uint32(&buf[0x7C]); // 0: B7 7: 0 14: A7 
 	// 0x58 bracket picture count ?
 
         return PSLR_OK;
