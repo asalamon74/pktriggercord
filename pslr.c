@@ -384,6 +384,12 @@ int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value)
     return ipslr_handle_command_x18( p, true, 0x1a, 2, value.nom, value.denom, 0);    
 }
 
+int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return ipslr_handle_command_x18( p, true, 0x1c, 1, drive_mode, 0, 0);    
+
+}
+
 
 int _get_hw_jpeg_quality( ipslr_model_info_t *model, pslr_jpeg_quality_t quality) {
     return quality - (PSLR_JPEG_QUALITY_MAX - model->jpeg_stars);
