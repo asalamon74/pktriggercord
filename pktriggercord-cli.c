@@ -390,8 +390,8 @@ int main(int argc, char **argv) {
     }
     
 #ifdef DEBUG
-// 0x09
-//pslr_test( camhandle, true, 0x1c, 3, 1,2,3);
+// 0x09, 0x1d, 0x1e, 0x08
+    pslr_test( camhandle, true, 0x06, 1, 2,0,0);
 #endif
 
     if( status_hex_info || status_info ) {
