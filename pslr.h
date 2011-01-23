@@ -218,6 +218,15 @@ typedef enum {
     PSLR_WHITE_BALANCE_MODE_MAX = 0x11
 } pslr_white_balance_mode_t;
 
+typedef enum {
+    PSLR_FLASH_MODE_MANUAL = 0,
+    PSLR_FLASH_MODE_MANUAL_REDEYE = 1,
+    // a few items are missing here
+    PSLR_FLASH_MODE_TRAILING_CURTAIN = 7,
+    PSLR_FLASH_MODE_WIRELESS = 8,
+    PSLR_FLASH_MODE_MAX = 9
+} pslr_flash_mode_t;
+
 
 typedef struct {
     int32_t nom;
@@ -276,6 +285,8 @@ typedef struct {
     uint32_t white_balance_mode;
     uint32_t white_balance_adjust_mg;
     uint32_t white_balance_adjust_ba;
+    uint32_t flash_mode;
+    int32_t flash_exposure_compensation; // 1/256
 } pslr_status;
 
 typedef struct {

@@ -512,6 +512,8 @@ void print_status_info( pslr_status status ) {
     printf("white balance mode: %d\n", status.white_balance_mode);
     printf("white balance adjust mg: %d\n", status.white_balance_adjust_mg);
     printf("white balance adjust ba: %d\n", status.white_balance_adjust_ba);
+    printf("flash mode: %d\n", status.flash_mode);
+    printf("flash exposure compensation: %.2f\n", (1.0 * status.flash_exposure_compensation/256));
 }
 
 void usage(char *name) {

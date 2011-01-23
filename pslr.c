@@ -126,6 +126,7 @@ static int read_result(int fd, uint8_t *buf, uint32_t n);
 void hexdump(uint8_t *buf, uint32_t bufLen);
 
 static uint32_t get_uint32(uint8_t *buf);
+static int32_t get_int32(uint8_t *buf);
 
 static bool is_k10d(ipslr_handle_t *p);
 static bool is_k20d(ipslr_handle_t *p);
@@ -901,6 +902,8 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->white_balance_mode = get_uint32(&buf[0x74]);
         status->white_balance_adjust_mg = get_uint32(&buf[0x78]); // 0: M7 7: 0 14: G7
         status->white_balance_adjust_ba = get_uint32(&buf[0x7C]); // 0: B7 7: 0 14: A7 
+        status->flash_mode = get_uint32(&buf[0x28]);
+        status->flash_exposure_compensation = get_int32(&buf[0x2C]);
 	// 0x58 bracket picture count ?
 
         return PSLR_OK;
@@ -1292,6 +1295,13 @@ static uint32_t get_uint32(uint8_t *buf) {
     res = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
     return res;
 }
+
+static int32_t get_int32(uint8_t *buf) {
+    int32_t res;
+    res = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
+    return res;
+}
+
 
 /* ----------------------------------------------------------------------- */
 
