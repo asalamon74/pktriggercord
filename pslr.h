@@ -221,7 +221,11 @@ typedef enum {
 typedef enum {
     PSLR_FLASH_MODE_MANUAL = 0,
     PSLR_FLASH_MODE_MANUAL_REDEYE = 1,
-    // a few items are missing here
+    PSLR_FLASH_MODE_SLOW = 2,
+    PSLR_FLASH_MODE_SLOW_REDEYE = 3,
+    // 4 ?
+    PSLR_FLASH_MODE_AUTO = 5,
+    PSLR_FLASH_MODE_AUTO_REDEYE = 6,
     PSLR_FLASH_MODE_TRAILING_CURTAIN = 7,
     PSLR_FLASH_MODE_WIRELESS = 8,
     PSLR_FLASH_MODE_MAX = 9

@@ -391,7 +391,7 @@ int main(int argc, char **argv) {
     
 #ifdef DEBUG
 // 0x09
-//    pslr_test( camhandle, true, 0x19, 3, 4,2,3);
+//pslr_test( camhandle, false, 0x1a, 1, 1,0,0);
 #endif
 
     if( status_hex_info || status_info ) {
