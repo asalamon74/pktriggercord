@@ -11,6 +11,7 @@ version 0.70.02
 	Autofocus mode bugfix
 	Reading white balance fields (K-x only)
 	Writing white balance fields
+	Reading flash fields (K-x only)
 
 version 0.70.01 ( 2011-01-19 )
 	File format support for commandline interface (--file_format)
