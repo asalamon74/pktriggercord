@@ -327,6 +327,7 @@ int pslr_set_ec(pslr_handle_t h, pslr_rational_t value);
 
 int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode, uint32_t wb_adjust_mg, uint32_t wb_adjust_ba);
 int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value);
+int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode);
 
 int pslr_set_jpeg_quality(pslr_handle_t h, pslr_jpeg_quality_t quality);
 int pslr_set_jpeg_resolution(pslr_handle_t h, pslr_jpeg_resolution_t resolution);
