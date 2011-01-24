@@ -9,7 +9,7 @@ cli: pktriggercord-cli
 install: install-app
 
 OBJS = pslr.o pslr_scsi.o
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL pentax.rules samsung.rules pslr_scsi.h pslr_scsi.c pslr.h pslr.c pktriggercord.c pktriggercord-cli.c pktriggercord.glade
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS pentax.rules samsung.rules pslr_scsi.h pslr_scsi.c pslr.h pslr.c pktriggercord.c pktriggercord-cli.c pktriggercord.glade
 TARDIR = pktriggercord
 
 pslr.o: pslr_scsi.o pslr.c pslr.h

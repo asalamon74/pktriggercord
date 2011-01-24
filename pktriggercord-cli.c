@@ -391,7 +391,8 @@ int main(int argc, char **argv) {
     
 #ifdef DEBUG
 // 0x09, 0x1d, 0x1e, 0x08
-    pslr_test( camhandle, true, 0x06, 1, 2,0,0);
+// 0x05
+//    pslr_test( camhandle, true, 0x05, 1, 17,18,19);
 #endif
 
     if( status_hex_info || status_info ) {
@@ -540,7 +541,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 }
 
 void version(char *name) {
-    printf("\n%s 0.70.02\n\n\
+    printf("\n%s 0.71.00\n\n\
 Copyright (C) 2011 Andras Salamon\n\
 License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
