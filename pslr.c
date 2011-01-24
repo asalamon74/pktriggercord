@@ -891,6 +891,7 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->jpeg_contrast = get_uint32(&buf[0x9C]); // commands do now work for it?
         status->jpeg_sharpness = get_uint32(&buf[0x98]); // commands do now work for it?
         status->jpeg_saturation = get_uint32(&buf[0x94]); // commands do now work for it?
+        status->jpeg_hue = get_uint32(&buf[0xFC]);
         status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x88])); //d
         status->jpeg_image_mode = get_uint32(&buf[0x90]); //d
         status->zoom.nom = get_uint32(&buf[0x198]); //d

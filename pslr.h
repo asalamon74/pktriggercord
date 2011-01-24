@@ -267,6 +267,7 @@ typedef struct {
     uint32_t jpeg_contrast;
     uint32_t jpeg_sharpness;
     uint32_t jpeg_image_mode;
+    uint32_t jpeg_hue;
     pslr_rational_t zoom;
     uint32_t focus;
     uint32_t image_format;

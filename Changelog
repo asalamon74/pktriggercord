@@ -1,4 +1,7 @@
-version 0.71.00
+version 0.71.01
+	Reading jpeg hue (K-x only)
+
+version 0.71.00 ( 2011-01-24 )
 	Better handling of jpeg quality
 	Added hex info to commandline interface (--status_hex)
 	Reading auto iso range (K-x only)
