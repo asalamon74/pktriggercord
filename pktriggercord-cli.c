@@ -487,12 +487,13 @@ void print_status_info( pslr_status status ) {
     printf("set aperture: %d/%d\n", status.set_aperture.nom, status.set_aperture.denom);
     printf("fixed iso: %d\n", status.fixed_iso);
     printf("auto iso: %d-%d\n", status.auto_iso_min,status.auto_iso_max);
-    printf("jpeg resolution: %d\n", status.jpeg_resolution);
-    printf("jpeg saturation: %d\n", status.jpeg_saturation);
     printf("jpeg quality: %d\n", status.jpeg_quality);
+    printf("jpeg resolution: %d\n", status.jpeg_resolution);
+    printf("jpeg image mode: %d\n", status.jpeg_image_mode);
+    printf("jpeg saturation: %d\n", status.jpeg_saturation);
     printf("jpeg contrast: %d\n", status.jpeg_contrast);
     printf("jpeg sharpness: %d\n", status.jpeg_sharpness);
-    printf("jpeg image mode: %d\n", status.jpeg_image_mode);
+    printf("jpeg hue: %d\n", status.jpeg_hue);
     printf("zoom: %d/%d\n", status.zoom.nom, status.zoom.denom);
     printf("focus: %d\n", status.focus);
     printf("image format: %d\n", status.image_format);
@@ -541,7 +542,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 }
 
 void version(char *name) {
-    printf("\n%s 0.71.00\n\n\
+    printf("\n%s 0.71.01\n\n\
 Copyright (C) 2011 Andras Salamon\n\
 License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
