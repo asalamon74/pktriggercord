@@ -450,6 +450,14 @@ int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast) {
     return ipslr_handle_command_x18( p, false, 0x22, 2, 0, contrast, 0);
 }
 
+int pslr_set_jpeg_hue(pslr_handle_t h, int32_t hue) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    if (hue < 0 || hue > 6) {
+        return PSLR_PARAM;
+    }
+    return ipslr_handle_command_x18( p, false, 0x25, 2, 0, hue, 0);
+}
+
 int pslr_set_jpeg_saturation(pslr_handle_t h, int32_t saturation) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     if (saturation < 0 || saturation > 6) {

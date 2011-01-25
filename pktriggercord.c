@@ -107,6 +107,7 @@ static void ec_scale_value_changed_cb(GtkScale *scale, gpointer user_data);
 static void jpeg_sharpness_scale_value_changed_cb(GtkScale *scale, gpointer user_data);
 static void jpeg_contrast_scale_value_changed_cb(GtkScale *scale, gpointer user_data);
 static void jpeg_saturation_scale_value_changed_cb(GtkScale *scale, gpointer user_data);
+static void jpeg_hue_scale_value_changed_cb(GtkScale *scale, gpointer user_data);
 
 static void jpeg_resolution_combo_changed_cb(GtkCombo *combo, gpointer user_data);
 static void jpeg_quality_combo_changed_cb(GtkCombo *combo, gpointer user_data);
@@ -334,6 +335,7 @@ int common_init(void)
     glade_xml_signal_connect(xml, "jpeg_sharpness_scale_value_changed_cb", G_CALLBACK(jpeg_sharpness_scale_value_changed_cb));
     glade_xml_signal_connect(xml, "jpeg_saturation_scale_value_changed_cb", G_CALLBACK(jpeg_saturation_scale_value_changed_cb));
     glade_xml_signal_connect(xml, "jpeg_contrast_scale_value_changed_cb", G_CALLBACK(jpeg_contrast_scale_value_changed_cb));
+    glade_xml_signal_connect(xml, "jpeg_hue_scale_value_changed_cb", G_CALLBACK(jpeg_hue_scale_value_changed_cb));
 
     glade_xml_signal_connect(xml, "menu_quit_activate_cb", G_CALLBACK(menu_quit_activate_cb));
     glade_xml_signal_connect(xml, "menu_about_activate_cb", G_CALLBACK(menu_about_activate_cb));
@@ -499,10 +501,20 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
 
     /* JPEG contrast */
     pw = glade_xml_get_widget(xml, "jpeg_contrast_scale");
-    if (st_new)
+    if (st_new) {
         gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_contrast-3.0);
+    }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
+
+    /* JPEG hue */
+    pw = glade_xml_get_widget(xml, "jpeg_hue_scale");
+    if (st_new) {
+        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_hue-3.0);
+    }
+
+    gtk_widget_set_sensitive(pw, st_new != NULL);
+
 
     /* JPEG saturation */
     pw = glade_xml_get_widget(xml, "jpeg_saturation_scale");
@@ -1719,6 +1731,18 @@ static void jpeg_contrast_scale_value_changed_cb(GtkScale *scale, gpointer user_
     if (ret != PSLR_OK)
         DPRINT("Set JPEG contrast failed.\n");
 }
+
+static void jpeg_hue_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
+{
+    int value = rint(gtk_range_get_value(GTK_RANGE(scale)));
+    int ret;
+    assert(value >= -3);
+    assert(value <= 3);
+    ret = pslr_set_jpeg_hue(camhandle, value+3);
+    if (ret != PSLR_OK)
+        DPRINT("Set JPEG hue failed.\n");
+}
+
 
 static void jpeg_saturation_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
 {
