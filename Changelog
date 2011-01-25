@@ -1,5 +1,6 @@
 version 0.71.01
 	Reading jpeg hue (K-x only)
+	Writing jpeg hue
 
 version 0.71.00 ( 2011-01-24 )
 	Better handling of jpeg quality
@@ -17,7 +18,7 @@ version 0.71.00 ( 2011-01-24 )
 	Reading flash fields (K-x only)
 	Writing flash exposure compensation field
 	Writing drive mode
-	Writeing af mode
+	Writing af mode
 
 version 0.70.01 ( 2011-01-19 )
 	File format support for commandline interface (--file_format)
