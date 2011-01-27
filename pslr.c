@@ -83,6 +83,7 @@ typedef struct {
     const char *name;
     int buffer_size;
     int jpeg_stars; // 3 or 4
+    int jpeg_property_levels; // 7 or 9
 } ipslr_model_info_t;
 
 typedef struct {
@@ -142,17 +143,17 @@ user_file_format_t file_formats[3] = {
 };
 
 static ipslr_model_info_t camera_models[] = {
-    { PSLR_ID1_K20D, PSLR_ID2_K20D, "K20D", 412, 4},
-    { PSLR_ID1_K10D, PSLR_ID2_K10D, "K10D", 392, 3 },
-    { PSLR_ID1_K110D, PSLR_ID2_K110D, "K110D", 0, 0},
-    { PSLR_ID1_K100D, PSLR_ID2_K100D, "K100D", 0, 0},
-    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 0, 0},
-    { PSLR_ID1_IST_DL, PSLR_ID2_IST_DL, "*ist DL", 0, 0},
-    { PSLR_ID1_IST_DS, PSLR_ID2_IST_DS, "*ist DS", 0x108, 3},
-    { PSLR_ID1_IST_D, PSLR_ID2_IST_D, "*ist D", 0, 0},
-    { PSLR_ID1_GX10, PSLR_ID2_GX10, "GX10", 392, 0},
-    { PSLR_ID1_GX20, PSLR_ID2_GX20, "GX20", 412, 4},
-    { PSLR_ID1_KX, PSLR_ID2_KX, "K-x", 436, 3},
+    { PSLR_ID1_K20D, PSLR_ID2_K20D, "K20D", 412, 4, 7},
+    { PSLR_ID1_K10D, PSLR_ID2_K10D, "K10D", 392, 3, 7 },
+    { PSLR_ID1_K110D, PSLR_ID2_K110D, "K110D", 0, 0, 0},
+    { PSLR_ID1_K100D, PSLR_ID2_K100D, "K100D", 0, 0, 0},
+    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 0, 0, 0},
+    { PSLR_ID1_IST_DL, PSLR_ID2_IST_DL, "*ist DL", 0, 0, 0},
+    { PSLR_ID1_IST_DS, PSLR_ID2_IST_DS, "*ist DS", 0x108, 3, 7},
+    { PSLR_ID1_IST_D, PSLR_ID2_IST_D, "*ist D", 0, 0, 0},
+    { PSLR_ID1_GX10, PSLR_ID2_GX10, "GX10", 392, 0, 0},
+    { PSLR_ID1_GX20, PSLR_ID2_GX20, "GX20", 412, 4, 0},
+    { PSLR_ID1_KX, PSLR_ID2_KX, "K-x", 436, 3, 9},
 };
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
@@ -436,34 +437,38 @@ int pslr_set_jpeg_image_mode(pslr_handle_t h, pslr_jpeg_image_mode_t image_mode)
 
 int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (sharpness < 0 || sharpness > 6) {
+    int hw_sharpness = sharpness + (pslr_get_model_jpeg_property_levels( h )-1) / 2;
+    if (hw_sharpness < 0 || hw_sharpness >=  p->model->jpeg_property_levels) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, false, 0x21, 2, 0, sharpness, 0);
+    return ipslr_handle_command_x18( p, false, 0x21, 2, 0, hw_sharpness, 0);
 }
 
 int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (contrast < 0 || contrast > 6) {
+    int hw_contrast = contrast + (pslr_get_model_jpeg_property_levels( h )-1) / 2;
+    if (hw_contrast < 0 || hw_contrast >=  p->model->jpeg_property_levels) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, false, 0x22, 2, 0, contrast, 0);
+    return ipslr_handle_command_x18( p, false, 0x22, 2, 0, hw_contrast, 0);
 }
 
 int pslr_set_jpeg_hue(pslr_handle_t h, int32_t hue) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (hue < 0 || hue > 6) {
+    int hw_hue = hue + (pslr_get_model_jpeg_property_levels( h )-1) / 2;
+    if (hw_hue < 0 || hw_hue >= p->model->jpeg_property_levels) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, false, 0x25, 2, 0, hue, 0);
+    return ipslr_handle_command_x18( p, false, 0x25, 2, 0, hw_hue, 0);
 }
 
 int pslr_set_jpeg_saturation(pslr_handle_t h, int32_t saturation) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (saturation < 0 || saturation > 6) {
+    int hw_saturation = saturation + (pslr_get_model_jpeg_property_levels( h )-1) / 2;
+    if (hw_saturation < 0 || hw_saturation >=  p->model->jpeg_property_levels) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, false, 0x20, 2, 0, saturation, 0);
+    return ipslr_handle_command_x18( p, false, 0x20, 2, 0, hw_saturation, 0);
 }
 
 int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format) {
@@ -651,6 +656,11 @@ int pslr_get_model_jpeg_stars(pslr_handle_t h) {
 int pslr_get_model_buffer_size(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->buffer_size;
+}
+
+int pslr_get_model_jpeg_property_levels(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->jpeg_property_levels;
 }
 
 const char *pslr_camera_name(pslr_handle_t h) {
