@@ -1,6 +1,7 @@
 version 0.71.01
 	Reading jpeg hue (K-x only)
 	Writing jpeg hue
+	Handling different jpeg property level numbers
 
 version 0.71.00 ( 2011-01-24 )
 	Better handling of jpeg quality

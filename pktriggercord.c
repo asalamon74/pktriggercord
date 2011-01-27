@@ -370,7 +370,6 @@ int common_init(void)
         gtk_combo_box_append_text(GTK_COMBO_BOX(pw), file_formats[i].file_format_name);                 	
     }
 
-    
     init_controls(NULL, NULL);
 
     g_timeout_add(1000, status_poll, 0);
@@ -380,6 +379,17 @@ int common_init(void)
     gtk_main();
     return 0;
 }
+
+static int get_jpeg_property_shift() {
+    return (pslr_get_model_jpeg_property_levels( camhandle )-1) / 2;
+}
+
+int camera_specific_init() {
+    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_hue_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_sharpness_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_saturation_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_contrast_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+}   
 
 static void init_controls(pslr_status *st_new, pslr_status *st_old)
 {
@@ -502,7 +512,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     /* JPEG contrast */
     pw = glade_xml_get_widget(xml, "jpeg_contrast_scale");
     if (st_new) {
-        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_contrast-3.0);
+        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_contrast - get_jpeg_property_shift());
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
@@ -510,7 +520,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     /* JPEG hue */
     pw = glade_xml_get_widget(xml, "jpeg_hue_scale");
     if (st_new) {
-        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_hue-3.0);
+        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_hue - get_jpeg_property_shift());
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
@@ -519,14 +529,15 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     /* JPEG saturation */
     pw = glade_xml_get_widget(xml, "jpeg_saturation_scale");
     if (st_new)
-        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_saturation-3.0);
+        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_saturation - get_jpeg_property_shift());
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
 
     /* JPEG sharpness */
     pw = glade_xml_get_widget(xml, "jpeg_sharpness_scale");
-    if (st_new)
-        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_sharpness-3.0);
+    if (st_new) {
+        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_sharpness - get_jpeg_property_shift());
+    }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
 
@@ -625,6 +636,7 @@ static gboolean status_poll(gpointer data)
 
         gtk_statusbar_pop(statusbar, sbar_connect_ctx);
         if (camhandle) {
+            camera_specific_init();
             const char *name;
             name = pslr_camera_name(camhandle);
             snprintf(buf, sizeof(buf), "Connected: %s", name);
@@ -633,7 +645,6 @@ static gboolean status_poll(gpointer data)
         } else {
             gtk_statusbar_push(statusbar, sbar_connect_ctx, "No camera connected.");
         }
-
         status_poll_inhibit = false;
         return TRUE;
     }
@@ -1714,33 +1725,36 @@ static void jpeg_sharpness_scale_value_changed_cb(GtkScale *scale, gpointer user
 {
     int value = rint(gtk_range_get_value(GTK_RANGE(scale)));
     int ret;
-    assert(value >= -3);
-    assert(value <= 3);
-    ret = pslr_set_jpeg_sharpness(camhandle, value+3);
-    if (ret != PSLR_OK)
+    assert(value >= -get_jpeg_property_shift());
+    assert(value <= get_jpeg_property_shift());
+    ret = pslr_set_jpeg_sharpness(camhandle, value);
+    if (ret != PSLR_OK) {
         DPRINT("Set JPEG sharpness failed.\n");
+    }
 }
 
 static void jpeg_contrast_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
 {
     int value = rint(gtk_range_get_value(GTK_RANGE(scale)));
     int ret;
-    assert(value >= -3);
-    assert(value <= 3);
-    ret = pslr_set_jpeg_contrast(camhandle, value+3);
-    if (ret != PSLR_OK)
+    assert(value >= -get_jpeg_property_shift());
+    assert(value <= get_jpeg_property_shift());
+    ret = pslr_set_jpeg_contrast(camhandle, value);
+    if (ret != PSLR_OK) {
         DPRINT("Set JPEG contrast failed.\n");
+    }
 }
 
 static void jpeg_hue_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
 {
     int value = rint(gtk_range_get_value(GTK_RANGE(scale)));
     int ret;
-    assert(value >= -3);
-    assert(value <= 3);
-    ret = pslr_set_jpeg_hue(camhandle, value+3);
-    if (ret != PSLR_OK)
+    assert(value >= -get_jpeg_property_shift());
+    assert(value <= get_jpeg_property_shift());
+    ret = pslr_set_jpeg_hue(camhandle, value);
+    if (ret != PSLR_OK) {
         DPRINT("Set JPEG hue failed.\n");
+    }
 }
 
 
@@ -1748,11 +1762,12 @@ static void jpeg_saturation_scale_value_changed_cb(GtkScale *scale, gpointer use
 {
     int value = rint(gtk_range_get_value(GTK_RANGE(scale)));
     int ret;
-    assert(value >= -3);
-    assert(value <= 3);
-    ret = pslr_set_jpeg_saturation(camhandle, value+3);
-    if (ret != PSLR_OK)
+    assert(value >= -get_jpeg_property_shift());
+    assert(value <= get_jpeg_property_shift());
+    ret = pslr_set_jpeg_saturation(camhandle, value);
+    if (ret != PSLR_OK) {
         DPRINT("Set JPEG saturation failed.\n");
+    }
 }
 
 void preview_icon_view_selection_changed_cb(GtkIconView *icon_view)
@@ -1953,7 +1968,6 @@ static void file_format_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 static void user_mode_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 {
     pslr_exposure_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
-    printf("um: %d\n",val);
     if (!status_new)
         return;
     assert(val >= 0);
