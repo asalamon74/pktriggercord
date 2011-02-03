@@ -938,6 +938,7 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->white_balance_adjust_ba = get_uint32(&buf[0x7C]); // 0: B7 7: 0 14: A7 
         status->flash_mode = get_uint32(&buf[0x28]);
         status->flash_exposure_compensation = get_int32(&buf[0x2C]);
+        status->manual_mode_ev = get_int32(&buf[0x15C]);
 	// 0x58 bracket picture count ?
 
         return PSLR_OK;
