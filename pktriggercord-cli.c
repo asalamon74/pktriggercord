@@ -392,7 +392,7 @@ int main(int argc, char **argv) {
 #ifdef DEBUG
 // 0x09, 0x1d, 0x1e, 0x08
 // 0x05
-    pslr_test( camhandle, true, 0x09, 2, 9,10,11);
+//    pslr_test( camhandle, true, 0x04, 1, 7,0,0);
 #endif
 
     if( status_hex_info || status_info ) {
