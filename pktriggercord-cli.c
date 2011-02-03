@@ -392,7 +392,7 @@ int main(int argc, char **argv) {
 #ifdef DEBUG
 // 0x09, 0x1d, 0x1e, 0x08
 // 0x05
-//    pslr_test( camhandle, false, 0x25, 2, 0,2,0);
+    pslr_test( camhandle, true, 0x09, 2, 9,10,11);
 #endif
 
     if( status_hex_info || status_info ) {
@@ -516,6 +516,7 @@ void print_status_info( pslr_status status ) {
     printf("white balance adjust ba: %d\n", status.white_balance_adjust_ba);
     printf("flash mode: %d\n", status.flash_mode);
     printf("flash exposure compensation: %.2f\n", (1.0 * status.flash_exposure_compensation/256));
+    printf("manual mode ev: %.2f\n", (1.0 * status.manual_mode_ev / 10));
 }
 
 void usage(char *name) {

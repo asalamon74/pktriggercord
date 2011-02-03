@@ -292,6 +292,7 @@ typedef struct {
     uint32_t white_balance_adjust_ba;
     uint32_t flash_mode;
     int32_t flash_exposure_compensation; // 1/256
+    int32_t manual_mode_ev; // 1/10
 } pslr_status;
 
 typedef struct {
