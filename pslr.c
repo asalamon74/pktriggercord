@@ -233,10 +233,10 @@ pslr_handle_t pslr_init() {
         read(fd, infobuf, sizeof (infobuf));
         close(fd);
         if (!(strncmp(infobuf, "DIGITAL_CAMERA", 14) == 0
-                || strncmp(infobuf, "DSC_K20D", 8) == 0
-                || strncmp(infobuf, "DSC_K-x", 7) == 0)) {
+	      || strncmp(infobuf, "DSC_K20D", 8) == 0
+	      || strncmp(infobuf, "DSC_K-x", 7) == 0)) {
             continue;
-        }
+	}
 
         /* Found PENTAX DIGITAL_CAMERA */
         snprintf(pslr.devname, sizeof (pslr.devname), "/dev/%s", ent->d_name);
