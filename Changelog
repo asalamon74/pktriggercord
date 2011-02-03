@@ -3,6 +3,7 @@ version 0.71.01
 	Writing jpeg hue
 	Handling different jpeg property level numbers
 	Reading manual mode ev (K-x only)
+	Writing flash mode
 
 version 0.71.00 ( 2011-01-24 )
 	Better handling of jpeg quality
