@@ -259,13 +259,6 @@ int main(int argc, char **argv) {
                     exit(-1);
                 }
 
-                DPRINT("shutter_speed.nom=%d\n", shutter_speed.nom);
-                DPRINT("shutter_speed.denom=%d\n", shutter_speed.denom);
-
-                if (shutter_speed.nom <= 0 || shutter_speed.nom > 30 || shutter_speed.denom <= 0 || shutter_speed.denom > 4000) {
-                    fprintf(stderr, "%s: Invalid shutter speed value.\n", argv[0]);
-                    exit(-1);
-                }
                 break;
 
                 /*******************************************************/
@@ -364,7 +357,16 @@ int main(int argc, char **argv) {
 //        fprintf(stderr, "%s: Cannot set %s mode; set the mode dial to %s or USER\n", argv[0], MODESTRING, MODESTRING);
 //    }
 
-    if (shutter_speed.nom) pslr_set_shutter(camhandle, shutter_speed);
+    if (shutter_speed.nom) {
+	DPRINT("shutter_speed.nom=%d\n", shutter_speed.nom);
+	DPRINT("shutter_speed.denom=%d\n", shutter_speed.denom);
+
+	if (shutter_speed.nom <= 0 || shutter_speed.nom > 30 || shutter_speed.denom <= 0 || shutter_speed.denom > pslr_get_model_fastest_shutter_speed(camhandle)) {
+	    fprintf(stderr, "%s: Invalid shutter speed value.\n", argv[0]);
+	}
+
+        pslr_set_shutter(camhandle, shutter_speed);
+    }
 
     if (aperture.nom) {
         if ((aperture.nom * status.lens_max_aperture.denom) > (aperture.denom * status.lens_max_aperture.nom)) {

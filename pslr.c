@@ -84,6 +84,7 @@ typedef struct {
     int buffer_size;
     int jpeg_stars; // 3 or 4
     int jpeg_property_levels; // 7 or 9
+    int fastest_shutter_speed;
 } ipslr_model_info_t;
 
 typedef struct {
@@ -143,17 +144,17 @@ user_file_format_t file_formats[3] = {
 };
 
 static ipslr_model_info_t camera_models[] = {
-    { PSLR_ID1_K20D, PSLR_ID2_K20D, "K20D", 412, 4, 7},
-    { PSLR_ID1_K10D, PSLR_ID2_K10D, "K10D", 392, 3, 7 },
-    { PSLR_ID1_K110D, PSLR_ID2_K110D, "K110D", 0, 0, 0},
-    { PSLR_ID1_K100D, PSLR_ID2_K100D, "K100D", 0, 0, 0},
-    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 0, 0, 0},
-    { PSLR_ID1_IST_DL, PSLR_ID2_IST_DL, "*ist DL", 0, 0, 0},
-    { PSLR_ID1_IST_DS, PSLR_ID2_IST_DS, "*ist DS", 0x108, 3, 7},
-    { PSLR_ID1_IST_D, PSLR_ID2_IST_D, "*ist D", 0, 0, 0},
-    { PSLR_ID1_GX10, PSLR_ID2_GX10, "GX10", 392, 0, 0},
-    { PSLR_ID1_GX20, PSLR_ID2_GX20, "GX20", 412, 4, 0},
-    { PSLR_ID1_KX, PSLR_ID2_KX, "K-x", 436, 3, 9},
+    { PSLR_ID1_K20D, PSLR_ID2_K20D, "K20D", 412, 4, 7, 4000},
+    { PSLR_ID1_K10D, PSLR_ID2_K10D, "K10D", 392, 3, 7, 4000 },
+    { PSLR_ID1_K110D, PSLR_ID2_K110D, "K110D", 0, 0, 0, 0},
+    { PSLR_ID1_K100D, PSLR_ID2_K100D, "K100D", 0, 0, 0, 0},
+    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 0, 0, 0, 0},
+    { PSLR_ID1_IST_DL, PSLR_ID2_IST_DL, "*ist DL", 0, 0, 0, 0},
+    { PSLR_ID1_IST_DS, PSLR_ID2_IST_DS, "*ist DS", 0x108, 3, 7, 4000},
+    { PSLR_ID1_IST_D, PSLR_ID2_IST_D, "*ist D", 0, 0, 0, 0},
+    { PSLR_ID1_GX10, PSLR_ID2_GX10, "GX10", 392, 3, 7, 4000},
+    { PSLR_ID1_GX20, PSLR_ID2_GX20, "GX20", 412, 4, 7, 4000},
+    { PSLR_ID1_KX, PSLR_ID2_KX, "K-x", 436, 3, 9, 6000},
 };
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
@@ -357,7 +358,7 @@ int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int
 
 int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, false, 0x16, 2, value.nom, value.denom, 0);
+    return ipslr_handle_command_x18( p, true, 0x16, 2, value.nom, value.denom, 0);
 }
 
 int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value) {
@@ -667,6 +668,12 @@ int pslr_get_model_jpeg_property_levels(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->jpeg_property_levels;
 }
+
+int pslr_get_model_fastest_shutter_speed(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->fastest_shutter_speed;
+}
+
 
 const char *pslr_camera_name(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
