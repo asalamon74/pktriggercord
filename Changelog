@@ -4,6 +4,7 @@ version 0.71.01
 	Handling different jpeg property level numbers
 	Reading manual mode ev (K-x only)
 	Writing flash mode
+	Handling camera specific shutter speeds
 
 version 0.71.00 ( 2011-01-24 )
 	Better handling of jpeg quality

@@ -201,7 +201,7 @@ static const pslr_rational_t shutter_tbl[] = {
 { 1 , 8},{ 1 , 10},{ 1 , 13},{ 1 , 15},{ 1 , 20},{ 1 , 25},{ 1 , 30},{ 1 , 40},
 { 1 , 50},{ 1 , 60},{ 1 , 80},{ 1 , 100},{ 1 , 125},{ 1 , 160},{ 1 , 200},{ 1 , 250},
 { 1 , 320},{ 1 , 400},{ 1 , 500},{ 1 , 640},{ 1 , 800},{ 1 , 1000},{ 1 , 1250},{ 1 , 1600},
-{ 1 , 2000},{ 1 , 2500},{ 1 , 3200},{ 1 , 4000}
+{ 1 , 2000},{ 1 , 2500},{ 1 , 3200},{ 1 , 4000},{1 , 5000}, {1, 6000}
 };
 
 static const int iso_tbl_1_3[] = {
@@ -389,6 +389,20 @@ int camera_specific_init() {
     gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_sharpness_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_saturation_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_contrast_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    // check valid shutter speeds for the camera
+    int max_valid_shutter_speed_index;
+    int i;
+    for(i=0;  i<sizeof(shutter_tbl)/sizeof(shutter_tbl[0]); i++) {
+	if( shutter_tbl[i].nom == 1 &&
+	    shutter_tbl[i].denom <= pslr_get_model_fastest_shutter_speed(camhandle)) {
+	    max_valid_shutter_speed_index = i;
+	}
+    }
+    GtkWidget *pw;
+    pw = glade_xml_get_widget(xml, "shutter_scale");
+    //printf("range 0-%f\n", (float) sizeof(shutter_tbl)/sizeof(shutter_tbl[0]));
+    gtk_range_set_range(GTK_RANGE(pw), 0.0, max_valid_shutter_speed_index);
+    gtk_range_set_increments(GTK_RANGE(pw), 1.0, 1.0);
 }   
 
 static void init_controls(pslr_status *st_new, pslr_status *st_old)
@@ -438,14 +452,13 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
         idx = -1;
         for (i=0; i<sizeof(shutter_tbl)/sizeof(shutter_tbl[0]); i++) {
             if (st_new->set_shutter_speed.nom == shutter_tbl[i].nom
-                && st_new->set_shutter_speed.denom == shutter_tbl[i].denom)
+                && st_new->set_shutter_speed.denom == shutter_tbl[i].denom) {
                 idx = i;
+	    }
         }
-        //printf("range 0-%f\n", (float) sizeof(shutter_tbl)/sizeof(shutter_tbl[0]));
-        gtk_range_set_range(GTK_RANGE(pw), 0.0, sizeof(shutter_tbl)/sizeof(shutter_tbl[0])-1);
-        gtk_range_set_increments(GTK_RANGE(pw), 1.0, 1.0);
-        if (idx >= 0)
+        if (idx >= 0) {
             gtk_range_set_value(GTK_RANGE(pw), idx);
+        }
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
@@ -1526,12 +1539,13 @@ static gchar* shutter_scale_format_value_cb(GtkScale *scale, gdouble value)
     if(idx >= 0 && idx < sizeof(shutter_tbl)/sizeof(shutter_tbl[0])) {
         int n = shutter_tbl[idx].nom;
         int d = shutter_tbl[idx].denom;
-        if (n == 1)
+        if (n == 1) {
             return g_strdup_printf("1/%d", d);
-        else if (d == 1)
+        } else if (d == 1) {
             return g_strdup_printf("%d\"", n);
-        else
+        } else {
             return g_strdup_printf("%.1f\"", (float)n/(float)d);
+	}
     } else {
         return g_strdup_printf("(%f)", value);
     }

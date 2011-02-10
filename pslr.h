@@ -361,6 +361,7 @@ const char *pslr_camera_name(pslr_handle_t h);
 int pslr_get_model_jpeg_stars(pslr_handle_t h);
 int pslr_get_model_jpeg_property_levels(pslr_handle_t h);
 int pslr_get_model_buffer_size(pslr_handle_t h);
+int pslr_get_model_fastest_shutter_speed(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
 
