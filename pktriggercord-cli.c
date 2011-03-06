@@ -353,6 +353,11 @@ int main(int argc, char **argv) {
     /* For some reason, resolution is not set until we read the status: */
     pslr_get_status(camhandle, &status);
 
+    if( quality == -1 ) {
+	// quality is not set we read it from the camera
+	quality = status.jpeg_quality;
+    }
+
 //    if (EM != PSLR_EXPOSURE_MODE_MAX && status.exposure_mode != EM) {
 //        fprintf(stderr, "%s: Cannot set %s mode; set the mode dial to %s or USER\n", argv[0], MODESTRING, MODESTRING);
 //    }
