@@ -5,6 +5,7 @@ version 0.71.01
 	Reading manual mode ev (K-x only)
 	Writing flash mode
 	Handling camera specific shutter speeds
+	Command line jpeg save bugfix (was not working without specifying quality)
 
 version 0.71.00 ( 2011-01-24 )
 	Better handling of jpeg quality
