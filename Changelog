@@ -6,6 +6,7 @@ version 0.71.01
 	Writing flash mode
 	Handling camera specific shutter speeds
 	Command line jpeg save bugfix (was not working without specifying quality)
+	Glade bugfixes
 
 version 0.71.00 ( 2011-01-24 )
 	Better handling of jpeg quality
