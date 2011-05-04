@@ -484,14 +484,24 @@ void CLOSE(pslr_handle_t camhandle, int exit_value) {
     exit(exit_value);
 }
 
+char *format_rational( pslr_rational_t rational, char * fmt ) {
+    char *ret = malloc(32);
+    if( rational.denom == 0 ) {
+	snprintf( ret, 32, "unknown" );
+    } else {
+	snprintf( ret, 32, fmt, 1.0 * rational.nom / rational.denom );
+    }
+    return ret;
+}
+
 void print_status_info( pslr_status status ) {    
     printf("\ncurrent iso: %d\n", status.current_iso);
     printf("current shutter speed: %d/%d\n", status.current_shutter_speed.nom, status.current_shutter_speed.denom);
-    printf("current aperture: %d/%d\n", status.current_aperture.nom, status.current_aperture.denom);
-    printf("lens max aperture: %d/%d\n", status.lens_max_aperture.nom, status.lens_max_aperture.denom);
-    printf("lens min aperture: %d/%d\n", status.lens_min_aperture.nom, status.lens_min_aperture.denom);
+    printf("current aperture: %s\n", format_rational( status.current_aperture, "%.1f"));
+    printf("lens max aperture: %s\n", format_rational( status.lens_max_aperture, "%.1f"));
+    printf("lens min aperture: %s\n", format_rational( status.lens_min_aperture, "%.1f"));
     printf("set shutter speed: %d/%d\n", status.set_shutter_speed.nom, status.set_shutter_speed.denom);
-    printf("set aperture: %d/%d\n", status.set_aperture.nom, status.set_aperture.denom);
+    printf("set aperture: %s\n", format_rational( status.set_aperture, "%.1f"));
     printf("fixed iso: %d\n", status.fixed_iso);
     printf("auto iso: %d-%d\n", status.auto_iso_min,status.auto_iso_max);
     printf("jpeg quality: %d\n", status.jpeg_quality);
@@ -501,12 +511,12 @@ void print_status_info( pslr_status status ) {
     printf("jpeg contrast: %d\n", status.jpeg_contrast);
     printf("jpeg sharpness: %d\n", status.jpeg_sharpness);
     printf("jpeg hue: %d\n", status.jpeg_hue);
-    printf("zoom: %d/%d\n", status.zoom.nom, status.zoom.denom);
+    printf("zoom: %s mm\n", format_rational(status.zoom, "%.2f"));
     printf("focus: %d\n", status.focus);
     printf("image format: %d\n", status.image_format);
     printf("raw format: %d\n", status.raw_format);
     printf("light meter flags: %d\n", status.light_meter_flags);
-    printf("ec: %d/%d\n", status.ec.nom, status.ec.denom);
+    printf("ec: %s\n", format_rational( status.ec, "%.2f" ) );
     printf("custom ev steps: %d\n", status.custom_ev_steps);
     printf("custom sensitivity steps: %d\n", status.custom_sensitivity_steps);
     printf("exposure mode: %d\n", status.exposure_mode);

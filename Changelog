@@ -1,5 +1,6 @@
 version 0.71.03
 	Support for K200D added by Jens Dreyer <jens.dreyer@udo.edu>
+	Better formatting of status info in command line interface
 
 version 0.71.02 ( 2011-04-09 )
 	Reading jpeg hue (K-x only)
