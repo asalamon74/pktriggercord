@@ -57,6 +57,7 @@ static struct option const longopts[] ={
     {"frames", required_argument, NULL, 'F'},
     {"delay", required_argument, NULL, 'd'},
     {"auto_focus", no_argument, NULL, 'f'},
+    {"exposure_compensation", required_argument, NULL, 3},
     { NULL, 0, NULL, 0}
 };
 
@@ -108,8 +109,9 @@ int main(int argc, char **argv) {
     bool auto_focus = false;
     bool status_info = false;
     bool status_hex_info = false;
+    pslr_rational_t ec = {0, 0};
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:d:t:o:1:i:F:fhvs2", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:d:t:o:1:3:i:F:fhvs2", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
@@ -300,6 +302,13 @@ int main(int argc, char **argv) {
                     exit(-1);
                 }
 		break;
+            case 3:
+		if( sscanf(optarg, "%f%c", &F, &C) == 1 ) {
+		    ec.nom=10*F;
+		    ec.denom=10;
+		}
+		break;
+
         }
         /********************************************************/
     }
@@ -345,6 +354,10 @@ int main(int argc, char **argv) {
     // The camera can handle invalid iso settings (it will use ISO 800 instead of ISO 795)
 
     if (EM != PSLR_EXPOSURE_MODE_MAX) pslr_set_exposure_mode(camhandle, EM);
+
+    if( ec.denom ) {
+	pslr_set_ec( camhandle, ec );
+    }
 
     if (iso >0 || auto_iso_min >0) {
 	pslr_set_iso(camhandle, iso, auto_iso_min, auto_iso_max);
@@ -541,6 +554,7 @@ void usage(char *name) {
 Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
   -m, --exposure_mode=MODE		valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
+      --exposure_compensation=VALUE	exposure compensation value\n\
   -i, --iso=ISO                         single value (400) or interval (200-800)\n\
   -a, --aperture=APERTURE\n\
   -t, --shutter_speed=SHUTTER SPEED	values can be given in rational form (eg. 1/90)\n\
