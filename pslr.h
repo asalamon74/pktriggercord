@@ -3,6 +3,8 @@
     Copyright (C) 2011 Andras Salamon <andras.salamon@melda.info>
     Remote control of Pentax DSLR cameras.
 
+    Support for K200D added by Jens Dreyer <jens.dreyer@udo.edu> 04/2011
+    
     based on:
 
     PK-Remote
@@ -67,6 +69,8 @@
 #define PSLR_ID2_GX20    0x1c6
 #define PSLR_ID1_KX      0x12dfe
 #define PSLR_ID2_KX      0x1ec
+#define PSLR_ID1_K200D   0x12cfa
+#define PSLR_ID2_K200D   0x1bd
 
 typedef enum {
     PSLR_BUF_PEF,
@@ -168,8 +172,9 @@ typedef enum {
     PSLR_EXPOSURE_MODE_TAV, // ?
     PSLR_EXPOSURE_MODE_M = 8,
     PSLR_EXPOSURE_MODE_B = 9,
-    PSLR_EXPOSURE_MODE_X, // ?
+    PSLR_EXPOSURE_MODE_X, // ?   
     PSLR_EXPOSURE_MODE_MAX = 16
+
 } pslr_exposure_mode_t;
 
 typedef enum {

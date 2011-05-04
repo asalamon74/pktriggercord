@@ -1,3 +1,6 @@
+version 0.71.03
+	Support for K200D added by Jens Dreyer <jens.dreyer@udo.edu>
+
 version 0.71.02 ( 2011-04-09 )
 	Reading jpeg hue (K-x only)
 	Writing jpeg hue

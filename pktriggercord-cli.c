@@ -358,9 +358,9 @@ int main(int argc, char **argv) {
 	quality = status.jpeg_quality;
     }
 
-//    if (EM != PSLR_EXPOSURE_MODE_MAX && status.exposure_mode != EM) {
-//        fprintf(stderr, "%s: Cannot set %s mode; set the mode dial to %s or USER\n", argv[0], MODESTRING, MODESTRING);
-//    }
+    if (EM != PSLR_EXPOSURE_MODE_MAX && status.exposure_mode != EM) {
+        fprintf(stderr, "%s: Cannot set %s mode; set the mode dial to %s or USER\n", argv[0], MODESTRING, MODESTRING);
+    }
 
     if (shutter_speed.nom) {
 	DPRINT("shutter_speed.nom=%d\n", shutter_speed.nom);
@@ -550,7 +550,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 }
 
 void version(char *name) {
-    printf("\n%s 0.71.02\n\n\
+    printf("\n%s 0.71.03\n\n\
 Copyright (C) 2011 Andras Salamon\n\
 License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\

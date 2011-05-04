@@ -3,6 +3,8 @@
     Copyright (C) 2011 Andras Salamon <andras.salamon@melda.info>
     Remote control of Pentax DSLR cameras.
 
+    Support for K200D added by Jens Dreyer <jens.dreyer@udo.edu> 04/2011
+
     based on:
 
     PK-Remote
@@ -11,7 +13,7 @@
 
     PK-Remote for Windows
     Copyright (C) 2010 Tomasz Kos
-
+        
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -134,6 +136,8 @@ static bool is_k10d(ipslr_handle_t *p);
 static bool is_k20d(ipslr_handle_t *p);
 static bool is_istds(ipslr_handle_t *p);
 static bool is_kx(ipslr_handle_t *p);
+static bool is_k200d(ipslr_handle_t *p);
+
 
 static pslr_progress_callback_t progress_callback = NULL;
 
@@ -155,6 +159,8 @@ static ipslr_model_info_t camera_models[] = {
     { PSLR_ID1_GX10, PSLR_ID2_GX10, "GX10", 392, 3, 7, 4000},
     { PSLR_ID1_GX20, PSLR_ID2_GX20, "GX20", 412, 4, 7, 4000},
     { PSLR_ID1_KX, PSLR_ID2_KX, "K-x", 436, 3, 9, 6000},
+    { PSLR_ID1_K200D, PSLR_ID2_K200D, "K200D", 408, 3, 9, 4000}, 
+
 };
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
@@ -169,29 +175,30 @@ user_file_format_t *get_file_format_t( user_file_format uff ) {
 
 
 static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
-    switch( exp ) {
+  switch( exp ) {
+    
     case PSLR_EXPOSURE_MODE_GREEN:
-	return PSLR_GUI_EXPOSURE_MODE_GREEN;
+      return PSLR_GUI_EXPOSURE_MODE_GREEN;
     case PSLR_EXPOSURE_MODE_P:
-	return PSLR_GUI_EXPOSURE_MODE_P;
+      return PSLR_GUI_EXPOSURE_MODE_P;
     case PSLR_EXPOSURE_MODE_SV:
-	return PSLR_GUI_EXPOSURE_MODE_SV;
+      return PSLR_GUI_EXPOSURE_MODE_SV;
     case PSLR_EXPOSURE_MODE_TV:
-	return PSLR_GUI_EXPOSURE_MODE_TV;
+      return PSLR_GUI_EXPOSURE_MODE_TV;
     case PSLR_EXPOSURE_MODE_AV:
-	return PSLR_GUI_EXPOSURE_MODE_AV;
+      return PSLR_GUI_EXPOSURE_MODE_AV;
     case PSLR_EXPOSURE_MODE_TAV:
-	return PSLR_GUI_EXPOSURE_MODE_TAV;
+      return PSLR_GUI_EXPOSURE_MODE_TAV;
     case PSLR_EXPOSURE_MODE_M:
-	return PSLR_GUI_EXPOSURE_MODE_M;
+      return PSLR_GUI_EXPOSURE_MODE_M;
     case PSLR_EXPOSURE_MODE_B:
-	return PSLR_GUI_EXPOSURE_MODE_B;
+      return PSLR_GUI_EXPOSURE_MODE_B;
     case PSLR_EXPOSURE_MODE_X:
-	return PSLR_GUI_EXPOSURE_MODE_X;
+      return PSLR_GUI_EXPOSURE_MODE_X;
     case PSLR_EXPOSURE_MODE_MAX:
-	return PSLR_GUI_EXPOSURE_MODE_MAX;
-    }
-    return 0;
+      return PSLR_GUI_EXPOSURE_MODE_MAX;
+  }    
+  return 0;
 }
 
 pslr_handle_t pslr_init() {
@@ -235,7 +242,8 @@ pslr_handle_t pslr_init() {
         close(fd);
         if (!(strncmp(infobuf, "DIGITAL_CAMERA", 14) == 0
 	      || strncmp(infobuf, "DSC_K20D", 8) == 0
-	      || strncmp(infobuf, "DSC_K-x", 7) == 0)) {
+	      || strncmp(infobuf, "DSC_K-x", 7) == 0
+	      || strncmp(infobuf, "DSC_K200D", 9) == 0)) {
             continue;
 	}
 
@@ -269,7 +277,8 @@ int pslr_connect(pslr_handle_t h) {
     CHECK(ipslr_identify(p));
     CHECK(ipslr_status_full(p, &p->status));
     DPRINT("init bufmask=0x%x\n", p->status.bufmask);
-    if (is_k10d(p) || is_k20d(p) || is_kx(p))
+    if (is_k10d(p) || is_k20d(p) || is_kx(p) || is_k200d(p))
+      //if (is_k10d(p) || is_k20d(p) || is_kx(p))
         CHECK(ipslr_cmd_00_09(p, 2));
     CHECK(ipslr_status_full(p, &p->status));
     CHECK(ipslr_cmd_10_0a(p, 1));
@@ -855,7 +864,7 @@ static int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n
         status->ec.denom = get_uint32(&buf[0x40]); //d
         status->custom_ev_steps = get_uint32(&buf[0x9c]);
         status->custom_sensitivity_steps = get_uint32(&buf[0xa0]);
-        status->exposure_mode = get_uint32(&buf[0xe0]); //d
+        status->exposure_mode = get_uint32(&buf[0xac]); //d
         status->user_mode_flag = get_uint32(&buf[0x1c]); //d
         status->af_point_select = get_uint32(&buf[0xbc]); // not sure
         status->selected_af_point = get_uint32(&buf[0xc0]); //d
@@ -956,6 +965,63 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         return PSLR_OK;
 }
 
+static int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n) {
+        
+        
+    uint8_t *buf = p->status_buffer;
+        CHECK(read_result(p->fd, buf, n));
+#ifdef DEBUG
+        ipslr_status_diff(buf);
+#endif
+
+        memset(status, 0, sizeof (*status));	
+        status->bufmask = buf[0x16] << 8 | buf[0x17];
+        status->current_iso = get_uint32(&buf[0x060]); 
+        status->current_shutter_speed.nom = get_uint32(&buf[0x0104]); 
+        status->current_shutter_speed.denom = get_uint32(&buf[0x108]); 
+        status->current_aperture.nom = get_uint32(&buf[0x034]); 
+        status->current_aperture.denom = get_uint32(&buf[0x038]); 
+        status->lens_min_aperture.nom = get_uint32(&buf[0x144]); 
+        status->lens_min_aperture.denom = get_uint32(&buf[0x148]); 
+        status->lens_max_aperture.nom = get_uint32(&buf[0x13c]);
+        status->lens_max_aperture.denom = get_uint32(&buf[0x140]);
+        status->set_aperture.nom = get_uint32(&buf[0x34]);
+        status->set_aperture.denom = get_uint32(&buf[0x38]);
+        status->set_shutter_speed.nom = get_uint32(&buf[0x2c]);
+        status->set_shutter_speed.denom = get_uint32(&buf[0x30]);
+        status->fixed_iso = get_uint32(&buf[0x60]);
+        status->jpeg_resolution = 1 + get_uint32(&buf[0x7c]);
+        status->jpeg_contrast = get_uint32(&buf[0x94]);
+	status->jpeg_hue = get_uint32(&buf[0xf4]);
+        status->jpeg_sharpness = get_uint32(&buf[0x90]);
+        status->jpeg_saturation = get_uint32(&buf[0x8c]);
+        status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x80]));
+        status->jpeg_image_mode = get_uint32(&buf[0x88]);
+        status->zoom.nom = get_uint32(&buf[0x17c]);
+        status->zoom.denom = get_uint32(&buf[0x180]);
+        status->auto_iso_min = get_uint32(&buf[0x64]);
+        status->auto_iso_max = get_uint32(&buf[0x68]);
+        status->focus = get_int32(&buf[0x184]);
+        status->raw_format = get_uint32(&buf[0x84]);
+        status->image_format = get_uint32(&buf[0x78]);
+        status->light_meter_flags = get_uint32(&buf[0x124]);
+        status->ec.nom = get_uint32(&buf[0x3c]);
+        status->ec.denom = get_uint32(&buf[0x40]);
+        //status->custom_ev_steps = get_uint32(&buf[0x9c]);
+        //status->custom_sensitivity_steps = get_uint32(&buf[0xa0]);
+        status->exposure_mode = get_uint32(&buf[0xac]);
+	status->user_mode_flag = get_uint32(&buf[0x1c]);
+        status->af_point_select = get_uint32(&buf[0xbc]);
+	status->af_mode = get_uint32(&buf[0xb8]);
+        status->selected_af_point = get_uint32(&buf[0xc0]);
+        status->focused_af_point = get_uint32(&buf[0x150]);
+	status->shake_reduction = get_uint32(&buf[0xda]);
+        // Drive mode: 0=Single shot, 1= Continous Hi, 2= Continous Low or Self timer 12s, 3=Self timer 2s
+	// 4= remote, 5= remote 3s delay
+	status->drive_mode = get_uint32(&buf[0xcc]); 
+        return PSLR_OK;
+}
+
 static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     int n;
     CHECK(command(p->fd, 0, 8, 0));
@@ -975,6 +1041,9 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
 	ret =  ipslr_status_parse_istds(p, status, n);
     } else if (p->model && is_kx(p)) {
 	ret =  ipslr_status_parse_kx(p, status, n);
+    } else if (p->model && is_k200d(p)) {
+	ret =  ipslr_status_parse_k200d(p, status, n);
+
     } else {
         /* Unknown camera */
 	ret = PSLR_OK;
@@ -982,7 +1051,8 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
 
     // required for K-x, probably for other cameras too
     status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
-    
+
+
     return ret;
 }
 
@@ -1095,6 +1165,10 @@ static int ipslr_select_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type bu
     } else if (is_k10d(p)) {
         CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres - 1, 0));
         CHECK(command(p->fd, 0x02, 0x01, 0x10));
+    } else if (is_k200d(p)) {
+        CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres - 1, 0));
+        CHECK(command(p->fd, 0x02, 0x01, 0x10));
+
     } else {
         /* older cameras: 3-arg select buffer */
         CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres));
@@ -1206,7 +1280,7 @@ static int ipslr_write_args(ipslr_handle_t *p, int n, ...) {
     uint32_t data;
 
     va_start(ap, n);
-    if (is_k10d(p) || is_k20d(p) || is_kx(p)) {
+    if (is_k10d(p) || is_k20d(p) || is_kx(p) || is_k200d(p)) {
         /* All at once */
         for (i = 0; i < n; i++) {
             data = va_arg(ap, uint32_t);
@@ -1384,6 +1458,13 @@ static bool is_istds(ipslr_handle_t *p) {
 static bool is_kx(ipslr_handle_t *p) {
     if (p->model && p->model->id1 == PSLR_ID1_KX
             && p->model->id2 == PSLR_ID2_KX)
+        return true;
+    return false;
+}
+
+static bool is_k200d(ipslr_handle_t *p) {
+    if (p->model && p->model->id1 == PSLR_ID1_K200D
+            && p->model->id2 == PSLR_ID2_K200D)
         return true;
     return false;
 }
