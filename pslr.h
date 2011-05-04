@@ -274,7 +274,7 @@ typedef struct {
     uint32_t jpeg_image_mode;
     uint32_t jpeg_hue;
     pslr_rational_t zoom;
-    uint32_t focus;
+    int32_t focus;
     uint32_t image_format;
     uint32_t raw_format;
     uint32_t light_meter_flags;

@@ -809,7 +809,7 @@ static int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n
         status->jpeg_image_mode = get_uint32(&buf[0x88]);
         status->zoom.nom = get_uint32(&buf[0x16c]);
         status->zoom.denom = get_uint32(&buf[0x170]);
-        status->focus = get_uint32(&buf[0x174]);
+        status->focus = get_int32(&buf[0x174]);
         status->raw_format = get_uint32(&buf[0x84]);
         status->image_format = get_uint32(&buf[0x78]);
         status->light_meter_flags = get_uint32(&buf[0x124]);
@@ -856,7 +856,7 @@ static int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n
         status->jpeg_image_mode = get_uint32(&buf[0x88]); //d
         status->zoom.nom = get_uint32(&buf[0x180]); //d
         status->zoom.denom = get_uint32(&buf[0x184]); //d
-        status->focus = get_uint32(&buf[0x188]); //d current focus ring position?
+        status->focus = get_int32(&buf[0x188]); //d current focus ring position?
         status->raw_format = get_uint32(&buf[0x84]); //d
         status->image_format = get_uint32(&buf[0x78]); //d
         status->light_meter_flags = get_uint32(&buf[0x138]); //d
@@ -935,7 +935,7 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->jpeg_image_mode = get_uint32(&buf[0x90]); //d
         status->zoom.nom = get_uint32(&buf[0x198]); //d
         status->zoom.denom = get_uint32(&buf[0x19C]); //d
-        status->focus = get_uint32(&buf[0x1A0]); //d
+        status->focus = get_int32(&buf[0x1A0]); //d
         status->raw_format = get_uint32(&buf[0x8C]); //d
         status->image_format = get_uint32(&buf[0x80]); //d
         status->light_meter_flags = get_uint32(&buf[0x140]); //d
