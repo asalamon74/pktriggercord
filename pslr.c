@@ -864,7 +864,7 @@ static int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n
         status->ec.denom = get_uint32(&buf[0x40]); //d
         status->custom_ev_steps = get_uint32(&buf[0x9c]);
         status->custom_sensitivity_steps = get_uint32(&buf[0xa0]);
-        status->exposure_mode = get_uint32(&buf[0xac]); //d
+        status->exposure_mode = get_uint32(&buf[0xe0]); //d
         status->user_mode_flag = get_uint32(&buf[0x1c]); //d
         status->af_point_select = get_uint32(&buf[0xbc]); // not sure
         status->selected_af_point = get_uint32(&buf[0xc0]); //d
@@ -981,10 +981,10 @@ static int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int 
         status->current_shutter_speed.denom = get_uint32(&buf[0x108]); 
         status->current_aperture.nom = get_uint32(&buf[0x034]); 
         status->current_aperture.denom = get_uint32(&buf[0x038]); 
-        status->lens_min_aperture.nom = get_uint32(&buf[0x144]); 
-        status->lens_min_aperture.denom = get_uint32(&buf[0x148]); 
-        status->lens_max_aperture.nom = get_uint32(&buf[0x13c]);
-        status->lens_max_aperture.denom = get_uint32(&buf[0x140]);
+        status->lens_max_aperture.nom = get_uint32(&buf[0x144]); 
+        status->lens_max_aperture.denom = get_uint32(&buf[0x148]); 
+        status->lens_min_aperture.nom = get_uint32(&buf[0x13c]);
+        status->lens_min_aperture.denom = get_uint32(&buf[0x140]);
         status->set_aperture.nom = get_uint32(&buf[0x34]);
         status->set_aperture.denom = get_uint32(&buf[0x38]);
         status->set_shutter_speed.nom = get_uint32(&buf[0x2c]);

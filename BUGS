@@ -13,5 +13,3 @@ Known bugs of pkTriggerCord:
   Changing shutter speed to 1/6000 is not working. It changes to 1/8 
   instead.
 
-  The error 'Gtk-CRITICAL **: gtk_range_set_range: assertion `min < max' failed' appears
-  about every second when a K200d is connected
