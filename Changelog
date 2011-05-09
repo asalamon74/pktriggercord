@@ -1,4 +1,4 @@
-version 0.71.03
+version 0.72.00 ( 2011-05-09 )
 	Support for K200D added by Jens Dreyer <jens.dreyer@udo.edu>
 	Better formatting of status info in command line interface
 	New command line argument: --exposure_compensation
