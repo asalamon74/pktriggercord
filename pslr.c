@@ -500,6 +500,15 @@ int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format) {
     return ipslr_handle_command_x18( p, true, 0x1f, 2, 1, format, 0);
 }
 
+int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    if (color_space < 0 || color_space > PSLR_COLOR_SPACE_MAX) {
+        return PSLR_PARAM;
+    }
+    return ipslr_handle_command_x18( p, true, 0x23, 1, color_space, 0, 0);
+}
+
+
 int pslr_delete_buffer(pslr_handle_t h, int bufno) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     if (bufno < 0 || bufno > 9)
@@ -958,6 +967,7 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         status->flash_mode = get_uint32(&buf[0x28]);
         status->flash_exposure_compensation = get_int32(&buf[0x2C]);
         status->manual_mode_ev = get_int32(&buf[0x15C]);
+        status->color_space = get_uint32(&buf[0xA0]);
 	// 0x58 bracket picture count ?
 
         return PSLR_OK;

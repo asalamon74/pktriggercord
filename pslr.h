@@ -110,6 +110,13 @@ typedef enum {
 } pslr_jpeg_image_mode_t;
 
 typedef enum {
+    PSLR_COLOR_SPACE_SRGB,
+    PSLR_COLOR_SPACE_ADOBERGB,
+    PSLR_COLOR_SPACE_MAX
+} pslr_color_space_t;
+
+
+typedef enum {
     PSLR_RAW_FORMAT_PEF,
     PSLR_RAW_FORMAT_DNG,
     PSLR_RAW_FORMAT_MAX
@@ -298,6 +305,7 @@ typedef struct {
     uint32_t flash_mode;
     int32_t flash_exposure_compensation; // 1/256
     int32_t manual_mode_ev; // 1/10
+    uint32_t color_space;
 } pslr_status;
 
 typedef struct {
