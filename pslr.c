@@ -83,6 +83,7 @@ typedef struct {
     const char *name;
     int buffer_size;
     int jpeg_stars; // 3 or 4
+    int jpeg_resolutions[MAX_RESOLUTION_SIZE];
     int jpeg_property_levels; // 7 or 9
     int fastest_shutter_speed;
 } ipslr_model_info_t;
@@ -146,18 +147,18 @@ user_file_format_t file_formats[3] = {
 };
 
 static ipslr_model_info_t camera_models[] = {
-    { PSLR_ID1_K20D, PSLR_ID2_K20D, "K20D", 412, 4, 7, 4000},
-    { PSLR_ID1_K10D, PSLR_ID2_K10D, "K10D", 392, 3, 7, 4000 },
-    { PSLR_ID1_K110D, PSLR_ID2_K110D, "K110D", 0, 0, 0, 0},
-    { PSLR_ID1_K100D, PSLR_ID2_K100D, "K100D", 0, 0, 0, 0},
-    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 0, 0, 0, 0},
-    { PSLR_ID1_IST_DL, PSLR_ID2_IST_DL, "*ist DL", 0, 0, 0, 0},
-    { PSLR_ID1_IST_DS, PSLR_ID2_IST_DS, "*ist DS", 0x108, 3, 7, 4000},
-    { PSLR_ID1_IST_D, PSLR_ID2_IST_D, "*ist D", 0, 0, 0, 0},
-    { PSLR_ID1_GX10, PSLR_ID2_GX10, "GX10", 392, 3, 7, 4000},
-    { PSLR_ID1_GX20, PSLR_ID2_GX20, "GX20", 412, 4, 7, 4000},
-    { PSLR_ID1_KX, PSLR_ID2_KX, "K-x", 436, 3, 9, 6000},
-    { PSLR_ID1_K200D, PSLR_ID2_K200D, "K200D", 408, 3, 9, 4000}, 
+    { PSLR_ID1_K20D,    PSLR_ID2_K20D,    "K20D",     412, 4, {14, 10, 6, 2}, 7, 4000},
+    { PSLR_ID1_K10D,    PSLR_ID2_K10D,    "K10D",     392, 3, {10, 6, 2},     7, 4000},
+    { PSLR_ID1_K110D,   PSLR_ID2_K110D,   "K110D",    0,   0, {}, 0, 0},
+    { PSLR_ID1_K100D,   PSLR_ID2_K100D,   "K100D",    0,   0, {}, 0, 0},
+    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 0,   0, {}, 0, 0},
+    { PSLR_ID1_IST_DL,  PSLR_ID2_IST_DL,  "*ist DL",  0,   0, {}, 0, 0},
+    { PSLR_ID1_IST_DS,  PSLR_ID2_IST_DS,  "*ist DS",  264, 3, {6, 4, 2},      7, 4000},
+    { PSLR_ID1_IST_D,   PSLR_ID2_IST_D,   "*ist D",   0,   0, {}, 0, 0},
+    { PSLR_ID1_GX10,    PSLR_ID2_GX10,    "GX10",     392, 3, {10, 6, 2},     7, 4000},
+    { PSLR_ID1_GX20,    PSLR_ID2_GX20,    "GX20",     412, 4, {14, 10, 6, 2}, 7, 4000},
+    { PSLR_ID1_KX,      PSLR_ID2_KX,      "K-x",      436, 3, {12, 10, 6, 2}, 9, 6000},
+    { PSLR_ID1_K200D,   PSLR_ID2_K200D,   "K200D",    408, 3, {10, 6, 2},     9, 4000}, 
 
 };
 
@@ -426,17 +427,26 @@ int pslr_set_jpeg_quality(pslr_handle_t h, pslr_jpeg_quality_t quality) {
     return ipslr_handle_command_x18( p, true, 0x13, 2, 1, hwqual, 0);
 }
 
-int pslr_set_jpeg_resolution(pslr_handle_t h, pslr_jpeg_resolution_t resolution) {
-    int hwres;
+int _get_user_jpeg_resolution( ipslr_model_info_t *model, int hwres ) {
+    return model->jpeg_resolutions[hwres];
+}
+
+int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (resolution >= PSLR_JPEG_RESOLUTION_MAX) {
-        return PSLR_PARAM;
+    return _get_user_jpeg_resolution( p->model, hwres );
+}
+
+int _get_hw_jpeg_resolution( ipslr_model_info_t *model, int megapixel) {
+    int resindex = 0;
+    while( resindex < MAX_RESOLUTION_SIZE && model->jpeg_resolutions[resindex] > megapixel ) {
+	++resindex;
     }
-    if (is_k20d(p) || is_kx(p)) {
-        hwres = resolution;
-    } else {
-        hwres = resolution - 1;
-    }
+    return resindex < MAX_RESOLUTION_SIZE ? resindex : MAX_RESOLUTION_SIZE-1;
+}
+
+int pslr_set_jpeg_resolution(pslr_handle_t h, int megapixel) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    int hwres = _get_hw_jpeg_resolution( p->model, megapixel );
     return ipslr_handle_command_x18( p, true, 0x14, 2, 1, hwres, 0);
 }
 
@@ -685,6 +695,11 @@ int pslr_get_model_jpeg_property_levels(pslr_handle_t h) {
     return p->model->jpeg_property_levels;
 }
 
+int *pslr_get_model_jpeg_resolutions(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->jpeg_resolutions;
+}
+
 int pslr_get_model_fastest_shutter_speed(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->fastest_shutter_speed;
@@ -808,7 +823,7 @@ static int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n
         status->set_shutter_speed.nom = get_uint32(&buf[0x2c]);
         status->set_shutter_speed.denom = get_uint32(&buf[0x30]);
         status->fixed_iso = get_uint32(&buf[0x60]);
-        status->jpeg_resolution = 1 + get_uint32(&buf[0x7c]);
+        status->jpeg_resolution = get_uint32(&buf[0x7c]);
         status->jpeg_contrast = get_uint32(&buf[0x94]);
         status->jpeg_sharpness = get_uint32(&buf[0x90]);
         status->jpeg_saturation = get_uint32(&buf[0x8c]);
@@ -998,7 +1013,7 @@ static int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int 
         status->set_shutter_speed.nom = get_uint32(&buf[0x2c]);
         status->set_shutter_speed.denom = get_uint32(&buf[0x30]);
         status->fixed_iso = get_uint32(&buf[0x60]);
-        status->jpeg_resolution = 1 + get_uint32(&buf[0x7c]);
+        status->jpeg_resolution = get_uint32(&buf[0x7c]);
         status->jpeg_contrast = get_uint32(&buf[0x94]);
 	status->jpeg_hue = get_uint32(&buf[0xf4]);
         status->jpeg_sharpness = get_uint32(&buf[0x90]);
@@ -1164,19 +1179,9 @@ static int ipslr_read_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buft
 static int ipslr_select_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buftype, int bufres) {
     int r;
     DPRINT("Select buffer %d,%d,%d,0\n", bufno, buftype, bufres);
-    if (is_k20d(p)) {
+    if (is_k20d(p) || is_kx(p) || is_k10d(p) || is_k200d(p)) {
         CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres, 0));
         CHECK(command(p->fd, 0x02, 0x01, 0x10));
-    } else if (is_kx(p)) {
-        CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres, 0));
-        CHECK(command(p->fd, 0x02, 0x01, 0x10));
-    } else if (is_k10d(p)) {
-        CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres - 1, 0));
-        CHECK(command(p->fd, 0x02, 0x01, 0x10));
-    } else if (is_k200d(p)) {
-        CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres - 1, 0));
-        CHECK(command(p->fd, 0x02, 0x01, 0x10));
-
     } else {
         /* older cameras: 3-arg select buffer */
         CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres));
