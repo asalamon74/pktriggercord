@@ -414,7 +414,7 @@ int main(int argc, char **argv) {
 #ifdef DEBUG
 // 0x09, 0x1d, 0x1e, 0x08
 // 0x05
-//    pslr_test( camhandle, true, 0x04, 1, 7,0,0);
+//    pslr_test( camhandle, true, 0x23, 1, 1,0,0);
 #endif
 
     if( status_hex_info || status_info ) {
@@ -528,6 +528,7 @@ void print_status_info( pslr_status status ) {
     printf("jpeg hue: %d\n", status.jpeg_hue);
     printf("zoom: %s mm\n", format_rational(status.zoom, "%.2f"));
     printf("focus: %d\n", status.focus);
+    printf("color space: %d\n", status.color_space);
     printf("image format: %d\n", status.image_format);
     printf("raw format: %d\n", status.raw_format);
     printf("light meter flags: %d\n", status.light_meter_flags);
