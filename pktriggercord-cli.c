@@ -318,7 +318,9 @@ int main(int argc, char **argv) {
         exit(-1);
     }
 
-    while (!(camhandle = pslr_init())) sleep(1);
+    while (!(camhandle = pslr_init())) {
+	usleep(1000000);
+    }
 
     if (camhandle) pslr_connect(camhandle);
 
@@ -429,17 +431,17 @@ int main(int argc, char **argv) {
 
     time_t prev_time=0;
     time_t current_time=0;
-    long long int waitsec=0;
+    unsigned int waitsec=0;
     user_file_format_t ufft = *get_file_format_t(uff);
     for (frameNo = 0; frameNo < frames; ++frameNo) {
         fd = open_file(output_file, frameNo, ufft);
 	prev_time=current_time;
 	current_time = time(NULL);
 	if( frameNo > 0 ) {
-	    waitsec = delay-((long long int)current_time-(long long int)prev_time);
+	    waitsec = (unsigned int)(delay-((long long int)current_time-(long long int)prev_time));
 	    if( waitsec > 0 ) {
-		printf("Waiting for %lld sec\n", waitsec);	   
-		sleep( waitsec );
+		printf("Waiting for %d sec\n", waitsec);	   
+		usleep( 1000000 * waitsec );
 	    }
 	}
 	current_time = time(NULL);
