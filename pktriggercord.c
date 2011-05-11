@@ -403,6 +403,15 @@ int camera_specific_init() {
     //printf("range 0-%f\n", (float) sizeof(shutter_tbl)/sizeof(shutter_tbl[0]));
     gtk_range_set_range(GTK_RANGE(pw), 0.0, max_valid_shutter_speed_index);
     gtk_range_set_increments(GTK_RANGE(pw), 1.0, 1.0);
+    
+    int *resolutions = pslr_get_model_jpeg_resolutions( camhandle );
+    int resindex=0;
+    gchar buf[256];
+    while( resindex < MAX_RESOLUTION_SIZE ) {
+	sprintf( buf, "%dM", resolutions[resindex]); 
+	gtk_combo_box_insert_text( GTK_COMBO_BOX(glade_xml_get_widget(xml, "jpeg_resolution_combo")), resindex, buf);
+	++resindex;
+    }
 }   
 
 static void init_controls(pslr_status *st_new, pslr_status *st_old)
@@ -1689,16 +1698,16 @@ static void ec_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
 
 static void jpeg_resolution_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 {
-  pslr_jpeg_resolution_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
     int ret;
-    DPRINT("jpeg res active->%d\n", val);
-    assert(val >= 0);
-    assert(val < PSLR_JPEG_RESOLUTION_MAX);
+    char *val = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+    int megapixel = atoi( val );
+    DPRINT("jpeg res active->%d\n", megapixel);
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
-    if (status_new == NULL || status_new->jpeg_resolution != val) {
-        ret = pslr_set_jpeg_resolution(camhandle, val);
-        if (ret != PSLR_OK)
+    if (status_new == NULL || pslr_get_jpeg_resolution(camhandle, status_new->jpeg_resolution) != megapixel) {
+        ret = pslr_set_jpeg_resolution(camhandle, megapixel);
+        if (ret != PSLR_OK) {
             DPRINT("Set JPEG resolution failed.\n");
+        }
     }
 }
 
@@ -1832,12 +1841,6 @@ static void save_buffer(int bufno, const char *filename)
     resolution = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
     pw = glade_xml_get_widget(xml, "file_format_combo");
     filefmt = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
-
-    if (filefmt != USER_FILE_FORMAT_JPEG)
-    {
-	// FIXME K20D,K-x is 14MP
-        resolution = PSLR_JPEG_RESOLUTION_10M;
-    }
 
     if (filefmt == USER_FILE_FORMAT_PEF) {
       imagetype = PSLR_BUF_PEF;

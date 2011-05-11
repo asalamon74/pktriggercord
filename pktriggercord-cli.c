@@ -62,7 +62,7 @@ static struct option const longopts[] ={
 };
 
 int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, pslr_jpeg_quality_t);
-void print_status_info(pslr_status status);
+void print_status_info(pslr_handle_t h, pslr_status status);
 void usage(char*);
 void version(char*);
 void CLOSE(pslr_handle_t, int);
@@ -90,14 +90,14 @@ int main(int argc, char **argv) {
     char *output_file = NULL;
     const char *MODEL;
     char *MODESTRING = NULL;
-    char *resolution = NULL;
+    int resolution = 0;
     pslr_jpeg_quality_t quality = -1;
     int optc, fd, i;
     pslr_handle_t camhandle;
     pslr_status status;
     user_file_format uff = USER_FILE_FORMAT_DNG;
     pslr_exposure_mode_t EM = PSLR_EXPOSURE_MODE_MAX;
-    pslr_jpeg_resolution_t R = PSLR_JPEG_RESOLUTION_MAX;
+//    pslr_jpeg_resolution_t R = PSLR_JPEG_RESOLUTION_MAX;
     pslr_rational_t aperture = {0, 0};
     pslr_rational_t shutter_speed = {0, 0};
     uint32_t iso = 0;
@@ -197,9 +197,8 @@ int main(int argc, char **argv) {
             case 'r':
 
                 DPRINT("resolution=%s\n", optarg);
-                resolution = optarg;
+                resolution = atoi(optarg);
                 break;
-                /* Valid resolution values depend on camera model, so we'll check it later */
 
                 /*********************************************/
             case 'q':
@@ -332,16 +331,7 @@ int main(int argc, char **argv) {
     pslr_set_image_format(camhandle, PSLR_IMAGE_FORMAT_RAW);
 
     if (resolution) {
-        if (!strcmp(resolution, "14")) R = PSLR_JPEG_RESOLUTION_14M;
-        else if (!strcmp(resolution, "10")) R = PSLR_JPEG_RESOLUTION_10M;
-        else if (!strcmp(resolution, "6")) R = PSLR_JPEG_RESOLUTION_6M;
-        else if (!strcmp(resolution, "2")) R = PSLR_JPEG_RESOLUTION_2M;
-
-        if (R == PSLR_JPEG_RESOLUTION_MAX || (!IS_K20D && R == PSLR_JPEG_RESOLUTION_14M)) {
-            if (IS_K20D) fprintf(stderr, "%s: Valid resolution values are 14, 10, 6 and 2.\n", argv[0]);
-            else fprintf(stderr, "%s: Valid resolution values are 10, 6 and 2.\n", argv[0]);
-        }
-        pslr_set_jpeg_resolution(camhandle, R);
+        pslr_set_jpeg_resolution(camhandle, resolution);
     }
 
     if (quality>-1) {
@@ -425,7 +415,7 @@ int main(int argc, char **argv) {
 	    hexdump( status_buffer, bufsize );
         }
 	pslr_get_status(camhandle, &status);
-	print_status_info( status );
+	print_status_info( camhandle, status );
 	exit(0);
     }
 
@@ -509,7 +499,7 @@ char *format_rational( pslr_rational_t rational, char * fmt ) {
     return ret;
 }
 
-void print_status_info( pslr_status status ) {    
+void print_status_info( pslr_handle_t h, pslr_status status ) {    
     printf("\ncurrent iso: %d\n", status.current_iso);
     printf("current shutter speed: %d/%d\n", status.current_shutter_speed.nom, status.current_shutter_speed.denom);
     printf("current aperture: %s\n", format_rational( status.current_aperture, "%.1f"));
@@ -520,7 +510,7 @@ void print_status_info( pslr_status status ) {
     printf("fixed iso: %d\n", status.fixed_iso);
     printf("auto iso: %d-%d\n", status.auto_iso_min,status.auto_iso_max);
     printf("jpeg quality: %d\n", status.jpeg_quality);
-    printf("jpeg resolution: %d\n", status.jpeg_resolution);
+    printf("jpeg resolution: %dM\n", pslr_get_jpeg_resolution( h, status.jpeg_resolution));
     printf("jpeg image mode: %d\n", status.jpeg_image_mode);
     printf("jpeg saturation: %d\n", status.jpeg_saturation);
     printf("jpeg contrast: %d\n", status.jpeg_contrast);
@@ -562,7 +552,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -a, --aperture=APERTURE\n\
   -t, --shutter_speed=SHUTTER SPEED	values can be given in rational form (eg. 1/90)\n\
 					or decimal form (eg. 0.8)\n\
-  -r, --resolution=RESOLUTION		valid values are 2, 6 and 10\n\
+  -r, --resolution=RESOLUTION		resolution in megapixels\n\
   -q, --quality=QUALITY			valid values are 1, 2 and 3\n\
   -f, --auto_focus			autofocus\n\
   -s, --status			        print status info\n\

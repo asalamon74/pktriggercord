@@ -33,6 +33,8 @@
 
 #include "pslr_scsi.h"
 
+#define MAX_RESOLUTION_SIZE 4
+
 #define PSLR_LIGHT_METER_AE_LOCK 0x8
 
 #define PSLR_AF_POINT_TOP_LEFT   0x1
@@ -90,14 +92,6 @@ typedef enum {
     PSLR_JPEG_QUALITY_1,
     PSLR_JPEG_QUALITY_MAX
 } pslr_jpeg_quality_t;
-
-typedef enum {
-    PSLR_JPEG_RESOLUTION_14M, // K20D,K-x (12M) only
-    PSLR_JPEG_RESOLUTION_10M,
-    PSLR_JPEG_RESOLUTION_6M,
-    PSLR_JPEG_RESOLUTION_2M,
-    PSLR_JPEG_RESOLUTION_MAX
-} pslr_jpeg_resolution_t;
 
 typedef enum {
     PSLR_JPEG_IMAGE_MODE_NATURAL,
@@ -347,7 +341,7 @@ int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode);
 int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode);
 
 int pslr_set_jpeg_quality(pslr_handle_t h, pslr_jpeg_quality_t quality);
-int pslr_set_jpeg_resolution(pslr_handle_t h, pslr_jpeg_resolution_t resolution);
+int pslr_set_jpeg_resolution(pslr_handle_t h, int megapixel);
 int pslr_set_jpeg_image_mode(pslr_handle_t h, pslr_jpeg_image_mode_t image_mode);
 
 int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness);
@@ -375,8 +369,10 @@ int pslr_get_model_jpeg_stars(pslr_handle_t h);
 int pslr_get_model_jpeg_property_levels(pslr_handle_t h);
 int pslr_get_model_buffer_size(pslr_handle_t h);
 int pslr_get_model_fastest_shutter_speed(pslr_handle_t h);
+int *pslr_get_model_jpeg_resolutions(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
+int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
 
 void hexdump(uint8_t *buf, uint32_t bufLen);
 
