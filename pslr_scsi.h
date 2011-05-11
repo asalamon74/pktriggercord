@@ -27,10 +27,8 @@
 #define PSLR_SCSI_H
 
 #include <stdint.h>
-#include <sys/ioctl.h>
 #include <string.h>
 #include <stdio.h>
-#include <linux/../scsi/sg.h>
 
 #ifdef DEBUG
 #define DPRINT(x...) printf(x)
@@ -54,7 +52,5 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
 
 int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
                uint8_t *buf, uint32_t bufLen);
-
-void print_scsi_error(sg_io_hdr_t *pIo, uint8_t *sense_buffer);
 
 #endif
