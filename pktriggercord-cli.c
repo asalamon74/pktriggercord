@@ -574,7 +574,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 }
 
 void version(char *name) {
-    printf("\n%s 0.72.00\n\n\
+    printf("\n%s %s\n\n\
 Copyright (C) 2011 Andras Salamon\n\
 License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
@@ -582,6 +582,6 @@ There is NO WARRANTY, to the extent permitted by law.\n\
 \n\
 Based on:\n\
 pslr-shoot (C) 2009 Ramiro Barreiro\n\
-PK-Remote (C) 2008 Pontus Lidman \n\n", name);
+PK-Remote (C) 2008 Pontus Lidman \n\n", name, VERSION);
 }
 
