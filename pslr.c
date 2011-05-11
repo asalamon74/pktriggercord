@@ -38,8 +38,6 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include <sys/ioctl.h>
-#include <linux/../scsi/sg.h>
 #include <stdarg.h>
 #include <dirent.h>
 
