@@ -14,6 +14,8 @@ Source: http://sourceforge.net/projects/pktriggercord/files/%ver/pkTriggerCord-%
 URL: http://pktriggercord.sourceforge.net
 BuildRoot: /var/tmp/%{name}-root
 BuildArch: i386
+BuildRequires: libglade2-devel
+BuildRequires: gtk2-devel
 
 %description
 pkTriggerCord is a remote control program for Pentax DSLR cameras.
