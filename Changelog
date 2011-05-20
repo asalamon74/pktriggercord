@@ -3,6 +3,7 @@ version 0.72.01
 	Reading color space (K-x only)
 	Writing color space
 	Handling camera specific jpeg resolutions
+	Code cleanup (eliminating all is_* functions)
 
 version 0.72.00 ( 2011-05-09 )
 	Support for K200D added by Jens Dreyer <jens.dreyer@udo.edu>
