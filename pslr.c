@@ -77,18 +77,24 @@ typedef struct {
     uint32_t length;
 } ipslr_segment_t;
 
+typedef struct ipslr_handle ipslr_handle_t;
+
+typedef int (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status, int n);
+
 typedef struct {
     uint32_t id1;
     uint32_t id2;
     const char *name;
+    bool old_scsi_command; // 0 for *ist cameras, 1 for the newer cameras
     int buffer_size;
     int jpeg_stars; // 3 or 4
     int jpeg_resolutions[MAX_RESOLUTION_SIZE];
     int jpeg_property_levels; // 7 or 9
     int fastest_shutter_speed;
+    ipslr_status_parse_t parser_function;
 } ipslr_model_info_t;
 
-typedef struct {
+struct ipslr_handle {
     int fd;
     pslr_status status;
     uint32_t id1;
@@ -99,7 +105,8 @@ typedef struct {
     uint32_t segment_count;
     uint32_t offset;
     uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
-} ipslr_handle_t;
+};
+
 
 ipslr_handle_t pslr;
 
@@ -131,13 +138,6 @@ void hexdump(uint8_t *buf, uint32_t bufLen);
 static uint32_t get_uint32(uint8_t *buf);
 static int32_t get_int32(uint8_t *buf);
 
-static bool is_k10d(ipslr_handle_t *p);
-static bool is_k20d(ipslr_handle_t *p);
-static bool is_istds(ipslr_handle_t *p);
-static bool is_kx(ipslr_handle_t *p);
-static bool is_k200d(ipslr_handle_t *p);
-
-
 static pslr_progress_callback_t progress_callback = NULL;
 
 user_file_format_t file_formats[3] = {
@@ -146,19 +146,25 @@ user_file_format_t file_formats[3] = {
     { USER_FILE_FORMAT_JPEG, "JPEG", "jpg"},
 };
 
+int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n);
+int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n);
+int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n);
+int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n);
+int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n);
+
 static ipslr_model_info_t camera_models[] = {
-    { PSLR_ID1_K20D,    PSLR_ID2_K20D,    "K20D",     412, 4, {14, 10, 6, 2}, 7, 4000},
-    { PSLR_ID1_K10D,    PSLR_ID2_K10D,    "K10D",     392, 3, {10, 6, 2},     7, 4000},
-    { PSLR_ID1_K110D,   PSLR_ID2_K110D,   "K110D",    0,   0, {}, 0, 0},
-    { PSLR_ID1_K100D,   PSLR_ID2_K100D,   "K100D",    0,   0, {}, 0, 0},
-    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 0,   0, {}, 0, 0},
-    { PSLR_ID1_IST_DL,  PSLR_ID2_IST_DL,  "*ist DL",  0,   0, {}, 0, 0},
-    { PSLR_ID1_IST_DS,  PSLR_ID2_IST_DS,  "*ist DS",  264, 3, {6, 4, 2},      7, 4000},
-    { PSLR_ID1_IST_D,   PSLR_ID2_IST_D,   "*ist D",   0,   0, {}, 0, 0},
-    { PSLR_ID1_GX10,    PSLR_ID2_GX10,    "GX10",     392, 3, {10, 6, 2},     7, 4000},
-    { PSLR_ID1_GX20,    PSLR_ID2_GX20,    "GX20",     412, 4, {14, 10, 6, 2}, 7, 4000},
-    { PSLR_ID1_KX,      PSLR_ID2_KX,      "K-x",      436, 3, {12, 10, 6, 2}, 9, 6000},
-    { PSLR_ID1_K200D,   PSLR_ID2_K200D,   "K200D",    408, 3, {10, 6, 2},     9, 4000}, 
+    { PSLR_ID1_K20D,    PSLR_ID2_K20D,    "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, ipslr_status_parse_k20d},
+    { PSLR_ID1_K10D,    PSLR_ID2_K10D,    "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, ipslr_status_parse_k10d},
+    { PSLR_ID1_K110D,   PSLR_ID2_K110D,   "K110D",    0, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_K100D,   PSLR_ID2_K100D,   "K100D",    0, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 1, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_IST_DL,  PSLR_ID2_IST_DL,  "*ist DL",  1, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_IST_DS,  PSLR_ID2_IST_DS,  "*ist DS",  1, 264, 3, {6, 4, 2},      7, 4000, ipslr_status_parse_istds},
+    { PSLR_ID1_IST_D,   PSLR_ID2_IST_D,   "*ist D",   1, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_GX10,    PSLR_ID2_GX10,    "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, ipslr_status_parse_k10d},
+    { PSLR_ID1_GX20,    PSLR_ID2_GX20,    "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, ipslr_status_parse_k20d},
+    { PSLR_ID1_KX,      PSLR_ID2_KX,      "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, ipslr_status_parse_kx},
+    { PSLR_ID1_K200D,   PSLR_ID2_K200D,   "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, ipslr_status_parse_k200d}, 
 
 };
 
@@ -276,12 +282,12 @@ int pslr_connect(pslr_handle_t h) {
     CHECK(ipslr_identify(p));
     CHECK(ipslr_status_full(p, &p->status));
     DPRINT("init bufmask=0x%x\n", p->status.bufmask);
-    if (is_k10d(p) || is_k20d(p) || is_kx(p) || is_k200d(p))
-      //if (is_k10d(p) || is_k20d(p) || is_kx(p))
+    if( !p->model->old_scsi_command ) {
         CHECK(ipslr_cmd_00_09(p, 2));
+    }
     CHECK(ipslr_status_full(p, &p->status));
     CHECK(ipslr_cmd_10_0a(p, 1));
-    if (is_istds(p)) {
+    if( p->model->old_scsi_command ) {
         CHECK(ipslr_cmd_00_05(p));
     }
 
@@ -803,7 +809,7 @@ static void ipslr_status_diff(uint8_t *buf) {
 }
 #endif
 
-static int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n) {
         /* K10D status block */
     uint8_t *buf = p->status_buffer;
         CHECK(read_result(p->fd, buf, n));
@@ -847,7 +853,7 @@ static int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n
         return PSLR_OK;
 }
 
-static int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n) {
 
     uint8_t *buf = p->status_buffer;
         CHECK(read_result(p->fd, buf, n));
@@ -901,7 +907,7 @@ static int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n
 
 }
 
-static int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n) {
 
     uint8_t *buf = p->status_buffer;
         /* *ist DS status block */
@@ -919,7 +925,7 @@ static int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int 
         return PSLR_OK;
 }
 
-static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
 
     uint8_t *buf = p->status_buffer;
         /* K-x status block */
@@ -988,7 +994,7 @@ static int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) 
         return PSLR_OK;
 }
 
-static int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n) {
         
         
     uint8_t *buf = p->status_buffer;
@@ -1056,17 +1062,8 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     }
 
     int ret;
-    if (p->model && is_k10d(p)) {
-	ret =  ipslr_status_parse_k10d(p, status, n);
-    } else if (p->model && is_k20d(p)) {
-	ret =  ipslr_status_parse_k20d(p, status, n);
-    } else if (p->model && is_istds(p)) {
-	ret =  ipslr_status_parse_istds(p, status, n);
-    } else if (p->model && is_kx(p)) {
-	ret =  ipslr_status_parse_kx(p, status, n);
-    } else if (p->model && is_k200d(p)) {
-	ret =  ipslr_status_parse_k200d(p, status, n);
-
+    if( p->model && p->model->parser_function ) {
+	ret = (*p->model->parser_function)(p, status, n);
     } else {
         /* Unknown camera */
 	ret = PSLR_OK;
@@ -1179,7 +1176,7 @@ static int ipslr_read_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buft
 static int ipslr_select_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buftype, int bufres) {
     int r;
     DPRINT("Select buffer %d,%d,%d,0\n", bufno, buftype, bufres);
-    if (is_k20d(p) || is_kx(p) || is_k10d(p) || is_k200d(p)) {
+    if( !p->model->old_scsi_command ) {
         CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres, 0));
         CHECK(command(p->fd, 0x02, 0x01, 0x10));
     } else {
@@ -1188,8 +1185,9 @@ static int ipslr_select_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type bu
         CHECK(command(p->fd, 0x02, 0x01, 0x0c));
     }
     r = get_status(p->fd);
-    if (r != 0)
+    if (r != 0) {
         return PSLR_COMMAND_ERROR;
+    }
     return PSLR_OK;
 }
 
@@ -1293,7 +1291,7 @@ static int ipslr_write_args(ipslr_handle_t *p, int n, ...) {
     uint32_t data;
 
     va_start(ap, n);
-    if (is_k10d(p) || is_k20d(p) || is_kx(p) || is_k200d(p)) {
+    if( p->model && !p->model->old_scsi_command ) {
         /* All at once */
         for (i = 0; i < n; i++) {
             data = va_arg(ap, uint32_t);
@@ -1304,8 +1302,9 @@ static int ipslr_write_args(ipslr_handle_t *p, int n, ...) {
         }
         cmd[4] = 4 * n;
         res = scsi_write(fd, cmd, sizeof (cmd), buf, 4 * n);
-        if (res != PSLR_OK)
+        if (res != PSLR_OK) {
             return res;
+	}
     } else {
         /* Arguments one by one */
         for (i = 0; i < n; i++) {
@@ -1317,8 +1316,9 @@ static int ipslr_write_args(ipslr_handle_t *p, int n, ...) {
             cmd[4] = 4;
             cmd[2] = i * 4;
             res = scsi_write(fd, cmd, sizeof (cmd), buf, 4);
-            if (res != PSLR_OK)
+            if (res != PSLR_OK) {
                 return res;
+	    }
         }
     }
     va_end(ap);
@@ -1434,50 +1434,4 @@ static int32_t get_int32(uint8_t *buf) {
     int32_t res;
     res = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
     return res;
-}
-
-
-/* ----------------------------------------------------------------------- */
-
-static bool is_k10d(ipslr_handle_t *p) {
-    if (p->model && p->model->id1 == PSLR_ID1_K10D
-            && p->model->id2 == PSLR_ID2_K10D)
-        return true;
-
-    if (p->model && p->model->id1 == PSLR_ID1_GX10
-            && p->model->id2 == PSLR_ID2_GX10)
-        return true;
-
-    return false;
-}
-
-static bool is_k20d(ipslr_handle_t *p) {
-    if (p->model && p->model->id1 == PSLR_ID1_K20D
-            && p->model->id2 == PSLR_ID2_K20D)
-        return true;
-    if (p->model && p->model->id1 == PSLR_ID1_GX20
-            && p->model->id2 == PSLR_ID2_GX20)
-        return true;
-    return false;
-}
-
-static bool is_istds(ipslr_handle_t *p) {
-    if (p->model && p->model->id1 == PSLR_ID1_IST_DS
-            && p->model->id2 == PSLR_ID2_IST_DS)
-        return true;
-    return false;
-}
-
-static bool is_kx(ipslr_handle_t *p) {
-    if (p->model && p->model->id1 == PSLR_ID1_KX
-            && p->model->id2 == PSLR_ID2_KX)
-        return true;
-    return false;
-}
-
-static bool is_k200d(ipslr_handle_t *p) {
-    if (p->model && p->model->id1 == PSLR_ID1_K200D
-            && p->model->id2 == PSLR_ID2_K200D)
-        return true;
-    return false;
 }
