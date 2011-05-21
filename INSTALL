@@ -1,4 +1,4 @@
-pkTriggerCord installation
+pkTriggerCord installation (you need root privileges for 'make install')
 
 make clean
 make
