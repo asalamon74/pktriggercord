@@ -1,5 +1,5 @@
 %define name      pktriggercord	
-%define ver       0.72.01
+%define ver       0.72.02
 %define rel       1
 %define prefix    /usr
 %define debug_package %{nil}
@@ -25,7 +25,7 @@ pkTriggerCord is a remote control program for Pentax DSLR cameras.
 
 %build
 make clean
-make
+make PREFIX=%{prefix}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -42,6 +42,6 @@ rm -rf $RPM_BUILD_ROOT
 %prefix/../etc/*
 
 %changelog
-* Sat May 11 2011 Andras Salamon <andras.salamon@melda.info>
-- built from pkTriggerCord 0.72.01
+* Wed May 25 2011 Andras Salamon <andras.salamon@melda.info>
+- built from pkTriggerCord 0.72.02
 
