@@ -1,7 +1,7 @@
 PREFIX ?= /usr/local
 CFLAGS ?= -O3 -g -Wall
 
-VERSION=0.72.02
+VERSION=0.72.03
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec
@@ -76,3 +76,10 @@ srcrpm: srczip
 rpm: srcrpm
 	rpmbuild -ba $(SPECFILE)
 	cp $(TOPDIR)/RPMS/i386/pktriggercord-$(VERSION)-1.i386.rpm .
+
+WINGCC=i586-pc-mingw32-gcc
+
+win: clean
+	$(WINGCC) $(CFLAGS) -c pslr_scsi.c
+	$(WINGCC) $(CFLAGS) -c pslr.c
+	$(WINGCC) $(CFLAGS) $(OBJS) -DVERSION='"$(VERSION)"' -o pktriggercord-cli.exe pktriggercord-cli.c

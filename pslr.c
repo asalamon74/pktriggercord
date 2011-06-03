@@ -100,7 +100,6 @@ struct ipslr_handle {
     uint32_t id1;
     uint32_t id2;
     ipslr_model_info_t *model;
-    char devname[256];
     ipslr_segment_t segments[MAX_SEGMENTS];
     uint32_t segment_count;
     uint32_t offset;
@@ -165,8 +164,10 @@ static ipslr_model_info_t camera_models[] = {
     { PSLR_ID1_GX20,    PSLR_ID2_GX20,    "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, ipslr_status_parse_k20d},
     { PSLR_ID1_KX,      PSLR_ID2_KX,      "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, ipslr_status_parse_kx},
     { PSLR_ID1_K200D,   PSLR_ID2_K200D,   "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, ipslr_status_parse_k200d}, 
-
 };
+
+char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
+char* valid_models[4] = {"DIGITAL_CAMERA", "DSC_K20D", "DSC_K-x", "DSC_K200D"};
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
     int i;    
@@ -206,71 +207,39 @@ static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t e
   return 0;
 }
 
-pslr_handle_t pslr_init() {
-    DIR *d;
-    char nmbuf[256];
-    char infobuf[64];
-    struct dirent *ent;
-    int fd;
-
-    memset(&pslr.devname, 0, sizeof (pslr.devname));
-
-    d = opendir("/sys/class/scsi_generic");
-
-    if (!d)
-        return NULL;
-
-    while (1) {
-        ent = readdir(d);
-        if (!ent)
-            break;
-        if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-            continue;
-        snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/vendor", ent->d_name);
-        fd = open(nmbuf, O_RDONLY);
-        if (fd == -1) {
-            continue;
-        }
-        read(fd, infobuf, sizeof (infobuf));
-        close(fd);
-
-        if ((strncmp(infobuf, "PENTAX", 6) != 0) && (strncmp(infobuf, "SAMSUNG", 7) != 0))
-
-            continue;
-
-        snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/model", ent->d_name);
-        fd = open(nmbuf, O_RDONLY);
-        if (fd == -1) {
-            continue;
-        }
-        read(fd, infobuf, sizeof (infobuf));
-        close(fd);
-        if (!(strncmp(infobuf, "DIGITAL_CAMERA", 14) == 0
-	      || strncmp(infobuf, "DSC_K20D", 8) == 0
-	      || strncmp(infobuf, "DSC_K-x", 7) == 0
-	      || strncmp(infobuf, "DSC_K200D", 9) == 0)) {
-            continue;
+int find_in_array( char** array, char* str ) {
+    int i;
+    for( i = 0; i<sizeof(array); ++i ) {
+	if( strncmp( array[i], str, sizeof(array[i]) ) == 0 ) {
+	    return i;
 	}
-
-        /* Found PENTAX DIGITAL_CAMERA */
-        snprintf(pslr.devname, sizeof (pslr.devname), "/dev/%s", ent->d_name);
-        pslr.devname[sizeof (pslr.devname) - 1] = '\0';
-
-        /* Only support first connected camera at this time. */
-        break;
-
     }
+    return -1;
+}
 
-    closedir(d);
-    if (pslr.devname[0] == '\0')
-        return NULL;
+pslr_handle_t pslr_init() {
+    int fd;
+    char vendorId[20];
+    char productId[20];
+    int driveNum;
+    char **drives;
 
-    pslr.fd = open(pslr.devname, O_RDWR);
-    if (pslr.fd == -1) {
-        return NULL;
+    drives = get_drives(&driveNum);
+    int i;
+    for( i=0; i<driveNum; ++i ) {
+	pslr_result result = get_drive_info( drives[i], &fd, vendorId, sizeof(vendorId), productId, sizeof(productId));
+
+	if( result == PSLR_OK && find_in_array( valid_vendors, vendorId) != -1 
+	    && find_in_array( valid_models, productId) != -1 ) {
+	    pslr.fd = fd;
+	    /* Only support first connected camera at this time. */
+	    return &pslr;	    
+	} else {
+	    close( fd );
+	    continue;
+	}
     }
-
-    return &pslr;
+    return NULL;
 }
 
 int pslr_connect(pslr_handle_t h) {
@@ -654,8 +623,8 @@ uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size) {
     if (blksz > BLKSZ)
         blksz = BLKSZ;
 
-    //printf("File offset %d segment: %d offset %d address 0x%x read size %d\n", p->offset, 
-    //       i, seg_offs, addr, blksz);
+    DPRINT("File offset %d segment: %d offset %d address 0x%x read size %d\n", p->offset, 
+           i, seg_offs, addr, blksz);
 
     ret = ipslr_download(p, addr, blksz, buf);
     if (ret != PSLR_OK)
@@ -1145,7 +1114,6 @@ static int ipslr_read_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buft
         i++;
     } while (i < 9 && info[i - 1].b != 2);
     num_info = i;
-    DPRINT("Got total %d info\n", num_info);
     buf = malloc(buf_total);
     if (!buf)
         return PSLR_NO_MEMORY;
@@ -1154,7 +1122,6 @@ static int ipslr_read_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buft
         bufaddr = info[i].addr;
         buflen = info[i].length;
         if (bufaddr && buflen) {
-            DPRINT("read %u bytes from 0x%x\n", buflen, bufaddr);
             result = ipslr_download(p, bufaddr, buflen, buf_ptr);
             if (result != PSLR_OK) {
                 free(buf);
@@ -1162,7 +1129,7 @@ static int ipslr_read_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buft
             }
             buf_ptr += buflen;
         } else {
-            DPRINT("empty segment\n");
+            printf("empty segment\n");
         }
     }
 
@@ -1228,10 +1195,11 @@ static int ipslr_download(ipslr_handle_t *p, uint32_t addr, uint32_t length, uin
 
     retry = 0;
     while (length > 0) {
-        if (length > BLKSZ)
+        if (length > BLKSZ) {
             block = BLKSZ;
-        else
+        } else {
             block = length;
+	}
 
         //DPRINT("Get 0x%x bytes from 0x%x\n", block, addr);
         CHECK(ipslr_write_args(p, 2, addr, block));
