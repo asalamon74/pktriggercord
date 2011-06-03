@@ -38,6 +38,12 @@
 
 #include "pslr.h"
 
+#ifdef WIN32
+#define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
+#else
+#define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC
+#endif
+
 extern char *optarg;
 extern int optind, opterr, optopt;
 
@@ -75,13 +81,20 @@ int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
         ofd = 1;
     } else {       
         snprintf(fileName, 256, "%s-%04d.%s", output_file, frameNo, ufft.extension);
-        ofd = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+        ofd = open(fileName, FILE_ACCESS, 0664);
         if (ofd == -1) {
             fprintf(stderr, "Could not open %s\n", output_file);
             return -1;
         }
     }
     return ofd;
+}
+
+void sleep_sec(int sec) {
+    int i;
+    for(i=0; i<sec; ++i) {
+	usleep(999999); // 1000000 is not working for Windows
+    }
 }
 
 int main(int argc, char **argv) {
@@ -318,7 +331,7 @@ int main(int argc, char **argv) {
     }
 
     while (!(camhandle = pslr_init())) {
-	usleep(1000000);
+	sleep_sec(1);
     }
 
     if (camhandle) pslr_connect(camhandle);
@@ -431,7 +444,7 @@ int main(int argc, char **argv) {
 	    waitsec = (unsigned int)(delay-((long long int)current_time-(long long int)prev_time));
 	    if( waitsec > 0 ) {
 		printf("Waiting for %d sec\n", waitsec);	   
-		usleep( 1000000 * waitsec );
+		sleep_sec( waitsec );
 	    }
 	}
 	current_time = time(NULL);
@@ -474,8 +487,9 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
     while (1) {
         uint32_t bytes;
         bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
-        if (bytes == 0)
+        if (bytes == 0) {
             break;
+	}
         write(fd, buf, bytes);
         current += bytes;
     }

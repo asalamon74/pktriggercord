@@ -53,4 +53,9 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
 int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
                uint8_t *buf, uint32_t bufLen);
 
+char **get_drives(int *driveNum);
+
+pslr_result get_drive_info(char* driveName, int* hDevice, 
+                            char* vendorId, int vendorIdSizeMax,
+                            char* productId, int productIdSizeMax);
 #endif
