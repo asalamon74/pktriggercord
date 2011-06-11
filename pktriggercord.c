@@ -28,6 +28,7 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <gio/gio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <unistd.h>
@@ -36,6 +37,12 @@
 #include <math.h>
 
 #include "pslr.h"
+
+#ifdef WIN32
+#define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
+#else
+#define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC
+#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -384,13 +391,13 @@ static int get_jpeg_property_shift() {
     return (pslr_get_model_jpeg_property_levels( camhandle )-1) / 2;
 }
 
-int camera_specific_init() {
+void camera_specific_init() {
     gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_hue_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_sharpness_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_saturation_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_contrast_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     // check valid shutter speeds for the camera
-    int max_valid_shutter_speed_index;
+    int max_valid_shutter_speed_index=0;
     int i;
     for(i=0;  i<sizeof(shutter_tbl)/sizeof(shutter_tbl[0]); i++) {
 	if( shutter_tbl[i].nom == 1 &&
@@ -990,31 +997,36 @@ static void update_main_area(int buffer)
         gtk_main_iteration();
 
     pError = NULL;
-    pLoader = gdk_pixbuf_loader_new_with_type("jpeg", &pError);
+//    pLoader = gdk_pixbuf_loader_new_with_type("jpeg", &pError);
 
+    DPRINT("Trying to read buffer\n");
     r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize);
     if (r != PSLR_OK) {
-        DPRINT("Could not get buffer data\n");
+        printf("Could not get buffer data\n");
         goto the_end;
     }
-    DPRINT("got %d bytes at %p\n", imageSize, pImage);
+/*    printf("got %d bytes at %p\n", imageSize, pImage);
     pError = NULL;
     ok = gdk_pixbuf_loader_write(pLoader, pImage, imageSize, &pError);
     if (!ok) {
-        DPRINT("Load from image failed: %s.\n", pError->message);
+        printf("Load from image failed: %s.\n", pError->message);
         free(pImage);
         goto the_end;
     }
-    pixBuf = gdk_pixbuf_loader_get_pixbuf(pLoader);
+*/
+
+    GInputStream *ginput = g_memory_input_stream_new_from_data (pImage, imageSize, NULL);
+    pixBuf = gdk_pixbuf_new_from_stream( ginput, NULL, &pError);
+//    pixBuf = gdk_pixbuf_loader_get_pixbuf(pLoader);
     if (!pixBuf) {
-        DPRINT("No pixbuf from loader.\n");
+        printf("No pixbuf from loader.\n");
         goto the_end;
     }
     g_object_ref(pixBuf);
     pError = NULL;
     ok = gdk_pixbuf_loader_close(pLoader, &pError);
     if (!ok) {
-        DPRINT("error closing loader: %s\n", pError->message);
+        printf("error closing loader: %s\n", pError->message);
         goto the_end;
     }
 
@@ -1047,24 +1059,21 @@ static void update_preview_area(int buffer)
 
     DPRINT("buffer %d has new contents\n", buffer);
     pError = NULL;
-    pLoader = gdk_pixbuf_loader_new_with_type("jpeg", &pError);
 
+//    pLoader = gdk_pixbuf_loader_new_with_type("jpeg", &pError);
+
+    DPRINT("Trying to get thumbnail\n");
     r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_THUMBNAIL, 4, &pImage, &imageSize);
     if (r != PSLR_OK) {
-        DPRINT("Could not get buffer data\n");
+        printf("Could not get buffer data\n");
         goto the_end;
     }
     DPRINT("got %d bytes at %p\n", imageSize, pImage);
-    pError = NULL;
-    ok = gdk_pixbuf_loader_write(pLoader, pImage, imageSize, &pError);
-    if (!ok) {
-        DPRINT("Load from image failed: %s.\n", pError->message);
-        free(pImage);
-        goto the_end;
-    }
-    pixBuf = gdk_pixbuf_loader_get_pixbuf(pLoader);
+    GInputStream *ginput = g_memory_input_stream_new_from_data (pImage, imageSize, NULL);
+
+    pixBuf = gdk_pixbuf_new_from_stream( ginput, NULL, &pError);
     if (!pixBuf) {
-        DPRINT("No pixbuf from loader.\n");
+        printf("No pixbuf from loader.\n");
         goto the_end;
     }
     g_object_ref(pixBuf);
@@ -1073,7 +1082,7 @@ static void update_preview_area(int buffer)
     pError = NULL;
     ok = gdk_pixbuf_loader_close(pLoader, &pError);
     if (!ok) {
-        DPRINT("error closing loader: %s\n", pError->message);
+        printf("error closing loader: %s\n", pError->message);
         goto the_end;
     }
   the_end:
@@ -1860,7 +1869,7 @@ static void save_buffer(int bufno, const char *filename)
     length = pslr_buffer_get_size(camhandle);
     current = 0;
 
-    fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+    fd = open(filename, FILE_ACCESS, 0664);
     if (fd == -1) {
         perror("could not open target");
         return;
