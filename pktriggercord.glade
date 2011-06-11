@@ -812,7 +812,7 @@
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <property name="program_name">PK-TriggerCord</property>
-    <property name="version">0.72.03</property>
+    <property name="version">0.73.00</property>
     <property name="copyright" translatable="yes">(c) 2011 Andras
     Salamon. Based on PkRemote (c) 2008 Pontus Lidman</property>
     <property name="comments" translatable="yes">Remote control software for Pentax DSLR cameras.
@@ -1904,10 +1904,10 @@ X</property>
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <property name="focus_on_click">False</property>
-                            <property name="items" translatable="yes">&#x2605;&#x2605;&#x2605;&#x2605;
-&#x2605;&#x2605;&#x2605;
-&#x2605;&#x2605;
-&#x2605;</property>
+                            <property name="items" translatable="yes">****
+***
+**
+*</property>
                             <signal name="changed" handler="jpeg_quality_combo_changed_cb"/>
                           </widget>
                           <packing>
