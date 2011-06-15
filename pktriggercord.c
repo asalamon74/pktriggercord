@@ -264,13 +264,6 @@ int common_init(void)
 
     gtk_quit_add(0, added_quit, 0);
 
-//#if 0 // detect through poll
-//    camhandle = pslr_init();
-
-//    if (camhandle)
-//        pslr_connect(camhandle);
-//#endif
-    
     DPRINT("Create glade xml\n");
 
     if (debug) {
@@ -1005,19 +998,9 @@ static void update_main_area(int buffer)
         printf("Could not get buffer data\n");
         goto the_end;
     }
-/*    printf("got %d bytes at %p\n", imageSize, pImage);
-    pError = NULL;
-    ok = gdk_pixbuf_loader_write(pLoader, pImage, imageSize, &pError);
-    if (!ok) {
-        printf("Load from image failed: %s.\n", pError->message);
-        free(pImage);
-        goto the_end;
-    }
-*/
 
     GInputStream *ginput = g_memory_input_stream_new_from_data (pImage, imageSize, NULL);
     pixBuf = gdk_pixbuf_new_from_stream( ginput, NULL, &pError);
-//    pixBuf = gdk_pixbuf_loader_get_pixbuf(pLoader);
     if (!pixBuf) {
         printf("No pixbuf from loader.\n");
         goto the_end;

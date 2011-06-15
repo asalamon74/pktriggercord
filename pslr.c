@@ -118,8 +118,6 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status);
 static int ipslr_press_shutter(ipslr_handle_t *p);
 static int ipslr_select_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buftype, int bufres);
 static int ipslr_buffer_segment_info(ipslr_handle_t *p, pslr_buffer_segment_info *pInfo);
-//static int ipslr_read_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buftype, int bufres,
-//        uint8_t **ppData, uint32_t *pLen);
 static int ipslr_next_segment(ipslr_handle_t *p);
 static int ipslr_download(ipslr_handle_t *p, uint32_t addr, uint32_t length, uint8_t *buf);
 static int ipslr_identify(ipslr_handle_t *p);
@@ -1084,88 +1082,6 @@ static int ipslr_press_shutter(ipslr_handle_t *p) {
     DPRINT("shutter result code: 0x%x\n", r);
     return PSLR_OK;
 }
-
-/* static int ipslr_read_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buftype, int bufres, */
-/*         uint8_t **ppData, uint32_t *pLen) { */
-/*     pslr_buffer_segment_info info[9]; */
-/*     uint16_t bufs; */
-/*     uint32_t bufaddr; */
-/*     uint32_t buflen = 0; */
-/*     uint32_t buf_total = 0; */
-/*     int i; */
-/*     uint8_t *buf = 0; */
-/*     uint8_t *buf_ptr; */
-/*     int result; */
-/*     int num_info; */
-/*     int ret; */
-/*     int retry = 0; */
-/*     int retry2 = 0; */
-
-/*     memset(&info, 0, sizeof (info)); */
-
-/*     CHECK(ipslr_status_full(p, &p->status)); */
-/*     bufs = p->status.bufmask; */
-/*     if ((bufs & (1 << bufno)) == 0) { */
-/*         DPRINT("No buffer data (%d)\n", bufno); */
-/*         return PSLR_OK; */
-/*     } */
-
-/*     while (retry < 3) { */
-/*         /\* If we get response 0x82 from the camera, there is a */
-/*          * desynch. We can recover by stepping through segment infos */
-/*          * until we get the last one (b = 2). Retry up to 3 times. *\/ */
-/*         ret = ipslr_select_buffer(p, bufno, buftype, bufres); */
-/*         if (ret == PSLR_OK) */
-/*             break; */
-
-/*         retry++; */
-/*         retry2 = 0; */
-/*         /\* Try up to 9 times to reach segment info type 2 (last */
-/*          * segment) *\/ */
-/*         do { */
-/*             CHECK(ipslr_buffer_segment_info(p, &info[0])); */
-/*             CHECK(ipslr_next_segment(p)); */
-/*             DPRINT("Recover: b=%d\n", info[0].b); */
-/*         } while (++retry2 < 10 && info[0].b != 2); */
-/*     } */
-
-/*     if (retry == 3) */
-/*         return ret; */
-
-/*     i = 0; */
-/*     do { */
-/*         CHECK(ipslr_buffer_segment_info(p, &info[i])); */
-/*         DPRINT("%d: addr: 0x%x len: %d B=%d\n", i, info[i].addr, info[i].length, info[i].b); */
-/*         CHECK(ipslr_next_segment(p)); */
-/*         buf_total += info[i].length; */
-/*         i++; */
-/*     } while (i < 9 && info[i - 1].b != 2); */
-/*     num_info = i; */
-/*     buf = malloc(buf_total); */
-/*     if (!buf) */
-/*         return PSLR_NO_MEMORY; */
-/*     buf_ptr = buf; */
-/*     for (i = 0; i < num_info; i++) { */
-/*         bufaddr = info[i].addr; */
-/*         buflen = info[i].length; */
-/*         if (bufaddr && buflen) { */
-/*             result = ipslr_download(p, bufaddr, buflen, buf_ptr); */
-/*             if (result != PSLR_OK) { */
-/*                 free(buf); */
-/*                 return result; */
-/*             } */
-/*             buf_ptr += buflen; */
-/*         } else { */
-/*             printf("empty segment\n"); */
-/*         } */
-/*     } */
-
-/*     if (ppData) */
-/*         *ppData = buf; */
-/*     if (pLen) */
-/*         *pLen = buf_total; */
-/*     return PSLR_OK; */
-/* } */
 
 static int ipslr_select_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buftype, int bufres) {
     int r;
