@@ -116,7 +116,6 @@ int main(int argc, char **argv) {
     uint32_t iso = 0;
     uint32_t auto_iso_min = 0;
     uint32_t auto_iso_max = 0;
-    bool IS_K20D = false;
     int frames = 1;
     int delay = 0;
     bool auto_focus = false;
@@ -337,8 +336,6 @@ int main(int argc, char **argv) {
     if (camhandle) pslr_connect(camhandle);
 
     MODEL = pslr_camera_name(camhandle);
-    if (!strcmp(MODEL, "K20D")) IS_K20D = true;
-
     printf("%s: %s Connected...\n", argv[0], MODEL);
 
     pslr_set_image_format(camhandle, PSLR_IMAGE_FORMAT_RAW);

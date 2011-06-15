@@ -264,12 +264,12 @@ int common_init(void)
 
     gtk_quit_add(0, added_quit, 0);
 
-#if 0 // detect through poll
-    camhandle = pslr_init();
+//#if 0 // detect through poll
+//    camhandle = pslr_init();
 
-    if (camhandle)
-        pslr_connect(camhandle);
-#endif
+//    if (camhandle)
+//        pslr_connect(camhandle);
+//#endif
     
     DPRINT("Create glade xml\n");
 

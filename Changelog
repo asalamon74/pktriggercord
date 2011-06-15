@@ -1,3 +1,7 @@
+version 0.73.01
+	code cleanup: eliminating id2
+	Pentax K-7 support (thx Thibault Massart for testing)
+
 version 0.73.00 ( 2011-06-11 )
 	Windows port
 

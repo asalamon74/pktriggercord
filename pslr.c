@@ -83,7 +83,7 @@ typedef int (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status, int 
 
 typedef struct {
     uint32_t id1;
-    uint32_t id2;
+//    uint32_t id2;
     const char *name;
     bool old_scsi_command; // 0 for *ist cameras, 1 for the newer cameras
     int buffer_size;
@@ -98,7 +98,7 @@ struct ipslr_handle {
     int fd;
     pslr_status status;
     uint32_t id1;
-    uint32_t id2;
+//    uint32_t id2;
     ipslr_model_info_t *model;
     ipslr_segment_t segments[MAX_SEGMENTS];
     uint32_t segment_count;
@@ -152,22 +152,23 @@ int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n);
 int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n);
 
 static ipslr_model_info_t camera_models[] = {
-    { PSLR_ID1_K20D,    PSLR_ID2_K20D,    "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, ipslr_status_parse_k20d},
-    { PSLR_ID1_K10D,    PSLR_ID2_K10D,    "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, ipslr_status_parse_k10d},
-    { PSLR_ID1_K110D,   PSLR_ID2_K110D,   "K110D",    0, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_K100D,   PSLR_ID2_K100D,   "K100D",    0, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_IST_DS2, PSLR_ID2_IST_DS2, "*ist DS2", 1, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_IST_DL,  PSLR_ID2_IST_DL,  "*ist DL",  1, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_IST_DS,  PSLR_ID2_IST_DS,  "*ist DS",  1, 264, 3, {6, 4, 2},      7, 4000, ipslr_status_parse_istds},
-    { PSLR_ID1_IST_D,   PSLR_ID2_IST_D,   "*ist D",   1, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_GX10,    PSLR_ID2_GX10,    "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, ipslr_status_parse_k10d},
-    { PSLR_ID1_GX20,    PSLR_ID2_GX20,    "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, ipslr_status_parse_k20d},
-    { PSLR_ID1_KX,      PSLR_ID2_KX,      "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, ipslr_status_parse_kx},
-    { PSLR_ID1_K200D,   PSLR_ID2_K200D,   "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, ipslr_status_parse_k200d}, 
+    { PSLR_ID1_K20D,    "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, ipslr_status_parse_k20d},
+    { PSLR_ID1_K10D,    "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, ipslr_status_parse_k10d},
+    { PSLR_ID1_K110D,   "K110D",    0, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_K100D,   "K100D",    0, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_IST_DS2, "*ist DS2", 1, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_IST_DL,  "*ist DL",  1, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_IST_DS,  "*ist DS",  1, 264, 3, {6, 4, 2},      7, 4000, ipslr_status_parse_istds},
+    { PSLR_ID1_IST_D,   "*ist D",   1, 0,   0, {}, 0, 0, NULL},
+    { PSLR_ID1_GX10,    "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, ipslr_status_parse_k10d},
+    { PSLR_ID1_GX20,    "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, ipslr_status_parse_k20d},
+    { PSLR_ID1_KX,      "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, ipslr_status_parse_kx},
+    { PSLR_ID1_K200D,   "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, ipslr_status_parse_k200d}, 
+    { PSLR_ID1_K7,      "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, ipslr_status_parse_kx},
 };
 
 char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
-char* valid_models[4] = {"DIGITAL_CAMERA", "DSC_K20D", "DSC_K-x", "DSC_K200D"};
+char* valid_models[5] = {"DIGITAL_CAMERA", "DSC_K20D", "DSC_K-x", "DSC_K200D", "DSC_K-7"};
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
     int i;    
@@ -229,8 +230,10 @@ pslr_handle_t pslr_init() {
     for( i=0; i<driveNum; ++i ) {
 	pslr_result result = get_drive_info( drives[i], &fd, vendorId, sizeof(vendorId), productId, sizeof(productId));
 
+	DPRINT("Checking drive: %s %s\n", vendorId, productId);
 	if( result == PSLR_OK && find_in_array( valid_vendors, vendorId) != -1 
 	    && find_in_array( valid_models, productId) != -1 ) {
+	    DPRINT("Found camera %s %s\n", vendorId, productId);
 	    pslr.fd = fd;
 	    /* Only support first connected camera at this time. */
 	    return &pslr;	    
@@ -295,6 +298,7 @@ int pslr_focus(pslr_handle_t h) {
 
 int pslr_get_status(pslr_handle_t h, pslr_status *ps) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
+    memset( ps, 0, sizeof( pslr_status ));
     CHECK(ipslr_status_full(p, &p->status));
     memcpy(ps, &p->status, sizeof (pslr_status));
     return PSLR_OK;
@@ -302,7 +306,9 @@ int pslr_get_status(pslr_handle_t h, pslr_status *ps) {
 
 int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    CHECK(ipslr_status_full(p, &p->status));
+    memset( st_buf, 0, MAX_STATUS_BUF_SIZE);
+//    CHECK(ipslr_status_full(p, &p->status));
+    ipslr_status_full(p, &p->status);
     memcpy(st_buf, p->status_buffer, MAX_STATUS_BUF_SIZE);
     return PSLR_OK;
 }
@@ -717,7 +723,7 @@ const char *pslr_camera_name(pslr_handle_t h) {
         return p->model->name;
     else {
         static char unk_name[256];
-        snprintf(unk_name, sizeof (unk_name), "ID#%x:%x", p->id1, p->id2);
+        snprintf(unk_name, sizeof (unk_name), "ID#%x", p->id1);
         unk_name[sizeof (unk_name) - 1] = '\0';
         return unk_name;
     }
@@ -805,7 +811,6 @@ static void ipslr_status_diff(uint8_t *buf) {
 int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n) {
         /* K10D status block */
     uint8_t *buf = p->status_buffer;
-        CHECK(read_result(p->fd, buf, n));
         memset(status, 0, sizeof (*status));
         status->bufmask = buf[0x16] << 8 | buf[0x17];
         status->current_iso = get_uint32(&buf[0x11c]);
@@ -849,7 +854,6 @@ int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n) {
 int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n) {
 
     uint8_t *buf = p->status_buffer;
-        CHECK(read_result(p->fd, buf, n));
 #ifdef DEBUG
         ipslr_status_diff(buf);
 #endif
@@ -922,14 +926,11 @@ int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
 
     uint8_t *buf = p->status_buffer;
         /* K-x status block */
-        CHECK(read_result(p->fd, buf, n));
-
 #ifdef DEBUG
         ipslr_status_diff(buf);
 #endif
 
-        memset(status, 0, sizeof (*status));
-
+        memset(status, 0, sizeof (*status));	
         status->bufmask = buf[0x1E] << 8 | buf[0x1F];
 
         status->current_iso = get_uint32(&buf[0x134]); //d
@@ -991,7 +992,6 @@ int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n) {
         
         
     uint8_t *buf = p->status_buffer;
-        CHECK(read_result(p->fd, buf, n));
 #ifdef DEBUG
         ipslr_status_diff(buf);
 #endif
@@ -1048,10 +1048,14 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     int n;
     CHECK(command(p->fd, 0, 8, 0));
     n = get_result(p->fd);
+    int expected_bufsize = p->model->buffer_size;
 
-    if( p->model && p->model->buffer_size > 0 && p->model->buffer_size != n ) {
-        DPRINT("only got %d bytes\n", n);
+    CHECK(read_result(p->fd, p->status_buffer, n > MAX_STATUS_BUF_SIZE ? MAX_STATUS_BUF_SIZE: n));
+
+    if( p->model && expected_bufsize > 0 && expected_bufsize != n ) {
+	DPRINT("Waiting for %d bytes but got %d\n", expected_bufsize, n);
         return PSLR_READ_ERROR;
+//	return PSLR_OK;
     }
 
     int ret;
@@ -1064,7 +1068,6 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
 
     // required for K-x, probably for other cameras too
     status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
-
 
     return ret;
 }
@@ -1262,7 +1265,8 @@ static int ipslr_identify(ipslr_handle_t *p) {
         return PSLR_READ_ERROR;
     CHECK(read_result(p->fd, idbuf, 8));
     p->id1 = get_uint32(&idbuf[0]);
-    p->id2 = get_uint32(&idbuf[4]);
+    DPRINT("id1 of the camera: %x\n", p->id1);
+//    p->id2 = get_uint32(&idbuf[4]);
     p->model = NULL;
     for (i = 0; i<sizeof (camera_models) / sizeof (camera_models[0]); i++) {
         if (camera_models[i].id1 == p->id1) {
