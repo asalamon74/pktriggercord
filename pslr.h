@@ -50,29 +50,18 @@
 #define PSLR_AF_POINT_BOT_RIGHT  0x400
 
 #define PSLR_ID1_K20D    0x12cd2
-#define PSLR_ID2_K20D    0x1ba
 #define PSLR_ID1_K10D    0x12c1e
-#define PSLR_ID2_K10D    0x1a5
 #define PSLR_ID1_K110D   0x12b9d
-#define PSLR_ID2_K110D   0x1ac
 #define PSLR_ID1_K100D   0x12b9c
-#define PSLR_ID2_K100D   0x189
 #define PSLR_ID1_IST_D   0x12994
-#define PSLR_ID2_IST_D   0x141
 #define PSLR_ID1_IST_DS  0x12aa2
-#define PSLR_ID2_IST_DS  0x177
 #define PSLR_ID1_IST_DS2 0x12b60
-#define PSLR_ID2_IST_DS2 0x19a
 #define PSLR_ID1_IST_DL  0x12b1a
-#define PSLR_ID2_IST_DL  0x188
 #define PSLR_ID1_GX10    0x12c20
-#define PSLR_ID2_GX10    0x1ad
 #define PSLR_ID1_GX20    0x12cd4
-#define PSLR_ID2_GX20    0x1c6
 #define PSLR_ID1_KX      0x12dfe
-#define PSLR_ID2_KX      0x1ec
 #define PSLR_ID1_K200D   0x12cfa
-#define PSLR_ID2_K200D   0x1bd
+#define PSLR_ID1_K7      0x12db8
 
 typedef enum {
     PSLR_BUF_PEF,
@@ -347,6 +336,7 @@ int pslr_set_jpeg_image_mode(pslr_handle_t h, pslr_jpeg_image_mode_t image_mode)
 int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness);
 int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast);
 int pslr_set_jpeg_saturation(pslr_handle_t h, int32_t saturation);
+int pslr_set_jpeg_hue(pslr_handle_t h, int32_t hue);
 
 int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format);
 int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format);
