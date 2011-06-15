@@ -15,3 +15,6 @@ Known bugs of pkTriggerCord:
 
   The program does not work as a non-root user on several Linux 
   distributions.
+
+  ISO table of GUI only shows the same iso range for all cameras. It
+  should be camera-specific.
