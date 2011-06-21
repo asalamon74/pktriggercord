@@ -1,7 +1,7 @@
 PREFIX ?= /usr/local
 CFLAGS ?= -O3 -g -Wall
 
-VERSION=0.73.01
+VERSION=0.74.00
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec
@@ -91,7 +91,7 @@ win: clean
 	$(WINGCC) $(CFLAGS) $(OBJS) -DVERSION='"$(VERSION)"' -o pktriggercord-cli.exe pktriggercord-cli.c
 	$(WINGCC) -mms-bitfields -DDATADIR=\".\" -O3 pktriggercord.c -g -Wall pslr.o pslr_scsi.o -o pktriggercord.exe -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0 -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/ -lglade-2.0 -L.
 	mkdir -p $(WINDIR)
-	cp pktriggercord.exe pktriggercord-cli.exe pktriggercord.glade $(WINDIR)
+	cp pktriggercord.exe pktriggercord-cli.exe pktriggercord.glade Changelog COPYING $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
 	rm -f $(WINDIR).zip
 	zip -rj $(WINDIR).zip $(WINDIR)
