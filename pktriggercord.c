@@ -224,7 +224,7 @@ static const int iso_tbl_1[] = {
 };
 
 static const int ec_tbl_1_3[] = {
-    -20, -17, -13, -10, -7, -3, 0, 3, 7, 10, 13, 17, 20
+    -30, -27, -23, -20, -17, -13, -10, -7, -3, 0, 3, 7, 10, 13, 17, 20, 23, 27, 30
 };
 
 static const int ec_tbl_1_2[]= {
@@ -476,20 +476,10 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
 
     pw = glade_xml_get_widget(xml, "iso_scale");
     if (st_new) {
+
         const int *tbl = 0;
         int steps = 0;
-        if (st_new->custom_sensitivity_steps == PSLR_CUSTOM_SENSITIVITY_STEPS_1EV) { 
-            tbl = iso_tbl_1;
-            steps = sizeof(iso_tbl_1)/sizeof(iso_tbl_1[0]);
-        }else if (st_new->custom_ev_steps == PSLR_CUSTOM_EV_STEPS_1_2) {
-            tbl = iso_tbl_1_2;
-            steps = sizeof(iso_tbl_1_2)/sizeof(iso_tbl_1_2[0]);
-        } else {
-            tbl = iso_tbl_1_3;
-            steps = sizeof(iso_tbl_1_3)/sizeof(iso_tbl_1_3[0]);
-        }
-        assert(tbl);
-        assert(steps);
+        which_iso_table(st_new, &tbl, &steps);
         gtk_range_set_range(GTK_RANGE(pw), 0.0, (gdouble) (steps-1));
         for (i=0; i<steps; i++) {
             if (tbl[i] >= st_new->fixed_iso) {
@@ -511,13 +501,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     if (st_new) {
         const int *tbl;
         int steps;
-        if (st_new->custom_ev_steps == PSLR_CUSTOM_EV_STEPS_1_2) {
-            tbl = ec_tbl_1_2;
-            steps = sizeof(ec_tbl_1_2)/sizeof(ec_tbl_1_2[0]);
-        } else {
-            tbl = ec_tbl_1_3;
-            steps = sizeof(ec_tbl_1_3)/sizeof(ec_tbl_1_3[0]);
-        }
+	which_ec_table( st_new, &tbl, &steps);
         idx = -1;
         for (i=0; i<steps; i++) {
             if (tbl[i] == st_new->ec.nom)
