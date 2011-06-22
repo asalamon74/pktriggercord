@@ -7,7 +7,7 @@
     <property name="app_paintable">True</property>
     <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
     <property name="extension_events">all</property>
-    <property name="title" translatable="yes">PK-TriggerCord</property>
+    <property name="title" translatable="yes">pkTriggerCord</property>
     <signal name="expose_event" handler="mainwindow_expose"/>
     <signal name="destroy" handler="plugin_quit"/>
     <child>
@@ -369,7 +369,7 @@
   <widget class="GtkWindow" id="bufferwindow">
     <property name="visible">True</property>
     <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
-    <property name="title" translatable="yes">PK-TriggerCord - Camera Buffers</property>
+    <property name="title" translatable="yes">pkTriggerCord - Camera Buffers</property>
     <signal name="expose_event" handler="bufferwindow_expose_event_cb"/>
     <signal name="delete_event" handler="bufferwindow_delete_event_cb"/>
     <child>
@@ -729,7 +729,7 @@
   <widget class="GtkDialog" id="errordialog">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">PK-TriggerCord - Error</property>
+    <property name="title" translatable="yes">pkTriggerCord - Error</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
@@ -811,10 +811,10 @@
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
-    <property name="program_name">PK-TriggerCord</property>
-    <property name="version">0.74.01</property>
-    <property name="copyright" translatable="yes">(c) 2011 Andras
-    Salamon. Based on PkRemote (c) 2008 Pontus Lidman</property>
+    <property name="program_name">pkTriggerCord</property>
+    <property name="copyright" translatable="yes">
+        (c) 2011 Andras Salamon.
+Based on PkRemote (c) 2008 Pontus Lidman</property>
     <property name="comments" translatable="yes">Remote control software for Pentax DSLR cameras.
 Currently supported: K-x, K10D, K20D, *ist DS, K200D, K-7</property>
     <property name="license" translatable="yes">
@@ -1574,7 +1574,7 @@ Public License instead of this License.  But first, please read
   </widget>
   <widget class="GtkWindow" id="settings_window">
     <property name="visible">True</property>
-    <property name="title" translatable="yes">PK-TriggerCord Camera Settings</property>
+    <property name="title" translatable="yes">pkTriggerCord Camera Settings</property>
     <signal name="delete_event" handler="settings_window_delete_event_cb"/>
     <child>
       <widget class="GtkVBox" id="vbox3">
@@ -2071,7 +2071,7 @@ Monochrome
     </child>
   </widget>
   <widget class="GtkWindow" id="histogram_window">
-    <property name="title" translatable="yes">PK-TriggerCord - Histogram</property>
+    <property name="title" translatable="yes">pkTriggerCord - Histogram</property>
     <signal name="delete_event" handler="histogram_window_delete_event_cb"/>
     <child>
       <widget class="GtkDrawingArea" id="histogram_drawing_area">

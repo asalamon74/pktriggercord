@@ -1067,6 +1067,7 @@ static void menu_about_activate_cb(GtkMenuItem *item, gpointer user_data)
     GtkWidget *pw;
     DPRINT("menu about.\n");
     pw = glade_xml_get_widget(xml, "about_dialog");
+    gtk_about_dialog_set_version( GTK_ABOUT_DIALOG(pw), VERSION);
     gtk_dialog_run(GTK_DIALOG(pw));
     gtk_widget_hide(pw);
 }
