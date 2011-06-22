@@ -1,7 +1,7 @@
 PREFIX ?= /usr/local
 CFLAGS ?= -O3 -g -Wall
 
-VERSION=0.74.00
+VERSION=0.74.01
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec

@@ -972,7 +972,7 @@ static bool auto_save_check(int format, int buffer)
 
 bool buf_updated = false;
 GdkPixbuf *pMainPixbuf = NULL;
-static GdkPixbuf *pThumbPixbuf[MAX_BUFFERS];
+//static GdkPixbuf *pThumbPixbuf[MAX_BUFFERS];
 
 static void update_main_area(int buffer)
 {
@@ -990,8 +990,6 @@ static void update_main_area(int buffer)
         gtk_main_iteration();
 
     pError = NULL;
-//    pLoader = gdk_pixbuf_loader_new_with_type("jpeg", &pError);
-
     DPRINT("Trying to read buffer\n");
     r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize);
     if (r != PSLR_OK) {
@@ -1007,12 +1005,6 @@ static void update_main_area(int buffer)
     }
     g_object_ref(pixBuf);
     pError = NULL;
-    ok = gdk_pixbuf_loader_close(pLoader, &pError);
-    if (!ok) {
-        printf("error closing loader: %s\n", pError->message);
-        goto the_end;
-    }
-
     pMainPixbuf = pixBuf;
     
     pw = glade_xml_get_widget(xml, "histogram_drawing_area");
@@ -1043,8 +1035,6 @@ static void update_preview_area(int buffer)
     DPRINT("buffer %d has new contents\n", buffer);
     pError = NULL;
 
-//    pLoader = gdk_pixbuf_loader_new_with_type("jpeg", &pError);
-
     DPRINT("Trying to get thumbnail\n");
     r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_THUMBNAIL, 4, &pImage, &imageSize);
     if (r != PSLR_OK) {
@@ -1061,13 +1051,7 @@ static void update_preview_area(int buffer)
     }
     g_object_ref(pixBuf);
     set_preview_icon(buffer, pixBuf);
-    pThumbPixbuf[buffer] = pixBuf;
     pError = NULL;
-    ok = gdk_pixbuf_loader_close(pLoader, &pError);
-    if (!ok) {
-        printf("error closing loader: %s\n", pError->message);
-        goto the_end;
-    }
   the_end:
     gtk_statusbar_pop(statusbar, sbar_download_ctx);
 }
@@ -1497,23 +1481,19 @@ void init_preview_area(void)
 
     pw = glade_xml_get_widget(xml, "preview_icon_view");
 
-    list_store = gtk_list_store_new (3,
-                                     G_TYPE_STRING,
-                                     GDK_TYPE_PIXBUF,
-                                     G_TYPE_BOOLEAN);
+    list_store = gtk_list_store_new (1,
+                                     GDK_TYPE_PIXBUF);
 
     for (i = 0; i < MAX_BUFFERS; i++) {
-        gchar *some_data;
-        char buf[256];
-        sprintf(buf, "Icon%d", i);
-        some_data = buf;
+//        gchar *some_data;
+//        char buf[256];
+//        sprintf(buf, "Icon%d", i);
+//        some_data = buf;
 
         /* Add a new row to the model */
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
-                            0, some_data,
-                            1, NULL,
-                            2,  FALSE,
+                            0, NULL,
                             -1);
     }
 
@@ -1530,7 +1510,7 @@ void set_preview_icon(int n, GdkPixbuf *pBuf)
                              &iter,
                              path);
     gtk_tree_path_free (path);
-    gtk_list_store_set (list_store, &iter, 1, pBuf, -1);
+    gtk_list_store_set (list_store, &iter, 0, pBuf, -1);
 }
 
 static gchar* shutter_scale_format_value_cb(GtkScale *scale, gdouble value)
@@ -1803,8 +1783,8 @@ void preview_icon_view_selection_changed_cb(GtkIconView *icon_view)
 
     pw = glade_xml_get_widget(xml, "preview_save_as_button");
     gtk_widget_set_sensitive(pw, en);
-    pw = glade_xml_get_widget(xml, "preview_gimp_button");
-    gtk_widget_set_sensitive(pw, en);
+//    pw = glade_xml_get_widget(xml, "preview_gimp_button");
+//    gtk_widget_set_sensitive(pw, en);
     pw = glade_xml_get_widget(xml, "preview_delete_button");
     gtk_widget_set_sensitive(pw, en);
 }
