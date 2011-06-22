@@ -39,7 +39,7 @@ debug: cli pktriggercord
 	$(CC) $(CFLAGS) -fPIC -c $<
 
 pktriggercord: pktriggercord.c $(OBJS)
-	$(CC) $(GUI_CFLAGS) $(GUI_LDFLAGS) -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LDFLAGS) -o $@ -L. 
+	$(CC) $(GUI_CFLAGS) $(GUI_LDFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LDFLAGS) -o $@ -L. 
 
 install-app:
 	install -d $(PREFIX)/bin
@@ -89,7 +89,7 @@ win: clean
 	$(WINGCC) $(CFLAGS) -c pslr_scsi.c
 	$(WINGCC) $(CFLAGS) -c pslr.c
 	$(WINGCC) $(CFLAGS) $(OBJS) -DVERSION='"$(VERSION)"' -o pktriggercord-cli.exe pktriggercord-cli.c
-	$(WINGCC) -mms-bitfields -DDATADIR=\".\" -O3 pktriggercord.c -g -Wall pslr.o pslr_scsi.o -o pktriggercord.exe -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0 -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/ -lglade-2.0 -L.
+	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DDATADIR=\".\" -O3 pktriggercord.c -g -Wall pslr.o pslr_scsi.o -o pktriggercord.exe -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0 -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/ -lglade-2.0 -L.
 	mkdir -p $(WINDIR)
 	cp pktriggercord.exe pktriggercord-cli.exe pktriggercord.glade Changelog COPYING $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)

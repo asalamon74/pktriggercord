@@ -1,5 +1,6 @@
 version 0.74.01
 	buffer window bugfixes
+	Removing hardwired version number from pktriggercord.glade
 
 version 0.74.00 ( 2011-06-21 )
 	code cleanup: eliminating id2
