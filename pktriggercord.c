@@ -135,6 +135,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old);
 static bool auto_save_check(int format, int buffer);
 static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old);
 
+static void which_shutter_table(pslr_status *st, const pslr_rational_t **table, int *steps);
 static void which_iso_table(pslr_status *st, const int **table, int *steps);
 static void which_ec_table(pslr_status *st, const int **table, int *steps);
 static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, int py);
@@ -201,15 +202,26 @@ static const int aperture_tbl[] = {
     320, 360, 400, 450, 510, 570
 };
 
-static const pslr_rational_t shutter_tbl[] = {
+static const pslr_rational_t shutter_tbl_1_3[] = {
 { 30, 1},{ 25, 1},{ 20, 1},{ 15, 1},{ 13, 1},{ 10, 1},{ 8 , 1},{ 6 , 1},
 { 5 , 1},{ 4 , 1},{ 3 , 1},{ 25, 10},{ 2 , 1},{ 16, 10},{ 13, 10},{ 1 , 1},
 { 8 , 10},{ 6 , 10},{ 5 , 10},{ 4 , 10},{ 3 , 10},{ 1 , 4},{ 1 , 5},{ 1 , 6},
 { 1 , 8},{ 1 , 10},{ 1 , 13},{ 1 , 15},{ 1 , 20},{ 1 , 25},{ 1 , 30},{ 1 , 40},
 { 1 , 50},{ 1 , 60},{ 1 , 80},{ 1 , 100},{ 1 , 125},{ 1 , 160},{ 1 , 200},{ 1 , 250},
 { 1 , 320},{ 1 , 400},{ 1 , 500},{ 1 , 640},{ 1 , 800},{ 1 , 1000},{ 1 , 1250},{ 1 , 1600},
-{ 1 , 2000},{ 1 , 2500},{ 1 , 3200},{ 1 , 4000},{1 , 5000}, {1, 6000}
+{ 1 , 2000},{ 1 , 2500},{ 1 , 3200},{ 1 , 4000},{1 , 5000}, {1, 6000}, {1, 8000}
 };
+
+static const pslr_rational_t shutter_tbl_1_2[] = {
+{ 30, 1},{ 20, 1},{ 15, 1},{ 10, 1},{ 8 , 1},{ 6 , 1},
+{ 4 , 1},{ 3 , 1},{ 2 , 1},{ 15, 10},{ 1 , 1},
+{ 7 , 10},{ 5 , 10},{ 3 , 10},{ 1 , 4},{ 1 , 6},
+{ 1 , 8},{ 1 , 10},{ 1 , 15},{ 1 , 20},{ 1 , 30},
+{ 1 , 45},{ 1 , 60},{ 1 , 90},{ 1 , 125},{ 1 , 180},{ 1 , 250},
+{ 1 , 350},{ 1 , 500},{ 1 , 750},{ 1 , 1000},{ 1 , 1500},
+{ 1 , 2000},{ 1 , 3000},{ 1 , 4000}, {1, 6000}, {1, 8000}
+};
+
 
 static const int iso_tbl_1_3[] = {
     100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1250, 1600
@@ -384,17 +396,16 @@ static int get_jpeg_property_shift() {
     return (pslr_get_model_jpeg_property_levels( camhandle )-1) / 2;
 }
 
-void camera_specific_init() {
-    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_hue_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
-    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_sharpness_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
-    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_saturation_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
-    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_contrast_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+void shutter_speed_table_init(pslr_status *st) {
     // check valid shutter speeds for the camera
     int max_valid_shutter_speed_index=0;
     int i;
-    for(i=0;  i<sizeof(shutter_tbl)/sizeof(shutter_tbl[0]); i++) {
-	if( shutter_tbl[i].nom == 1 &&
-	    shutter_tbl[i].denom <= pslr_get_model_fastest_shutter_speed(camhandle)) {
+    const pslr_rational_t *tbl;
+    int steps;
+    which_shutter_table( st, &tbl, &steps);
+    for(i=0;  i<steps; i++) {
+	if( tbl[i].nom == 1 &&
+	    tbl[i].denom <= pslr_get_model_fastest_shutter_speed(camhandle)) {
 	    max_valid_shutter_speed_index = i;
 	}
     }
@@ -403,7 +414,13 @@ void camera_specific_init() {
     //printf("range 0-%f\n", (float) sizeof(shutter_tbl)/sizeof(shutter_tbl[0]));
     gtk_range_set_range(GTK_RANGE(pw), 0.0, max_valid_shutter_speed_index);
     gtk_range_set_increments(GTK_RANGE(pw), 1.0, 1.0);
-    
+}
+
+void camera_specific_init() {
+    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_hue_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_sharpness_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_saturation_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_contrast_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     int *resolutions = pslr_get_model_jpeg_resolutions( camhandle );
     int resindex=0;
     gchar buf[256];
@@ -459,9 +476,12 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     pw = glade_xml_get_widget(xml, "shutter_scale");
     if (st_new) {
         idx = -1;
-        for (i=0; i<sizeof(shutter_tbl)/sizeof(shutter_tbl[0]); i++) {
-            if (st_new->set_shutter_speed.nom == shutter_tbl[i].nom
-                && st_new->set_shutter_speed.denom == shutter_tbl[i].denom) {
+	const pslr_rational_t *tbl = 0;
+        int steps = 0;    
+        which_shutter_table( st_new, &tbl, &steps );
+        for (i=0; i<steps; i++) {
+            if (st_new->set_shutter_speed.nom == tbl[i].nom
+                && st_new->set_shutter_speed.denom == tbl[i].denom) {
                 idx = i;
 	    }
         }
@@ -655,8 +675,6 @@ static gboolean status_poll(gpointer data)
         return TRUE;
     }
 
-    //printf("poll status\n");
-
     tmp = status_new;
     status_new = status_old;
     status_old = tmp;
@@ -669,6 +687,7 @@ static gboolean status_poll(gpointer data)
     }
 
     ret = pslr_get_status(camhandle, status_new);
+    shutter_speed_table_init( status_new );
     if (ret != PSLR_OK) {
         if (ret == PSLR_DEVICE_ERROR) {
             /* Camera disconnected */
@@ -1502,9 +1521,17 @@ static gchar* shutter_scale_format_value_cb(GtkScale *scale, gdouble value)
 {
     int idx = rint(value);
     //printf("shutter value: %f\n", value);
-    if(idx >= 0 && idx < sizeof(shutter_tbl)/sizeof(shutter_tbl[0])) {
-        int n = shutter_tbl[idx].nom;
-        int d = shutter_tbl[idx].denom;
+
+    const pslr_rational_t *tbl = 0;
+    int steps = 0;    
+    if (!status_new) {
+	return g_strdup_printf("(%f)", value);
+    }
+    which_shutter_table(status_new, &tbl, &steps);
+
+    if(idx >= 0 && idx < steps) {
+        int n = tbl[idx].nom;
+        int d = tbl[idx].denom;
         if (n == 1) {
             return g_strdup_printf("1/%d", d);
         } else if (d == 1) {
@@ -1581,12 +1608,18 @@ static void shutter_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
     pslr_rational_t value;
     int ret;
     int idx;
+    const pslr_rational_t *tbl;
+    int steps;
 
+    if (!status_new) {
+        return;
+    }
     a = gtk_range_get_value(GTK_RANGE(scale));
     idx = rint(a);
+    which_shutter_table(status_new, &tbl, &steps);
     assert(idx >= 0);
-    assert(idx < sizeof(shutter_tbl)/sizeof(shutter_tbl[0]));
-    value = shutter_tbl[idx];
+    assert(idx < steps);
+    value = tbl[idx];
     DPRINT("shutter->%d/%d\n", value.nom, value.denom);
     ret = pslr_set_shutter(camhandle, value);
     if (ret != PSLR_OK) {
@@ -1602,8 +1635,9 @@ static void iso_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
     const int *tbl;
     int steps;
 
-    if (!status_new)
+    if (!status_new) {
         return;
+    }
 
     a = gtk_range_get_value(GTK_RANGE(scale));
     idx = rint(a);
@@ -1980,6 +2014,20 @@ static void which_ec_table(pslr_status *st, const int **table, int *steps)
     assert(*table);
     assert(*steps);
 }
+
+static void which_shutter_table(pslr_status *st, const pslr_rational_t **table, int *steps)
+{
+    if (st->custom_ev_steps == PSLR_CUSTOM_EV_STEPS_1_2) {
+        *table = shutter_tbl_1_2;
+        *steps = sizeof(shutter_tbl_1_2)/sizeof(shutter_tbl_1_2[0]);
+    } else {
+        *table = shutter_tbl_1_3;
+        *steps = sizeof(shutter_tbl_1_3)/sizeof(shutter_tbl_1_3[0]);
+    }
+    assert(*table);
+    assert(*steps);
+}
+
 
 static user_file_format file_format(pslr_status *st)
 {
