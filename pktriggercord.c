@@ -979,12 +979,10 @@ GdkPixbuf *pMainPixbuf = NULL;
 
 static void update_main_area(int buffer)
 {
-    GdkPixbufLoader *pLoader;
     GError *pError;
     uint8_t *pImage;
     uint32_t imageSize;
     int r;
-    gboolean ok;
     GdkPixbuf *pixBuf;
     GtkWidget *pw;
 
@@ -1020,12 +1018,10 @@ static void update_main_area(int buffer)
 
 static void update_preview_area(int buffer)
 {
-    GdkPixbufLoader *pLoader;
     GError *pError;
     uint8_t *pImage;
     uint32_t imageSize;
     int r;
-    gboolean ok;
     GdkPixbuf *pixBuf;
     GtkWidget *pw;
 
