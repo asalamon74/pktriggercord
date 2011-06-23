@@ -7,9 +7,6 @@ Known bugs of pkTriggerCord:
   Setting exposure mode has no effect ( maybe it's not a bug only it's
   not allowed ).
 
-  Shutter speed table of GUI assumes 1/3 EV steps. This should also 
-  work for 1/2 EV steps.
-
   Changing shutter speed to 1/6000 is not working. It changes to 1/8 
   instead.
 
