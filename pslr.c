@@ -91,6 +91,8 @@ typedef struct {
     int jpeg_resolutions[MAX_RESOLUTION_SIZE];
     int jpeg_property_levels; // 7 or 9
     int fastest_shutter_speed;
+    int base_iso_min;
+    int base_iso_max;
     ipslr_status_parse_t parser_function;
 } ipslr_model_info_t;
 
@@ -150,19 +152,21 @@ int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n);
 int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n);
 
 static ipslr_model_info_t camera_models[] = {
-    { PSLR_ID1_K20D,    "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, ipslr_status_parse_k20d},
-    { PSLR_ID1_K10D,    "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, ipslr_status_parse_k10d},
-    { PSLR_ID1_K110D,   "K110D",    0, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_K100D,   "K100D",    0, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_IST_DS2, "*ist DS2", 1, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_IST_DL,  "*ist DL",  1, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_IST_DS,  "*ist DS",  1, 264, 3, {6, 4, 2},      7, 4000, ipslr_status_parse_istds},
-    { PSLR_ID1_IST_D,   "*ist D",   1, 0,   0, {}, 0, 0, NULL},
-    { PSLR_ID1_GX10,    "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, ipslr_status_parse_k10d},
-    { PSLR_ID1_GX20,    "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, ipslr_status_parse_k20d},
-    { PSLR_ID1_KX,      "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, ipslr_status_parse_kx},
-    { PSLR_ID1_K200D,   "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, ipslr_status_parse_k200d}, 
-    { PSLR_ID1_K7,      "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, ipslr_status_parse_kx},
+    { PSLR_ID1_IST_DS,  "*ist DS",  1, 264, 3, {6, 4, 2},      7, 4000, 200, 3200, ipslr_status_parse_istds },
+    { PSLR_ID1_K20D,    "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, ipslr_status_parse_k20d  },
+    { PSLR_ID1_K10D,    "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
+    { PSLR_ID1_GX10,    "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
+    { PSLR_ID1_GX20,    "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, ipslr_status_parse_k20d  },
+    { PSLR_ID1_KX,      "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, ipslr_status_parse_kx    },
+    { PSLR_ID1_K200D,   "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, ipslr_status_parse_k200d }, 
+    { PSLR_ID1_K7,      "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, ipslr_status_parse_kx    },
+// only limited support from here
+    { PSLR_ID1_IST_D,   "*ist D",   1, 0,   0, {}, 0, 0, 0, 0, NULL},
+    { PSLR_ID1_IST_DS2, "*ist DS2", 1, 0,   0, {}, 0, 0, 0, 0, NULL},
+    { PSLR_ID1_IST_DL,  "*ist DL",  1, 0,   0, {}, 0, 0, 0, 0, NULL},
+    { PSLR_ID1_K110D,   "K110D",    0, 0,   0, {}, 0, 0, 0, 0, NULL},
+    { PSLR_ID1_K100D,   "K100D",    0, 0,   0, {}, 0, 0, 0, 0, NULL},
+
 };
 
 char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
@@ -708,6 +712,15 @@ int pslr_get_model_fastest_shutter_speed(pslr_handle_t h) {
     return p->model->fastest_shutter_speed;
 }
 
+int pslr_get_model_base_iso_min(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->base_iso_min;
+}
+
+int pslr_get_model_base_iso_max(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->base_iso_max;
+}
 
 const char *pslr_camera_name(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
