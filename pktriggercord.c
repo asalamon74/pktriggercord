@@ -224,11 +224,11 @@ static const pslr_rational_t shutter_tbl_1_2[] = {
 
 
 static const int iso_tbl_1_3[] = {
-    100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1250, 1600
+    100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1250, 1600, 2000, 2500, 3200, 4000, 5000, 6400
 };
 
 static const int iso_tbl_1_2[] = {
-    100, 140, 200, 280, 400, 560, 800, 1100, 1600
+    100, 140, 200, 280, 400, 560, 800, 1100, 1600, 2200, 3200, 4500, 6400
 };
 
 static const int iso_tbl_1[] = {
@@ -416,6 +416,31 @@ void shutter_speed_table_init(pslr_status *st) {
     gtk_range_set_increments(GTK_RANGE(pw), 1.0, 1.0);
 }
 
+void iso_speed_table_init(pslr_status *st) {
+    GtkWidget *pw;    
+    pw = glade_xml_get_widget(xml, "iso_scale");
+
+    const int *tbl = 0;
+    int steps = 0;
+    which_iso_table(st, &tbl, &steps);
+    int min_iso_index=0;
+    int max_iso_index=steps-1;
+    int i;
+
+    for(i=0;  i<steps; i++) {
+	if( tbl[i] < pslr_get_model_base_iso_min(camhandle)) {
+	    min_iso_index = i+1;
+	}
+
+	if( tbl[i] <= pslr_get_model_base_iso_max(camhandle)) {
+	    max_iso_index = i;
+	}
+    }
+
+    gtk_range_set_range(GTK_RANGE(pw), (gdouble)(min_iso_index), (gdouble) (max_iso_index));
+
+}
+
 void camera_specific_init() {
     gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_hue_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     gtk_range_set_range( GTK_RANGE(glade_xml_get_widget(xml, "jpeg_sharpness_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
@@ -500,7 +525,6 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
         const int *tbl = 0;
         int steps = 0;
         which_iso_table(st_new, &tbl, &steps);
-        gtk_range_set_range(GTK_RANGE(pw), 0.0, (gdouble) (steps-1));
         for (i=0; i<steps; i++) {
             if (tbl[i] >= st_new->fixed_iso) {
                 current_iso = i;
@@ -687,7 +711,9 @@ static gboolean status_poll(gpointer data)
     }
 
     ret = pslr_get_status(camhandle, status_new);
+    // one time init of camera and status specific fields
     shutter_speed_table_init( status_new );
+    iso_speed_table_init( status_new );
     if (ret != PSLR_OK) {
         if (ret == PSLR_DEVICE_ERROR) {
             /* Camera disconnected */
