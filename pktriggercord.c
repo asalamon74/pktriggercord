@@ -35,6 +35,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <math.h>
+#include <getopt.h>
 
 #include "pslr.h"
 
@@ -258,13 +259,7 @@ static GtkStatusbar *statusbar;
 static guint sbar_connect_ctx;
 static guint sbar_download_ctx;
 
-#ifdef DEBUG
-#define DEBUG_DEFAULT true
-#else
-#define DEBUG_DEFAULT false
-#endif
-
-static bool debug = DEBUG_DEFAULT;
+bool debug = false;
 
 int common_init(void)
 {
@@ -2066,8 +2061,31 @@ static user_file_format file_format(pslr_status *st)
     }
 }
 
-int main()
+static struct option const longopts[] ={
+    {"debug", no_argument, NULL, 4},
+    { NULL, 0, NULL, 0}
+};
+
+void gui_getopt(int argc, char **argv) {
+    int optc;
+    while ((optc = getopt_long(argc, argv, "4", longopts, NULL)) != -1) {
+        switch (optc) {
+            case 4:
+                debug = true;
+                break;
+	}
+    }
+
+    if( !debug ) {
+	set_debug_mode(false);
+    }
+}
+
+
+
+int main(int argc, char **argv)
 {
+    gui_getopt(argc, argv);
     int r;
     r = common_init();
     if (r < 0) {

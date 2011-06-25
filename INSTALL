@@ -9,7 +9,6 @@ interface:
 
 make cli
 
-If you'd like to debug the program:
+If you'd like to debug the program you don't have to recompile
+just use --debug switch
 
-make clean
-make debug

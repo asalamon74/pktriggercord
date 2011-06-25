@@ -3,6 +3,7 @@ version 0.74.01
 	Removing hardwired version number from pktriggercord.glade
 	Adding 1/2 EV shutter speed table to GUI
 	Handling camera specific ISO tables (only base iso)
+	--debug switch added
 
 version 0.74.00 ( 2011-06-21 )
 	code cleanup: eliminating id2

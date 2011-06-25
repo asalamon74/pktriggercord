@@ -28,13 +28,13 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <glib.h>
 
-#ifdef DEBUG
-#define DPRINT(x...) printf(x)
-#else
-#define DPRINT(x...) do { } while (0)
-#endif
+extern bool debug;
+
+#define DPRINT(x...) g_printerr(x)
 
 typedef enum {
     PSLR_OK = 0,
