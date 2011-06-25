@@ -46,6 +46,7 @@
 
 extern char *optarg;
 extern int optind, opterr, optopt;
+bool debug = false;
 
 static struct option const longopts[] ={
     {"exposure_mode", required_argument, NULL, 'm'},
@@ -64,6 +65,7 @@ static struct option const longopts[] ={
     {"delay", required_argument, NULL, 'd'},
     {"auto_focus", no_argument, NULL, 'f'},
     {"exposure_compensation", required_argument, NULL, 3},
+    {"debug", no_argument, NULL, 4},
     { NULL, 0, NULL, 0}
 };
 
@@ -123,7 +125,7 @@ int main(int argc, char **argv) {
     bool status_hex_info = false;
     pslr_rational_t ec = {0, 0};
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:d:t:o:1:3:i:F:fhvs2", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:d:t:o:1:3:i:F:fhvs24", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
@@ -159,14 +161,16 @@ int main(int argc, char **argv) {
             case 2:
                 status_hex_info = true;
                 break;
+		
+            case 4:
+                debug = true;
+                break;
 
                 /***************************************************************/
             case 'm':
 
                 MODESTRING = optarg;
                 for (i = 0; i < strlen(optarg); i++) optarg[i] = toupper(optarg[i]);
-
-                DPRINT("mode=%s\n", optarg);
 
                 if (!strcmp(optarg, "GREEN")) {
                     EM = PSLR_EXPOSURE_MODE_GREEN;
@@ -208,14 +212,12 @@ int main(int argc, char **argv) {
                 /*****************************************/
             case 'r':
 
-                DPRINT("resolution=%s\n", optarg);
                 resolution = atoi(optarg);
                 break;
 
                 /*********************************************/
             case 'q':
 
-                DPRINT("quality=%s\n", optarg);
                 quality  = PSLR_JPEG_QUALITY_MAX - atoi(optarg);
                 if (!quality) {
                     fprintf(stderr, "%s: Invalid jpeg quality\n", argv[0]);
@@ -247,9 +249,6 @@ int main(int argc, char **argv) {
                     aperture.denom = 10;
                 }
 
-                DPRINT("aperture.nom=%d\n", aperture.nom);
-                DPRINT("aperture.denom=%d\n", aperture.denom);
-
                 break;
 
                 /*****************************************************/
@@ -276,7 +275,6 @@ int main(int argc, char **argv) {
 
                 /*******************************************************/
             case 'o':
-
                 output_file = optarg;
                 break;
 
@@ -307,7 +305,6 @@ int main(int argc, char **argv) {
                     iso = atoi(optarg);
 		}
 
-                DPRINT("iso=%d auto_iso=%d-%d\n", iso, auto_iso_min, auto_iso_max);
                 if (iso==0 && auto_iso_min==0) {
                     fprintf(stderr, "%s: Invalid iso value\n", argv[0]);
                     exit(-1);
@@ -322,6 +319,10 @@ int main(int argc, char **argv) {
 
         }
         /********************************************************/
+    }
+
+    if( !debug ) {
+	set_debug_mode(false);
     }
 
     if (!output_file && frames > 1) {
@@ -411,11 +412,7 @@ int main(int argc, char **argv) {
         pslr_focus(camhandle);
     }
     
-#ifdef DEBUG
-// 0x09, 0x1d, 0x1e, 0x08
-// 0x05
 //    pslr_test( camhandle, true, 0x23, 1, 1,0,0);
-#endif
 
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {

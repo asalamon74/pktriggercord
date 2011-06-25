@@ -364,12 +364,10 @@ int ipslr_handle_command_x18( ipslr_handle_t *p, bool cmd9_wrap, int subcommand,
     return PSLR_OK;
 }
 
-#ifdef DEBUG
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, cmd9_wrap, subcommand, argnum, arg1, arg2, arg3);
 }
-#endif
 
 int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
@@ -655,8 +653,8 @@ uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size) {
     if (blksz > BLKSZ)
         blksz = BLKSZ;
 
-    DPRINT("File offset %d segment: %d offset %d address 0x%x read size %d\n", p->offset, 
-           i, seg_offs, addr, blksz);
+//    DPRINT("File offset %d segment: %d offset %d address 0x%x read size %d\n", p->offset, 
+//           i, seg_offs, addr, blksz);
 
     ret = ipslr_download(p, addr, blksz, buf);
     if (ret != PSLR_OK)
@@ -792,7 +790,6 @@ static int ipslr_status(ipslr_handle_t *p, uint8_t *buf) {
     }
 }
 
-#ifdef DEBUG
 static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
 static int first = 1;
 
@@ -817,7 +814,6 @@ static void ipslr_status_diff(uint8_t *buf) {
         memcpy(lastbuf, buf, MAX_STATUS_BUF_SIZE);
     }
 }
-#endif
 
 int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n) {
         /* K10D status block */
@@ -865,9 +861,9 @@ int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n) {
 int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n) {
 
     uint8_t *buf = p->status_buffer;
-#ifdef DEBUG
+    if( debug ) {
         ipslr_status_diff(buf);
-#endif
+    }
         memset(status, 0, sizeof (*status));
         status->bufmask = buf[0x16] << 8 | buf[0x17];
         status->current_iso = get_uint32(&buf[0x130]); //d
@@ -937,9 +933,9 @@ int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
 
     uint8_t *buf = p->status_buffer;
         /* K-x status block */
-#ifdef DEBUG
+    if( debug ) {
         ipslr_status_diff(buf);
-#endif
+    }
 
         memset(status, 0, sizeof (*status));	
         status->bufmask = buf[0x1E] << 8 | buf[0x1F];
@@ -1003,9 +999,9 @@ int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n) {
         
         
     uint8_t *buf = p->status_buffer;
-#ifdef DEBUG
+    if( debug ) {
         ipslr_status_diff(buf);
-#endif
+    }
 
         memset(status, 0, sizeof (*status));	
         status->bufmask = buf[0x16] << 8 | buf[0x17];
@@ -1359,4 +1355,15 @@ static int32_t get_int32(uint8_t *buf) {
     int32_t res;
     res = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
     return res;
+}
+
+void gprintfunc_devnull(const gchar *string) {
+}
+
+void set_debug_mode(bool dmode) {
+    if( dmode ) {
+	// default printerr handler is ok
+    } else {
+	g_set_printerr_handler(gprintfunc_devnull);
+    }
 }

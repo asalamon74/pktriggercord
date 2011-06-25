@@ -1,14 +1,17 @@
 PREFIX ?= /usr/local
 CFLAGS ?= -O3 -g -Wall
 
+LIN_CFLAGS = $(CFLAGS) $(shell pkg-config --cflags glib-2.0)
+LIN_LDFLAGS = $(LDFLAGS) $(shell pkg-config --libs glib-2.0)
+
 VERSION=0.74.01
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec
 RPM_BUILD_ROOT ?=
 
-GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 libglade-2.0)
-GUI_CFLAGS=$(shell pkg-config --cflags gtk+-2.0 libglade-2.0)
+LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 libglade-2.0)
+LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 libglade-2.0)
 
 default: cli pktriggercord
 all: srczip rpm win
@@ -28,18 +31,13 @@ WINDIR=$(TARDIR)-win
 pslr.o: pslr_scsi.o pslr.c pslr.h
 
 pktriggercord-cli: pktriggercord-cli.c $(OBJS)
-	$(CC) $(CFLAGS) $^ $(LDFLAGS) -DVERSION='"$(VERSION)"' -o $@ -L. 
-
-debug: CFLAGS+=-DDEBUG
-debug: GUI_CFLAGS+=-DDEBUG
-
-debug: cli pktriggercord
+	$(CC) $(LIN_CFLAGS) $^ $(LIN_LDFLAGS) -DVERSION='"$(VERSION)"' -o $@ -L. 
 
 %.o : %.c %.h
-	$(CC) $(CFLAGS) -fPIC -c $<
+	$(CC) $(LIN_CFLAGS) -fPIC -c $<
 
 pktriggercord: pktriggercord.c $(OBJS)
-	$(CC) $(GUI_CFLAGS) $(GUI_LDFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LDFLAGS) -o $@ -L. 
+	$(CC) $(LIN_GUI_CFLAGS) $(LIN_GUI_LDFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LIN_LDFLAGS) -o $@ -L. 
 
 install-app:
 	install -d $(PREFIX)/bin
@@ -84,12 +82,15 @@ rpm: srcrpm
 	rpmbuild -ba $(SPECFILE)
 	cp $(TOPDIR)/RPMS/i386/pktriggercord-$(VERSION)-1.i386.rpm .
 
+WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/
+WIN_LDFLAGS=-lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0  -lglade-2.0
+
 # Windows cross-compile
 win: clean
-	$(WINGCC) $(CFLAGS) -c pslr_scsi.c
-	$(WINGCC) $(CFLAGS) -c pslr.c
-	$(WINGCC) $(CFLAGS) $(OBJS) -DVERSION='"$(VERSION)"' -o pktriggercord-cli.exe pktriggercord-cli.c
-	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DDATADIR=\".\" -O3 pktriggercord.c -g -Wall pslr.o pslr_scsi.o -o pktriggercord.exe -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0 -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/ -lglade-2.0 -L.
+	$(WINGCC) $(WIN_CFLAGS) -c pslr_scsi.c
+	$(WINGCC) $(WIN_CFLAGS) -c pslr.c
+	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"'  pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) $(WIN_LDFLAGS) -L.
+	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_CFLAGS) $(WIN_LDFLAGS) -L.
 	mkdir -p $(WINDIR)
 	cp pktriggercord.exe pktriggercord-cli.exe pktriggercord.glade Changelog COPYING $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)

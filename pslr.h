@@ -368,8 +368,8 @@ int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
 
 void hexdump(uint8_t *buf, uint32_t bufLen);
 
-#ifdef DEBUG
+void set_debug_mode(bool dmode);
+
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3);
-#endif
 
 #endif
