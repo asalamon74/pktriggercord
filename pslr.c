@@ -50,7 +50,6 @@
                      * memory allocation error from sg driver */
 #define BLOCK_RETRY 3 /* Number of retries, since we can occasionally
                        * get SCSI errors when downloading data */
-#define MAX_STATUS_BUF_SIZE 436
 
 #define CHECK(x) do {                           \
         int __r;                                \
@@ -83,9 +82,8 @@ typedef int (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status, int 
 
 typedef struct {
     uint32_t id1;
-//    uint32_t id2;
     const char *name;
-    bool old_scsi_command; // 0 for *ist cameras, 1 for the newer cameras
+    bool old_scsi_command; // 1 for *ist cameras, 0 for the newer cameras
     int buffer_size;
     int jpeg_stars; // 3 or 4
     int jpeg_resolutions[MAX_RESOLUTION_SIZE];
@@ -100,7 +98,6 @@ struct ipslr_handle {
     int fd;
     pslr_status status;
     uint32_t id1;
-//    uint32_t id2;
     ipslr_model_info_t *model;
     ipslr_segment_t segments[MAX_SEGMENTS];
     uint32_t segment_count;
@@ -152,7 +149,7 @@ int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n);
 int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n);
 
 static ipslr_model_info_t camera_models[] = {
-    { PSLR_ID1_IST_DS,  "*ist DS",  1, 264, 3, {6, 4, 2},      7, 4000, 200, 3200, ipslr_status_parse_istds },
+    { PSLR_ID1_IST_DS,  "*ist DS",  1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, ipslr_status_parse_istds },
     { PSLR_ID1_K20D,    "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, ipslr_status_parse_k20d  },
     { PSLR_ID1_K10D,    "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
     { PSLR_ID1_GX10,    "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
@@ -161,16 +158,17 @@ static ipslr_model_info_t camera_models[] = {
     { PSLR_ID1_K200D,   "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, ipslr_status_parse_k200d }, 
     { PSLR_ID1_K7,      "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, ipslr_status_parse_kx    },
 // only limited support from here
-    { PSLR_ID1_IST_D,   "*ist D",   1, 0,   0, {}, 0, 0, 0, 0, NULL},
-    { PSLR_ID1_IST_DS2, "*ist DS2", 1, 0,   0, {}, 0, 0, 0, 0, NULL},
-    { PSLR_ID1_IST_DL,  "*ist DL",  1, 0,   0, {}, 0, 0, 0, 0, NULL},
-    { PSLR_ID1_K110D,   "K110D",    0, 0,   0, {}, 0, 0, 0, 0, NULL},
-    { PSLR_ID1_K100D,   "K100D",    0, 0,   0, {}, 0, 0, 0, 0, NULL},
-
+    { PSLR_ID1_IST_D,   "*ist D",   1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, NULL},
+    { PSLR_ID1_IST_DS2, "*ist DS2", 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
+    { PSLR_ID1_IST_DL,  "*ist DL",  1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
+    { PSLR_ID1_K110D,   "K110D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
+    { PSLR_ID1_K100D,   "K100D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
+    { PSLR_ID1_KR,      "K-r",      0, 440, 3, {12, 10, 6, 2}, 9, 6000, 200, 12800, NULL},
+    { PSLR_ID1_K5,      "K-5",      0, 0,   4, {16, 10, 6, 2}, 9, 6000, 100, 12800, NULL},
 };
 
 char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
-char* valid_models[5] = {"DIGITAL_CAMERA", "DSC_K20D", "DSC_K-x", "DSC_K200D", "DSC_K-7"};
+char* valid_models[2] = {"DIGITAL_CAMERA", "DSC"}; // no longer list all of them, DSC* should be ok
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
     int i;    
@@ -213,7 +211,7 @@ static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t e
 int find_in_array( char** array, char* str ) {
     int i;
     for( i = 0; i<sizeof(array); ++i ) {
-	if( strncmp( array[i], str, sizeof(array[i]) ) == 0 ) {
+	if( strncmp( array[i], str, strlen(array[i]) ) == 0 ) {
 	    return i;
 	}
     }
@@ -1055,28 +1053,25 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     int n;
     CHECK(command(p->fd, 0, 8, 0));
     n = get_result(p->fd);
+    DPRINT("read %d bytes\n", n);
     int expected_bufsize = p->model->buffer_size;
+    DPRINT("expected_bufsize: %d\n",expected_bufsize);
 
     CHECK(read_result(p->fd, p->status_buffer, n > MAX_STATUS_BUF_SIZE ? MAX_STATUS_BUF_SIZE: n));
 
-    if( p->model && expected_bufsize > 0 && expected_bufsize != n ) {
-	DPRINT("Waiting for %d bytes but got %d\n", expected_bufsize, n);
+    if( expected_bufsize == 0 || !p->model->parser_function ) {
+        // limited support only
+        return PSLR_OK;
+    } else if( expected_bufsize > 0 && expected_bufsize != n ) {
+        DPRINT("Waiting for %d bytes but got %d\n", expected_bufsize, n);
         return PSLR_READ_ERROR;
-//	return PSLR_OK;
-    }
-
-    int ret;
-    if( p->model && p->model->parser_function ) {
-	ret = (*p->model->parser_function)(p, status, n);
     } else {
-        /* Unknown camera */
-	ret = PSLR_OK;
+        // everything OK
+        int ret = (*p->model->parser_function)(p, status, n);
+        // required for K-x, probably for other cameras too
+        status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
+        return ret;
     }
-
-    // required for K-x, probably for other cameras too
-    status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
-
-    return ret;
 }
 
 static int ipslr_press_shutter(ipslr_handle_t *p) {

@@ -352,7 +352,6 @@ int main(int argc, char **argv) {
         pslr_set_jpeg_quality(camhandle, quality);
     }
 
-
     // We do not check iso settings
     // The camera can handle invalid iso settings (it will use ISO 800 instead of ISO 795)
 
@@ -402,8 +401,6 @@ int main(int argc, char **argv) {
 
 
         pslr_set_aperture(camhandle, aperture);
-
-
     }
 
     int frameNo;
@@ -417,9 +414,9 @@ int main(int argc, char **argv) {
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {
             int bufsize = pslr_get_model_buffer_size( camhandle );
-	    uint8_t status_buffer[bufsize];
+	    uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
 	    pslr_get_status_buffer(camhandle, status_buffer);
-	    hexdump( status_buffer, bufsize );
+	    hexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
         }
 	pslr_get_status(camhandle, &status);
 	print_status_info( camhandle, status );
