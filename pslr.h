@@ -62,6 +62,10 @@
 #define PSLR_ID1_KX      0x12dfe
 #define PSLR_ID1_K200D   0x12cfa
 #define PSLR_ID1_K7      0x12db8
+#define PSLR_ID1_KR      0x12e6c
+#define PSLR_ID1_K5      0x12e76
+
+#define MAX_STATUS_BUF_SIZE 440
 
 typedef enum {
     PSLR_BUF_PEF,

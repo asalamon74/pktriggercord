@@ -10,8 +10,5 @@ Known bugs of pkTriggerCord:
   Changing shutter speed to 1/6000 is not working. It changes to 1/8 
   instead.
 
-  The program does not work as a non-root user on several Linux 
-  distributions.
-
   ISO table of GUI only shows the same iso range for all cameras. It
   should be camera-specific.
