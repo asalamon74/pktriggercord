@@ -1001,9 +1001,9 @@ int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status, int n) {
 
     uint8_t *buf = p->status_buffer;
         /* K-r status block */
-#ifdef DEBUG
+    if( debug ) {
         ipslr_status_diff(buf);
-#endif
+    }
 
         memset(status, 0, sizeof (*status));
         status->bufmask = buf[0x1E] << 8 | buf[0x1F];
