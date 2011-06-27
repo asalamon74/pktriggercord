@@ -377,6 +377,7 @@ int pslr_get_model_fastest_shutter_speed(pslr_handle_t h);
 int pslr_get_model_base_iso_min(pslr_handle_t h);
 int pslr_get_model_base_iso_max(pslr_handle_t h);
 int *pslr_get_model_jpeg_resolutions(pslr_handle_t h);
+bool pslr_get_model_only_limited(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
 int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);

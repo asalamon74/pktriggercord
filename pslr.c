@@ -575,7 +575,8 @@ int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int b
 
     CHECK(ipslr_status_full(p, &p->status));
     bufs = p->status.bufmask;
-    if ((bufs & (1 << bufno)) == 0) {
+    if( p->model->parser_function && (bufs & (1 << bufno)) == 0) {
+	// do not check this for limited support cameras
         DPRINT("No buffer data (%d)\n", bufno);
         return PSLR_READ_ERROR;
     }
@@ -670,6 +671,7 @@ uint32_t pslr_buffer_get_size(pslr_handle_t h) {
     for (i = 0; i < p->segment_count; i++) {
         len += p->segments[i].length;
     }
+    DPRINT("buffer get size:%d\n",len);
     return len;
 }
 
@@ -703,6 +705,11 @@ int pslr_get_model_jpeg_property_levels(pslr_handle_t h) {
 int *pslr_get_model_jpeg_resolutions(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->jpeg_resolutions;
+}
+
+bool pslr_get_model_only_limited(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->buffer_size == 0 && !p->model->parser_function;
 }
 
 int pslr_get_model_fastest_shutter_speed(pslr_handle_t h) {
