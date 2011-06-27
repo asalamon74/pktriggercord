@@ -1,10 +1,10 @@
-version 0.74.01
+version 0.75.00
 	buffer window bugfixes
 	Removing hardwired version number from pktriggercord.glade
 	Adding 1/2 EV shutter speed table to GUI
 	Handling camera specific ISO tables (only base iso)
 	--debug switch added
-	Limited support added: istD, istDS2, istDL, K110D, K100D, K-r, K-5. 
+	Limited support added: istD, istDS2, istDL, K110D, K100D, K-r, K-5.
 
 version 0.74.00 ( 2011-06-21 )
 	code cleanup: eliminating id2
