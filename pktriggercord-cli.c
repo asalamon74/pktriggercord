@@ -558,7 +558,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -t, --shutter_speed=SHUTTER SPEED	values can be given in rational form (eg. 1/90)\n\
 					or decimal form (eg. 0.8)\n\
   -r, --resolution=RESOLUTION		resolution in megapixels\n\
-  -q, --quality=QUALITY			valid values are 1, 2 and 3\n\
+  -q, --quality=QUALITY			valid values are 1, 2, 3 and 4\n\
   -f, --auto_focus			autofocus\n\
   -s, --status			        print status info\n\
       --status_hex			print status hex info\n\
@@ -566,6 +566,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -d, --delay=SECONDS			delay between the frames (seconds)\n\
       --file_format=FORMAT		valid values: PEF, DNG, JPEG\n\
   -o, --output_file=FILE		send output to FILE instead of stdout\n\
+      --debug	                        turn on debug messages\n\
   -v, --version				display version information and exit\n\
   -h, --help				display this help and exit\n\
 \n", name);
