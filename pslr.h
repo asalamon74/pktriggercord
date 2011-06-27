@@ -296,7 +296,6 @@ typedef struct {
     uint32_t auto_iso_min;
     uint32_t auto_iso_max;
     uint32_t drive_mode;
-    uint32_t bracket_ev;
     uint32_t shake_reduction;
     uint32_t white_balance_mode;
     uint32_t white_balance_adjust_mg;
