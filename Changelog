@@ -1,4 +1,7 @@
-version 0.75.00
+version 0.75.01
+	Support for K-r added by Vincenc Podobnik <vincenc.podobnik@gmail.com>
+
+version 0.75.00 ( 2011-06-26 )
 	buffer window bugfixes
 	Removing hardwired version number from pktriggercord.glade
 	Adding 1/2 EV shutter speed table to GUI
