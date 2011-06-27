@@ -4,6 +4,7 @@
     Remote control of Pentax DSLR cameras.
 
     Support for K200D added by Jens Dreyer <jens.dreyer@udo.edu> 04/2011
+    Support for K-r added by Vincenc Podobnik <vincenc.podobnik@gmail.com> 06/2011
     
     based on:
 
