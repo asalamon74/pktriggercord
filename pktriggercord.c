@@ -135,6 +135,7 @@ static void update_main_area(int buffer);
 static void init_controls(pslr_status *st_new, pslr_status *st_old);
 static bool auto_save_check(int format, int buffer);
 static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old);
+static void manage_camera_buffers_limited();
 
 static void which_shutter_table(pslr_status *st, const pslr_rational_t **table, int *steps);
 static void which_iso_table(pslr_status *st, const int **table, int *steps);
@@ -827,26 +828,27 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old)
         return;
     }
 
-    if (st_old && st_new->bufmask == st_old->bufmask)
+    if (st_old && st_new->bufmask == st_old->bufmask) {
         return;
-
-    if (st_old)
+    }
+    if (st_old) {
         new_pictures = (st_new->bufmask ^ st_old->bufmask) & st_new->bufmask;
-    else
+    } else {
         new_pictures = st_new->bufmask;
-
-    if (!new_pictures)
+    }
+    if (!new_pictures) {
         return;
+    }
 
     /* Show the newest picture in the main area */
 
     for (new_picture=MAX_BUFFERS; new_picture>=0; --new_picture) {
         if (new_pictures & (1<<new_picture))
             break;
-    }
+	    }
     if (new_picture >= 0) {
         update_main_area(new_picture);
-    }
+	}
 
     format = file_format(st_new);
 
@@ -866,6 +868,16 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old)
             update_preview_area(i);
     }
 }
+
+static void manage_camera_buffers_limited() {
+    int format;
+    update_main_area(0);
+
+    format = USER_FILE_FORMAT_PEF;
+
+    update_preview_area(0);
+}
+
 
 static void auto_save_folder_button_clicked_cb(GtkButton *widget)
 {
@@ -1012,7 +1024,7 @@ static void update_main_area(int buffer)
         gtk_main_iteration();
 
     pError = NULL;
-    DPRINT("Trying to read buffer\n");
+    DPRINT("Trying to read buffer %d\n", buffer);
     r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize);
     if (r != PSLR_OK) {
         printf("Could not get buffer data\n");
@@ -1373,6 +1385,9 @@ void shutter_press(GtkWidget *widget)
     if (r != PSLR_OK) {
         DPRINT("shutter error\n");
         return;
+    }
+    if( pslr_get_model_only_limited( camhandle ) ) {
+	manage_camera_buffers_limited();
     }
 }
 
