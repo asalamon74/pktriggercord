@@ -159,7 +159,7 @@ static ipslr_model_info_t camera_models[] = {
     { PSLR_ID1_KX,      "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, ipslr_status_parse_kx    },
     { PSLR_ID1_K200D,   "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, ipslr_status_parse_k200d }, 
     { PSLR_ID1_K7,      "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, ipslr_status_parse_kx    },
-    { PSLR_ID1_KR,      "K-r",      0, 440, 3, {12, 10, 6, 2}, 9, 6000, 200, 12800, ipslr_status_parse_kr   },
+    { PSLR_ID1_KR,      "K-r",      0, 440, 3, {12, 10, 6, 2}, 9, 6000, 100, 12800, ipslr_status_parse_kr   },
 // only limited support from here
     { PSLR_ID1_IST_D,   "*ist D",   1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, NULL},
     { PSLR_ID1_IST_DS2, "*ist DS2", 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
