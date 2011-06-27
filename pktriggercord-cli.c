@@ -537,7 +537,8 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("selected af point: %d\n", status.selected_af_point);
     printf("focused af point: %d\n", status.focused_af_point);
     printf("drive mode: %d\n", status.drive_mode);
-    printf("bracket ev: %d\n", status.bracket_ev);
+    printf("auto bracket picture count: %d\n", status.auto_bracket_picture_count);
+    printf("auto bracket ev: %s\n", format_rational(status.auto_bracket_ev, "%.2f"));
     printf("shake reduction: %s\n", status.shake_reduction > 0 ? "on" : "off");
     printf("white balance mode: %d\n", status.white_balance_mode);
     printf("white balance adjust mg: %d\n", status.white_balance_adjust_mg);

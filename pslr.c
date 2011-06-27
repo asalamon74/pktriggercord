@@ -981,7 +981,9 @@ int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
         status->auto_iso_min = get_uint32(&buf[0x6C]);
         status->auto_iso_max = get_uint32(&buf[0x70]);
         status->drive_mode = get_uint32(&buf[0x5C]);
-        status->bracket_ev = get_uint32(&buf[0x50]);
+        status->auto_bracket_ev.nom = get_uint32(&buf[0x50]);
+        status->auto_bracket_ev.denom = get_uint32(&buf[0x54]);
+        status->auto_bracket_picture_count = get_uint32(&buf[0x58]);
         status->shake_reduction = get_uint32(&buf[0xE0]);
         status->white_balance_mode = get_uint32(&buf[0x74]);
         status->white_balance_adjust_mg = get_uint32(&buf[0x78]); // 0: M7 7: 0 14: G7
@@ -990,8 +992,6 @@ int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
         status->flash_exposure_compensation = get_int32(&buf[0x2C]);
         status->manual_mode_ev = get_int32(&buf[0x15C]);
         status->color_space = get_uint32(&buf[0xA0]);
-	// 0x58 bracket picture count ?
-
         return PSLR_OK;
 }
 
@@ -1042,11 +1042,6 @@ int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status, int n) {
         status->auto_bracket_ev.nom = get_uint32(&buf[0x50]);
         status->auto_bracket_ev.denom = get_uint32(&buf[0x54]);
         status->auto_bracket_picture_count = get_uint32(&buf[0x58]);
-
-        // Kept for backward compatibility
-        //
-        status->bracket_ev = get_uint32(&buf[0x50]);
-
 
         // 0 - Single
         // 1 - Hi-speed burst
