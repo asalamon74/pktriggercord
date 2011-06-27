@@ -92,7 +92,9 @@ typedef enum {
     PSLR_JPEG_IMAGE_MODE_PORTRAIT,
     PSLR_JPEG_IMAGE_MODE_LANDSCAPE,
     PSLR_JPEG_IMAGE_MODE_VIBRANT,
-    PSLR_JPEG_IMAGE_MODE_MONOCHROME, // MUTED supposed to be after MONOCHROME
+    PSLR_JPEG_IMAGE_MODE_MONOCHROME,
+    // PSLR_JPEG_IMAGE_MODE_MUTED,
+    // PSLR_JPEG_IMAGE_MODE_REVERSAL_FILM,
     PSLR_JPEG_IMAGE_MODE_MAX
 } pslr_jpeg_image_mode_t;
 
@@ -259,6 +261,15 @@ typedef struct {
     pslr_rational_t lens_min_aperture;
     pslr_rational_t set_shutter_speed;
     pslr_rational_t set_aperture;
+
+    // Vince: Added for more exact K-r support
+    //
+    pslr_rational_t max_shutter_speed;
+    pslr_rational_t auto_bracket_ev;
+    uint32_t auto_bracket_picture_count;
+    //
+    // END: K-r
+
     uint32_t fixed_iso;
     uint32_t jpeg_resolution;
     uint32_t jpeg_saturation;
