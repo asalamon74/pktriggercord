@@ -4,7 +4,7 @@ CFLAGS ?= -O3 -g -Wall
 LIN_CFLAGS = $(CFLAGS) $(shell pkg-config --cflags glib-2.0)
 LIN_LDFLAGS = $(LDFLAGS) $(shell pkg-config --libs glib-2.0)
 
-VERSION=0.75.02
+VERSION=0.75.03
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec

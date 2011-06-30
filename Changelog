@@ -1,3 +1,6 @@
+version 0.75.03
+	Support for K-r added by Vincenc Podobnik <vincenc.podobnik@gmail.com>
+
 version 0.75.02 ( 2011-06-30 )
 	Better bracket ev handling for K-x
 	Buffer handling bugfix for limited support cameras (thx Charles	Orbello for reporting and testing)
