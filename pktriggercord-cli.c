@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
     bool status_hex_info = false;
     pslr_rational_t ec = {0, 0};
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:d:t:o:1:3:i:F:fhvs24", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:i:F:fhvs24", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
