@@ -3,6 +3,7 @@ version 0.75.01
 	Better bracket ev handling for K-x
 	Buffer handling bugfix for limited support cameras
 	Shutter speed bugfix
+	-r switch bugfix
 
 version 0.75.00 ( 2011-06-26 )
 	buffer window bugfixes
