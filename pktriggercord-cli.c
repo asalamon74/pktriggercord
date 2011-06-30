@@ -537,6 +537,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("selected af point: %d\n", status.selected_af_point);
     printf("focused af point: %d\n", status.focused_af_point);
     printf("drive mode: %d\n", status.drive_mode);
+    printf("auto bracket mode: %s\n", status.auto_bracket_mode > 0 ? "on" : "off");
     printf("auto bracket picture count: %d\n", status.auto_bracket_picture_count);
     printf("auto bracket ev: %s\n", format_rational(status.auto_bracket_ev, "%.2f"));
     printf("shake reduction: %s\n", status.shake_reduction > 0 ? "on" : "off");
@@ -546,6 +547,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("flash mode: %d\n", status.flash_mode);
     printf("flash exposure compensation: %.2f\n", (1.0 * status.flash_exposure_compensation/256));
     printf("manual mode ev: %.2f\n", (1.0 * status.manual_mode_ev / 10));
+    printf("lens id: %d %d\n", status.lens_id1, status.lens_id2);
 }
 
 void usage(char *name) {
