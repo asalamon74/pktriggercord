@@ -66,7 +66,7 @@
 #define PSLR_ID1_KR      0x12e6c
 #define PSLR_ID1_K5      0x12e76
 
-#define MAX_STATUS_BUF_SIZE 440
+#define MAX_STATUS_BUF_SIZE 444
 
 typedef enum {
     PSLR_BUF_PEF,
@@ -262,15 +262,10 @@ typedef struct {
     pslr_rational_t lens_min_aperture;
     pslr_rational_t set_shutter_speed;
     pslr_rational_t set_aperture;
-
-    // Vince: Added for more exact K-r support
-    //
     pslr_rational_t max_shutter_speed;
+    uint32_t auto_bracket_mode; // 1: on, 0: off
     pslr_rational_t auto_bracket_ev;
     uint32_t auto_bracket_picture_count;
-    //
-    // END: K-r
-
     uint32_t fixed_iso;
     uint32_t jpeg_resolution;
     uint32_t jpeg_saturation;
@@ -304,6 +299,8 @@ typedef struct {
     int32_t flash_exposure_compensation; // 1/256
     int32_t manual_mode_ev; // 1/10
     uint32_t color_space;
+    uint32_t lens_id1;
+    uint32_t lens_id2;
 } pslr_status;
 
 typedef struct {
