@@ -137,7 +137,7 @@ static bool auto_save_check(int format, int buffer);
 static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old);
 static void manage_camera_buffers_limited();
 
-static void which_shutter_table(pslr_status *st, const pslr_rational_t **table, int *steps);
+static void which_shutter_table(pslr_status *st, pslr_rational_t **table, int *steps);
 static void which_iso_table(pslr_status *st, const int **table, int *steps);
 static void which_ec_table(pslr_status *st, const int **table, int *steps);
 static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, int py);
@@ -204,24 +204,24 @@ static const int aperture_tbl[] = {
     320, 360, 400, 450, 510, 570
 };
 
-static const pslr_rational_t shutter_tbl_1_3[] = {
+static pslr_rational_t shutter_tbl_1_3[] = {
 { 30, 1},{ 25, 1},{ 20, 1},{ 15, 1},{ 13, 1},{ 10, 1},{ 8 , 1},{ 6 , 1},
 { 5 , 1},{ 4 , 1},{ 3 , 1},{ 25, 10},{ 2 , 1},{ 16, 10},{ 13, 10},{ 1 , 1},
 { 8 , 10},{ 6 , 10},{ 5 , 10},{ 4 , 10},{ 3 , 10},{ 1 , 4},{ 1 , 5},{ 1 , 6},
 { 1 , 8},{ 1 , 10},{ 1 , 13},{ 1 , 15},{ 1 , 20},{ 1 , 25},{ 1 , 30},{ 1 , 40},
 { 1 , 50},{ 1 , 60},{ 1 , 80},{ 1 , 100},{ 1 , 125},{ 1 , 160},{ 1 , 200},{ 1 , 250},
 { 1 , 320},{ 1 , 400},{ 1 , 500},{ 1 , 640},{ 1 , 800},{ 1 , 1000},{ 1 , 1250},{ 1 , 1600},
-{ 1 , 2000},{ 1 , 2500},{ 1 , 3200},{ 1 , 4000},{1 , 5000}, {1, 6000}, {1, 8000}
+{ 1 , 2000},{ 1 , 2500},{ 1 , 3200},{ 1 , 4000},{1 , 5000}, {1, 6400}, {1, 8000}
 };
 
-static const pslr_rational_t shutter_tbl_1_2[] = {
+static pslr_rational_t shutter_tbl_1_2[] = {
 { 30, 1},{ 20, 1},{ 15, 1},{ 10, 1},{ 8 , 1},{ 6 , 1},
 { 4 , 1},{ 3 , 1},{ 2 , 1},{ 15, 10},{ 1 , 1},
 { 7 , 10},{ 5 , 10},{ 3 , 10},{ 1 , 4},{ 1 , 6},
 { 1 , 8},{ 1 , 10},{ 1 , 15},{ 1 , 20},{ 1 , 30},
 { 1 , 45},{ 1 , 60},{ 1 , 90},{ 1 , 125},{ 1 , 180},{ 1 , 250},
 { 1 , 350},{ 1 , 500},{ 1 , 750},{ 1 , 1000},{ 1 , 1500},
-{ 1 , 2000},{ 1 , 3000},{ 1 , 4000}, {1, 6000}, {1, 8000}
+{ 1 , 2000},{ 1 , 3000},{ 1 , 4000}, {1, 6400}, {1, 8000}
 };
 
 
@@ -396,14 +396,20 @@ void shutter_speed_table_init(pslr_status *st) {
     // check valid shutter speeds for the camera
     int max_valid_shutter_speed_index=0;
     int i;
-    const pslr_rational_t *tbl;
+    pslr_rational_t *tbl;
     int steps;
     which_shutter_table( st, &tbl, &steps);
+    int fastest_shutter_speed = pslr_get_model_fastest_shutter_speed(camhandle);
     for(i=0;  i<steps; i++) {
 	if( tbl[i].nom == 1 &&
-	    tbl[i].denom <= pslr_get_model_fastest_shutter_speed(camhandle)) {
+	    tbl[i].denom <= fastest_shutter_speed) {
 	    max_valid_shutter_speed_index = i;
 	}
+    }
+    if( tbl[max_valid_shutter_speed_index].denom != fastest_shutter_speed ) {
+        // not an exact match
+        ++max_valid_shutter_speed_index;
+        tbl[max_valid_shutter_speed_index].denom = fastest_shutter_speed; 	
     }
     GtkWidget *pw;
     pw = glade_xml_get_widget(xml, "shutter_scale");
@@ -497,7 +503,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     pw = glade_xml_get_widget(xml, "shutter_scale");
     if (st_new) {
         idx = -1;
-	const pslr_rational_t *tbl = 0;
+	pslr_rational_t *tbl = 0;
         int steps = 0;    
         which_shutter_table( st_new, &tbl, &steps );
         for (i=0; i<steps; i++) {
@@ -1554,7 +1560,7 @@ static gchar* shutter_scale_format_value_cb(GtkScale *scale, gdouble value)
     int idx = rint(value);
     //printf("shutter value: %f\n", value);
 
-    const pslr_rational_t *tbl = 0;
+    pslr_rational_t *tbl = 0;
     int steps = 0;    
     if (!status_new) {
 	return g_strdup_printf("(%f)", value);
@@ -1640,7 +1646,7 @@ static void shutter_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
     pslr_rational_t value;
     int ret;
     int idx;
-    const pslr_rational_t *tbl;
+    pslr_rational_t *tbl;
     int steps;
 
     if (!status_new) {
@@ -2047,7 +2053,7 @@ static void which_ec_table(pslr_status *st, const int **table, int *steps)
     assert(*steps);
 }
 
-static void which_shutter_table(pslr_status *st, const pslr_rational_t **table, int *steps)
+static void which_shutter_table(pslr_status *st, pslr_rational_t **table, int *steps)
 {
     if (st->custom_ev_steps == PSLR_CUSTOM_EV_STEPS_1_2) {
         *table = shutter_tbl_1_2;
