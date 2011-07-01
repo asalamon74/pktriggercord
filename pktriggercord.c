@@ -691,6 +691,15 @@ static gboolean status_poll(gpointer data)
             camera_specific_init();
             const char *name;
             name = pslr_camera_name(camhandle);
+
+            // Vince: TODO
+            //
+            if( strcmp( name, "K-r" ) ){
+                GtkComboBox *pw = (GtkComboBox*)glade_xml_get_widget(xml, "jpeg_image_mode_combo");
+                gtk_combo_box_append_text(GTK_COMBO_BOX(pw), "Muted" );
+                gtk_combo_box_append_text(GTK_COMBO_BOX(pw), "Reversal film" );
+            }
+
             snprintf(buf, sizeof(buf), "Connected: %s", name);
             buf[sizeof(buf)-1] = '\0';
             gtk_statusbar_push(statusbar, sbar_connect_ctx, buf);

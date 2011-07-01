@@ -1015,169 +1015,21 @@ int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
 // Vince: K-r support 2011-06-22
 //
 int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status, int n) {
-
     uint8_t *buf = p->status_buffer;
         /* K-r status block */
     if( debug ) {
         ipslr_status_diff(buf);
     }
 
-        memset(status, 0, sizeof (*status));
-        status->bufmask = buf[0x1E] << 8 | buf[0x1F];
+    memset(status, 0, sizeof (*status));
+    ipslr_status_parse_common( p, status, n );
+    status->zoom.nom = get_uint32(&buf[0x19C]);
+    status->zoom.denom = get_uint32(&buf[0x1A0]);
+    status->focus = get_int32(&buf[0x1A4]);
+    status->lens_id1 = (get_uint32( &buf[0x18C])) & 0x0F;
+    status->lens_id2 = get_uint32( &buf[0x198]);
+    return PSLR_OK;
 
-        status->user_mode_flag = get_uint32(&buf[0x24]); //d
-        status->flash_mode     = get_uint32(&buf[0x28]);
-        status->flash_exposure_compensation = get_int32(&buf[0x2C]);
-
-        // What's displayed on the camera's LCD screen
-        //
-        // 0x00 - Nothing
-        // 0x01 - Main menu
-        // 0x02 - Shutter half pressed / pressed
-        // 0x03 - Shooting stats
-        // 0x04 - Info menu
-        // 0x10 - w.b. menu
-        // 0x15 - Flash menu
-        // 0x17 - Live View
-        // 0x1F - Drive mode menu
-        // 0x22 - iso menu
-        //
-        // char screen = buf[0x17];
-
-
-        status->set_shutter_speed.nom = get_uint32(&buf[0x34]); //d
-        status->set_shutter_speed.denom = get_uint32(&buf[0x38]); //d
-        status->set_aperture.nom = get_uint32(&buf[0x3C]); //d
-
-        status->set_aperture.denom = get_uint32(&buf[0x40]); //d
-        status->ec.nom = get_uint32(&buf[0x44]); //d
-        status->ec.denom = get_uint32(&buf[0x48]); //d
-
-
-        // K-r's auto bracketing signature
-        //
-        status->auto_bracket_ev.nom = get_uint32(&buf[0x50]);
-        status->auto_bracket_ev.denom = get_uint32(&buf[0x54]);
-        status->auto_bracket_picture_count = get_uint32(&buf[0x58]);
-
-        // 0 - Single
-        // 1 - Hi-speed burst
-        // 6 - Lo burst
-        // 3 - 2s self timer delay
-        // 2 - 12s self timer delay
-        //
-        // Mirrored on &buf[0xD4]
-        //
-        status->drive_mode = get_uint32(&buf[0x5C]);
-
-        status->fixed_iso = get_uint32(&buf[0x68]); //d
-        status->auto_iso_min = get_uint32(&buf[0x6C]);
-
-
-
-        status->auto_iso_max = get_uint32(&buf[0x70]);
-        status->white_balance_mode = get_uint32(&buf[0x74]);
-        status->white_balance_adjust_mg = get_uint32(&buf[0x78]); // 0: M7 7: 0 14: G7
-        status->white_balance_adjust_ba = get_uint32(&buf[0x7C]); // 0: B7 7: 0 14: A7
-
-
-        status->image_format = get_uint32(&buf[0x80]); //d
-        status->jpeg_resolution = get_uint32(&buf[0x84]); //d
-        status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x88])); //d
-        status->raw_format = get_uint32(&buf[0x8C]); //d
-
-        status->jpeg_image_mode = get_uint32(&buf[0x90]); //d
-        status->jpeg_saturation = get_uint32(&buf[0x94]); // commands do now work for it?
-        status->jpeg_sharpness = get_uint32(&buf[0x98]); // commands do now work for it?
-        status->jpeg_contrast = get_uint32(&buf[0x9C]); // commands do now work for it?
-
-
-        status->color_space = get_uint32(&buf[0xA0]);
-        status->custom_ev_steps = get_uint32(&buf[0xA4]);
-        status->custom_sensitivity_steps = get_uint32(&buf[0xA8]);
-
-
-        status->exposure_mode = get_uint32(&buf[0xb4]); //d
-
-
-        // Changes {1, 2, 3} with AE metering mode.
-        // Duplicated on [0xCC] and [0x154]
-        //
-        status->af_point_select = get_uint32(&buf[0xBC]);
-
-
-        // 0 - Manual focus
-        // 1 - AF.S (single)
-        // 2 - AF.C (Continuous)
-        // 3 - AF.A (auto)
-        //
-        status->af_mode = get_uint32(&buf[0xC0]);
-
-
-        // 0 - Auto 5 and/or auto 11
-        // 1 - Selected AF point
-        // 2 - Spot
-        //
-        status->af_point_select = get_uint32(&buf[0xC4]);
-        status->selected_af_point = get_uint32(&buf[0xC8]);
-
-
-        status->shake_reduction = get_uint32(&buf[0xE0]);
-
-
-        // Seems to be baseline colour temperature: 5000 kelvin
-        //
-        // uint32_t colour_temperature = get_uint32(&buf[0xF8]);
-
-        status->jpeg_hue = get_uint32(&buf[0xFC]);
-
-        status->current_shutter_speed.nom = get_uint32(&buf[0x10C]); //d
-        status->current_shutter_speed.denom = get_uint32(&buf[0x110]); //d
-        status->current_aperture.nom = get_uint32(&buf[0x114]); //d 3C
-        status->current_aperture.denom = get_uint32(&buf[0x118]); //d 40
-
-
-        // Vince: Don't know if similar is present with other Pentax models
-        //
-        status->max_shutter_speed.nom = get_uint32(&buf[0x12C]);
-        status->max_shutter_speed.denom = get_uint32(&buf[0x130]);
-
-        status->current_iso = get_uint32(&buf[0x134]); //d
-
-        status->light_meter_flags = get_uint32(&buf[0x140]); //d
-        status->lens_min_aperture.nom = get_uint32(&buf[0x144]); //d
-        status->lens_min_aperture.denom = get_uint32(&buf[0x148]); //d
-        status->lens_max_aperture.nom = get_uint32(&buf[0x14C]); //d
-
-        status->lens_max_aperture.denom = get_uint32(&buf[0x150]); //d
-        status->manual_mode_ev = get_int32(&buf[0x15C]);
-
-
-        status->focused_af_point = get_uint32(&buf[0x168]); //d
-
-
-
-        // Similar values in the 800 - 600 range decimal.
-        // Battery related since they decrease over time
-        // and increase on inserting new cells
-        //
-        /*
-        uint32_t batery_value_1 = get_uint32( &buf[0x170] );
-        uint32_t batery_value_2 = get_uint32( &buf[0x174] );
-        uint32_t batery_value_3 = get_uint32( &buf[0x180] );
-        */
-
-
-
-        // Moved +4 bytes from K-x
-        //
-        status->zoom.nom = get_uint32(&buf[0x19C]);
-        status->zoom.denom = get_uint32(&buf[0x1A0]);
-
-        status->focus = get_int32(&buf[0x1A4]); //d
-        // int32_t min_focus_value = get_int32(&buf[0x1A8]);
-
-        return PSLR_OK;
 }
 
 int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status, int n) {

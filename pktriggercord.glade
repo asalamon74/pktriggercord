@@ -1968,6 +1968,8 @@ Portrait
 Landscape
 Vibrant
 Monochrome
+Muted
+Reversal film
 </property>
                             <signal name="changed" handler="jpeg_image_mode_combo_changed_cb"/>
                           </widget>
