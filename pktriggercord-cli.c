@@ -37,6 +37,7 @@
 #include <time.h>
 
 #include "pslr.h"
+#include "pslr_lens.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
@@ -547,7 +548,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("flash mode: %d\n", status.flash_mode);
     printf("flash exposure compensation: %.2f\n", (1.0 * status.flash_exposure_compensation/256));
     printf("manual mode ev: %.2f\n", (1.0 * status.manual_mode_ev / 10));
-    printf("lens id: %d %d\n", status.lens_id1, status.lens_id2);
+    printf("lens: %s\n", get_lens_name(status.lens_id1, status.lens_id2));
 }
 
 void usage(char *name) {

@@ -1,7 +1,8 @@
 version 0.75.03
 	Support for K-r added by Vincenc Podobnik <vincenc.podobnik@gmail.com>
 	Pentax K-5 support (thx to Tomasz Kos for sharing the info)
-	Reading lens id fields for K-x
+	Reading lens id fields for K-x, K-7
+	Lens info for the commandline version (lens database source: exiftool)
 
 version 0.75.02 ( 2011-06-30 )
 	Better bracket ev handling for K-x
