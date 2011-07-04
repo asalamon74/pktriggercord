@@ -79,7 +79,7 @@ typedef struct {
 
 typedef struct ipslr_handle ipslr_handle_t;
 
-typedef int (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status, int n);
+typedef int (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);
 
 typedef struct {
     uint32_t id1;
@@ -143,13 +143,13 @@ user_file_format_t file_formats[3] = {
     { USER_FILE_FORMAT_JPEG, "JPEG", "jpg"},
 };
 
-int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n);
-int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status, int n);
-int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n);
-int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n);
-int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n);
-int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n);
-int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status, int n);
+int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status);
+int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status);
+int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status);
+int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status);
+int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status);
+int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status);
+int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status);
 
 static ipslr_model_info_t camera_models[] = {
     { PSLR_ID1_IST_DS,  "*ist DS",  1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, ipslr_status_parse_istds },
@@ -823,7 +823,7 @@ static void ipslr_status_diff(uint8_t *buf) {
     }
 }
 
-int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status) {
         /* K10D status block */
     uint8_t *buf = p->status_buffer;
         memset(status, 0, sizeof (*status));
@@ -866,7 +866,7 @@ int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status, int n) {
         return PSLR_OK;
 }
 
-int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
     if( debug ) {
@@ -919,7 +919,7 @@ int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status, int n) {
 
 }
 
-int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
         /* *ist DS status block */
@@ -939,7 +939,7 @@ int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status, int n) {
 
 // some of the cameras share most of the status fields
 // this method is used for K-x, K-7, K-5, K-r
-void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int n) {
+void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
     status->bufmask = buf[0x1E] << 8 | buf[0x1F];
@@ -994,7 +994,7 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int n) {
     status->color_space = get_uint32(&buf[0xA0]);
 }
 
-int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
         /* K-x status block */
@@ -1003,7 +1003,7 @@ int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
     }
 
     memset(status, 0, sizeof (*status));	
-    ipslr_status_parse_common( p, status, n );
+    ipslr_status_parse_common( p, status);
     status->zoom.nom = get_uint32(&buf[0x198]);
     status->zoom.denom = get_uint32(&buf[0x19C]);
     status->focus = get_int32(&buf[0x1A0]);
@@ -1014,7 +1014,7 @@ int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status, int n) {
 
 // Vince: K-r support 2011-06-22
 //
-int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
         /* K-r status block */
     if( debug ) {
@@ -1022,7 +1022,7 @@ int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status, int n) {
     }
 
     memset(status, 0, sizeof (*status));
-    ipslr_status_parse_common( p, status, n );
+    ipslr_status_parse_common( p, status );
     status->zoom.nom = get_uint32(&buf[0x19C]);
     status->zoom.denom = get_uint32(&buf[0x1A0]);
     status->focus = get_int32(&buf[0x1A4]);
@@ -1032,7 +1032,7 @@ int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status, int n) {
 
 }
 
-int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
         /* K-x status block */
     if( debug ) {
@@ -1040,7 +1040,7 @@ int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status, int n) {
     }
 
     memset(status, 0, sizeof (*status));	
-    ipslr_status_parse_common( p, status, n );
+    ipslr_status_parse_common( p, status );
     status->zoom.nom = get_uint32(&buf[0x1A0]);
     status->zoom.denom = get_uint32(&buf[0x1AC]); // or 0x1A4?
     status->focus = get_int32(&buf[0x1A8]); // ?
@@ -1057,7 +1057,7 @@ int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status, int n) {
 }
 
 
-int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status, int n) {
+int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
         
         
     uint8_t *buf = p->status_buffer;
@@ -1131,7 +1131,7 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
         return PSLR_READ_ERROR;
     } else {
         // everything OK
-        int ret = (*p->model->parser_function)(p, status, n);
+        int ret = (*p->model->parser_function)(p, status);
         // required for K-x, probably for other cameras too
         status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
         return ret;
