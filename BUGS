@@ -7,7 +7,7 @@ Known bugs of pkTriggerCord:
   Setting exposure mode has no effect ( maybe it's not a bug only it's
   not allowed ).
 
-  Changing shutter speed to 1/6000 is not working. It changes to 1/8 
+  K-x: Changing shutter speed to 1/6000 is not working. It changes to 1/8 
   instead.
 
   ISO table of GUI only shows the same iso range for all cameras. It
