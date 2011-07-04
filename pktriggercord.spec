@@ -12,6 +12,7 @@ Copyright: GPL
 Group: Applications/Tools
 Source: http://sourceforge.net/projects/pktriggercord/files/%ver/pkTriggerCord-%ver.src.tar.gz
 URL: http://pktriggercord.sourceforge.net
+Packager: Andras Salamon <andras.salamon@melda.info>
 BuildRoot: /var/tmp/%{name}-root
 BuildArch: i386
 BuildRequires: libglade2-devel
