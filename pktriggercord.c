@@ -275,9 +275,14 @@ int common_init(void)
     DPRINT("Create glade xml\n");
 
     if (debug) {
-        xml = glade_xml_new("pktriggercord.glade", NULL, NULL);
-    } else {
+        xml = glade_xml_new("pktriggercord.glade", NULL, NULL);	
+    }
+    if( !xml ) {
         xml = glade_xml_new(DATADIR "/pktriggercord.glade", NULL, NULL);
+    }
+
+    if( !xml ) {
+	return -1;
     }
 
     init_preview_area();
