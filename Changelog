@@ -4,6 +4,7 @@ version 0.75.03
 	Reading lens id fields for K-x, K-7
 	Lens info for the commandline version (lens database source: exiftool)
 	Created man pages
+	gui --debug switch bugfix
 
 version 0.75.02 ( 2011-06-30 )
 	Better bracket ev handling for K-x
