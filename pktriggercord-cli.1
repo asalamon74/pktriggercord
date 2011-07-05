@@ -1,0 +1,146 @@
+.TH "PKTRIGGERCORD" "1"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+pktriggercord-cli - command-line Pentax DSLR tethering software
+.SH "SYNOPSIS"
+.SY pktriggercord-cli
+.OP \-\-exposure_mode MODE
+.OP \-\-exposure_compensation VALUE
+.OP \-\-iso ISO
+.OP \-\-aperture APERTURE
+.OP \-\-shutter_speed SHUTTER_SPEED
+.OP \-\-resolution RESOLUTION
+.OP \-\-quality QUALITY
+.OP \-\-auto_focus
+[\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-status\fR |
+\fB\-\-status_hex\fR | \fB\-\-frames\fR NUMBER [ \fB\-\-delay\fR SECONDS] ]
+[ \fB\-\-file_format\fR FORMAT ] [ \fB\-\-output_file\fR FILENAME ] 
+.OP \-\-debug 
+.YS
+.PP
+Syntax shows only long option names.
+.SH "DESCRIPTION"
+.PP
+pkTriggerCord is a cross\-platform Pentax DSLR tethering software, and
+pktriggercord-cli is a command\-line client for it\.
+.SS Work mode
+.PP 
+Without specifying work mode the program takes 1 pictures.
+.PP
+\fB\-F\fR, \fB\-\-frames\fR
+.RS 4
+Specify the number of shots. Maximum number of pictures is 10000.
+.RE
+.PP
+\fB\-d\fR, \fB\-\-delay \fR\fB\fISECONDS\fR\fR
+.RS 4
+Specify the delay between the shots (if number of frames is greater
+than 1). The minimum delay is based on several factors, approximately
+3 seconds\.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-status\fR
+.RS 4
+Print human readable status info and do not take pictures.
+.RE
+.PP
+\fB\-\-status_hex\fR
+.RS 4
+Print raw (hexadecimal) and human readable status info and do not take pictures\.
+.RE
+.SS Setting exposure parameters
+.PP
+\fB\-m\fR, \fB\-\-exposure_mode\fR \fIEXPOSURE_MODE\fR
+.RS 4
+Specify exposure mode. Does NOT work correctly. Please do not use it.
+.RE
+.PP
+\fB\-i\fR, \fB\-\-iso\fR \fIISO\fR
+.RS 4
+Specify ISO settings. Single value (400) or interval (200-800) can be used. If the specified ISO setting is not supported by the camera, it will automatically choose a value close to it. So specifying -iso 796 will change the iso to 800\.
+.RE
+.PP
+\fB\-a\fR, \fB\-\-aperture\fR \fIAPERTURE\fR
+.RS 4
+Specify aperture. Sample valid valus: 2.8, 5.6, 11 (depends on the lens).
+.RE
+.PP
+\fB\-t\fR, \fB\-\-shutter_speed\fR \fISHUTTER_SPEED\fR
+.RS 4
+Specify shutter speed\. Value should be specified in the following format: 1/50, 1/500, ...
+.RE
+.PP
+\fB\-\-exposure_correction\fR \fIVALUE\fR
+.RS 4
+Specify exposure compensation value.
+.RE
+.SS Output file specification
+.PP
+\fB\-o\fR,\fB\-\-output_file\fR \fIFILENAME\fR
+.RS 4
+Specify the name of the output file prefix. Frame number and
+extension will be automatically added. If not specified the file will
+be sent to standard output\.
+.RE
+.PP
+\fB\-\-file_format\fR \fIFORMAT\fR
+.RS 4
+Specify the output file format. Valid values are: PEF, DNG, JPEG. It also changes the default file format in the camera.\.
+.RE
+.PP
+\fB\-q\fR,\fB\-\-quality\fR \fIQUALITY\fR
+.RS 4
+Specify jpeg quality using the 'star' rating of the camera. 1, 2, 3 can be used for all the cameras, for some cameras 4 is also allowed. It also changes the jpeg quality in the camera\.
+.RE
+.PP
+\fB\-r\fR,\fB\-\-resolution\fR \fIRESOLUTION\fR
+.RS 4
+Specify jpeg resolution. While this changes the jpeg resolution setting in the camera, it will not affect the resolution of the downloaded jpeg file. (it's a bug)\.
+.RE
+.SS Other
+.PP
+\fB\-v\fR, \fB\-\-version\fR
+.RS 4
+Display version and exit\.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Display a short usage message\.
+.RE
+.PP
+\fB\-\-debug\fR
+.RS 4
+Debug info\.
+.RE
+.SH "SEE ALSO"
+.PP
+\fIThe pktriggercord.sourceforge.net website\fR\&[1],
+.SH "EXAMPLES"
+.PP
+\fBpktriggercord-cli\fR \fB\-\-status\fR\fR
+.RS 4
+Connects to the camera and prints out status info\.
+.RE
+.PP
+To track down errors, you can add the
+\fB\-\-debug\fR
+parameter to the
+\fBpktriggercord-cli\fR
+command line\.
+.\" .SH "AUTHORS"
+.\" .PP
+.\" \fBAndras Salamon\fR
+.\" .sp -1n
+.\" .IP "" 4
+.\" Author.
+.SH "NOTES"
+.IP " 1." 4
+The pktriggercord.sourceforge.net website
+.RS 4
+\%http://pktriggercord.sourceforge.net/
+.RE
+
