@@ -37,9 +37,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc Changelog COPYING INSTALL BUGS
+%doc Changelog COPYING INSTALL BUGS pktriggercord-cli.1 pktriggercord.1
 %prefix/bin/*
 %prefix/share/pktriggercord/*
+%prefix/share/man/*/pktriggercord*
 %prefix/../etc/*
 
 %changelog

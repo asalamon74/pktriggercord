@@ -1,6 +1,9 @@
 PREFIX ?= /usr/local
 CFLAGS ?= -O3 -g -Wall
 
+MANDIR = $(PREFIX)/share/man
+MAN1DIR = $(MANDIR)/man1
+
 LIN_CFLAGS = $(CFLAGS) $(shell pkg-config --cflags glib-2.0)
 LIN_LDFLAGS = $(LDFLAGS) $(shell pkg-config --libs glib-2.0)
 
@@ -18,9 +21,10 @@ all: srczip rpm win
 cli: pktriggercord-cli
 install: install-app
 
+MANS = pktriggercord-cli.1 pktriggercord.1
 OBJS = pslr.o pslr_scsi.o pslr_lens.o
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS pentax.rules samsung.rules pslr_scsi.h pslr_scsi.c pslr_scsi_linux.c pslr_scsi_win.c pslr.h pslr.c exiftool_pentax_lens.txt pslr_lens.h pslr_lens.c pktriggercord.c pktriggercord-cli.c pktriggercord.glade $(SPECFILE) $(WIN_DLLS_DIR)
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.rules samsung.rules pslr_scsi.h pslr_scsi.c pslr_scsi_linux.c pslr_scsi_win.c pslr.h pslr.c exiftool_pentax_lens.txt pslr_lens.h pslr_lens.c pktriggercord.c pktriggercord-cli.c pktriggercord.glade $(SPECFILE) $(WIN_DLLS_DIR)
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
@@ -48,6 +52,8 @@ install-app:
 	cd $(RPM_BUILD_ROOT)/etc/udev/rules.d;\
 	ln -sf ../pentax.rules 025_pentax.rules;\
 	ln -sf ../samsung.rules 025_samsung.rules
+	install -d -m 0755 $(MAN1DIR)
+	install -m 0644 $(MANS) $(MAN1DIR)
 	if [ -e ./pktriggercord ] ; then \
 	install -s -m 0755 pktriggercord $(PREFIX)/bin/; \
 	install -d $(PREFIX)/share/pktriggercord/; \
