@@ -165,6 +165,7 @@ int main(int argc, char **argv) {
 		
             case 4:
                 debug = true;
+                DPRINT( "Debug messaging is now enabled.\n" );
                 break;
 
                 /***************************************************************/
@@ -320,10 +321,6 @@ int main(int argc, char **argv) {
 
         }
         /********************************************************/
-    }
-
-    if( !debug ) {
-	set_debug_mode(false);
     }
 
     if (!output_file && frames > 1) {
