@@ -38,6 +38,7 @@
 #include <getopt.h>
 
 #include "pslr.h"
+#include "pslr_lens.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
@@ -777,7 +778,7 @@ static gboolean status_poll(gpointer data)
 
         ev = log(a*a/s)/M_LN2 - log(status_new->current_iso/100)/M_LN2;
     
-        sprintf(buf, "<span size=\"xx-large\">%.2f</span>", ev);
+        sprintf(buf, "<span size=\"xx-large\">EV %.2f</span>", ev);
         pw = glade_xml_get_widget(xml, "label_ev");
         gtk_label_set_markup(GTK_LABEL(pw), buf);
     }
@@ -795,6 +796,14 @@ static gboolean status_poll(gpointer data)
         sprintf(buf, "focus: %d", status_new->focus);
         gtk_label_set_text(GTK_LABEL(pw), buf);
     }
+
+    /* Lens label */
+    if (status_new) {
+        pw = glade_xml_get_widget(xml, "label_lens");
+        sprintf(buf, "%s", get_lens_name(status_new->lens_id1, status_new->lens_id2));
+        gtk_label_set_text(GTK_LABEL(pw), buf);
+    }
+
 
     /* Other controls */
     init_controls(status_new, status_old);

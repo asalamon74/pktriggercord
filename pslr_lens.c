@@ -42,5 +42,5 @@ const char *get_lens_name( uint32_t id1, uint32_t id2) {
 	    return lens_id[i].name;
 	}
     }
-    return "Unknown";
+    return "";
 }
