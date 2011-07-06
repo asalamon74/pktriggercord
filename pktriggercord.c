@@ -2108,12 +2108,9 @@ void gui_getopt(int argc, char **argv) {
             case 4:
                 debug = true;
                 break;
-	}
+        }
     }
-
-    if( !debug ) {
-	set_debug_mode(false);
-    }
+    return;
 }
 
 

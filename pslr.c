@@ -1416,13 +1416,21 @@ static int32_t get_int32(uint8_t *buf) {
     return res;
 }
 
-void gprintfunc_devnull(const gchar *string) {
-}
 
-void set_debug_mode(bool dmode) {
-    if( dmode ) {
-	// default printerr handler is ok
-    } else {
-	g_set_printerr_handler(gprintfunc_devnull);
-    }
+/* -----------------------------------------------------------------------
+ write_debug
+----------------------------------------------------------------------- */
+void write_debug( const char* message, ... ){
+
+    // Be sure debug is really on as DPRINT doesn't know
+    //
+    if( !debug ) return;
+
+    // Write to stderr
+    //
+    va_list argp;
+    va_start(argp, message);
+    vfprintf( stderr, message, argp );
+    va_end(argp);
+    return;
 }

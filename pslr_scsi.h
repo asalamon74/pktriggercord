@@ -30,11 +30,10 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <glib.h>
 
 extern bool debug;
 
-#define DPRINT(x...) g_printerr(x)
+#define DPRINT(x...) write_debug(x)
 
 typedef enum {
     PSLR_OK = 0,
