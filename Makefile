@@ -4,8 +4,8 @@ CFLAGS ?= -O3 -g -Wall
 MANDIR = $(PREFIX)/share/man
 MAN1DIR = $(MANDIR)/man1
 
-LIN_CFLAGS = $(CFLAGS) $(shell pkg-config --cflags glib-2.0)
-LIN_LDFLAGS = $(LDFLAGS) $(shell pkg-config --libs glib-2.0)
+LIN_CFLAGS = $(CFLAGS)
+LIN_LDFLAGS = $(LDFLAGS)
 
 VERSION=0.75.03
 # variables for RPM creation
@@ -88,7 +88,8 @@ rpm: srcrpm
 	rpmbuild -ba $(SPECFILE)
 	cp $(TOPDIR)/RPMS/i386/pktriggercord-$(VERSION)-1.i386.rpm .
 
-WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/
+WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/
+WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include 
 WIN_LDFLAGS=-lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0  -lglade-2.0
 
 # converting lens info from exiftool
@@ -101,7 +102,7 @@ win: clean
 	$(WINGCC) $(WIN_CFLAGS) -c pslr_scsi.c
 	$(WINGCC) $(WIN_CFLAGS) -c pslr.c
 	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"'  pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) $(WIN_LDFLAGS) -L.
-	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_CFLAGS) $(WIN_LDFLAGS) -L.
+	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_GUI_CFLAGS) $(WIN_LDFLAGS) -L.
 	mkdir -p $(WINDIR)
 	cp pktriggercord.exe pktriggercord-cli.exe pktriggercord.glade Changelog COPYING $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
