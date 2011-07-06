@@ -32,6 +32,7 @@
 #include <stdio.h>
 
 extern bool debug;
+extern void write_debug( const char* message, ... );
 
 #define DPRINT(x...) write_debug(x)
 
