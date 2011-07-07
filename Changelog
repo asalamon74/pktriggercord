@@ -1,6 +1,7 @@
 version 0.76.01
 	--warnings switch
 	--quality bugfix
+	Limited support added: K-m, K2000
 
 version 0.76.00 ( 2011-07-06 )
 	Support for K-r added by Vincenc Podobnik <vincenc.podobnik@gmail.com>
