@@ -79,13 +79,13 @@ typedef enum {
     PSLR_BUF_THUMBNAIL = 9
 } pslr_buffer_type;
 
-typedef enum {
+/*typedef enum {
     PSLR_JPEG_QUALITY_4, // K20D only
     PSLR_JPEG_QUALITY_3,
     PSLR_JPEG_QUALITY_2,
     PSLR_JPEG_QUALITY_1,
     PSLR_JPEG_QUALITY_MAX
-} pslr_jpeg_quality_t;
+    } pslr_jpeg_quality_t;*/
 
 typedef enum {
     PSLR_JPEG_IMAGE_MODE_NATURAL,
@@ -341,7 +341,7 @@ int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value)
 int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode);
 int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode);
 
-int pslr_set_jpeg_quality(pslr_handle_t h, pslr_jpeg_quality_t quality);
+int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars);
 int pslr_set_jpeg_resolution(pslr_handle_t h, int megapixel);
 int pslr_set_jpeg_image_mode(pslr_handle_t h, pslr_jpeg_image_mode_t image_mode);
 
@@ -378,6 +378,8 @@ bool pslr_get_model_only_limited(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
 int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
+
+int get_hw_jpeg_quality( pslr_handle_t h, int jpeg_stars);
 
 void hexdump(uint8_t *buf, uint32_t bufLen);
 

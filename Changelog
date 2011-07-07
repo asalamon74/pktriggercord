@@ -1,3 +1,7 @@
+version 0.76.01
+	--warnings switch
+	--quality bugfix
+
 version 0.76.00 ( 2011-07-06 )
 	Support for K-r added by Vincenc Podobnik <vincenc.podobnik@gmail.com>
 	Pentax K-5 support (thx to Tomasz Kos for sharing the info)

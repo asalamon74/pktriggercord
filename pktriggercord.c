@@ -462,6 +462,13 @@ void camera_specific_init() {
 	gtk_combo_box_insert_text( GTK_COMBO_BOX(glade_xml_get_widget(xml, "jpeg_resolution_combo")), resindex, buf);
 	++resindex;
     }
+    int starindex= pslr_get_model_jpeg_stars( camhandle) ;
+    const char ch[] = "*********";
+    while( starindex > 0 ) {
+	sprintf( buf, "%.*s", starindex,ch);
+	gtk_combo_box_insert_text( GTK_COMBO_BOX(glade_xml_get_widget(xml, "jpeg_quality_combo")), resindex, buf);
+	--starindex;
+    }
 }   
 
 static void init_controls(pslr_status *st_new, pslr_status *st_old)
@@ -601,8 +608,9 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
 
     /* JPEG quality */
     pw = glade_xml_get_widget(xml, "jpeg_quality_combo");
-    if (st_new)
-        gtk_combo_box_set_active(GTK_COMBO_BOX(pw), st_new->jpeg_quality);
+    if (st_new) {
+        gtk_combo_box_set_active(GTK_COMBO_BOX(pw), get_hw_jpeg_quality(camhandle, st_new->jpeg_quality));
+    }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
 
@@ -1765,15 +1773,15 @@ static void jpeg_resolution_combo_changed_cb(GtkCombo *combo, gpointer user_data
 
 static void jpeg_quality_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 {
-  pslr_jpeg_quality_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
+    gchar *stars = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+    int val = strlen(stars);
     int ret;
-    DPRINT("jpeg qual active->%d\n", val);
     assert(val >= 0);
-    assert(val < PSLR_JPEG_QUALITY_MAX);
+    assert(val <= pslr_get_model_jpeg_stars( camhandle) );
 
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
     if (status_new == NULL || status_new->jpeg_quality != val) {
-        ret = pslr_set_jpeg_quality(camhandle, val);
+        ret = pslr_set_jpeg_stars(camhandle, val);
         if (ret != PSLR_OK) {
             DPRINT("Set JPEG quality failed.\n");
         }
