@@ -50,22 +50,6 @@
 #define PSLR_AF_POINT_BOT_MID    0x200
 #define PSLR_AF_POINT_BOT_RIGHT  0x400
 
-#define PSLR_ID1_K20D    0x12cd2
-#define PSLR_ID1_K10D    0x12c1e
-#define PSLR_ID1_K110D   0x12b9d
-#define PSLR_ID1_K100D   0x12b9c
-#define PSLR_ID1_IST_D   0x12994
-#define PSLR_ID1_IST_DS  0x12aa2
-#define PSLR_ID1_IST_DS2 0x12b60
-#define PSLR_ID1_IST_DL  0x12b1a
-#define PSLR_ID1_GX10    0x12c20
-#define PSLR_ID1_GX20    0x12cd4
-#define PSLR_ID1_KX      0x12dfe
-#define PSLR_ID1_K200D   0x12cfa
-#define PSLR_ID1_K7      0x12db8
-#define PSLR_ID1_KR      0x12e6c
-#define PSLR_ID1_K5      0x12e76
-
 #define MAX_STATUS_BUF_SIZE 444
 
 typedef enum {
