@@ -415,21 +415,22 @@ int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode) {
     return ipslr_handle_command_x18( p, true, 0x06, 1, af_mode, 0, 0);    
 }
 
-int _get_hw_jpeg_quality( ipslr_model_info_t *model, pslr_jpeg_quality_t quality) {
-    return quality - (PSLR_JPEG_QUALITY_MAX - model->jpeg_stars);
+int get_hw_jpeg_quality( pslr_handle_t h, int jpeg_stars) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->jpeg_stars - jpeg_stars;
 }
 
-pslr_jpeg_quality_t _get_user_jpeg_quality( ipslr_model_info_t *model, int hwqual ) {
-    return hwqual + (PSLR_JPEG_QUALITY_MAX - model->jpeg_stars);
+int _get_user_jpeg_stars( ipslr_model_info_t *model, int hwqual ) {
+    return model->jpeg_stars - hwqual;
 }
 
-int pslr_set_jpeg_quality(pslr_handle_t h, pslr_jpeg_quality_t quality) {
+int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars ) {
     int hwqual;
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (quality >= PSLR_JPEG_QUALITY_MAX) {
+    if( jpeg_stars > p->model->jpeg_stars ) {
         return PSLR_PARAM;
     }
-    hwqual = _get_hw_jpeg_quality( p->model, quality );
+    hwqual = get_hw_jpeg_quality( h, jpeg_stars );
     return ipslr_handle_command_x18( p, true, 0x13, 2, 1, hwqual, 0);
 }
 
@@ -746,9 +747,8 @@ const char *pslr_camera_name(pslr_handle_t h) {
     }
 }
 
-pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality) {
-    ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return 2 + _get_hw_jpeg_quality( p->model, quality );
+pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int jpeg_stars) {
+    return 2 + get_hw_jpeg_quality( h, jpeg_stars );
 }
 
 /* ----------------------------------------------------------------------- */
@@ -846,7 +846,7 @@ int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status) {
         status->jpeg_contrast = get_uint32(&buf[0x94]);
         status->jpeg_sharpness = get_uint32(&buf[0x90]);
         status->jpeg_saturation = get_uint32(&buf[0x8c]);
-        status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x80]));
+        status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x80]));
         status->jpeg_image_mode = get_uint32(&buf[0x88]);
         status->zoom.nom = get_uint32(&buf[0x16c]);
         status->zoom.denom = get_uint32(&buf[0x170]);
@@ -892,7 +892,7 @@ int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
         status->jpeg_contrast = get_uint32(&buf[0x94]); // commands do now work for it?
         status->jpeg_sharpness = get_uint32(&buf[0x90]); // commands do now work for it?
         status->jpeg_saturation = get_uint32(&buf[0x8c]); // commands do now work for it?
-        status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x80])); //d
+        status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x80])); //d
         status->jpeg_image_mode = get_uint32(&buf[0x88]); //d
         status->zoom.nom = get_uint32(&buf[0x180]); //d
         status->zoom.denom = get_uint32(&buf[0x184]); //d
@@ -962,7 +962,7 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status) {
     status->jpeg_sharpness = get_uint32(&buf[0x98]); // commands do now work for it?
     status->jpeg_saturation = get_uint32(&buf[0x94]); // commands do now work for it?
     status->jpeg_hue = get_uint32(&buf[0xFC]);
-    status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x88])); //d
+    status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x88])); //d
     status->jpeg_image_mode = get_uint32(&buf[0x90]); //d
     status->raw_format = get_uint32(&buf[0x8C]); //d
     status->image_format = get_uint32(&buf[0x80]); //d
@@ -1086,7 +1086,7 @@ int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
 	status->jpeg_hue = get_uint32(&buf[0xf4]);
         status->jpeg_sharpness = get_uint32(&buf[0x90]);
         status->jpeg_saturation = get_uint32(&buf[0x8c]);
-        status->jpeg_quality = _get_user_jpeg_quality( p->model, get_uint32(&buf[0x80]));
+        status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x80]));
         status->jpeg_image_mode = get_uint32(&buf[0x88]);
         status->zoom.nom = get_uint32(&buf[0x17c]);
         status->zoom.denom = get_uint32(&buf[0x180]);

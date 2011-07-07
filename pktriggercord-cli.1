@@ -15,6 +15,7 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-resolution RESOLUTION
 .OP \-\-quality QUALITY
 .OP \-\-auto_focus
+.OP \-\-warnings
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-status\fR |
 \fB\-\-status_hex\fR | \fB\-\-frames\fR NUMBER [ \fB\-\-delay\fR SECONDS] ]
 [ \fB\-\-file_format\fR FORMAT ] [ \fB\-\-output_file\fR FILENAME ] 
@@ -53,6 +54,13 @@ Print raw (hexadecimal) and human readable status info and do not take pictures\
 .RE
 .SS Setting exposure parameters
 .PP
+\fB\-\-warnings\fR
+.RS 4
+Specify warning mode. The program prints out warning messages if the
+settings are invalid. It will not stop since the camera can fix most
+of the invalid settings. For instance specifying -iso 796 will change the iso to 800\.
+.RE
+.PP
 \fB\-m\fR, \fB\-\-exposure_mode\fR \fIEXPOSURE_MODE\fR
 .RS 4
 Specify exposure mode. Does NOT work correctly. Please do not use it.
@@ -60,7 +68,7 @@ Specify exposure mode. Does NOT work correctly. Please do not use it.
 .PP
 \fB\-i\fR, \fB\-\-iso\fR \fIISO\fR
 .RS 4
-Specify ISO settings. Single value (400) or interval (200-800) can be used. If the specified ISO setting is not supported by the camera, it will automatically choose a value close to it. So specifying -iso 796 will change the iso to 800\.
+Specify ISO settings. Single value (400) or interval (200-800) can be used\. 
 .RE
 .PP
 \fB\-a\fR, \fB\-\-aperture\fR \fIAPERTURE\fR

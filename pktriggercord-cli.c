@@ -35,6 +35,7 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <time.h>
+#include <stdarg.h>
 
 #include "pslr.h"
 #include "pslr_lens.h"
@@ -48,6 +49,7 @@
 extern char *optarg;
 extern int optind, opterr, optopt;
 bool debug = false;
+bool warnings = false;
 
 static struct option const longopts[] ={
     {"exposure_mode", required_argument, NULL, 'm'},
@@ -65,12 +67,13 @@ static struct option const longopts[] ={
     {"frames", required_argument, NULL, 'F'},
     {"delay", required_argument, NULL, 'd'},
     {"auto_focus", no_argument, NULL, 'f'},
+    {"warnings", no_argument, NULL, 'w'},
     {"exposure_compensation", required_argument, NULL, 3},
     {"debug", no_argument, NULL, 4},
     { NULL, 0, NULL, 0}
 };
 
-int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, pslr_jpeg_quality_t);
+int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, int);
 void print_status_info(pslr_handle_t h, pslr_status status);
 void usage(char*);
 void version(char*);
@@ -100,6 +103,17 @@ void sleep_sec(int sec) {
     }
 }
 
+void warning_message( const char* message, ... ) {
+    if( warnings ) {
+	// Write to stderr
+	//
+	va_list argp;
+	va_start(argp, message);
+	vfprintf( stderr, message, argp );
+	va_end(argp);
+    }
+}
+
 int main(int argc, char **argv) {
     float F = 0;
     char C;
@@ -107,7 +121,7 @@ int main(int argc, char **argv) {
     const char *MODEL;
     char *MODESTRING = NULL;
     int resolution = 0;
-    pslr_jpeg_quality_t quality = -1;
+    int quality = -1;
     int optc, fd, i;
     pslr_handle_t camhandle;
     pslr_status status;
@@ -126,7 +140,7 @@ int main(int argc, char **argv) {
     bool status_hex_info = false;
     pslr_rational_t ec = {0, 0};
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:i:F:fhvs24", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:i:F:fhvws24", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
@@ -136,22 +150,21 @@ int main(int argc, char **argv) {
             case 'v':
                 version(argv[0]);
                 exit(0);
+            case 'w':
+		warnings = true;
+	        break;
             case 1:
                 for (i = 0; i < strlen(optarg); i++) {
                     optarg[i] = toupper(optarg[i]);
                 }
                 if (!strcmp(optarg, "DNG")) {
                     uff = USER_FILE_FORMAT_DNG;
-                    break;
                 } else if (!strcmp(optarg, "PEF")) {
                     uff = USER_FILE_FORMAT_PEF;
-                    break;
                 } else if (!strcmp(optarg, "JPEG") || !strcmp(optarg, "JPG")) {
                     uff = USER_FILE_FORMAT_JPEG;
-                    break;
                 } else {
-                    fprintf(stderr, "%s: Invalid file format.\n", argv[0]);
-                    exit(-1);
+                    warning_message("%s: Invalid file format.\n", argv[0]);
                 }
                 break;
 
@@ -207,8 +220,7 @@ int main(int argc, char **argv) {
                     break;
                 }
                 else {
-                    fprintf(stderr, "%s: Invalid exposure mode.\n", argv[0]);
-                    exit(-1);
+                    warning_message("%s: Invalid exposure mode.\n", argv[0]);
                 }
 
                 /*****************************************/
@@ -219,15 +231,11 @@ int main(int argc, char **argv) {
 
                 /*********************************************/
             case 'q':
-
-                quality  = PSLR_JPEG_QUALITY_MAX - atoi(optarg);
+                quality  = atoi(optarg);
                 if (!quality) {
-                    fprintf(stderr, "%s: Invalid jpeg quality\n", argv[0]);
-                    exit(-1);
+                    warning_message("%s: Invalid jpeg quality\n", argv[0]);
                 }
-
                 break;
-                /* Valid quality values depend on camera model, so we'll check it later */
 
                 /****************************************************/
             case 'a':
@@ -238,8 +246,7 @@ int main(int argc, char **argv) {
                  On the other hand, the fastest lens I know of is a f:0.8 Zeiss*/
 
                 if (F > 100 || F < 0.8) {
-                    fprintf(stderr, "%s: Invalid aperture value.\n", argv[0]);
-                    exit(-1);
+                    warning_message( "%s: Invalid aperture value.\n", argv[0]);
                 }
 
                 if (F >= 11) {
@@ -256,9 +263,9 @@ int main(int argc, char **argv) {
                 /*****************************************************/
             case 't':
 
-                if (sscanf(optarg, "1/%d%c", &shutter_speed.denom, &C) == 1) shutter_speed.nom = 1;
-
-                else if ((sscanf(optarg, "%f%c", &F, &C)) == 1) {
+                if (sscanf(optarg, "1/%d%c", &shutter_speed.denom, &C) == 1) {
+		    shutter_speed.nom = 1;
+		} else if ((sscanf(optarg, "%f%c", &F, &C)) == 1) {
                     if (F < 2) {
                         F = F * 10;
                         shutter_speed.denom = 10;
@@ -267,12 +274,9 @@ int main(int argc, char **argv) {
                         shutter_speed.denom = 1;
                         shutter_speed.nom = F;
                     }
+                } else {
+                    warning_message("%s: Invalid shutter speed value.\n", argv[0]);
                 }
-                else {
-                    fprintf(stderr, "%s: Invalid shutter speed value.\n", argv[0]);
-                    exit(-1);
-                }
-
                 break;
 
                 /*******************************************************/
@@ -287,16 +291,15 @@ int main(int argc, char **argv) {
             case 'F':
                 frames = atoi(optarg);
                 if (frames > 9999) {
-                    fprintf(stderr, "%s: Invalid frame number.\n", argv[0]);
-                    exit(-1);
+                    warning_message("%s: Invalid frame number.\n", argv[0]);
+		    frames = 9999;
                 }
                 break;
 
             case 'd':
                 delay = atoi(optarg);
                 if (!delay) {
-                    fprintf(stderr, "%s: Invalid delay value\n", argv[0]);
-                    exit(-1);
+                    warning_message("%s: Invalid delay value\n", argv[0]);
                 }
                 break;
 
@@ -308,7 +311,7 @@ int main(int argc, char **argv) {
 		}
 
                 if (iso==0 && auto_iso_min==0) {
-                    fprintf(stderr, "%s: Invalid iso value\n", argv[0]);
+                    warning_message("%s: Invalid iso value\n", argv[0]);
                     exit(-1);
                 }
 		break;
@@ -344,10 +347,10 @@ int main(int argc, char **argv) {
     }
 
     if (quality>-1) {
-        if (quality == PSLR_JPEG_QUALITY_MAX || (!quality < PSLR_JPEG_QUALITY_MAX - pslr_get_model_jpeg_stars(camhandle))) {
-            fprintf(stderr, "%s: Invalid jpeg quality setting.\n", argv[0]);
+        if ( quality > pslr_get_model_jpeg_stars(camhandle) ) {
+            warning_message("%s: Invalid jpeg quality setting.\n", argv[0]);
         }
-        pslr_set_jpeg_quality(camhandle, quality);
+        pslr_set_jpeg_stars(camhandle, quality);
     }
 
     // We do not check iso settings
@@ -372,7 +375,7 @@ int main(int argc, char **argv) {
     }
 
     if (EM != PSLR_EXPOSURE_MODE_MAX && status.exposure_mode != EM) {
-        fprintf(stderr, "%s: Cannot set %s mode; set the mode dial to %s or USER\n", argv[0], MODESTRING, MODESTRING);
+        warning_message( "%s: Cannot set %s mode; set the mode dial to %s or USER\n", argv[0], MODESTRING, MODESTRING);
     }
 
     if (shutter_speed.nom) {
@@ -380,7 +383,7 @@ int main(int argc, char **argv) {
 	DPRINT("shutter_speed.denom=%d\n", shutter_speed.denom);
 
 	if (shutter_speed.nom <= 0 || shutter_speed.nom > 30 || shutter_speed.denom <= 0 || shutter_speed.denom > pslr_get_model_fastest_shutter_speed(camhandle)) {
-	    fprintf(stderr, "%s: Invalid shutter speed value.\n", argv[0]);
+	    warning_message("%s: Invalid shutter speed value.\n", argv[0]);
 	}
 
         pslr_set_shutter(camhandle, shutter_speed);
@@ -388,13 +391,13 @@ int main(int argc, char **argv) {
 
     if (aperture.nom) {
         if ((aperture.nom * status.lens_max_aperture.denom) > (aperture.denom * status.lens_max_aperture.nom)) {
-            fprintf(stderr, "%s: Warning, selected aperture is smaller than this lens minimum aperture.\n", argv[0]);
-            fprintf(stderr, "%s: Setting aperture to f:%d\n", argv[0], status.lens_max_aperture.nom / status.lens_max_aperture.denom);
+            warning_message("%s: Warning, selected aperture is smaller than this lens minimum aperture.\n", argv[0]);
+            warning_message("%s: Setting aperture to f:%d\n", argv[0], status.lens_max_aperture.nom / status.lens_max_aperture.denom);
         }
 
         if ((aperture.nom * status.lens_min_aperture.denom) < (aperture.denom * status.lens_min_aperture.nom)) {
-            fprintf(stderr, "%s: Warning, selected aperture is wider than this lens maximum aperture.\n", argv[0]);
-            fprintf(stderr, "%s: Setting aperture to f:%.1f\n", argv[0], (float) status.lens_min_aperture.nom / (float) status.lens_min_aperture.denom);
+            warning_message( "%s: Warning, selected aperture is wider than this lens maximum aperture.\n", argv[0]);
+            warning_message( "%s: Setting aperture to f:%.1f\n", argv[0], (float) status.lens_min_aperture.nom / (float) status.lens_min_aperture.denom);
         }
 
 
@@ -451,7 +454,7 @@ int main(int argc, char **argv) {
 
 }
 
-int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status, user_file_format filefmt,pslr_jpeg_quality_t jpeg_quality) {
+int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status, user_file_format filefmt, int jpeg_stars) {
 
     pslr_buffer_type imagetype;
     uint8_t buf[65536];
@@ -463,7 +466,7 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
     } else if (filefmt == USER_FILE_FORMAT_DNG) {
       imagetype = PSLR_BUF_DNG;
     } else {
-      imagetype = pslr_get_jpeg_buffer_type( camhandle, jpeg_quality );
+      imagetype = pslr_get_jpeg_buffer_type( camhandle, jpeg_stars );
     }
 
     DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, status->jpeg_resolution);
