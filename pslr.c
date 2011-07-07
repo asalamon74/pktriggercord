@@ -152,22 +152,22 @@ int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status);
 int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status);
 
 static ipslr_model_info_t camera_models[] = {
-    { PSLR_ID1_IST_DS,  "*ist DS",  1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, ipslr_status_parse_istds },
-    { PSLR_ID1_K20D,    "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, ipslr_status_parse_k20d  },
-    { PSLR_ID1_K10D,    "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
-    { PSLR_ID1_GX10,    "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
-    { PSLR_ID1_GX20,    "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, ipslr_status_parse_k20d  },
-    { PSLR_ID1_KX,      "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, ipslr_status_parse_kx    },
-    { PSLR_ID1_K200D,   "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, ipslr_status_parse_k200d }, 
-    { PSLR_ID1_K7,      "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, ipslr_status_parse_kx    },
-    { PSLR_ID1_KR,      "K-r",      0, 440, 3, {12, 10, 6, 2}, 9, 6000, 100, 12800, ipslr_status_parse_kr   },
-    { PSLR_ID1_K5,      "K-5",      0, 444, 4, {16, 10, 6, 2}, 9, 8000, 100, 12800, ipslr_status_parse_k5   },
+    { 0x12aa2, "*ist DS",  1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, ipslr_status_parse_istds },
+    { 0x12cd2, "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, ipslr_status_parse_k20d  },
+    { 0x12c1e, "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
+    { 0x12c20, "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
+    { 0x12cd4, "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, ipslr_status_parse_k20d  },
+    { 0x12dfe, "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, ipslr_status_parse_kx    },
+    { 0x12cfa, "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, ipslr_status_parse_k200d }, 
+    { 0x12db8, "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, ipslr_status_parse_kx    },
+    { 0x12e6c, "K-r",      0, 440, 3, {12, 10, 6, 2}, 9, 6000, 100, 12800, ipslr_status_parse_kr   },
+    { 0x12e76, "K-5",      0, 444, 4, {16, 10, 6, 2}, 9, 8000, 100, 12800, ipslr_status_parse_k5   },
 // only limited support from here
-    { PSLR_ID1_IST_D,   "*ist D",   1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, NULL},
-    { PSLR_ID1_IST_DS2, "*ist DS2", 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
-    { PSLR_ID1_IST_DL,  "*ist DL",  1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
-    { PSLR_ID1_K110D,   "K110D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
-    { PSLR_ID1_K100D,   "K100D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
+    { 0x12994, "*ist D",   1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, NULL},
+    { 0x12b60, "*ist DS2", 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
+    { 0x12b1a, "*ist DL",  1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
+    { 0x12b9d, "K110D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
+    { 0x12b9c, "K100D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
 };
 
 char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
