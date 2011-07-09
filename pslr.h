@@ -172,6 +172,14 @@ typedef enum {
 } pslr_gui_exposure_mode_t;
 
 typedef enum {
+    PSLR_AE_METERING_MULTI,
+    PSLR_AE_METERING_CENTER,
+    PSLR_AE_METERING_SPOT,
+    PSLR_AE_METERING_MAX
+} pslr_ae_metering_t;
+
+
+typedef enum {
     PSLR_AF_POINT_SEL_AUTO_5,
     PSLR_AF_POINT_SEL_SELECT,
     PSLR_AF_POINT_SEL_SPOT,
@@ -268,6 +276,7 @@ typedef struct {
     uint32_t custom_sensitivity_steps;
     uint32_t exposure_mode;
     uint32_t user_mode_flag;
+    uint32_t ae_metering_mode;
     uint32_t af_mode;
     uint32_t af_point_select;
     uint32_t selected_af_point;
