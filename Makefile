@@ -94,7 +94,7 @@ WIN_LDFLAGS=-lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lgli
 
 # converting lens info from exiftool
 exiftool_pentax_lens.txt:
-	cat /usr/lib/perl5/vendor_perl/5.10.1/Image/ExifTool/Pentax.pm | sed -n '/my %pentaxLensTypes/,/pentaxModelID/p' | sed -e "s/[ ]*'\([0-9]\) \([0-9]\{1,3\}\)' => '\(.*\)',.*/{\1, \2, \"\3\"},/g;tx;d;:x" > $@
+	cat /usr/lib/perl5/vendor_perl/5.12.3/Image/ExifTool/Pentax.pm | sed -n '/%pentaxLensTypes\ =/,/%pentaxModelID/p' | sed -e "s/[ ]*'\([0-9]\) \([0-9]\{1,3\}\)' => '\(.*\)',.*/{\1, \2, \"\3\"},/g;tx;d;:x" > $@
 
 # Windows cross-compile
 win: clean
