@@ -246,13 +246,6 @@ static const int ec_tbl_1_2[]= {
     -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 30
 };
 
-/*
-static const struct { uint32_t id; const char *name; } lens_id[] = {
-    { 0xfa, "smc DA 50-200" },
-    { 0xfc, "smc DA 18-55" },
-    { 0x1c, "smc FA 35" }
-    };*/
-
 /* ----------------------------------------------------------------------- */
 
 static pslr_handle_t camhandle;
