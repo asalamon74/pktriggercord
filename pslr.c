@@ -412,6 +412,11 @@ int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode) {
     return ipslr_handle_command_x18( p, true, 0x1c, 1, drive_mode, 0, 0);    
 }
 
+int pslr_set_ae_metering_mode(pslr_handle_t h, pslr_ae_metering_t ae_metering_mode) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return ipslr_handle_command_x18( p, true, 0x03, 1, ae_metering_mode, 0, 0);    
+}
+
 int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, true, 0x06, 1, af_mode, 0, 0);    
@@ -976,7 +981,8 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status) {
     status->exposure_mode = get_uint32(&buf[0xb4]); //d
     status->user_mode_flag = get_uint32(&buf[0x24]); //d
     status->af_mode = get_uint32(&buf[0xC0]);
-    status->af_point_select = get_uint32(&buf[0xbc]); // also on c4
+    status->ae_metering_mode = get_uint32(&buf[0xbc]); // same as cc
+    status->af_point_select = get_uint32(&buf[0xc4]);
     status->selected_af_point = get_uint32(&buf[0xc8]); //d
     status->focused_af_point = get_uint32(&buf[0x168]); //d, unsure about it, a lot is changing when the camera focuses
     status->auto_iso_min = get_uint32(&buf[0x6C]);

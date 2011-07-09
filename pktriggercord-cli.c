@@ -410,7 +410,7 @@ int main(int argc, char **argv) {
         pslr_focus(camhandle);
     }
     
-//    pslr_test( camhandle, true, 0x23, 1, 1,0,0);
+//    pslr_test( camhandle, true, 0x03, 1, 5,0,0);
 
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {
@@ -533,6 +533,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("custom sensitivity steps: %d\n", status.custom_sensitivity_steps);
     printf("exposure mode: %d\n", status.exposure_mode);
     printf("user mode flag: %d\n", status.user_mode_flag);
+    printf("ae metering mode: %d\n", status.ae_metering_mode);
     printf("af mode: %d\n", status.af_mode);
     printf("af point select: %d\n", status.af_point_select);
     printf("selected af point: %d\n", status.selected_af_point);
