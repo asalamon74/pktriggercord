@@ -1000,6 +1000,12 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status) {
     status->flash_exposure_compensation = get_int32(&buf[0x2C]);
     status->manual_mode_ev = get_int32(&buf[0x15C]);
     status->color_space = get_uint32(&buf[0xA0]);
+    // probably voltage*100
+    status->battery_1 = get_uint32( &buf[0x170] ); 	 
+    status->battery_2 = get_uint32( &buf[0x174] ); 	 
+    status->battery_3 = get_uint32( &buf[0x180] ); 	 
+    status->battery_4 = get_uint32( &buf[0x184] ); 	 
+
 }
 
 int ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {

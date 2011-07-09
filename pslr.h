@@ -294,6 +294,10 @@ typedef struct {
     uint32_t color_space;
     uint32_t lens_id1;
     uint32_t lens_id2;
+    uint32_t battery_1;
+    uint32_t battery_2;
+    uint32_t battery_3;
+    uint32_t battery_4;
 } pslr_status;
 
 typedef struct {
