@@ -508,6 +508,7 @@ char *format_rational( pslr_rational_t rational, char * fmt ) {
 void print_status_info( pslr_handle_t h, pslr_status status ) {    
     printf("\ncurrent iso: %d\n", status.current_iso);
     printf("current shutter speed: %d/%d\n", status.current_shutter_speed.nom, status.current_shutter_speed.denom);
+    printf("camera max shutter speed: %d/%d\n", status.max_shutter_speed.nom, status.max_shutter_speed.denom);
     printf("current aperture: %s\n", format_rational( status.current_aperture, "%.1f"));
     printf("lens max aperture: %s\n", format_rational( status.lens_max_aperture, "%.1f"));
     printf("lens min aperture: %s\n", format_rational( status.lens_min_aperture, "%.1f"));

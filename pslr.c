@@ -992,6 +992,8 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status) {
     status->current_shutter_speed.denom = get_uint32(&buf[0x110]);
     status->current_aperture.nom = get_uint32(&buf[0x114]);
     status->current_aperture.denom = get_uint32(&buf[0x118]);
+    status->max_shutter_speed.nom = get_uint32(&buf[0x12C]);
+    status->max_shutter_speed.denom = get_uint32(&buf[0x130]);
     status->current_iso = get_uint32(&buf[0x134]);
     status->light_meter_flags = get_uint32(&buf[0x140]);
     status->lens_min_aperture.nom = get_uint32(&buf[0x144]);
