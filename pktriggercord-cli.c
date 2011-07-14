@@ -69,6 +69,7 @@ static struct option const longopts[] ={
     {"auto_focus", no_argument, NULL, 'f'},
     {"warnings", no_argument, NULL, 'w'},
     {"exposure_compensation", required_argument, NULL, 3},
+    {"flash_exposure_compensation", required_argument, NULL, 5},
     {"debug", no_argument, NULL, 4},
     { NULL, 0, NULL, 0}
 };
@@ -139,8 +140,9 @@ int main(int argc, char **argv) {
     bool status_info = false;
     bool status_hex_info = false;
     pslr_rational_t ec = {0, 0};
+    pslr_rational_t fec = {0, 0};
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:i:F:fhvws24", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:i:F:fhvws24", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
@@ -321,6 +323,12 @@ int main(int argc, char **argv) {
 		    ec.denom=10;
 		}
 		break;
+            case 5:
+		if( sscanf(optarg, "%f%c", &F, &C) == 1 ) {
+		    fec.nom=10*F;
+		    fec.denom=10;
+		}
+		break;
 
         }
         /********************************************************/
@@ -360,6 +368,10 @@ int main(int argc, char **argv) {
 
     if( ec.denom ) {
 	pslr_set_ec( camhandle, ec );
+    }
+
+    if( fec.denom ) {
+	pslr_set_flash_exposure_compensation( camhandle, fec );
     }
 
     if (iso >0 || auto_iso_min >0) {
@@ -560,7 +572,8 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
       --warnings                        warning mode\n\
   -m, --exposure_mode=MODE		valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
-      --exposure_compensation=VALUE	exposure compensation value\n\
+      --exposure_compensation=VALUE	exposure compensation value\n	\
+      --flash_exposure_compensation=VALUE	exposure compensation value\n\
   -i, --iso=ISO                         single value (400) or interval (200-800)\n\
   -a, --aperture=APERTURE\n\
   -t, --shutter_speed=SHUTTER SPEED	values can be given in rational form (eg. 1/90)\n\
