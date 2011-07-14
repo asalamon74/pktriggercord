@@ -67,6 +67,7 @@ static struct option const longopts[] ={
     {"frames", required_argument, NULL, 'F'},
     {"delay", required_argument, NULL, 'd'},
     {"auto_focus", no_argument, NULL, 'f'},
+    {"green", no_argument, NULL, 'g'},
     {"warnings", no_argument, NULL, 'w'},
     {"exposure_compensation", required_argument, NULL, 3},
     {"flash_exposure_compensation", required_argument, NULL, 5},
@@ -137,12 +138,13 @@ int main(int argc, char **argv) {
     int frames = 1;
     int delay = 0;
     bool auto_focus = false;
+    bool green = false;
     bool status_info = false;
     bool status_hex_info = false;
     pslr_rational_t ec = {0, 0};
     pslr_rational_t fec = {0, 0};
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:i:F:fhvws24", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:i:F:fghvws24", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
@@ -290,6 +292,10 @@ int main(int argc, char **argv) {
                 auto_focus = true;
                 break;
 
+            case 'g':
+                green = true;
+                break;
+
             case 'F':
                 frames = atoi(optarg);
                 if (frames > 9999) {
@@ -420,6 +426,10 @@ int main(int argc, char **argv) {
 
     if (auto_focus) {
         pslr_focus(camhandle);
+    }
+
+    if (green) {
+        pslr_green_button( camhandle );
     }
     
 //    pslr_test( camhandle, true, 0x03, 1, 5,0,0);
@@ -571,25 +581,25 @@ void usage(char *name) {
 Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
       --warnings                        warning mode\n\
-  -m, --exposure_mode=MODE		valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
-      --exposure_compensation=VALUE	exposure compensation value\n	\
-      --flash_exposure_compensation=VALUE	exposure compensation value\n\
+  -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n \
+      --exposure_compensation=VALUE     exposure compensation value\n\
   -i, --iso=ISO                         single value (400) or interval (200-800)\n\
   -a, --aperture=APERTURE\n\
-  -t, --shutter_speed=SHUTTER SPEED	values can be given in rational form (eg. 1/90)\n\
-					or decimal form (eg. 0.8)\n\
-  -r, --resolution=RESOLUTION		resolution in megapixels\n\
-  -q, --quality=QUALITY			valid values are 1, 2, 3 and 4\n\
-  -f, --auto_focus			autofocus\n\
-  -s, --status			        print status info\n\
-      --status_hex			print status hex info\n\
-  -F, --frames=NUMBER			number of frames\n\
-  -d, --delay=SECONDS			delay between the frames (seconds)\n\
-      --file_format=FORMAT		valid values: PEF, DNG, JPEG\n\
-  -o, --output_file=FILE		send output to FILE instead of stdout\n\
-      --debug	                        turn on debug messages\n\
-  -v, --version				display version information and exit\n\
-  -h, --help				display this help and exit\n\
+  -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90)\n\
+                                        or decimal form (eg. 0.8)\n\
+  -r, --resolution=RESOLUTION           resolution in megapixels\n\
+  -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4\n\
+  -f, --auto_focus                      autofocus\n\
+  -g, --green                           green button\n\
+  -s, --status                          print status info\n\
+      --status_hex                      print status hex info\n\
+  -F, --frames=NUMBER                   number of frames\n\
+  -d, --delay=SECONDS                   delay between the frames (seconds)\n\
+      --file_format=FORMAT              valid values: PEF, DNG, JPEG\n\
+  -o, --output_file=FILE                send output to FILE instead of stdout\n\
+      --debug                           turn on debug messages\n\
+  -v, --version                         display version information and exit\n\
+  -h, --help                            display this help and exit\n\
 \n", name);
 }
 
