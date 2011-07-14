@@ -1,7 +1,7 @@
 version 0.76.01
 	--warnings switch
 	--quality bugfix
-	Limited support added: K-m, K2000
+	Pentax K-m/K2000 support (thx to Tomasz Kos for sharing the info)
 	Reading/writing AE metering mode field (K-x, K-7, K-5, K-r)
 	Updating lens info database ( exiftool 8.60 )
 	Reading battery fields (K-x, K-7, K-5, K-r)
