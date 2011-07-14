@@ -558,6 +558,7 @@ void usage(char *name) {
     printf("\nUsage: %s [OPTIONS]\n\n\
 Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
+      --warnings                        warning mode\n\
   -m, --exposure_mode=MODE		valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
       --exposure_compensation=VALUE	exposure compensation value\n\
   -i, --iso=ISO                         single value (400) or interval (200-800)\n\
