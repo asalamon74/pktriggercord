@@ -16,6 +16,7 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-resolution RESOLUTION
 .OP \-\-quality QUALITY
 .OP \-\-auto_focus
+.OP \-\-green
 .OP \-\-warnings
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-status\fR |
 \fB\-\-status_hex\fR | \fB\-\-frames\fR NUMBER [ \fB\-\-delay\fR SECONDS] ]
@@ -42,6 +43,16 @@ Specify the number of shots. Maximum number of pictures is 10000.
 Specify the delay between the shots (if number of frames is greater
 than 1). The minimum delay is based on several factors, approximately
 3 seconds\.
+.RE
+.PP
+\fB\-f\fR, \fB\-\-auto_focus\fR
+.RS 4
+Autofocus before first shot.
+.RE
+.PP
+\fB\-g\fR, \fB\-\-green\fR
+.RS 4
+Green button before first shot.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-status\fR
