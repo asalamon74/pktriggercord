@@ -72,6 +72,7 @@ static struct option const longopts[] ={
     {"exposure_compensation", required_argument, NULL, 3},
     {"flash_exposure_compensation", required_argument, NULL, 5},
     {"debug", no_argument, NULL, 4},
+    {"dust_removal", no_argument, NULL, 6},
     { NULL, 0, NULL, 0}
 };
 
@@ -139,12 +140,13 @@ int main(int argc, char **argv) {
     int delay = 0;
     bool auto_focus = false;
     bool green = false;
+    bool dust = false;
     bool status_info = false;
     bool status_hex_info = false;
     pslr_rational_t ec = {0, 0};
     pslr_rational_t fec = {0, 0};
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:i:F:fghvws24", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:i:F:fghvws246", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
@@ -156,6 +158,9 @@ int main(int argc, char **argv) {
                 exit(0);
             case 'w':
 		warnings = true;
+	        break;
+            case 6:
+		dust = true;
 	        break;
             case 1:
                 for (i = 0; i < strlen(optarg); i++) {
@@ -433,6 +438,7 @@ int main(int argc, char **argv) {
     }
     
 //    pslr_test( camhandle, true, 0x03, 1, 5,0,0);
+//    pslr_button_test( camhandle, 0x0d );
 
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {
@@ -443,6 +449,11 @@ int main(int argc, char **argv) {
         }
 	pslr_get_status(camhandle, &status);
 	print_status_info( camhandle, status );
+	exit(0);
+    }
+
+    if( dust ) {
+	pslr_dust_removal(camhandle);
 	exit(0);
     }
 
@@ -593,6 +604,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\
       --status_hex                      print status hex info\n\
+      --dust_removal                    dust removal\n\
   -F, --frames=NUMBER                   number of frames\n\
   -d, --delay=SECONDS                   delay between the frames (seconds)\n\
       --file_format=FORMAT              valid values: PEF, DNG, JPEG\n\

@@ -18,7 +18,7 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-auto_focus
 .OP \-\-green
 .OP \-\-warnings
-[\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-status\fR |
+[\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-dust_removal\fR | \fB\-\-status\fR |
 \fB\-\-status_hex\fR | \fB\-\-frames\fR NUMBER [ \fB\-\-delay\fR SECONDS] ]
 [ \fB\-\-file_format\fR FORMAT ] [ \fB\-\-output_file\fR FILENAME ] 
 .OP \-\-debug 
@@ -31,7 +31,7 @@ pkTriggerCord is a cross\-platform Pentax DSLR tethering software, and
 pktriggercord-cli is a command\-line client for it\.
 .SS Work mode
 .PP 
-Without specifying work mode the program takes 1 pictures.
+Without specifying work mode the program takes 1 picture.
 .PP
 \fB\-F\fR, \fB\-\-frames\fR
 .RS 4
@@ -63,6 +63,11 @@ Print human readable status info and do not take pictures.
 \fB\-\-status_hex\fR
 .RS 4
 Print raw (hexadecimal) and human readable status info and do not take pictures\.
+.RE
+.PP
+\fB\-\-dust_removal\fR
+.RS 4
+Initiate dust removal process\.
 .RE
 .SS Setting exposure parameters
 .PP

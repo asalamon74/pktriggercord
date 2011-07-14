@@ -353,7 +353,12 @@ int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format);
 int pslr_delete_buffer(pslr_handle_t h, int bufno);
 
 int pslr_green_button(pslr_handle_t h);
+
+int pslr_button_test(pslr_handle_t h, int bno);
+
 int pslr_ae_lock(pslr_handle_t h, bool lock);
+
+int pslr_dust_removal(pslr_handle_t h);
 
 int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution);
 uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size);
