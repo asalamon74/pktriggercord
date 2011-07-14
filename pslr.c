@@ -551,6 +551,22 @@ int pslr_green_button(pslr_handle_t h) {
     return PSLR_OK;
 }
 
+int pslr_dust_removal(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    CHECK(command(p->fd, 0x10, 0x11, 0x00));
+    CHECK(get_status(p->fd));
+    return PSLR_OK;
+}
+
+int pslr_button_test(pslr_handle_t h, int bno) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    CHECK(ipslr_write_args(p, 1, 2));
+    CHECK(command(p->fd, 0x10, bno, 4));
+    CHECK(get_status(p->fd));
+    return PSLR_OK;
+}
+
+
 int pslr_ae_lock(pslr_handle_t h, bool lock) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     if (lock)
