@@ -93,7 +93,8 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     if (fd == -1) {
         return PSLR_DEVICE_ERROR;
     }
-    read(fd, vendorId, vendorIdSizeMax);
+    int v_length = read(fd, vendorId, vendorIdSizeMax-1);
+    vendorId[v_length]='\0';
     close(fd);
 
     snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/model", driveName);
@@ -101,7 +102,8 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     if (fd == -1) {
         return PSLR_DEVICE_ERROR;
     }
-    read(fd, productId, productIdSizeMax);
+    int p_length = read(fd, productId, productIdSizeMax-1);
+    productId[p_length]='\0';
     close(fd);
 
     snprintf(nmbuf, sizeof (nmbuf), "/dev/%s", driveName);

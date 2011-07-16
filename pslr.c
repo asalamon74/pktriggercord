@@ -248,6 +248,7 @@ pslr_handle_t pslr_init() {
 	    continue;
 	}
     }
+    DPRINT("camera not found\n");
     return NULL;
 }
 
