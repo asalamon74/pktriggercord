@@ -1,4 +1,5 @@
 .TH "PKTRIGGERCORD" "1"
+.HEAD <STYLE type="text/css"> h3 { margin-left: 5%} </STYLE>
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -29,7 +30,9 @@ Syntax shows only long option names.
 .PP
 pkTriggerCord is a cross\-platform Pentax DSLR tethering software, and
 pktriggercord-cli is a command\-line client for it\.
+.HnS 2
 .SS Work mode
+.HnE
 .PP 
 Without specifying work mode the program takes 1 picture.
 .PP
@@ -69,7 +72,9 @@ Print raw (hexadecimal) and human readable status info and do not take pictures\
 .RS 4
 Initiate dust removal process\.
 .RE
+.HnS 2
 .SS Setting exposure parameters
+.HnE
 .PP
 \fB\-\-warnings\fR
 .RS 4
@@ -107,7 +112,9 @@ Specify exposure compensation value.
 .RS 4
 Specify flash exposure compensation value.
 .RE
+.HnS 2
 .SS Output file specification
+.HnE
 .PP
 \fB\-o\fR,\fB\-\-output_file\fR \fIFILENAME\fR
 .RS 4
@@ -130,7 +137,9 @@ Specify jpeg quality using the 'star' rating of the camera. 1, 2, 3 can be used 
 .RS 4
 Specify jpeg resolution. While this changes the jpeg resolution setting in the camera, it will not affect the resolution of the downloaded jpeg file. (it's a bug)\.
 .RE
+.HnS 2
 .SS Other
+.HnE
 .PP
 \fB\-v\fR, \fB\-\-version\fR
 .RS 4
@@ -151,7 +160,9 @@ Debug info\.
 \fIThe pktriggercord.sourceforge.net website\fR\&[1],
 .SH "EXAMPLES"
 .PP
-\fBpktriggercord-cli\fR \fB\-\-status\fR\fR
+.CDS
+\fBpktriggercord\-cli\fR \fB\-\-status\fR\fR
+.CDE
 .RS 4
 Connects to the camera and prints out status info\.
 .RE
@@ -171,6 +182,7 @@ command line\.
 .IP " 1." 4
 The pktriggercord.sourceforge.net website
 .RS 4
-\%http://pktriggercord.sourceforge.net/
+http://pktriggercord.sourceforge.net/
 .RE
-
+.HR
+.HTML <p>If you need more info, please go to the <a href="http://sourceforge.net/projects/pktriggercord">project page</a></p> <hr /> <p> <a href="http://sourceforge.net/projects/pktriggercord"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=394488&amp;type=13" width="120" height="30" alt="pkTriggerCord at SourceForge"/></a></p>
