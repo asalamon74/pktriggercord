@@ -132,6 +132,7 @@ static int read_result(int fd, uint8_t *buf, uint32_t n);
 
 void hexdump(uint8_t *buf, uint32_t bufLen);
 
+static uint16_t get_uint16(uint8_t *buf);
 static uint32_t get_uint32(uint8_t *buf);
 static int32_t get_int32(uint8_t *buf);
 
@@ -848,7 +849,7 @@ int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status) {
         /* K10D status block */
     uint8_t *buf = p->status_buffer;
         memset(status, 0, sizeof (*status));
-        status->bufmask = buf[0x16] << 8 | buf[0x17];
+        status->bufmask = get_uint16(&buf[0x16]);
         status->current_iso = get_uint32(&buf[0x11c]);
         status->current_shutter_speed.nom = get_uint32(&buf[0xf4]);
         status->current_shutter_speed.denom = get_uint32(&buf[0xf8]);
@@ -894,7 +895,7 @@ int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
         ipslr_status_diff(buf);
     }
         memset(status, 0, sizeof (*status));
-        status->bufmask = buf[0x16] << 8 | buf[0x17];
+        status->bufmask = get_uint16( &buf[0x16]);
         status->current_iso = get_uint32(&buf[0x130]); //d
         status->current_shutter_speed.nom = get_uint32(&buf[0x108]); //d
         status->current_shutter_speed.denom = get_uint32(&buf[0x10C]); //d
@@ -945,7 +946,7 @@ int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
         /* *ist DS status block */
         memset(status, 0, sizeof (*status));
-        status->bufmask = get_uint32(&buf[0x10]);
+        status->bufmask = get_uint16(&buf[0x12]);
         status->set_shutter_speed.nom = get_uint32(&buf[0x80]);
         status->set_shutter_speed.denom = get_uint32(&buf[0x84]);
         status->set_aperture.nom = get_uint32(&buf[0x88]);
@@ -965,7 +966,7 @@ int ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status) {
 void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift) {
 
     uint8_t *buf = p->status_buffer;
-    status->bufmask = buf[0x1E + shift] << 8 | buf[0x1F + shift];
+    status->bufmask = get_uint16( &buf[0x1E + shift]);
     status->user_mode_flag = get_uint32(&buf[0x24 + shift]);
     status->flash_mode = get_uint32(&buf[0x28 + shift]);
     status->flash_exposure_compensation = get_int32(&buf[0x2C + shift]);
@@ -1117,7 +1118,7 @@ int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     }
 
         memset(status, 0, sizeof (*status));	
-        status->bufmask = buf[0x16] << 8 | buf[0x17];
+        status->bufmask = get_uint16(&buf[0x16]);
         status->current_iso = get_uint32(&buf[0x060]); 
         status->current_shutter_speed.nom = get_uint32(&buf[0x0104]); 
         status->current_shutter_speed.denom = get_uint32(&buf[0x108]); 
@@ -1193,9 +1194,7 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
 // halfpress: autofocus
 static int ipslr_press_shutter(ipslr_handle_t *p, bool fullpress) {
     int r;
-    uint32_t bufmask;
     CHECK(ipslr_status_full(p, &p->status));
-    bufmask = p->status.bufmask;
     DPRINT("before: mask=0x%x\n", p->status.bufmask);
     CHECK(ipslr_write_args(p, 1, fullpress ? 2 : 1));
     CHECK(command(p->fd, 0x10, 0x05, 0x04));
@@ -1456,6 +1455,12 @@ void hexdump(uint8_t *buf, uint32_t bufLen) {
 }
 
 /* ----------------------------------------------------------------------- */
+
+static uint16_t get_uint16(uint8_t *buf) {
+    uint16_t res;
+    res = buf[0] << 8 | buf[1];
+    return res;
+}
 
 static uint32_t get_uint32(uint8_t *buf) {
     uint32_t res;

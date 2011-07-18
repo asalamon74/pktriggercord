@@ -48,7 +48,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#define MAX_BUFFERS 9
+// status.bufmask
+#define MAX_BUFFERS 8*sizeof(uint16_t)
 
 static struct {
     char *autosave_path;
@@ -1551,11 +1552,6 @@ void init_preview_area(void)
                                      GDK_TYPE_PIXBUF);
 
     for (i = 0; i < MAX_BUFFERS; i++) {
-//        gchar *some_data;
-//        char buf[256];
-//        sprintf(buf, "Icon%d", i);
-//        some_data = buf;
-
         /* Add a new row to the model */
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,

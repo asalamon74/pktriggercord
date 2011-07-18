@@ -1,5 +1,7 @@
 version 0.77.01
 	html version of man page
+	Eliminated hardwired buffer limit (now it's limited to 16 because
+	of the length of bufmask array)
 
 version 0.77.00 ( 2011-07-18 )
 	--warnings switch
