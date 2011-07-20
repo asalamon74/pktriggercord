@@ -2,6 +2,7 @@ version 0.77.01
 	html version of man page
 	Eliminated hardwired buffer limit (now it's limited to 16 because
 	of the length of bufmask array)
+	Reading exposure submode field (K-x, K-7, K-5, K-r, K-m/K2000)
 
 version 0.77.00 ( 2011-07-18 )
 	--warnings switch

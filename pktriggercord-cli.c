@@ -224,6 +224,10 @@ int main(int argc, char **argv) {
                     EM = PSLR_EXPOSURE_MODE_M;
                     break;
                 }
+                else if (!strcmp(optarg, "B")) {
+                    EM = PSLR_EXPOSURE_MODE_B;
+                    break;
+                }
                 else if (!strcmp(optarg, "X")) {
                     EM = PSLR_EXPOSURE_MODE_X;
                     break;
@@ -437,7 +441,7 @@ int main(int argc, char **argv) {
         pslr_green_button( camhandle );
     }
     
-//    pslr_test( camhandle, true, 0x03, 1, 5,0,0);
+//    pslr_test( camhandle, true, 0x01, 1, 2,0,0);
 //    pslr_button_test( camhandle, 0x0d );
 
     if( status_hex_info || status_info ) {
@@ -565,7 +569,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("ec: %s\n", format_rational( status.ec, "%.2f" ) );
     printf("custom ev steps: %d\n", status.custom_ev_steps);
     printf("custom sensitivity steps: %d\n", status.custom_sensitivity_steps);
-    printf("exposure mode: %d\n", status.exposure_mode);
+    printf("exposure mode: %d (%d)\n", status.exposure_mode, status.exposure_submode);
     printf("user mode flag: %d\n", status.user_mode_flag);
     printf("ae metering mode: %d\n", status.ae_metering_mode);
     printf("af mode: %d\n", status.af_mode);
