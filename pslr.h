@@ -63,14 +63,6 @@ typedef enum {
     PSLR_BUF_THUMBNAIL = 9
 } pslr_buffer_type;
 
-/*typedef enum {
-    PSLR_JPEG_QUALITY_4, // K20D only
-    PSLR_JPEG_QUALITY_3,
-    PSLR_JPEG_QUALITY_2,
-    PSLR_JPEG_QUALITY_1,
-    PSLR_JPEG_QUALITY_MAX
-    } pslr_jpeg_quality_t;*/
-
 typedef enum {
     PSLR_JPEG_IMAGE_MODE_NATURAL,
     PSLR_JPEG_IMAGE_MODE_BRIGHT,
@@ -267,19 +259,9 @@ typedef struct {
 
 typedef void *pslr_handle_t;
 
-typedef enum {
-    PSLR_STREAM_RAW,
-    PSLR_STREAM_JPEG
-} pslr_stream_t;
-
 typedef void *pslr_buffer_handle_t;
 
 typedef struct {
-    uint16_t power;
-} pslr_status_brief;
-
-typedef struct {
-    pslr_status_brief brief;
     uint16_t bufmask;
     uint32_t current_iso;
     pslr_rational_t current_shutter_speed;
