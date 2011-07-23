@@ -259,8 +259,6 @@ typedef struct {
 
 typedef void *pslr_handle_t;
 
-typedef void *pslr_buffer_handle_t;
-
 typedef struct {
     uint16_t bufmask;
     uint32_t current_iso;
@@ -381,7 +379,7 @@ int pslr_dust_removal(pslr_handle_t h);
 
 int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution);
 uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size);
-void pslr_buffer_close(pslr_buffer_handle_t h);
+void pslr_buffer_close(pslr_handle_t h);
 uint32_t pslr_buffer_get_size(pslr_handle_t h);
 
 int pslr_set_exposure_mode(pslr_handle_t h, pslr_exposure_mode_t mode);
