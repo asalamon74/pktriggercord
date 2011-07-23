@@ -384,6 +384,8 @@ int pslr_set_jpeg_hue(pslr_handle_t h, int32_t hue);
 
 int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format);
 int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format);
+int pslr_set_user_file_format(pslr_handle_t h, user_file_format uff);
+user_file_format get_user_file_format( pslr_status *st );
 
 int pslr_delete_buffer(pslr_handle_t h, int bufno);
 

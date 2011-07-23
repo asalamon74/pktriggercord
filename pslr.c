@@ -187,6 +187,38 @@ user_file_format_t *get_file_format_t( user_file_format uff ) {
     return NULL;
 }
 
+int pslr_set_user_file_format(pslr_handle_t h, user_file_format uff) {
+    switch( uff ) {
+    case USER_FILE_FORMAT_PEF:
+	pslr_set_image_format(h, PSLR_IMAGE_FORMAT_RAW);
+	pslr_set_raw_format(h, PSLR_RAW_FORMAT_PEF);
+	break;
+    case USER_FILE_FORMAT_DNG:
+	pslr_set_image_format(h, PSLR_IMAGE_FORMAT_RAW);
+	pslr_set_raw_format(h, PSLR_RAW_FORMAT_DNG);
+	break;
+    case USER_FILE_FORMAT_JPEG:
+	pslr_set_image_format(h, PSLR_IMAGE_FORMAT_JPEG);
+	break;
+    case USER_FILE_FORMAT_MAX:
+	return PSLR_PARAM;
+    }
+    return PSLR_OK;
+}
+
+user_file_format get_user_file_format( pslr_status *st ) {
+    int rawfmt = st->raw_format;
+    int imgfmt = st->image_format;
+    if (imgfmt == PSLR_IMAGE_FORMAT_JPEG) {
+        return USER_FILE_FORMAT_JPEG;
+    } else {
+        if (rawfmt == PSLR_RAW_FORMAT_PEF) {
+            return USER_FILE_FORMAT_PEF;
+        } else {
+            return USER_FILE_FORMAT_DNG;
+	}
+    }
+}
 
 static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
   switch( exp ) {

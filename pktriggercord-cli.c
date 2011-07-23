@@ -128,7 +128,7 @@ int main(int argc, char **argv) {
     int optc, fd, i;
     pslr_handle_t camhandle;
     pslr_status status;
-    user_file_format uff = USER_FILE_FORMAT_DNG;
+    user_file_format uff = USER_FILE_FORMAT_MAX;
     pslr_exposure_mode_t EM = PSLR_EXPOSURE_MODE_MAX;
 //    pslr_jpeg_resolution_t R = PSLR_JPEG_RESOLUTION_MAX;
     pslr_rational_t aperture = {0, 0};
@@ -363,7 +363,15 @@ int main(int argc, char **argv) {
     MODEL = pslr_camera_name(camhandle);
     printf("%s: %s Connected...\n", argv[0], MODEL);
 
-    pslr_set_image_format(camhandle, PSLR_IMAGE_FORMAT_RAW);
+    pslr_get_status(camhandle, &status);
+
+    if( uff == USER_FILE_FORMAT_MAX ) {
+	// do not specified: use the default of the camera
+	uff = get_user_file_format( &status );
+    } else {
+	// set the requested format
+	pslr_set_user_file_format(camhandle, uff);
+    }
 
     if (resolution) {
         pslr_set_jpeg_resolution(camhandle, resolution);
