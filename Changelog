@@ -4,6 +4,7 @@ version 0.77.01
 	of the length of bufmask array)
 	Reading exposure submode field (K-x, K-7, K-5, K-r, K-m/K2000)
 	Image format handling bugfix
+	Better formatting of human readable status info
 
 version 0.77.00 ( 2011-07-18 )
 	--warnings switch
