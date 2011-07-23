@@ -143,7 +143,6 @@ static void which_shutter_table(pslr_status *st, pslr_rational_t **table, int *s
 static void which_iso_table(pslr_status *st, const int **table, int *steps);
 static void which_ec_table(pslr_status *st, const int **table, int *steps);
 static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, int py);
-static user_file_format file_format(pslr_status *st);
 
 static void save_buffer(int bufno, const char *filename);
 
@@ -636,7 +635,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     /* Format selector */
     pw = glade_xml_get_widget(xml, "file_format_combo");
     if (st_new) {
-        int val = file_format(st_new);
+        int val = get_user_file_format(st_new);
         gtk_combo_box_set_active(GTK_COMBO_BOX(pw), val);        
     }
 
@@ -881,7 +880,7 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old)
         update_main_area(new_picture);
 	}
 
-    format = file_format(st_new);
+    format = get_user_file_format(st_new);
 
     /* auto-save check buffers */
     for (i=0; i<MAX_BUFFERS; i++) {
@@ -2014,21 +2013,7 @@ void preview_delete_button_clicked_cb(GtkButton *widget)
 static void file_format_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 {
     int val = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
-    switch (val) {
-    case USER_FILE_FORMAT_PEF:
-        pslr_set_image_format(camhandle, PSLR_IMAGE_FORMAT_RAW);
-        pslr_set_raw_format(camhandle, PSLR_RAW_FORMAT_PEF);
-        break;
-    case USER_FILE_FORMAT_DNG:
-        pslr_set_image_format(camhandle, PSLR_IMAGE_FORMAT_RAW);
-        pslr_set_raw_format(camhandle, PSLR_RAW_FORMAT_DNG);
-        break;
-    case USER_FILE_FORMAT_JPEG:
-        pslr_set_image_format(camhandle, PSLR_IMAGE_FORMAT_JPEG);
-        break;
-    default:
-        return;
-    }
+    pslr_set_user_file_format( camhandle, val );
 }
 
 static void user_mode_combo_changed_cb(GtkCombo *combo, gpointer user_data)
@@ -2084,22 +2069,6 @@ static void which_shutter_table(pslr_status *st, pslr_rational_t **table, int *s
     }
     assert(*table);
     assert(*steps);
-}
-
-
-static user_file_format file_format(pslr_status *st)
-{
-    int rawfmt = st->raw_format;
-    int imgfmt = st->image_format;
-    if (imgfmt == PSLR_IMAGE_FORMAT_JPEG) {
-        return USER_FILE_FORMAT_JPEG;
-    } else {
-        if (rawfmt == PSLR_RAW_FORMAT_PEF) {
-            return USER_FILE_FORMAT_PEF;
-        } else {
-            return USER_FILE_FORMAT_DNG;
-	}
-    }
 }
 
 static struct option const longopts[] ={
