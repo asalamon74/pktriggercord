@@ -73,6 +73,7 @@ static struct option const longopts[] ={
     {"flash_exposure_compensation", required_argument, NULL, 5},
     {"debug", no_argument, NULL, 4},
     {"dust_removal", no_argument, NULL, 6},
+    {"color_space", required_argument, NULL, 7},
     { NULL, 0, NULL, 0}
 };
 
@@ -145,8 +146,9 @@ int main(int argc, char **argv) {
     bool status_hex_info = false;
     pslr_rational_t ec = {0, 0};
     pslr_rational_t fec = {0, 0};
+    pslr_color_space_t color_space = -1;
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:i:F:fghvws246", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:i:F:fghvws246", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
@@ -241,6 +243,13 @@ int main(int argc, char **argv) {
 
                 resolution = atoi(optarg);
                 break;
+
+            case 7:
+                color_space = get_pslr_color_space( optarg );
+		if( color_space == -1 ) {
+		    warning_message("%s: Invalid color space\n", argv[0]);
+		}
+		break;
 
                 /*********************************************/
             case 'q':
@@ -364,6 +373,10 @@ int main(int argc, char **argv) {
     printf("%s: %s Connected...\n", argv[0], MODEL);
 
     pslr_get_status(camhandle, &status);
+
+    if( color_space != -1 ) {
+	pslr_set_color_space( camhandle, color_space );
+    }
 
     if( uff == USER_FILE_FORMAT_MAX ) {
 	// do not specified: use the default of the camera
@@ -571,7 +584,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("%-32s: %d\n", "jpeg hue", status.jpeg_hue);
     printf("%-32s: %s mm\n", "zoom", format_rational(status.zoom, "%.2f"));
     printf("%-32s: %d\n", "focus", status.focus);
-    printf("%-32s: %d\n", "color space", status.color_space);
+    printf("%-32s: %s\n", "color space", get_pslr_color_space_str(status.color_space));
     printf("%-32s: %d\n", "image format", status.image_format);
     printf("%-32s: %d\n", "raw format", status.raw_format);
     printf("%-32s: %d\n", "light meter flags", status.light_meter_flags);
@@ -605,9 +618,10 @@ void usage(char *name) {
 Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
       --warnings                        warning mode\n\
-  -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n \
+  -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
       --exposure_compensation=VALUE     exposure compensation value\n\
   -i, --iso=ISO                         single value (400) or interval (200-800)\n\
+      --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB\n\
   -a, --aperture=APERTURE\n\
   -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90)\n\
                                         or decimal form (eg. 0.8)\n\

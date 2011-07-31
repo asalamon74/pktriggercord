@@ -32,6 +32,7 @@
 #ifndef PSLR_H
 #define PSLR_H
 
+#include "pslr_enum.h"
 #include "pslr_scsi.h"
 
 #define MAX_RESOLUTION_SIZE 4
@@ -74,13 +75,6 @@ typedef enum {
     PSLR_JPEG_IMAGE_MODE_REVERSAL_FILM,
     PSLR_JPEG_IMAGE_MODE_MAX
 } pslr_jpeg_image_mode_t;
-
-typedef enum {
-    PSLR_COLOR_SPACE_SRGB,
-    PSLR_COLOR_SPACE_ADOBERGB,
-    PSLR_COLOR_SPACE_MAX
-} pslr_color_space_t;
-
 
 typedef enum {
     PSLR_RAW_FORMAT_PEF,
@@ -352,6 +346,7 @@ int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value);
 int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value);
 int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode);
 int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode);
+int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space);
 
 int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars);
 int pslr_set_jpeg_resolution(pslr_handle_t h, int megapixel);
