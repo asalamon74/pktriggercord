@@ -174,8 +174,8 @@ static ipslr_model_info_t camera_models[] = {
     { 0x12b9c, "K100D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
 };
 
-char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
-char* valid_models[2] = {"DIGITAL_CAMERA", "DSC"}; // no longer list all of them, DSC* should be ok
+const char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
+const char* valid_models[2] = {"DIGITAL_CAMERA", "DSC"}; // no longer list all of them, DSC* should be ok
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
     int i;    
@@ -247,16 +247,6 @@ static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t e
   return 0;
 }
 
-int find_in_array( char** array, char* str ) {
-    int i;
-    for( i = 0; i<sizeof(array); ++i ) {
-	if( strncmp( array[i], str, strlen(array[i]) ) == 0 ) {
-	    return i;
-	}
-    }
-    return -1;
-}
-
 pslr_handle_t pslr_init() {
     int fd;
     char vendorId[20];
@@ -270,8 +260,8 @@ pslr_handle_t pslr_init() {
 	pslr_result result = get_drive_info( drives[i], &fd, vendorId, sizeof(vendorId), productId, sizeof(productId));
 
 	DPRINT("Checking drive: %s %s\n", vendorId, productId);
-	if( result == PSLR_OK && find_in_array( valid_vendors, vendorId) != -1 
-	    && find_in_array( valid_models, productId) != -1 ) {
+	if( result == PSLR_OK && find_in_array( valid_vendors, sizeof(valid_vendors)/sizeof(valid_vendors[0]),vendorId) != -1 
+	    && find_in_array( valid_models, sizeof(valid_models)/sizeof(valid_models[0]), productId) != -1 ) {
 	    DPRINT("Found camera %s %s\n", vendorId, productId);
 	    pslr.fd = fd;
 	    /* Only support first connected camera at this time. */

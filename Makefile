@@ -22,9 +22,9 @@ cli: pktriggercord-cli
 install: install-app
 
 MANS = pktriggercord-cli.1 pktriggercord.1
-OBJS = pslr.o pslr_scsi.o pslr_lens.o
+OBJS = pslr.o pslr_enum.o pslr_scsi.o pslr_lens.o
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.rules samsung.rules pslr_scsi.h pslr_scsi.c pslr_scsi_linux.c pslr_scsi_win.c pslr.h pslr.c exiftool_pentax_lens.txt pslr_lens.h pslr_lens.c pktriggercord.c pktriggercord-cli.c pktriggercord.glade $(SPECFILE) $(WIN_DLLS_DIR)
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.rules samsung.rules pslr_enum.h pslr_enum.c pslr_scsi.h pslr_scsi.c pslr_scsi_linux.c pslr_scsi_win.c pslr.h pslr.c exiftool_pentax_lens.txt pslr_lens.h pslr_lens.c pktriggercord.c pktriggercord-cli.c pktriggercord.glade $(SPECFILE) $(WIN_DLLS_DIR)
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
@@ -32,7 +32,7 @@ WINGCC=i586-pc-mingw32-gcc
 WINMINGW=/usr/i586-pc-mingw32/sys-root/mingw
 WINDIR=$(TARDIR)-win
 
-pslr.o: pslr_scsi.o pslr.c pslr.h
+pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
 
 pktriggercord-cli: pktriggercord-cli.c $(OBJS)
 	$(CC) $(LIN_CFLAGS) $^ $(LIN_LDFLAGS) -DVERSION='"$(VERSION)"' -o $@ -L. 
@@ -103,6 +103,7 @@ pktriggercord-cli.1.html: pktriggercord-cli.1
 win: clean
 	$(WINGCC) $(WIN_CFLAGS) -c pslr_lens.c
 	$(WINGCC) $(WIN_CFLAGS) -c pslr_scsi.c
+	$(WINGCC) $(WIN_CFLAGS) -c pslr_enum.c
 	$(WINGCC) $(WIN_CFLAGS) -c pslr.c
 	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"'  pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) $(WIN_LDFLAGS) -L.
 	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_GUI_CFLAGS) $(WIN_LDFLAGS) -L.
