@@ -208,14 +208,6 @@ typedef enum {
 } pslr_af_point_sel_t;
 
 typedef enum {
-    PSLR_AF_MODE_MF,
-    PSLR_AF_MODE_AF_S,
-    PSLR_AF_MODE_AF_C,
-    PSLR_AF_MODE_AF_A,
-    PSLR_AF_MODE_MAX,
-} pslr_af_mode_t;
-
-typedef enum {
     PSLR_WHITE_BALANCE_MODE_AUTO,
     PSLR_WHITE_BALANCE_MODE_DAYLIGHT,
     PSLR_WHITE_BALANCE_MODE_SHADE,

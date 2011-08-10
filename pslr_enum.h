@@ -34,9 +34,21 @@ typedef enum {
     PSLR_COLOR_SPACE_MAX
 } pslr_color_space_t;
 
+typedef enum {
+    PSLR_AF_MODE_MF,
+    PSLR_AF_MODE_AF_S,
+    PSLR_AF_MODE_AF_C,
+    PSLR_AF_MODE_AF_A,
+    PSLR_AF_MODE_MAX,
+} pslr_af_mode_t;
+
 int find_in_array( const char** array, int length, char* str );
 
 pslr_color_space_t get_pslr_color_space( char *str );
 const char *get_pslr_color_space_str( pslr_color_space_t value );
+
+pslr_af_mode_t get_pslr_af_mode( char *str );
+const char *get_pslr_af_mode_str( pslr_af_mode_t value );
+
 
 #endif

@@ -39,6 +39,14 @@ const char* pslr_color_space_str[PSLR_COLOR_SPACE_MAX] = {
     "AdobeRGB"
 };
 
+const char* pslr_af_mode_str[PSLR_AF_MODE_MAX] = {
+    "MF",
+    "AF.S",
+    "AF.C",
+    "AF.A"
+};
+
+
 // case insenstive comparison
 // strnicmp
 int str_comparison_i (const char *s1, const char *s2, int n)
@@ -78,3 +86,12 @@ pslr_color_space_t get_pslr_color_space( char *str ) {
 const char *get_pslr_color_space_str( pslr_color_space_t value ) {
     return pslr_color_space_str[value];
 }
+
+pslr_af_mode_t get_pslr_af_mode( char *str ) {
+    return find_in_array( pslr_af_mode_str, sizeof(pslr_af_mode_str)/sizeof(pslr_af_mode_str[0]),str);
+}
+
+const char *get_pslr_af_mode_str( pslr_af_mode_t value ) {
+    return pslr_af_mode_str[value];
+}
+
