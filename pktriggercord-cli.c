@@ -74,6 +74,7 @@ static struct option const longopts[] ={
     {"debug", no_argument, NULL, 4},
     {"dust_removal", no_argument, NULL, 6},
     {"color_space", required_argument, NULL, 7},
+    {"af_mode", required_argument, NULL, 8},
     { NULL, 0, NULL, 0}
 };
 
@@ -147,8 +148,9 @@ int main(int argc, char **argv) {
     pslr_rational_t ec = {0, 0};
     pslr_rational_t fec = {0, 0};
     pslr_color_space_t color_space = -1;
+    pslr_af_mode_t af_mode = -1;
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:i:F:fghvws246", longopts, NULL)) != -1) {
+    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:8:i:F:fghvws246", longopts, NULL)) != -1) {
         switch (optc) {
                 /***************************************************************/
             case '?': case 'h':
@@ -248,6 +250,14 @@ int main(int argc, char **argv) {
                 color_space = get_pslr_color_space( optarg );
 		if( color_space == -1 ) {
 		    warning_message("%s: Invalid color space\n", argv[0]);
+		}
+		break;
+
+            case 8:
+                af_mode = get_pslr_af_mode( optarg );
+		if( af_mode == -1 || af_mode == 0 ) {
+		    // 0: changing MF does not work
+		    warning_message("%s: Invalid af mode\n", argv[0]);
 		}
 		break;
 
@@ -376,6 +386,10 @@ int main(int argc, char **argv) {
 
     if( color_space != -1 ) {
 	pslr_set_color_space( camhandle, color_space );
+    }
+
+    if( af_mode != -1 ) {
+	pslr_set_af_mode( camhandle, af_mode );
     }
 
     if( uff == USER_FILE_FORMAT_MAX ) {
@@ -594,7 +608,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("%-32s: %d (%d)\n", "exposure mode", status.exposure_mode, status.exposure_submode);
     printf("%-32s: %d\n", "user mode flag", status.user_mode_flag);
     printf("%-32s: %d\n", "ae metering mode", status.ae_metering_mode);
-    printf("%-32s: %d\n", "af mode", status.af_mode);
+    printf("%-32s: %s\n", "af mode", get_pslr_af_mode_str(status.af_mode));
     printf("%-32s: %d\n", "af point select", status.af_point_select);
     printf("%-32s: %d\n", "selected af point", status.selected_af_point);
     printf("%-32s: %d\n", "focused af point", status.focused_af_point);
@@ -622,6 +636,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
       --exposure_compensation=VALUE     exposure compensation value\n\
   -i, --iso=ISO                         single value (400) or interval (200-800)\n\
       --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB\n\
+      --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A\n\
   -a, --aperture=APERTURE\n\
   -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90)\n\
                                         or decimal form (eg. 0.8)\n\

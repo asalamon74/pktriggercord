@@ -6,6 +6,7 @@ version 0.77.01
 	Image format handling bugfix
 	Better formatting of human readable status info
 	--color_space
+	--af_mode
 
 version 0.77.00 ( 2011-07-18 )
 	--warnings switch
