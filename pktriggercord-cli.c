@@ -476,7 +476,7 @@ int main(int argc, char **argv) {
         pslr_green_button( camhandle );
     }
     
-//    pslr_test( camhandle, true, 0x01, 1, 2,0,0);
+//  pslr_test( camhandle, true, 0x07, 1, 2,0,0);
 //    pslr_button_test( camhandle, 0x0d );
 
     if( status_hex_info || status_info ) {

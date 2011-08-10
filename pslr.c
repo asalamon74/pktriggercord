@@ -439,7 +439,6 @@ int pslr_set_ae_metering_mode(pslr_handle_t h, pslr_ae_metering_t ae_metering_mo
 }
 
 int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode) {
-    DPRINT("Set af mode %d\n",af_mode);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, true, 0x05, 1, af_mode, 0, 0);    
 }
