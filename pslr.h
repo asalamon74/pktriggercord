@@ -192,14 +192,6 @@ typedef enum {
 } pslr_gui_exposure_mode_t;
 
 typedef enum {
-    PSLR_AE_METERING_MULTI,
-    PSLR_AE_METERING_CENTER,
-    PSLR_AE_METERING_SPOT,
-    PSLR_AE_METERING_MAX
-} pslr_ae_metering_t;
-
-
-typedef enum {
     PSLR_AF_POINT_SEL_AUTO_5,
     PSLR_AF_POINT_SEL_SELECT,
     PSLR_AF_POINT_SEL_SPOT,
@@ -338,6 +330,7 @@ int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value);
 int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value);
 int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode);
 int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode);
+int pslr_set_ae_metering_mode(pslr_handle_t h, pslr_ae_metering_t ae_metering_mode);
 int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space);
 
 int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars);

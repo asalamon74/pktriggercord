@@ -42,6 +42,13 @@ typedef enum {
     PSLR_AF_MODE_MAX,
 } pslr_af_mode_t;
 
+typedef enum {
+    PSLR_AE_METERING_MULTI,
+    PSLR_AE_METERING_CENTER,
+    PSLR_AE_METERING_SPOT,
+    PSLR_AE_METERING_MAX
+} pslr_ae_metering_t;
+
 int find_in_array( const char** array, int length, char* str );
 
 pslr_color_space_t get_pslr_color_space( char *str );
@@ -50,5 +57,7 @@ const char *get_pslr_color_space_str( pslr_color_space_t value );
 pslr_af_mode_t get_pslr_af_mode( char *str );
 const char *get_pslr_af_mode_str( pslr_af_mode_t value );
 
+pslr_ae_metering_t get_pslr_ae_metering( char *str );
+const char *get_pslr_ae_metering_str( pslr_ae_metering_t value );
 
 #endif

@@ -46,6 +46,11 @@ const char* pslr_af_mode_str[PSLR_AF_MODE_MAX] = {
     "AF.A"
 };
 
+const char* pslr_ae_metering_str[PSLR_AE_METERING_MAX] = {
+    "Multi",
+    "Center",
+    "Spot"
+};
 
 // case insenstive comparison
 // strnicmp
@@ -94,4 +99,13 @@ pslr_af_mode_t get_pslr_af_mode( char *str ) {
 const char *get_pslr_af_mode_str( pslr_af_mode_t value ) {
     return pslr_af_mode_str[value];
 }
+
+pslr_ae_metering_t get_pslr_ae_metering( char *str ) {
+    return find_in_array( pslr_ae_metering_str, sizeof(pslr_ae_metering_str)/sizeof(pslr_ae_metering_str[0]),str);
+}
+
+const char *get_pslr_ae_metering_str( pslr_ae_metering_t value ) {
+    return pslr_ae_metering_str[value];
+}
+
 
