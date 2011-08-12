@@ -60,7 +60,7 @@ const char* pslr_flash_mode_str[PSLR_FLASH_MODE_MAX] = {
     "TrailingCurtain",
     "Auto",
     "Auto-RedEye",
-    "Unknown", // 7 is unknown
+    "TrailingCurtain", // maybe in manual mode??
     "Wireless"
 };
 
