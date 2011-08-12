@@ -76,6 +76,7 @@ static struct option const longopts[] ={
     {"color_space", required_argument, NULL, 7},
     {"af_mode", required_argument, NULL, 8},
     {"ae_metering", required_argument, NULL, 9},
+    {"flash_mode", required_argument, NULL, 10},
     { NULL, 0, NULL, 0}
 };
 
@@ -151,6 +152,7 @@ int main(int argc, char **argv) {
     pslr_color_space_t color_space = -1;
     pslr_af_mode_t af_mode = -1;
     pslr_ae_metering_t ae_metering = -1;
+    pslr_flash_mode_t flash_mode = -1;
 
     while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:8:9:i:F:fghvws246", longopts, NULL)) != -1) {
         switch (optc) {
@@ -267,6 +269,13 @@ int main(int argc, char **argv) {
                 ae_metering = get_pslr_ae_metering( optarg );
 		if( ae_metering == -1 ) {
 		    warning_message("%s: Invalid ae metering\n", argv[0]);
+		}
+		break;
+
+            case 10:
+                flash_mode = get_pslr_flash_mode( optarg );
+		if( flash_mode == -1 ) {
+		    warning_message("%s: Invalid flash_mode\n", argv[0]);
 		}
 		break;
 
@@ -404,6 +413,10 @@ int main(int argc, char **argv) {
 	pslr_set_ae_metering_mode( camhandle, ae_metering );
     }
 
+    if( flash_mode != -1 ) {
+	pslr_set_flash_mode( camhandle, flash_mode );
+    }
+
     if( uff == USER_FILE_FORMAT_MAX ) {
 	// do not specified: use the default of the camera
 	uff = get_user_file_format( &status );
@@ -488,7 +501,7 @@ int main(int argc, char **argv) {
         pslr_green_button( camhandle );
     }
     
-//  pslr_test( camhandle, true, 0x07, 1, 2,0,0);
+//  pslr_test( camhandle, true, 0x04, 1, 1,0,0);
 //    pslr_button_test( camhandle, 0x0d );
 
     if( status_hex_info || status_info ) {
@@ -632,7 +645,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("%-32s: %d\n", "white balance mode", status.white_balance_mode);
     printf("%-32s: %d\n", "white balance adjust mg", status.white_balance_adjust_mg);
     printf("%-32s: %d\n", "white balance adjust ba", status.white_balance_adjust_ba);
-    printf("%-32s: %d\n", "flash mode", status.flash_mode);
+    printf("%-32s: %s\n", "flash mode", get_pslr_flash_mode_str(status.flash_mode));
     printf("%-32s: %.2f\n", "flash exposure compensation", (1.0 * status.flash_exposure_compensation/256));
     printf("%-32s: %.2f\n", "manual mode ev", (1.0 * status.manual_mode_ev / 10));
     printf("%-32s: %s\n", "lens", get_lens_name(status.lens_id1, status.lens_id2));
@@ -650,6 +663,8 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
       --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB\n\
       --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A\n\
       --ae_metering=AE_METERING         valid values are: Multi, Center, Spot\n\
+      --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless\n\
+      --flash_exposure_compensation=VAL flash exposure compensation value\n\
   -a, --aperture=APERTURE\n\
   -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90)\n\
                                         or decimal form (eg. 0.8)\n\

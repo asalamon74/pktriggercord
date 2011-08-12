@@ -52,10 +52,21 @@ const char* pslr_ae_metering_str[PSLR_AE_METERING_MAX] = {
     "Spot"
 };
 
+const char* pslr_flash_mode_str[PSLR_FLASH_MODE_MAX] = {
+    "Manual",
+    "Manual-RedEye",
+    "Slow",
+    "Slow-RedEye",
+    "TrailingCurtain",
+    "Auto",
+    "Auto-RedEye",
+    "Unknown", // 7 is unknown
+    "Wireless"
+};
+
 // case insenstive comparison
 // strnicmp
-int str_comparison_i (const char *s1, const char *s2, int n)
-{
+int str_comparison_i (const char *s1, const char *s2, int n) {
     if( s1 == NULL ) {
 	return s2 == NULL ? 0 : -(*s2);
     }
@@ -76,12 +87,15 @@ int str_comparison_i (const char *s1, const char *s2, int n)
 
 int find_in_array( const char** array, int length, char* str ) {
     int i;
+    int found_index=-1;
+    int found_index_length=0;
     for( i = 0; i<length; ++i ) {
-	if( str_comparison_i( array[i], str, strlen(array[i]) ) == 0 ) {
-	    return i;
+	if( (str_comparison_i( array[i], str, strlen(array[i]) ) == 0) && (strlen(array[i]) > found_index_length) ) {
+	    found_index_length = strlen( array[i] );
+	    found_index = i;
 	}
     }
-    return -1;
+    return found_index;
 }
 
 pslr_color_space_t get_pslr_color_space( char *str ) {
@@ -107,5 +121,14 @@ pslr_ae_metering_t get_pslr_ae_metering( char *str ) {
 const char *get_pslr_ae_metering_str( pslr_ae_metering_t value ) {
     return pslr_ae_metering_str[value];
 }
+
+pslr_flash_mode_t get_pslr_flash_mode( char *str ) {
+    return find_in_array( pslr_flash_mode_str, sizeof(pslr_flash_mode_str)/sizeof(pslr_flash_mode_str[0]),str);
+}
+
+const char *get_pslr_flash_mode_str( pslr_flash_mode_t value ) {
+    return pslr_flash_mode_str[value];
+}
+
 
 
