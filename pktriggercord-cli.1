@@ -10,6 +10,7 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .SY pktriggercord-cli
 .OP \-\-exposure_mode MODE
 .OP \-\-exposure_compensation VALUE
+.OP \-\-flash_mode FLASH_MODE
 .OP \-\-flash_exposure_compensation VALUE
 .OP \-\-iso ISO
 .OP \-\-aperture APERTURE
@@ -118,6 +119,11 @@ Specify the autoexposure metering mode. Valid values are: Multi, Center, Spot\.
 \fB\-\-exposure_correction\fR \fIVALUE\fR
 .RS 4
 Specify exposure compensation value.
+.RE
+.PP
+\fB\-\-flash_mode\fR \fIFLASH_MODE\fR
+.RS 4
+Specify the flash mode. Valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless\.
 .RE
 .PP
 \fB\-\-flash_exposure_correction\fR \fIVALUE\fR

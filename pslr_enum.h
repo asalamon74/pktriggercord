@@ -49,6 +49,19 @@ typedef enum {
     PSLR_AE_METERING_MAX
 } pslr_ae_metering_t;
 
+typedef enum {
+    PSLR_FLASH_MODE_MANUAL = 0,
+    PSLR_FLASH_MODE_MANUAL_REDEYE = 1,
+    PSLR_FLASH_MODE_SLOW = 2,
+    PSLR_FLASH_MODE_SLOW_REDEYE = 3,
+    PSLR_FLASH_MODE_TRAILING_CURTAIN = 4,
+    PSLR_FLASH_MODE_AUTO = 5,
+    PSLR_FLASH_MODE_AUTO_REDEYE = 6,
+    // 7 not used
+    PSLR_FLASH_MODE_WIRELESS = 8,
+    PSLR_FLASH_MODE_MAX = 9
+} pslr_flash_mode_t;
+
 int find_in_array( const char** array, int length, char* str );
 
 pslr_color_space_t get_pslr_color_space( char *str );
@@ -59,5 +72,8 @@ const char *get_pslr_af_mode_str( pslr_af_mode_t value );
 
 pslr_ae_metering_t get_pslr_ae_metering( char *str );
 const char *get_pslr_ae_metering_str( pslr_ae_metering_t value );
+
+pslr_flash_mode_t get_pslr_flash_mode( char *str );
+const char *get_pslr_flash_mode_str( pslr_flash_mode_t value );
 
 #endif
