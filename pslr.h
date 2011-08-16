@@ -119,17 +119,6 @@ typedef enum {
 } pslr_custom_sensitivity_steps_t;
 
 typedef enum {
-    PSLR_DRIVE_MODE_SINGLE,
-    PSLR_DRIVE_MODE_CONTINUOUS_HI,
-    PSLR_DRIVE_MODE_SELF_TIMER_12,
-    PSLR_DRIVE_MODE_SELF_TIMER_2,
-    PSLR_DRIVE_MODE_REMOTE,
-    PSLR_DRIVE_MODE_REMOTE_3,
-    PSLR_DRIVE_MODE_CONTINUOUS_LO,
-    PSLR_DRIVE_MODE_MAX
-} pslr_drive_mode_t;
-
-typedef enum {
     PSLR_EXPOSURE_MODE_P = 0 ,
     PSLR_EXPOSURE_MODE_GREEN = 1,
 //    PSLR_EXPOSURE_MODE_HYP = 2,
