@@ -77,6 +77,7 @@ static struct option const longopts[] ={
     {"af_mode", required_argument, NULL, 8},
     {"ae_metering", required_argument, NULL, 9},
     {"flash_mode", required_argument, NULL, 10},
+    {"drive_mode", required_argument, NULL, 11},
     { NULL, 0, NULL, 0}
 };
 
@@ -153,6 +154,7 @@ int main(int argc, char **argv) {
     pslr_af_mode_t af_mode = -1;
     pslr_ae_metering_t ae_metering = -1;
     pslr_flash_mode_t flash_mode = -1;
+    pslr_drive_mode_t drive_mode = -1;
 
     while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:8:9:i:F:fghvws246", longopts, NULL)) != -1) {
         switch (optc) {
@@ -276,6 +278,13 @@ int main(int argc, char **argv) {
                 flash_mode = get_pslr_flash_mode( optarg );
 		if( flash_mode == -1 ) {
 		    warning_message("%s: Invalid flash_mode\n", argv[0]);
+		}
+		break;
+
+            case 11:
+                drive_mode = get_pslr_drive_mode( optarg );
+		if( drive_mode == -1 ) {
+		    warning_message("%s: Invalid drive_mode\n", argv[0]);
 		}
 		break;
 
@@ -415,6 +424,10 @@ int main(int argc, char **argv) {
 
     if( flash_mode != -1 ) {
 	pslr_set_flash_mode( camhandle, flash_mode );
+    }
+
+    if( drive_mode != -1 ) {
+	pslr_set_drive_mode( camhandle, drive_mode );
     }
 
     if( uff == USER_FILE_FORMAT_MAX ) {
@@ -638,7 +651,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("%-32s: %d\n", "af point select", status.af_point_select);
     printf("%-32s: %d\n", "selected af point", status.selected_af_point);
     printf("%-32s: %d\n", "focused af point", status.focused_af_point);
-    printf("%-32s: %d\n", "drive mode", status.drive_mode);
+    printf("%-32s: %s\n", "drive mode", get_pslr_drive_mode_str(status.drive_mode));
     printf("%-32s: %s\n", "auto bracket mode", status.auto_bracket_mode > 0 ? "on" : "off");
     printf("%-32s: %d\n", "auto bracket picture count", status.auto_bracket_picture_count);
     printf("%-32s: %s\n", "auto bracket ev", format_rational(status.auto_bracket_ev, "%.2f"));
@@ -660,6 +673,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
       --warnings                        warning mode\n\
   -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
       --exposure_compensation=VALUE     exposure compensation value\n\
+      --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO\n\
   -i, --iso=ISO                         single value (400) or interval (200-800)\n\
       --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB\n\
       --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A\n\

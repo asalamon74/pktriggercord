@@ -64,6 +64,16 @@ const char* pslr_flash_mode_str[PSLR_FLASH_MODE_MAX] = {
     "Wireless"
 };
 
+const char* pslr_drive_mode_str[PSLR_DRIVE_MODE_MAX] = {
+    "Single",
+    "Continuous-HI",
+    "SelfTimer-12",
+    "SelfTimer-2",
+    "Remote",
+    "Remote-3",
+    "Continuous-LO"
+};
+
 // case insenstive comparison
 // strnicmp
 int str_comparison_i (const char *s1, const char *s2, int n) {
@@ -130,5 +140,12 @@ const char *get_pslr_flash_mode_str( pslr_flash_mode_t value ) {
     return pslr_flash_mode_str[value];
 }
 
+pslr_drive_mode_t get_pslr_drive_mode( char *str ) {
+    return find_in_array( pslr_drive_mode_str, sizeof(pslr_drive_mode_str)/sizeof(pslr_drive_mode_str[0]),str);
+}
+
+const char *get_pslr_drive_mode_str( pslr_drive_mode_t value ) {
+    return pslr_drive_mode_str[value];
+}
 
 

@@ -62,6 +62,17 @@ typedef enum {
     PSLR_FLASH_MODE_MAX = 9
 } pslr_flash_mode_t;
 
+typedef enum {
+    PSLR_DRIVE_MODE_SINGLE,
+    PSLR_DRIVE_MODE_CONTINUOUS_HI,
+    PSLR_DRIVE_MODE_SELF_TIMER_12,
+    PSLR_DRIVE_MODE_SELF_TIMER_2,
+    PSLR_DRIVE_MODE_REMOTE,
+    PSLR_DRIVE_MODE_REMOTE_3,
+    PSLR_DRIVE_MODE_CONTINUOUS_LO,
+    PSLR_DRIVE_MODE_MAX
+} pslr_drive_mode_t;
+
 int find_in_array( const char** array, int length, char* str );
 
 pslr_color_space_t get_pslr_color_space( char *str );
@@ -75,5 +86,8 @@ const char *get_pslr_ae_metering_str( pslr_ae_metering_t value );
 
 pslr_flash_mode_t get_pslr_flash_mode( char *str );
 const char *get_pslr_flash_mode_str( pslr_flash_mode_t value );
+
+pslr_drive_mode_t get_pslr_drive_mode( char *str );
+const char *get_pslr_drive_mode_str( pslr_drive_mode_t value );
 
 #endif
