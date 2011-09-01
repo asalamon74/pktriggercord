@@ -27,7 +27,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <linux/../scsi/sg.h>
+#include <scsi/sg.h>
 #include <unistd.h>
 #include <dirent.h>
 
