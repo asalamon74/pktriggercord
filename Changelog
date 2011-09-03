@@ -1,4 +1,4 @@
-version 0.77.01
+version 0.77.02 ( 2011-09-03 )
 	html version of man page
 	Eliminated hardwired buffer limit (now it's limited to 16 because
 	of the length of bufmask array)
