@@ -17,7 +17,7 @@ LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 libglade-2.0)
 LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 libglade-2.0)
 
 default: cli pktriggercord
-all: srczip rpm win pktriggercord-cli.1.html
+all: srczip rpm win pktriggercord_commandline.html
 cli: pktriggercord-cli
 install: install-app
 
@@ -96,7 +96,7 @@ WIN_LDFLAGS=-lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lgli
 exiftool_pentax_lens.txt:
 	cat /usr/lib/perl5/vendor_perl/5.12.3/Image/ExifTool/Pentax.pm | sed -n '/%pentaxLensTypes\ =/,/%pentaxModelID/p' | sed -e "s/[ ]*'\([0-9]\) \([0-9]\{1,3\}\)' => '\(.*\)',.*/{\1, \2, \"\3\"},/g;tx;d;:x" > $@
 
-pktriggercord-cli.1.html: pktriggercord-cli.1
+pktriggercord_commandline.html: pktriggercord-cli.1
 	groff $< -man -Thtml -mwww -P "-lr" > $@
 
 # Windows cross-compile
