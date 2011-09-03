@@ -11,6 +11,7 @@ version 0.77.01
 	--flash_mode
 	--drive_mode
 	sg.h include code cleanup (taken from ALT Linux patch)
+	Better no camera error message
 
 version 0.77.00 ( 2011-07-18 )
 	--warnings switch

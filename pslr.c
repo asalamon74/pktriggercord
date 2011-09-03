@@ -260,12 +260,19 @@ pslr_handle_t pslr_init() {
 	pslr_result result = get_drive_info( drives[i], &fd, vendorId, sizeof(vendorId), productId, sizeof(productId));
 
 	DPRINT("Checking drive: %s %s\n", vendorId, productId);
-	if( result == PSLR_OK && find_in_array( valid_vendors, sizeof(valid_vendors)/sizeof(valid_vendors[0]),vendorId) != -1 
+	if( find_in_array( valid_vendors, sizeof(valid_vendors)/sizeof(valid_vendors[0]),vendorId) != -1 
 	    && find_in_array( valid_models, sizeof(valid_models)/sizeof(valid_models[0]), productId) != -1 ) {
-	    DPRINT("Found camera %s %s\n", vendorId, productId);
-	    pslr.fd = fd;
-	    /* Only support first connected camera at this time. */
-	    return &pslr;	    
+	    if( result == PSLR_OK ) {
+		DPRINT("Found camera %s %s\n", vendorId, productId);
+		pslr.fd = fd;
+		/* Only support first connected camera at this time. */
+		return &pslr;	    
+	    } else {
+		DPRINT("Cannot get drive info of Pentax camera. Please do not forget to install the program using 'make install'\n");
+		// found the camera but communication is not possible
+		close( fd );
+		continue;
+	    }
 	} else {
 	    close( fd );
 	    continue;
