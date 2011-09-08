@@ -181,14 +181,6 @@ typedef enum {
 } pslr_gui_exposure_mode_t;
 
 typedef enum {
-    PSLR_AF_POINT_SEL_AUTO_5,
-    PSLR_AF_POINT_SEL_SELECT,
-    PSLR_AF_POINT_SEL_SPOT,
-    PSLR_AF_POINT_SEL_AUTO_11, // maybe not for all cameras
-    PSLR_AF_POINT_SEL_MAX
-} pslr_af_point_sel_t;
-
-typedef enum {
     PSLR_WHITE_BALANCE_MODE_AUTO,
     PSLR_WHITE_BALANCE_MODE_DAYLIGHT,
     PSLR_WHITE_BALANCE_MODE_SHADE,
@@ -305,6 +297,7 @@ int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value);
 int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value);
 int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode);
 int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode);
+int pslr_set_af_point_sel(pslr_handle_t h, pslr_af_point_sel_t af_point_sel);
 int pslr_set_ae_metering_mode(pslr_handle_t h, pslr_ae_metering_t ae_metering_mode);
 int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space);
 

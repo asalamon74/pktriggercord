@@ -73,6 +73,14 @@ typedef enum {
     PSLR_DRIVE_MODE_MAX
 } pslr_drive_mode_t;
 
+typedef enum {
+    PSLR_AF_POINT_SEL_AUTO_5,
+    PSLR_AF_POINT_SEL_SELECT,
+    PSLR_AF_POINT_SEL_SPOT,
+    PSLR_AF_POINT_SEL_AUTO_11, // maybe not for all cameras
+    PSLR_AF_POINT_SEL_MAX
+} pslr_af_point_sel_t;
+
 int find_in_array( const char** array, int length, char* str );
 
 pslr_color_space_t get_pslr_color_space( char *str );
@@ -89,5 +97,8 @@ const char *get_pslr_flash_mode_str( pslr_flash_mode_t value );
 
 pslr_drive_mode_t get_pslr_drive_mode( char *str );
 const char *get_pslr_drive_mode_str( pslr_drive_mode_t value );
+
+pslr_af_point_sel_t get_pslr_af_point_sel( char *str );
+const char *get_pslr_af_point_sel_str( pslr_af_point_sel_t value );
 
 #endif

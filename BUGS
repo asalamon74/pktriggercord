@@ -17,3 +17,5 @@ Known bugs of pkTriggerCord:
 
   The program stops for approx. 20 minutes after 4-5 hours
   (e.g. --frames 200 --delay 120)
+
+  --select_af_point Auto-11 changes to Auto-5 instead

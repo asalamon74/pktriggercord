@@ -74,6 +74,14 @@ const char* pslr_drive_mode_str[PSLR_DRIVE_MODE_MAX] = {
     "Continuous-LO"
 };
 
+const char*  pslr_af_point_sel_str[PSLR_AF_POINT_SEL_MAX] = {
+    "Auto-5",
+    "Select",
+    "Spot",
+    "Auto-11"
+};
+
+
 // case insenstive comparison
 // strnicmp
 int str_comparison_i (const char *s1, const char *s2, int n) {
@@ -146,6 +154,14 @@ pslr_drive_mode_t get_pslr_drive_mode( char *str ) {
 
 const char *get_pslr_drive_mode_str( pslr_drive_mode_t value ) {
     return pslr_drive_mode_str[value];
+}
+
+pslr_af_point_sel_t get_pslr_af_point_sel( char *str ) {
+    return find_in_array( pslr_af_point_sel_str, sizeof(pslr_af_point_sel_str)/sizeof(pslr_af_point_sel_str[0]),str);
+}
+
+const char *get_pslr_af_point_sel_str( pslr_af_point_sel_t value ) {
+    return pslr_af_point_sel_str[value];
 }
 
 

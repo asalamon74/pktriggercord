@@ -450,6 +450,11 @@ int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode) {
     return ipslr_handle_command_x18( p, true, 0x05, 1, af_mode, 0, 0);    
 }
 
+int pslr_set_af_point_sel(pslr_handle_t h, pslr_af_point_sel_t af_point_sel) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return ipslr_handle_command_x18( p, true, 0x06, 1, af_point_sel, 0, 0);    
+}
+
 int get_hw_jpeg_quality( pslr_handle_t h, int jpeg_stars) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->jpeg_stars - jpeg_stars;

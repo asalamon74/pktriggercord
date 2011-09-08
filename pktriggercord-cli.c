@@ -78,6 +78,7 @@ static struct option const longopts[] ={
     {"ae_metering", required_argument, NULL, 9},
     {"flash_mode", required_argument, NULL, 10},
     {"drive_mode", required_argument, NULL, 11},
+    {"select_af_point", required_argument, NULL, 12},
     { NULL, 0, NULL, 0}
 };
 
@@ -155,6 +156,7 @@ int main(int argc, char **argv) {
     pslr_ae_metering_t ae_metering = -1;
     pslr_flash_mode_t flash_mode = -1;
     pslr_drive_mode_t drive_mode = -1;
+    pslr_af_point_sel_t af_point_sel = -1;
 
     while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:8:9:i:F:fghvws246", longopts, NULL)) != -1) {
         switch (optc) {
@@ -288,6 +290,13 @@ int main(int argc, char **argv) {
 		}
 		break;
 
+            case 12:
+                af_point_sel = get_pslr_af_point_sel( optarg );
+		if( af_point_sel == -1 ) {
+		    warning_message("%s: Invalid select af point\n", argv[0]);
+		}
+		break;
+
             case 'q':
                 quality  = atoi(optarg);
                 if (!quality) {
@@ -416,6 +425,10 @@ int main(int argc, char **argv) {
 
     if( af_mode != -1 ) {
 	pslr_set_af_mode( camhandle, af_mode );
+    }
+
+    if( af_point_sel != -1 ) {
+	pslr_set_af_point_sel( camhandle, af_point_sel );
     }
 
     if( ae_metering != -1 ) {
@@ -648,7 +661,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("%-32s: %d\n", "user mode flag", status.user_mode_flag);
     printf("%-32s: %s\n", "ae metering mode", get_pslr_ae_metering_str(status.ae_metering_mode));
     printf("%-32s: %s\n", "af mode", get_pslr_af_mode_str(status.af_mode));
-    printf("%-32s: %d\n", "af point select", status.af_point_select);
+    printf("%-32s: %s\n", "af point select", get_pslr_af_point_sel_str(status.af_point_select));
     printf("%-32s: %d\n", "selected af point", status.selected_af_point);
     printf("%-32s: %d\n", "focused af point", status.focused_af_point);
     printf("%-32s: %s\n", "drive mode", get_pslr_drive_mode_str(status.drive_mode));
@@ -677,6 +690,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -i, --iso=ISO                         single value (400) or interval (200-800)\n\
       --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB\n\
       --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A\n\
+      --select_af_point=AF_SELECT_MODE  valid values are: Auto-5, Auto-11, Spot, Select\n\
       --ae_metering=AE_METERING         valid values are: Multi, Center, Spot\n\
       --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless\n\
       --flash_exposure_compensation=VAL flash exposure compensation value\n\
