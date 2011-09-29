@@ -2093,6 +2093,7 @@ void gui_getopt(int argc, char **argv) {
 int main(int argc, char **argv)
 {
     gui_getopt(argc, argv);
+    DPRINT("%s %s \n", argv[0], VERSION);
     int r;
     r = common_init();
     if (r < 0) {
