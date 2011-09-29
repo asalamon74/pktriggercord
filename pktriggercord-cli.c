@@ -408,6 +408,8 @@ int main(int argc, char **argv) {
         exit(-1);
     }
 
+    DPRINT("%s %s \n", argv[0], VERSION);
+
     while (!(camhandle = pslr_init())) {
 	sleep_sec(1);
     }
