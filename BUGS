@@ -13,8 +13,6 @@ Known bugs of pkTriggerCord:
   ISO table of GUI only shows the same iso range for all cameras. It
   should be camera-specific.
 
-  Several 64-bit Linux bugs.
-
   The program stops for approx. 20 minutes after 4-5 hours
   (e.g. --frames 200 --delay 120)
 
