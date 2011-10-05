@@ -82,17 +82,17 @@ typedef struct ipslr_handle ipslr_handle_t;
 typedef int (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);
 
 typedef struct {
-    uint32_t id1;
-    const char *name;
-    bool old_scsi_command; // 1 for *ist cameras, 0 for the newer cameras
-    int buffer_size;
-    int jpeg_stars; // 3 or 4
-    int jpeg_resolutions[MAX_RESOLUTION_SIZE];
-    int jpeg_property_levels; // 7 or 9
-    int fastest_shutter_speed;
-    int base_iso_min;
-    int base_iso_max;
-    ipslr_status_parse_t parser_function;
+    uint32_t id1;                              // Pentax model ID
+    const char *name;                          // name
+    bool old_scsi_command;                     // 1 for *ist cameras, 0 for the newer cameras
+    int buffer_size;                           // buffer size in bytes
+    int jpeg_stars;                            // maximum jpeg stars
+    int jpeg_resolutions[MAX_RESOLUTION_SIZE]; // jpeg resolution table
+    int jpeg_property_levels;                  // 5 [-2, 2] or 7 [-3,3] or 9 [-4,4]
+    int fastest_shutter_speed;                 // fastest shutter speed denominator
+    int base_iso_min;                          // base iso minimum
+    int base_iso_max;                          // base iso maximum
+    ipslr_status_parse_t parser_function;      // parse function for status buffer
 } ipslr_model_info_t;
 
 struct ipslr_handle {
@@ -122,8 +122,6 @@ static int ipslr_next_segment(ipslr_handle_t *p);
 static int ipslr_download(ipslr_handle_t *p, uint32_t addr, uint32_t length, uint8_t *buf);
 static int ipslr_identify(ipslr_handle_t *p);
 static int ipslr_write_args(ipslr_handle_t *p, int n, ...);
-
-//static int ipslr_cmd_00_04(ipslr_handle_t *p, uint32_t mode);
 
 static int command(int fd, int a, int b, int c);
 static int get_status(int fd);
@@ -1098,7 +1096,6 @@ int ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id1 = (get_uint32( &buf[0x18C])) & 0x0F;
     status->lens_id2 = get_uint32( &buf[0x198]);
     return PSLR_OK;
-
 }
 
 int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
@@ -1116,13 +1113,10 @@ int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id1 = (get_uint32( &buf[0x190])) & 0x0F;
     status->lens_id2 = get_uint32( &buf[0x19C]);
     
-    return PSLR_OK;
-    
 // TODO: check these fields
 //status.exposureLock = getInt32(statusBuf, 0x13C);
 //status.focused = getInt32(statusBuf, 0x164);
-
-        return PSLR_OK;
+    return PSLR_OK;   
 }
 
 int ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
