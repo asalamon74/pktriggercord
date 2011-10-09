@@ -550,29 +550,48 @@ int main(int argc, char **argv) {
 	exit(0);
     }
 
-    time_t prev_time=0;
-    time_t current_time=0;
     unsigned int waitsec=0;
     user_file_format_t ufft = *get_file_format_t(uff);
+    int bracket_count = status.auto_bracket_picture_count;
+    if( bracket_count < 1 || status.auto_bracket_mode == 0 ) {
+	bracket_count = 1;
+    }
+    time_t prev_time = time(NULL);
+    time_t current_time;	
+
+    int bracket_index=0;
+    int buffer_index;
     for (frameNo = 0; frameNo < frames; ++frameNo) {
-        fd = open_file(output_file, frameNo, ufft);
-	prev_time=current_time;
 	current_time = time(NULL);
-	if( frameNo > 0 ) {
+	if( bracket_count <= bracket_index ) {
 	    waitsec = (unsigned int)(delay-((long long int)current_time-(long long int)prev_time));
 	    if( waitsec > 0 ) {
 		printf("Waiting for %d sec\n", waitsec);	   
 		sleep_sec( waitsec );
 	    }
+	    bracket_index = 0;
+	    current_time = time(NULL);
+	    prev_time=current_time;
 	}
-	current_time = time(NULL);
         pslr_shutter(camhandle);
         pslr_get_status(camhandle, &status);
-        while (save_buffer(camhandle, (int) 0, fd, &status, uff, quality)) usleep(10000);
-        pslr_delete_buffer(camhandle, (int) 0);
-        if (fd != 1) {
-            close(fd);
-        }
+	if( bracket_index+1 >= bracket_count || frameNo+1>=frames ) {
+	    if( bracket_index+1 < bracket_count ) {
+		// partial bracket set
+		bracket_count = bracket_index+1;
+	    }
+	    for( buffer_index = 0; buffer_index < bracket_count; ++buffer_index ) {
+		fd = open_file(output_file, frameNo-bracket_count+buffer_index+1, ufft);
+		while( save_buffer(camhandle, buffer_index, fd, &status, uff, quality) ) {
+		    usleep(10000);
+		}
+		pslr_delete_buffer(camhandle, buffer_index);
+		if (fd != 1) {
+		    close(fd);
+		}
+	    }
+	}
+	++bracket_index;
     }
     CLOSE(camhandle, 0);
 
