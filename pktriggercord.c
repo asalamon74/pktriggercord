@@ -227,11 +227,12 @@ static pslr_rational_t shutter_tbl_1_2[] = {
 
 
 static const int iso_tbl_1_3[] = {
-    100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1250, 1600, 2000, 2500, 3200, 4000, 5000, 6400
+    80, 100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1250, 1600, 2000, 2500, 
+    3200, 4000, 5000, 6400, 8000, 10000, 12800, 16000, 20000, 25600, 32000, 40000, 51200
 };
 
 static const int iso_tbl_1_2[] = {
-    100, 140, 200, 280, 400, 560, 800, 1100, 1600, 2200, 3200, 4500, 6400
+    100, 140, 200, 280, 400, 560, 800, 1100, 1600, 2200, 3200, 4500, 6400, 12800, 25600, 51200
 };
 
 static const int iso_tbl_1[] = {
@@ -428,12 +429,14 @@ void iso_speed_table_init(pslr_status *st) {
     int max_iso_index=steps-1;
     int i;
 
+    // cannot determine if base or extended iso is set.
+    // use extended iso range
     for(i=0;  i<steps; i++) {
-	if( tbl[i] < pslr_get_model_base_iso_min(camhandle)) {
+	if( tbl[i] < pslr_get_model_extended_iso_min(camhandle)) {
 	    min_iso_index = i+1;
 	}
 
-	if( tbl[i] <= pslr_get_model_base_iso_max(camhandle)) {
+	if( tbl[i] <= pslr_get_model_extended_iso_max(camhandle)) {
 	    max_iso_index = i;
 	}
     }

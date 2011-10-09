@@ -92,6 +92,8 @@ typedef struct {
     int fastest_shutter_speed;                 // fastest shutter speed denominator
     int base_iso_min;                          // base iso minimum
     int base_iso_max;                          // base iso maximum
+    int extended_iso_min;                      // extended iso minimum
+    int extended_iso_max;                      // extended iso maximum
     ipslr_status_parse_t parser_function;      // parse function for status buffer
 } ipslr_model_info_t;
 
@@ -152,24 +154,24 @@ int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status);
 int ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status);
 
 static ipslr_model_info_t camera_models[] = {
-    { 0x12aa2, "*ist DS",  1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, ipslr_status_parse_istds },
-    { 0x12cd2, "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, ipslr_status_parse_k20d  },
-    { 0x12c1e, "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
-    { 0x12c20, "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, ipslr_status_parse_k10d  },
-    { 0x12cd4, "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, ipslr_status_parse_k20d  },
-    { 0x12dfe, "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, ipslr_status_parse_kx    },
-    { 0x12cfa, "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, ipslr_status_parse_k200d }, 
-    { 0x12db8, "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, ipslr_status_parse_kx    },
-    { 0x12e6c, "K-r",      0, 440, 3, {12, 10, 6, 2}, 9, 6000, 100, 12800, ipslr_status_parse_kr   },
-    { 0x12e76, "K-5",      0, 444, 4, {16, 10, 6, 2}, 9, 8000, 100, 12800, ipslr_status_parse_k5   },
-    { 0x12d72, "K-2000",   0, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, ipslr_status_parse_km    },
-    { 0x12d73, "K-m",      0, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, ipslr_status_parse_km    },
+    { 0x12aa2, "*ist DS",  1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, 200,  3200, ipslr_status_parse_istds },
+    { 0x12cd2, "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, ipslr_status_parse_k20d  },
+    { 0x12c1e, "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, ipslr_status_parse_k10d  },
+    { 0x12c20, "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, ipslr_status_parse_k10d  },
+    { 0x12cd4, "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, ipslr_status_parse_k20d  },
+    { 0x12dfe, "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, 100, 12800, ipslr_status_parse_kx    },
+    { 0x12cfa, "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, 100,  1600, ipslr_status_parse_k200d }, 
+    { 0x12db8, "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, 100,  6400, ipslr_status_parse_kx    },
+    { 0x12e6c, "K-r",      0, 440, 3, {12, 10, 6, 2}, 9, 6000, 200,12800, 100, 25600, ipslr_status_parse_kr   },
+    { 0x12e76, "K-5",      0, 444, 4, {16, 10, 6, 2}, 9, 8000, 100,12800,  80, 51200, ipslr_status_parse_k5   },
+    { 0x12d72, "K-2000",   0, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, ipslr_status_parse_km    },
+    { 0x12d73, "K-m",      0, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, ipslr_status_parse_km    },
 // only limited support from here
-    { 0x12994, "*ist D",   1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, NULL},
-    { 0x12b60, "*ist DS2", 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
-    { 0x12b1a, "*ist DL",  1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
-    { 0x12b9d, "K110D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
-    { 0x12b9c, "K100D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, NULL},
+    { 0x12994, "*ist D",   1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, NULL},
+    { 0x12b60, "*ist DS2", 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, NULL},
+    { 0x12b1a, "*ist DL",  1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, NULL},
+    { 0x12b9d, "K110D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, NULL},
+    { 0x12b9c, "K100D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, NULL},
 };
 
 const char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
@@ -781,6 +783,16 @@ int pslr_get_model_base_iso_min(pslr_handle_t h) {
 int pslr_get_model_base_iso_max(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->base_iso_max;
+}
+
+int pslr_get_model_extended_iso_min(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->extended_iso_min;
+}
+
+int pslr_get_model_extended_iso_max(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->extended_iso_max;
 }
 
 const char *pslr_camera_name(pslr_handle_t h) {
