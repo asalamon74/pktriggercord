@@ -10,8 +10,8 @@ Known bugs of pkTriggerCord:
   K-x: Changing shutter speed to 1/6000 is not working. It changes to 1/8 
   instead.
 
-  ISO table of GUI only shows the same iso range for all cameras. It
-  should be camera-specific.
+  ISO table of GUI only shows the extended iso range even is base iso
+  range is set.
 
   The program stops for approx. 20 minutes after 4-5 hours
   (e.g. --frames 200 --delay 120)

@@ -1,5 +1,6 @@
 version 0.77.03
 	--select_af_point
+	Store extended iso range for camera models
 
 version 0.77.02 ( 2011-09-03 )
 	html version of man page
