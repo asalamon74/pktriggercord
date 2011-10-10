@@ -61,16 +61,6 @@
         }                                                               \
     } while (0)
 
-#define CHECK_CLN(x,rval,label) do {            \
-        int __r;                                                        \
-        __r = (x);                                                      \
-        if (__r != PSLR_OK) {                                           \
-            fprintf(stderr, "%s:%d:%s failed: %d\n", __FILE__, __LINE__, #x, __r); \
-            rval = __r;                                                 \
-            goto label;                                                 \
-        }                                                               \
-    } while (0)
-
 typedef struct {
     uint32_t offset;
     uint32_t addr;
