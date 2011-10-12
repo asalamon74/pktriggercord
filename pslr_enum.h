@@ -39,7 +39,7 @@ typedef enum {
     PSLR_AF_MODE_AF_S,
     PSLR_AF_MODE_AF_C,
     PSLR_AF_MODE_AF_A,
-    PSLR_AF_MODE_MAX,
+    PSLR_AF_MODE_MAX
 } pslr_af_mode_t;
 
 typedef enum {
