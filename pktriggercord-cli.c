@@ -79,6 +79,7 @@ static struct option const longopts[] ={
     {"flash_mode", required_argument, NULL, 10},
     {"drive_mode", required_argument, NULL, 11},
     {"select_af_point", required_argument, NULL, 12},
+    {"jpeg_image_tone", required_argument, NULL, 13},
     { NULL, 0, NULL, 0}
 };
 
@@ -157,6 +158,7 @@ int main(int argc, char **argv) {
     pslr_flash_mode_t flash_mode = -1;
     pslr_drive_mode_t drive_mode = -1;
     pslr_af_point_sel_t af_point_sel = -1;
+    pslr_jpeg_image_tone_t jpeg_image_tone = -1;
 
     while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:8:9:i:F:fghvws246", longopts, NULL)) != -1) {
         switch (optc) {
@@ -294,6 +296,13 @@ int main(int argc, char **argv) {
                 af_point_sel = get_pslr_af_point_sel( optarg );
 		if( af_point_sel == -1 ) {
 		    warning_message("%s: Invalid select af point\n", argv[0]);
+		}
+		break;
+
+            case 13:
+                jpeg_image_tone = get_pslr_jpeg_image_tone( optarg );
+		if( jpeg_image_tone == -1 ) {
+		    warning_message("%s: Invalid jpeg_image_tone\n", argv[0]);
 		}
 		break;
 
@@ -439,6 +448,13 @@ int main(int argc, char **argv) {
 
     if( flash_mode != -1 ) {
 	pslr_set_flash_mode( camhandle, flash_mode );
+    }
+
+    if( jpeg_image_tone != -1 ) {
+        if ( jpeg_image_tone > pslr_get_model_max_supported_image_tone(camhandle) ) {
+            warning_message("%s: Invalid jpeg image tone setting.\n", argv[0]);
+        }
+	pslr_set_jpeg_image_tone( camhandle, jpeg_image_tone );
     }
 
     if( drive_mode != -1 ) {
@@ -664,7 +680,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("%-32s: %d-%d\n", "auto iso", status.auto_iso_min,status.auto_iso_max);
     printf("%-32s: %d\n", "jpeg quality", status.jpeg_quality);
     printf("%-32s: %dM\n", "jpeg resolution", pslr_get_jpeg_resolution( h, status.jpeg_resolution));
-    printf("%-32s: %d\n", "jpeg image mode", status.jpeg_image_mode);
+    printf("%-32s: %s\n", "jpeg image tone", get_pslr_jpeg_image_tone_str(status.jpeg_image_tone));
     printf("%-32s: %d\n", "jpeg saturation", status.jpeg_saturation);
     printf("%-32s: %d\n", "jpeg contrast", status.jpeg_contrast);
     printf("%-32s: %d\n", "jpeg sharpness", status.jpeg_sharpness);
@@ -720,6 +736,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
                                         or decimal form (eg. 0.8)\n\
   -r, --resolution=RESOLUTION           resolution in megapixels\n\
   -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4\n\
+      --jpeg_image_tone=IMAGE_TONE      valid values are: Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm\n\
   -f, --auto_focus                      autofocus\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\

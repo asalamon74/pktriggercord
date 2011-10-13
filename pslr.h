@@ -65,18 +65,6 @@ typedef enum {
 } pslr_buffer_type;
 
 typedef enum {
-    PSLR_JPEG_IMAGE_MODE_NATURAL,
-    PSLR_JPEG_IMAGE_MODE_BRIGHT,
-    PSLR_JPEG_IMAGE_MODE_PORTRAIT,
-    PSLR_JPEG_IMAGE_MODE_LANDSCAPE,
-    PSLR_JPEG_IMAGE_MODE_VIBRANT,
-    PSLR_JPEG_IMAGE_MODE_MONOCHROME,
-    PSLR_JPEG_IMAGE_MODE_MUTED,
-    PSLR_JPEG_IMAGE_MODE_REVERSAL_FILM,
-    PSLR_JPEG_IMAGE_MODE_MAX
-} pslr_jpeg_image_mode_t;
-
-typedef enum {
     PSLR_RAW_FORMAT_PEF,
     PSLR_RAW_FORMAT_DNG,
     PSLR_RAW_FORMAT_MAX
@@ -223,7 +211,7 @@ typedef struct {
     uint32_t jpeg_quality;
     uint32_t jpeg_contrast;
     uint32_t jpeg_sharpness;
-    uint32_t jpeg_image_mode;
+    uint32_t jpeg_image_tone;
     uint32_t jpeg_hue;
     pslr_rational_t zoom;
     int32_t focus;
@@ -303,7 +291,7 @@ int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space);
 
 int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars);
 int pslr_set_jpeg_resolution(pslr_handle_t h, int megapixel);
-int pslr_set_jpeg_image_mode(pslr_handle_t h, pslr_jpeg_image_mode_t image_mode);
+int pslr_set_jpeg_image_tone(pslr_handle_t h, pslr_jpeg_image_tone_t image_mode);
 
 int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness);
 int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast);
@@ -344,6 +332,7 @@ int pslr_get_model_extended_iso_min(pslr_handle_t h);
 int pslr_get_model_extended_iso_max(pslr_handle_t h);
 int *pslr_get_model_jpeg_resolutions(pslr_handle_t h);
 bool pslr_get_model_only_limited(pslr_handle_t h);
+pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
 int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);

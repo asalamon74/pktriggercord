@@ -1945,7 +1945,7 @@ X</property>
                           <widget class="GtkLabel" id="label18">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <property name="label" translatable="yes">Image Mode</property>
+                            <property name="label" translatable="yes">Image Tone</property>
                           </widget>
                           <packing>
                             <property name="top_attach">2</property>
@@ -1953,19 +1953,11 @@ X</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkComboBox" id="jpeg_image_mode_combo">
+                          <widget class="GtkComboBox" id="jpeg_image_tone_combo">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <property name="items" translatable="yes">Natural
-Bright
-Portrait
-Landscape
-Vibrant
-Monochrome
-Muted
-Reversal film
-</property>
-                            <signal name="changed" handler="jpeg_image_mode_combo_changed_cb"/>
+                            <property name="items" translatable="yes" />
+                            <signal name="changed" handler="jpeg_image_tone_combo_changed_cb"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>

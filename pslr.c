@@ -72,19 +72,20 @@ typedef struct ipslr_handle ipslr_handle_t;
 typedef int (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);
 
 typedef struct {
-    uint32_t id1;                              // Pentax model ID
-    const char *name;                          // name
-    bool old_scsi_command;                     // 1 for *ist cameras, 0 for the newer cameras
-    int buffer_size;                           // buffer size in bytes
-    int jpeg_stars;                            // maximum jpeg stars
-    int jpeg_resolutions[MAX_RESOLUTION_SIZE]; // jpeg resolution table
-    int jpeg_property_levels;                  // 5 [-2, 2] or 7 [-3,3] or 9 [-4,4]
-    int fastest_shutter_speed;                 // fastest shutter speed denominator
-    int base_iso_min;                          // base iso minimum
-    int base_iso_max;                          // base iso maximum
-    int extended_iso_min;                      // extended iso minimum
-    int extended_iso_max;                      // extended iso maximum
-    ipslr_status_parse_t parser_function;      // parse function for status buffer
+    uint32_t id1;                                    // Pentax model ID
+    const char *name;                                // name
+    bool old_scsi_command;                           // 1 for *ist cameras, 0 for the newer cameras
+    int buffer_size;                                 // buffer size in bytes
+    int jpeg_stars;                                  // maximum jpeg stars
+    int jpeg_resolutions[MAX_RESOLUTION_SIZE];       // jpeg resolution table
+    int jpeg_property_levels;                        // 5 [-2, 2] or 7 [-3,3] or 9 [-4,4]
+    int fastest_shutter_speed;                       // fastest shutter speed denominator
+    int base_iso_min;                                // base iso minimum
+    int base_iso_max;                                // base iso maximum
+    int extended_iso_min;                            // extended iso minimum
+    int extended_iso_max;                            // extended iso maximum
+    pslr_jpeg_image_tone_t max_supported_image_tone; // last supported jpeg image tone
+    ipslr_status_parse_t parser_function;            // parse function for status buffer
 } ipslr_model_info_t;
 
 struct ipslr_handle {
@@ -144,24 +145,24 @@ int ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status);
 int ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status);
 
 static ipslr_model_info_t camera_models[] = {
-    { 0x12aa2, "*ist DS",  1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, 200,  3200, ipslr_status_parse_istds },
-    { 0x12cd2, "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, ipslr_status_parse_k20d  },
-    { 0x12c1e, "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, ipslr_status_parse_k10d  },
-    { 0x12c20, "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, ipslr_status_parse_k10d  },
-    { 0x12cd4, "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, ipslr_status_parse_k20d  },
-    { 0x12dfe, "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, 100, 12800, ipslr_status_parse_kx    },
-    { 0x12cfa, "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, 100,  1600, ipslr_status_parse_k200d }, 
-    { 0x12db8, "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, 100,  6400, ipslr_status_parse_kx    },
-    { 0x12e6c, "K-r",      0, 440, 3, {12, 10, 6, 2}, 9, 6000, 200,12800, 100, 25600, ipslr_status_parse_kr   },
-    { 0x12e76, "K-5",      0, 444, 4, {16, 10, 6, 2}, 9, 8000, 100,12800,  80, 51200, ipslr_status_parse_k5   },
-    { 0x12d72, "K-2000",   0, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, ipslr_status_parse_km    },
-    { 0x12d73, "K-m",      0, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, ipslr_status_parse_km    },
+    { 0x12aa2, "*ist DS",  1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, 200,  3200, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_istds },
+    { 0x12cd2, "K20D",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k20d  },
+    { 0x12c1e, "K10D",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_k10d  },
+    { 0x12c20, "GX10",     0, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_k10d  },
+    { 0x12cd4, "GX20",     0, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k20d  },
+    { 0x12dfe, "K-x",      0, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, 100, 12800, PSLR_JPEG_IMAGE_TONE_MUTED,         ipslr_status_parse_kx    },
+    { 0x12cfa, "K200D",    0, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k200d }, 
+    { 0x12db8, "K-7",      0, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MUTED,         ipslr_status_parse_kx    },
+    { 0x12e6c, "K-r",      0, 440, 3, {12, 10, 6, 2}, 9, 6000, 200,12800, 100, 25600, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_kr   },
+    { 0x12e76, "K-5",      0, 444, 4, {16, 10, 6, 2}, 9, 8000, 100,12800,  80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k5   },
+    { 0x12d72, "K-2000",   0, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_km    },
+    { 0x12d73, "K-m",      0, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_km    },
 // only limited support from here
-    { 0x12994, "*ist D",   1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, NULL},
-    { 0x12b60, "*ist DS2", 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, NULL},
-    { 0x12b1a, "*ist DL",  1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, NULL},
-    { 0x12b9d, "K110D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, NULL},
-    { 0x12b9c, "K100D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, NULL},
+    { 0x12994, "*ist D",   1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, -1, NULL},
+    { 0x12b60, "*ist DS2", 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+    { 0x12b1a, "*ist DL",  1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+    { 0x12b9d, "K110D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+    { 0x12b9c, "K100D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
 };
 
 const char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
@@ -487,12 +488,12 @@ int pslr_set_jpeg_resolution(pslr_handle_t h, int megapixel) {
     return ipslr_handle_command_x18( p, true, 0x14, 2, 1, hwres, 0);
 }
 
-int pslr_set_jpeg_image_mode(pslr_handle_t h, pslr_jpeg_image_mode_t image_mode) {
+int pslr_set_jpeg_image_tone(pslr_handle_t h, pslr_jpeg_image_tone_t image_tone) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (image_mode < 0 || image_mode > PSLR_JPEG_IMAGE_MODE_MAX) {
+    if (image_tone < 0 || image_tone > PSLR_JPEG_IMAGE_TONE_MAX) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, true, 0x1b, 1, image_mode, 0, 0);
+    return ipslr_handle_command_x18( p, true, 0x1b, 1, image_tone, 0, 0);
 }
 
 int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness) {
@@ -785,6 +786,11 @@ int pslr_get_model_extended_iso_max(pslr_handle_t h) {
     return p->model->extended_iso_max;
 }
 
+pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->max_supported_image_tone;
+}
+
 const char *pslr_camera_name(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     int ret;
@@ -903,7 +909,7 @@ int ipslr_status_parse_k10d(ipslr_handle_t *p, pslr_status *status) {
         status->jpeg_sharpness = get_uint32(&buf[0x90]);
         status->jpeg_saturation = get_uint32(&buf[0x8c]);
         status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x80]));
-        status->jpeg_image_mode = get_uint32(&buf[0x88]);
+        status->jpeg_image_tone = get_uint32(&buf[0x88]);
         status->zoom.nom = get_uint32(&buf[0x16c]);
         status->zoom.denom = get_uint32(&buf[0x170]);
         status->focus = get_int32(&buf[0x174]);
@@ -949,7 +955,7 @@ int ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
         status->jpeg_sharpness = get_uint32(&buf[0x90]); // commands do now work for it?
         status->jpeg_saturation = get_uint32(&buf[0x8c]); // commands do now work for it?
         status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x80])); //d
-        status->jpeg_image_mode = get_uint32(&buf[0x88]); //d
+        status->jpeg_image_tone = get_uint32(&buf[0x88]); //d
         status->zoom.nom = get_uint32(&buf[0x180]); //d
         status->zoom.denom = get_uint32(&buf[0x184]); //d
         status->focus = get_int32(&buf[0x188]); //d current focus ring position?
@@ -1025,7 +1031,7 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift
     status->jpeg_resolution = get_uint32(&buf[0x84 + shift]);
     status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x88 + shift]));
     status->raw_format = get_uint32(&buf[0x8C + shift]);
-    status->jpeg_image_mode = get_uint32(&buf[0x90 + shift]);
+    status->jpeg_image_tone = get_uint32(&buf[0x90 + shift]);
     status->jpeg_saturation = get_uint32(&buf[0x94 + shift]);
     status->jpeg_sharpness = get_uint32(&buf[0x98 + shift]);
     status->jpeg_contrast = get_uint32(&buf[0x9C + shift]);
@@ -1170,7 +1176,7 @@ int ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
         status->jpeg_sharpness = get_uint32(&buf[0x90]);
         status->jpeg_saturation = get_uint32(&buf[0x8c]);
         status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x80]));
-        status->jpeg_image_mode = get_uint32(&buf[0x88]);
+        status->jpeg_image_tone = get_uint32(&buf[0x88]);
         status->zoom.nom = get_uint32(&buf[0x17c]);
         status->zoom.denom = get_uint32(&buf[0x180]);
         status->auto_iso_min = get_uint32(&buf[0x64]);

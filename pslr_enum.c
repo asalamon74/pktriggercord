@@ -81,6 +81,18 @@ const char*  pslr_af_point_sel_str[PSLR_AF_POINT_SEL_MAX] = {
     "Auto-11"
 };
 
+const char* pslr_jpeg_image_tone_str[PSLR_JPEG_IMAGE_TONE_MAX] = {
+    "Natural",
+    "Bright",
+    "Portrait",
+    "Landscape",
+    "Vibrant",
+    "Monochrome",
+    "Muted",
+    "ReversalFilm",
+    "BleachBypass",
+    "Radiant"
+};
 
 // case insenstive comparison
 // strnicmp
@@ -164,4 +176,10 @@ const char *get_pslr_af_point_sel_str( pslr_af_point_sel_t value ) {
     return pslr_af_point_sel_str[value];
 }
 
+pslr_jpeg_image_tone_t get_pslr_jpeg_image_tone( char *str ) {
+    return find_in_array( pslr_jpeg_image_tone_str, sizeof(pslr_jpeg_image_tone_str)/sizeof(pslr_jpeg_image_tone_str[0]),str);
+}
 
+const char *get_pslr_jpeg_image_tone_str( pslr_jpeg_image_tone_t value ) {
+    return pslr_jpeg_image_tone_str[value];
+}

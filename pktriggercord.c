@@ -121,7 +121,7 @@ static void jpeg_hue_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
 
 static void jpeg_resolution_combo_changed_cb(GtkCombo *combo, gpointer user_data);
 static void jpeg_quality_combo_changed_cb(GtkCombo *combo, gpointer user_data);
-static void jpeg_image_mode_combo_changed_cb(GtkCombo *combo, gpointer user_data);
+static void jpeg_image_tone_combo_changed_cb(GtkCombo *combo, gpointer user_data);
 
 static void file_format_combo_changed_cb(GtkCombo *combo, gpointer user_data);
 
@@ -338,7 +338,7 @@ int common_init(void)
 
     glade_xml_signal_connect(xml, "jpeg_resolution_combo_changed_cb", G_CALLBACK(jpeg_resolution_combo_changed_cb));
     glade_xml_signal_connect(xml, "jpeg_quality_combo_changed_cb", G_CALLBACK(jpeg_quality_combo_changed_cb));
-    glade_xml_signal_connect(xml, "jpeg_image_mode_combo_changed_cb", G_CALLBACK(jpeg_image_mode_combo_changed_cb));
+    glade_xml_signal_connect(xml, "jpeg_image_tone_combo_changed_cb", G_CALLBACK(jpeg_image_tone_combo_changed_cb));
 
     glade_xml_signal_connect(xml, "jpeg_sharpness_scale_value_changed_cb", G_CALLBACK(jpeg_sharpness_scale_value_changed_cb));
     glade_xml_signal_connect(xml, "jpeg_saturation_scale_value_changed_cb", G_CALLBACK(jpeg_saturation_scale_value_changed_cb));
@@ -465,6 +465,15 @@ void camera_specific_init() {
 	gtk_combo_box_insert_text( GTK_COMBO_BOX(glade_xml_get_widget(xml, "jpeg_quality_combo")), resindex, buf);
 	--starindex;
     }
+    // jpeg image tone
+    int max_supported_image_tone = pslr_get_model_max_supported_image_tone( camhandle );
+    GtkComboBox *pw = (GtkComboBox*)glade_xml_get_widget(xml, "jpeg_image_tone_combo");
+    int iti;
+    for( iti=0; iti<=max_supported_image_tone; ++iti ) {
+	gtk_combo_box_append_text( pw, get_pslr_jpeg_image_tone_str( iti ) );
+    }
+
+    gtk_widget_set_sensitive( GTK_WIDGET(pw), max_supported_image_tone > -1 );
 }   
 
 static void init_controls(pslr_status *st_new, pslr_status *st_old)
@@ -617,10 +626,11 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
 
-    /* Image mode */
-    pw = glade_xml_get_widget(xml, "jpeg_image_mode_combo");
-    if (st_new)
-        gtk_combo_box_set_active(GTK_COMBO_BOX(pw), st_new->jpeg_image_mode);
+    /* Image tone */
+    pw = glade_xml_get_widget(xml, "jpeg_image_tone_combo");
+    if (st_new ) {
+        gtk_combo_box_set_active(GTK_COMBO_BOX(pw), st_new->jpeg_image_tone);
+    }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
 
@@ -701,14 +711,6 @@ static gboolean status_poll(gpointer data)
             camera_specific_init();
             const char *name;
             name = pslr_camera_name(camhandle);
-
-            // Vince: TODO
-            //
-            if( strcmp( name, "K-r" ) ){
-                GtkComboBox *pw = (GtkComboBox*)glade_xml_get_widget(xml, "jpeg_image_mode_combo");
-                gtk_combo_box_append_text(GTK_COMBO_BOX(pw), "Muted" );
-                gtk_combo_box_append_text(GTK_COMBO_BOX(pw), "Reversal film" );
-            }
 
             snprintf(buf, sizeof(buf), "Connected: %s", name);
             buf[sizeof(buf)-1] = '\0';
@@ -1779,18 +1781,18 @@ static void jpeg_quality_combo_changed_cb(GtkCombo *combo, gpointer user_data)
     }
 }
 
-static void jpeg_image_mode_combo_changed_cb(GtkCombo *combo, gpointer user_data)
+static void jpeg_image_tone_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 {
-    pslr_jpeg_image_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
+    pslr_jpeg_image_tone_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
     int ret;
-    assert(val >= 0);
-    assert(val < PSLR_JPEG_IMAGE_MODE_MAX);
-    DPRINT("jpeg image_mode active->%d\n", val);
+    DPRINT("jpeg image_tone active->%d %d\n", val, PSLR_JPEG_IMAGE_TONE_MAX);
+    assert( (int)val >= -1);
+    assert( (int)val < PSLR_JPEG_IMAGE_TONE_MAX);
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
-    if (status_new == NULL || status_new->jpeg_image_mode != val) {
-        ret = pslr_set_jpeg_image_mode(camhandle, val);
+    if( val != -1 && (status_new == NULL || status_new->jpeg_image_tone != val) ) {
+        ret = pslr_set_jpeg_image_tone(camhandle, val);
         if (ret != PSLR_OK) {
-            DPRINT("Set JPEG image mode failed.\n");
+            DPRINT("Set JPEG image tone failed.\n");
         }
     }
 }
