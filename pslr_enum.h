@@ -81,6 +81,20 @@ typedef enum {
     PSLR_AF_POINT_SEL_MAX
 } pslr_af_point_sel_t;
 
+typedef enum {
+    PSLR_JPEG_IMAGE_TONE_NATURAL,
+    PSLR_JPEG_IMAGE_TONE_BRIGHT,
+    PSLR_JPEG_IMAGE_TONE_PORTRAIT,
+    PSLR_JPEG_IMAGE_TONE_LANDSCAPE,
+    PSLR_JPEG_IMAGE_TONE_VIBRANT,
+    PSLR_JPEG_IMAGE_TONE_MONOCHROME,
+    PSLR_JPEG_IMAGE_TONE_MUTED,
+    PSLR_JPEG_IMAGE_TONE_REVERSAL_FILM,
+    PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,
+    PSLR_JPEG_IMAGE_TONE_RADIANT,
+    PSLR_JPEG_IMAGE_TONE_MAX
+} pslr_jpeg_image_tone_t;
+
 int find_in_array( const char** array, int length, char* str );
 
 pslr_color_space_t get_pslr_color_space( char *str );
@@ -100,5 +114,8 @@ const char *get_pslr_drive_mode_str( pslr_drive_mode_t value );
 
 pslr_af_point_sel_t get_pslr_af_point_sel( char *str );
 const char *get_pslr_af_point_sel_str( pslr_af_point_sel_t value );
+
+pslr_jpeg_image_tone_t get_pslr_jpeg_image_tone( char *str );
+const char *get_pslr_jpeg_image_tone_str( pslr_jpeg_image_tone_t value );
 
 #endif
