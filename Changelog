@@ -4,6 +4,7 @@ version 0.77.03
 	commandline: Delay only after bracketing groups if auto bracketing is set.
 	--jpeg_image_tone ( buggy )
 	Handling camera specific jpeg image tone table.
+	Command line: info about frame count
 
 version 0.77.02 ( 2011-09-03 )
 	html version of man page
