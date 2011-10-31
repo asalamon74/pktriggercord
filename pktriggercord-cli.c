@@ -589,6 +589,9 @@ int main(int argc, char **argv) {
 	    current_time = time(NULL);
 	    prev_time=current_time;
 	}
+	if( frames > 1 ) {
+	    printf("Taking picture %d/%d\n", frameNo+1, frames);
+	}
         pslr_shutter(camhandle);
         pslr_get_status(camhandle, &status);
 	if( bracket_index+1 >= bracket_count || frameNo+1>=frames ) {
