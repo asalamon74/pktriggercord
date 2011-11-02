@@ -1,4 +1,4 @@
-version 0.77.03
+version 0.77.04 ( 2011-11-01 )
 	--select_af_point
 	Store extended iso range for camera models
 	commandline: Delay only after bracketing groups if auto bracketing is set.
