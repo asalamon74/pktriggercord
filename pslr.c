@@ -581,9 +581,9 @@ int pslr_dust_removal(pslr_handle_t h) {
     return PSLR_OK;
 }
 
-int pslr_button_test(pslr_handle_t h, int bno) {
+int pslr_button_test(pslr_handle_t h, int bno, int arg) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    CHECK(ipslr_write_args(p, 1, 2));
+    CHECK(ipslr_write_args(p, 1, arg));
     CHECK(command(p->fd, 0x10, bno, 4));
     CHECK(get_status(p->fd));
     return PSLR_OK;

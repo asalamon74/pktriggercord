@@ -1,3 +1,5 @@
+version 0.77.05
+
 version 0.77.04 ( 2011-11-01 )
 	--select_af_point
 	Store extended iso range for camera models
