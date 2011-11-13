@@ -547,7 +547,7 @@ int main(int argc, char **argv) {
     
 //  pslr_test( camhandle, true, 0x04, 1, 1,0,0);
 //    pslr_set_drive_mode( camhandle, 2);
-//    pslr_button_test( camhandle, 0x0d );
+//    pslr_button_test( camhandle, 0x0d, 1 );
 
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {
