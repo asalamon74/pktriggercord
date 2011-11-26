@@ -283,6 +283,11 @@ int common_init(void)
     init_preview_area();
 
     widget = glade_xml_get_widget(xml, "mainwindow");
+
+    gchar titlebuf[128];
+    snprintf(titlebuf, sizeof(titlebuf), "pkTriggerCord %s", VERSION);
+    gtk_window_set_title( (GtkWindow *)widget, titlebuf);
+
     glade_xml_signal_connect(xml, "shutter_press", G_CALLBACK(shutter_press));
     glade_xml_signal_connect(xml, "focus_button_clicked_cb", 
                              G_CALLBACK(focus_button_clicked_cb));
