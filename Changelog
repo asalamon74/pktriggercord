@@ -1,5 +1,6 @@
 version 0.77.05
 	glade code cleanup
+	Adding libxml2-2.dll to windows zip
 
 version 0.77.04 ( 2011-11-01 )
 	--select_af_point
