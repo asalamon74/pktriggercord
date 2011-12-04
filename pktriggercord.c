@@ -883,12 +883,13 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old)
     /* Show the newest picture in the main area */
 
     for (new_picture=MAX_BUFFERS; new_picture>=0; --new_picture) {
-        if (new_pictures & (1<<new_picture))
+        if (new_pictures & (1<<new_picture)) {
             break;
-	    }
+	}
+    }
     if (new_picture >= 0) {
         update_main_area(new_picture);
-	}
+    }
 
     format = get_user_file_format(st_new);
 
@@ -896,17 +897,29 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old)
     for (i=0; i<MAX_BUFFERS; i++) {
         if (new_pictures & (1<<i)) {
             deleted = auto_save_check(format, i);
-            if (deleted)
+            if (deleted) {
                 new_pictures &= ~(1<<i);
+	    }
         }
     }
 
     /* Update buffer window for buffers that were not deleted by
      * auto_save_check */
     for (i=0; i<MAX_BUFFERS; i++) {
-        if (new_pictures & (1<<i))
+        if (new_pictures & (1<<i)) {
             update_preview_area(i);
+	}
     }
+    /* Select the new picture in the buffer window */
+    GtkWidget *pw;
+    pw = glade_xml_get_widget(xml, "preview_icon_view");
+
+    GtkTreePath *path;
+    path = gtk_tree_path_new_from_indices (new_picture, -1);
+    gtk_icon_view_unselect_all( GTK_ICON_VIEW(pw) );
+    gtk_icon_view_select_path( GTK_ICON_VIEW(pw), path );
+    gtk_tree_path_free (path);
+
 }
 
 static void manage_camera_buffers_limited() {
