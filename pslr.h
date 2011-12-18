@@ -168,23 +168,6 @@ typedef enum {
     PSLR_GUI_EXPOSURE_MODE_MAX
 } pslr_gui_exposure_mode_t;
 
-typedef enum {
-    PSLR_WHITE_BALANCE_MODE_AUTO,
-    PSLR_WHITE_BALANCE_MODE_DAYLIGHT,
-    PSLR_WHITE_BALANCE_MODE_SHADE,
-    PSLR_WHITE_BALANCE_MODE_CLOUDY,
-    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_DAYLIGHT_COLOR,
-    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_DAYLIGHT_WHITE,
-    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_COOL_WHITE,
-    PSLR_WHITE_BALANCE_MODE_TUNGSTEN,
-    PSLR_WHITE_BALANCE_MODE_FLASH,
-    PSLR_WHITE_BALANCE_MODE_MANUAL,
-    // a few items are missing here
-    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_WARM_WHITE = 0x0F,
-    PSLR_WHITE_BALANCE_MODE_CTE = 0x10,
-    PSLR_WHITE_BALANCE_MODE_MAX = 0x11
-} pslr_white_balance_mode_t;
-
 typedef struct {
     int32_t nom;
     int32_t denom;
@@ -280,7 +263,7 @@ int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value);
 int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint32_t auto_max_value);
 int pslr_set_ec(pslr_handle_t h, pslr_rational_t value);
 
-int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode, uint32_t wb_adjust_mg, uint32_t wb_adjust_ba);
+int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode);
 int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value);
 int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value);
 int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode);

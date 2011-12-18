@@ -411,9 +411,9 @@ int pslr_set_ec(pslr_handle_t h, pslr_rational_t value) {
     return ipslr_handle_command_x18( p, true, 0x18, 2, value.nom, value.denom, 0);
 }
 
-int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode, uint32_t wb_adjust_mg, uint32_t wb_adjust_ba) {
+int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x10, 3, wb_mode, wb_adjust_mg, wb_adjust_ba);
+    return ipslr_handle_command_x18( p, true, 0x10, 1, wb_mode, 0, 0);
 }
 
 int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value) {
