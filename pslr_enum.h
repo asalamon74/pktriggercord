@@ -95,6 +95,23 @@ typedef enum {
     PSLR_JPEG_IMAGE_TONE_MAX
 } pslr_jpeg_image_tone_t;
 
+typedef enum {
+    PSLR_WHITE_BALANCE_MODE_AUTO,
+    PSLR_WHITE_BALANCE_MODE_DAYLIGHT,
+    PSLR_WHITE_BALANCE_MODE_SHADE,
+    PSLR_WHITE_BALANCE_MODE_CLOUDY,
+    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_DAYLIGHT_COLOR,
+    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_DAYLIGHT_WHITE,
+    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_COOL_WHITE,
+    PSLR_WHITE_BALANCE_MODE_TUNGSTEN,
+    PSLR_WHITE_BALANCE_MODE_FLASH,
+    PSLR_WHITE_BALANCE_MODE_MANUAL,
+    // a few items are missing here
+    PSLR_WHITE_BALANCE_MODE_FLUORESCENT_WARM_WHITE = 0x0F,
+    PSLR_WHITE_BALANCE_MODE_CTE = 0x10,
+    PSLR_WHITE_BALANCE_MODE_MAX = 0x11
+} pslr_white_balance_mode_t;
+
 int find_in_array( const char** array, int length, char* str );
 
 pslr_color_space_t get_pslr_color_space( char *str );
@@ -117,5 +134,8 @@ const char *get_pslr_af_point_sel_str( pslr_af_point_sel_t value );
 
 pslr_jpeg_image_tone_t get_pslr_jpeg_image_tone( char *str );
 const char *get_pslr_jpeg_image_tone_str( pslr_jpeg_image_tone_t value );
+
+pslr_white_balance_mode_t get_pslr_white_balance_mode( char *str );
+const char *get_pslr_white_balance_mode_str( pslr_white_balance_mode_t value );
 
 #endif

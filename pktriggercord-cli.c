@@ -80,6 +80,7 @@ static struct option const longopts[] ={
     {"drive_mode", required_argument, NULL, 11},
     {"select_af_point", required_argument, NULL, 12},
     {"jpeg_image_tone", required_argument, NULL, 13},
+    {"white_balance_mode", required_argument, NULL, 14},
     { NULL, 0, NULL, 0}
 };
 
@@ -159,6 +160,7 @@ int main(int argc, char **argv) {
     pslr_drive_mode_t drive_mode = -1;
     pslr_af_point_sel_t af_point_sel = -1;
     pslr_jpeg_image_tone_t jpeg_image_tone = -1;
+    pslr_white_balance_mode_t white_balance_mode = -1;
 
     while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:8:9:i:F:fghvws246", longopts, NULL)) != -1) {
         switch (optc) {
@@ -303,6 +305,13 @@ int main(int argc, char **argv) {
                 jpeg_image_tone = get_pslr_jpeg_image_tone( optarg );
 		if( jpeg_image_tone == -1 ) {
 		    warning_message("%s: Invalid jpeg_image_tone\n", argv[0]);
+		}
+		break;
+
+            case 14:
+                white_balance_mode = get_pslr_white_balance_mode( optarg );
+		if( white_balance_mode == -1 ) {
+		    warning_message("%s: Invalid white_balance_mode\n", argv[0]);
 		}
 		break;
 
@@ -455,6 +464,10 @@ int main(int argc, char **argv) {
             warning_message("%s: Invalid jpeg image tone setting.\n", argv[0]);
         }
 	pslr_set_jpeg_image_tone( camhandle, jpeg_image_tone );
+    }
+
+    if( white_balance_mode != -1 ) {
+	pslr_set_white_balance( camhandle, white_balance_mode );
     }
 
     if( drive_mode != -1 ) {
@@ -709,7 +722,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("%-32s: %d\n", "auto bracket picture count", status.auto_bracket_picture_count);
     printf("%-32s: %s\n", "auto bracket ev", format_rational(status.auto_bracket_ev, "%.2f"));
     printf("%-32s: %s\n", "shake reduction", status.shake_reduction > 0 ? "on" : "off");
-    printf("%-32s: %d\n", "white balance mode", status.white_balance_mode);
+    printf("%-32s: %s\n", "white balance mode", get_pslr_white_balance_mode_str(status.white_balance_mode));
     printf("%-32s: %d\n", "white balance adjust mg", status.white_balance_adjust_mg);
     printf("%-32s: %d\n", "white balance adjust ba", status.white_balance_adjust_ba);
     printf("%-32s: %s\n", "flash mode", get_pslr_flash_mode_str(status.flash_mode));
@@ -740,6 +753,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -r, --resolution=RESOLUTION           resolution in megapixels\n\
   -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4\n\
       --jpeg_image_tone=IMAGE_TONE      valid values are: Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm\n\
+      --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, CTE\n\
   -f, --auto_focus                      autofocus\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\

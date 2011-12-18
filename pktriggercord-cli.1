@@ -22,6 +22,7 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-resolution RESOLUTION
 .OP \-\-quality QUALITY
 .OP \-\-jpeg_image_tone IMAGE_TONE
+.OP \-\-white_balance_mode WB_MODE
 .OP \-\-auto_focus
 .OP \-\-green
 .OP \-\-warnings
@@ -186,6 +187,13 @@ Specify the jpeg image tone. Valid values are: Natural, Bright,
 Portrait, Landscape, Vibrant, Monochrome, Muted,
 ReversalFilm\. Currently this setting is temporary, picture taking
 restores it back to the original, so it's quite useless\.
+.RE
+.PP
+\fB\-\-white_balance_mode\fR \fIWB_MODE\fR
+.RS 4
+Specify the white balance mode. Valid values are: Auto, Daylight, 
+Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, 
+Fluorescent_L, Tungsten, Flash, Manual, CTE\.
 .RE
 .HnS 2
 .SS Other

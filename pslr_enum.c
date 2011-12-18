@@ -94,6 +94,27 @@ const char* pslr_jpeg_image_tone_str[PSLR_JPEG_IMAGE_TONE_MAX] = {
     "Radiant"
 };
 
+const char* pslr_white_balance_mode_str[PSLR_WHITE_BALANCE_MODE_MAX] = {
+    "Auto",
+    "Daylight",
+    "Shade",
+    "Cloudy",
+    "Fluorescent_D",
+    "Fluorescent_N",
+    "Fluorescent_W",
+    "Tungsten",
+    "Flash",
+    "Manual",
+    "0x0A", // ??
+    "0x0B", // ??
+    "0x0C", // ??
+    "0x0D", // ??
+    "0xOE", // ??
+    "Fluorescent_L",
+    "CTE"
+};
+
+
 // case insenstive comparison
 // strnicmp
 int str_comparison_i (const char *s1, const char *s2, int n) {
@@ -182,4 +203,12 @@ pslr_jpeg_image_tone_t get_pslr_jpeg_image_tone( char *str ) {
 
 const char *get_pslr_jpeg_image_tone_str( pslr_jpeg_image_tone_t value ) {
     return pslr_jpeg_image_tone_str[value];
+}
+
+pslr_white_balance_mode_t get_pslr_white_balance_mode( char *str ) {
+    return find_in_array( pslr_white_balance_mode_str, sizeof(pslr_white_balance_mode_str)/sizeof(pslr_white_balance_mode_str[0]),str);
+}
+
+const char *get_pslr_white_balance_mode_str( pslr_white_balance_mode_t value ) {
+    return pslr_white_balance_mode_str[value];
 }
