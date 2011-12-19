@@ -145,7 +145,7 @@
                     <child>
                       <widget class="GtkCheckMenuItem" id="menu_histogram_window">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">_Histogram Window</property>
+                        <property name="label" translatable="yes">_Histogram</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="menu_histogram_window_toggled_cb"/>
                       </widget>
@@ -378,7 +378,8 @@
           <widget class="GtkIconView" id="preview_icon_view">
             <property name="width_request">480</property>
             <property name="height_request">360</property>
-	    <property name="pixbuf_column">0</property>
+            <property name="item_width">10</property>
+	    <property name="pixbuf_column">2</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -1994,18 +1995,6 @@ X</property>
             <property name="position">0</property>
           </packing>
         </child>
-      </widget>
-    </child>
-  </widget>
-  <widget class="GtkWindow" id="histogram_window">
-    <property name="title" translatable="yes">pkTriggerCord - Histogram</property>
-    <signal name="delete_event" handler="histogram_window_delete_event_cb"/>
-    <child>
-      <widget class="GtkDrawingArea" id="histogram_drawing_area">
-        <property name="width_request">256</property>
-        <property name="height_request">192</property>
-        <property name="visible">True</property>
-        <signal name="expose_event" handler="histogram_drawing_area_expose_event_cb"/>
       </widget>
     </child>
   </widget>
