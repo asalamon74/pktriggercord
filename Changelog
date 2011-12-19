@@ -3,6 +3,8 @@ version 0.77.05
 	Adding libxml2-2.dll to windows zip
 	automatically select new picture in buffer window
 	--white_balance_mode
+	Histogram info added to buffers window.
+	Deleted histogram window.
 
 version 0.77.04 ( 2011-11-01 )
 	--select_af_point

@@ -75,7 +75,6 @@ static void menu_histogram_window_toggled_cb(GtkCheckMenuItem *item, gpointer us
 
 static gboolean bufferwindow_delete_event_cb(GtkWidget *window, GdkEvent *event, gpointer user_data);
 static gboolean settings_window_delete_event_cb(GtkWidget *window, GdkEvent *event, gpointer user_data);
-static gboolean histogram_window_delete_event_cb(GtkWidget *window, GdkEvent *event, gpointer user_data);
 
 gboolean main_drawing_area_motion_notify_event_cb(GtkWidget *drawing_area, 
                                                   GdkEventMotion *event, 
@@ -88,7 +87,6 @@ gboolean main_drawing_area_button_press_event_cb(GtkWidget *drawing_area,
 
 gboolean da_expose(GtkWidget *widget, GdkEventExpose *pEvent, gpointer userData);
 gboolean bufferwindow_expose_event_cb(GtkWidget *widget, GdkEventExpose *pEvent, gpointer userData);
-gboolean histogram_drawing_area_expose_event_cb(GtkWidget *widget, GdkEventExpose *pEvent, gpointer userData);
 gboolean da_buttonpress(GtkWidget *widget);
 void plugin_quit(GtkWidget *widget);
 int common_init(void);
@@ -254,8 +252,15 @@ static GladeXML *xml;
 static GtkStatusbar *statusbar;
 static guint sbar_connect_ctx;
 static guint sbar_download_ctx;
+bool need_histogram=false;
+static GtkListStore *list_store;
 
 bool debug = false;
+
+static const int THUMBNAIL_WIDTH = 160;
+static const int THUMBNAIL_HEIGHT = 120;
+static const int HISTOGRAM_WIDTH = 640;
+static const int HISTOGRAM_HEIGHT = 480;
 
 int common_init(void)
 {
@@ -306,8 +311,6 @@ int common_init(void)
                              G_CALLBACK(main_drawing_area_motion_notify_event_cb));
 
     glade_xml_signal_connect(xml, "bufferwindow_expose_event_cb", G_CALLBACK(bufferwindow_expose_event_cb));
-
-    glade_xml_signal_connect(xml, "histogram_drawing_area_expose_event_cb", G_CALLBACK(histogram_drawing_area_expose_event_cb));
 
     glade_xml_signal_connect(xml, "mainwindow_expose", G_CALLBACK(da_expose));
 
@@ -360,7 +363,6 @@ int common_init(void)
 
     glade_xml_signal_connect(xml, "bufferwindow_delete_event_cb", G_CALLBACK(bufferwindow_delete_event_cb));
     glade_xml_signal_connect(xml, "settings_window_delete_event_cb", G_CALLBACK(settings_window_delete_event_cb));
-    glade_xml_signal_connect(xml, "histogram_window_delete_event_cb", G_CALLBACK(histogram_window_delete_event_cb));
 
     glade_xml_signal_connect(xml, "auto_save_folder_button_clicked_cb", 
                              G_CALLBACK(auto_save_folder_button_clicked_cb));
@@ -1070,7 +1072,6 @@ static void update_main_area(int buffer)
     uint32_t imageSize;
     int r;
     GdkPixbuf *pixBuf;
-    GtkWidget *pw;
 
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Getting preview");
     while (gtk_events_pending())
@@ -1094,9 +1095,6 @@ static void update_main_area(int buffer)
     pError = NULL;
     pMainPixbuf = pixBuf;
     
-    pw = glade_xml_get_widget(xml, "histogram_drawing_area");
-    gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
-
   the_end:
     gtk_statusbar_pop(statusbar, sbar_download_ctx);
 
@@ -1178,20 +1176,6 @@ static void menu_settings_window_toggled_cb(GtkCheckMenuItem *item, gpointer use
     pw = glade_xml_get_widget(xml, "settings_window");
     checked = item->active;
     DPRINT("settings window %d.\n", checked);
-    if (checked) {
-        gtk_widget_show(pw);
-    } else {
-        gtk_widget_hide(pw);
-    }
-}
-
-static void menu_histogram_window_toggled_cb(GtkCheckMenuItem *item, gpointer user_data)
-{
-    guint checked;
-    GtkWidget *pw;
-    pw = glade_xml_get_widget(xml, "histogram_window");
-    checked = item->active;
-    DPRINT("histogram window %d.\n", checked);
     if (checked) {
         gtk_widget_show(pw);
     } else {
@@ -1352,18 +1336,20 @@ gboolean bufferwindow_expose_event_cb(GtkWidget *widget, GdkEventExpose *pEvent,
     return FALSE;
 }
 
-gboolean histogram_drawing_area_expose_event_cb(GtkWidget *widget, GdkEventExpose *pEvent, gpointer userData)
-{
-    DPRINT("histogram window expose\n");
-    GtkWidget *pw;
+GdkPixmap *calculate_histogram( GdkPixbuf *input, int hist_w, int hist_h ) {
     guchar *pixels;
     uint32_t histogram[256][3];
     int x, y;
     uint32_t scale;
-    GdkGC *gc;
     int pitch;
-    int hist_w, hist_h;
     int wx1, wy1, wx2, wy2;
+    GdkGC *gc;
+    int input_width, input_height;
+    GdkColor cWhite = { 0, 65535, 65535, 65535 };
+
+    if( !input ) {
+	return NULL;
+    }
 
     const GdkColor hist_colors[] = {
         { 0, 65535, 0, 0 },
@@ -1371,30 +1357,22 @@ gboolean histogram_drawing_area_expose_event_cb(GtkWidget *widget, GdkEventExpos
         { 0, 0, 0, 65535 }
     };
 
-    pw = glade_xml_get_widget(xml, "histogram_drawing_area");
-    if (pw != widget)
-        DPRINT("pw != widget\n");
+    g_assert (gdk_pixbuf_get_colorspace (input) == GDK_COLORSPACE_RGB);
+    g_assert (gdk_pixbuf_get_bits_per_sample (input) == 8);
+    g_assert (!gdk_pixbuf_get_has_alpha (input));
+    g_assert (gdk_pixbuf_get_n_channels(input) == 3);
 
-    if (!pMainPixbuf)
-        return TRUE;
+    input_width = gdk_pixbuf_get_width(input);
+    input_height = gdk_pixbuf_get_height(input);
+    DPRINT("input: %d x %d\n", input_width, input_height);
 
-    hist_w = pw->allocation.width;
-    hist_h = pw->allocation.height / 3;
-    g_assert (gdk_pixbuf_get_colorspace (pMainPixbuf) == GDK_COLORSPACE_RGB);
-    g_assert (gdk_pixbuf_get_bits_per_sample (pMainPixbuf) == 8);
-    g_assert (!gdk_pixbuf_get_has_alpha (pMainPixbuf));
-    g_assert (gdk_pixbuf_get_n_channels(pMainPixbuf) == 3);
-
-    g_assert (gdk_pixbuf_get_width(pMainPixbuf) == 640);
-    g_assert (gdk_pixbuf_get_height(pMainPixbuf) == 480);
-
-    pixels = gdk_pixbuf_get_pixels(pMainPixbuf);
-    pitch = gdk_pixbuf_get_rowstride(pMainPixbuf);
+    pixels = gdk_pixbuf_get_pixels(input);
+    pitch = gdk_pixbuf_get_rowstride(input);
 
     memset(histogram, 0, sizeof(histogram));
 
-    for (y=26; y<428; y++) {
-        for (x=0; x<640; x++) {
+    for (y=9.0/160*input_height; y<(151.0/160)*input_height; y++) {
+        for (x=0; x<input_width; x++) {
             uint8_t r = pixels[y*pitch+x*3+0];
             uint8_t g = pixels[y*pitch+x*3+1];
             uint8_t b = pixels[y*pitch+x*3+2];
@@ -1411,10 +1389,12 @@ gboolean histogram_drawing_area_expose_event_cb(GtkWidget *widget, GdkEventExpos
                 scale = histogram[x][y];
         }
     }
+    // draw onto 
+    GdkPixmap *output = gdk_pixmap_new( NULL, hist_w, 3*hist_h, 24);
+    gc = gdk_gc_new(output);
+    gdk_gc_set_rgb_fg_color(gc, &cWhite);
+    gdk_draw_rectangle(output, gc, TRUE, 0, 0, hist_w, 3*hist_h);
 
-    gc = gdk_gc_new(pw->window);
-    gdk_gc_copy(gc, pw->style->fg_gc[GTK_WIDGET_STATE (pw)]);
-    
     for (y=0; y<3; y++) {
         gdk_gc_set_rgb_fg_color(gc, &hist_colors[y]);
         for (x=0; x<256; x++) {
@@ -1423,11 +1403,11 @@ gboolean histogram_drawing_area_expose_event_cb(GtkWidget *widget, GdkEventExpos
             int yval = histogram[x][y] * hist_h / scale;
             wy1 = (hist_h * y) + hist_h - yval;
             wy2 = (hist_h * y) + hist_h;
-            gdk_draw_rectangle(pw->window, gc, TRUE, wx1, wy1, wx2-wx1, wy2-wy1);
+            gdk_draw_rectangle(output, gc, TRUE, wx1, wy1, wx2-wx1, wy2-wy1);
         }
     }
 
-    return FALSE;
+    return output;
 }
 
 void shutter_press(GtkWidget *widget)
@@ -1525,18 +1505,6 @@ static gboolean settings_window_delete_event_cb(GtkWidget *window, GdkEvent *eve
     return TRUE;
 }
 
-static gboolean histogram_window_delete_event_cb(GtkWidget *window, GdkEvent *event, 
-                                                gpointer user_data)
-{
-    GtkWidget *pw;
-    DPRINT("Hide histogram window.\n");
-    pw = glade_xml_get_widget(xml, "menu_histogram_window");
-    gtk_widget_hide(window);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(pw), FALSE);
-    return TRUE;
-}
-
-
 void error_message(const gchar *message)
 {
     GtkWidget *pw;
@@ -1558,8 +1526,6 @@ gboolean error_dialog_close(GtkWidget *widget)
     return FALSE;
 }
 
-static GtkListStore *list_store;
-
 void init_preview_area(void)
 {
     GtkWidget *pw;
@@ -1570,18 +1536,61 @@ void init_preview_area(void)
 
     pw = glade_xml_get_widget(xml, "preview_icon_view");
 
-    list_store = gtk_list_store_new (1,
-                                     GDK_TYPE_PIXBUF);
+    list_store = gtk_list_store_new (3,
+                                     GDK_TYPE_PIXBUF, // thumbnail
+				     GDK_TYPE_PIXMAP, // histogram
+				     GDK_TYPE_PIXBUF  // visible icon 
+	);
 
     for (i = 0; i < MAX_BUFFERS; i++) {
         /* Add a new row to the model */
         gtk_list_store_append (list_store, &iter);
         gtk_list_store_set (list_store, &iter,
-                            0, NULL,
+                            0, NULL, 1, NULL, 2, NULL,
                             -1);
     }
 
     gtk_icon_view_set_model(GTK_ICON_VIEW(pw), GTK_TREE_MODEL(list_store));
+}
+
+GdkPixbuf *merge_preview_icons( GdkPixbuf *thumb, GdkPixmap *histogram ) {
+    GdkPixbuf *output;
+    if( need_histogram ) {
+	GdkPixmap *mMerged = gdk_pixmap_new(NULL, 2*HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, 24);
+	GdkGC *gc = gdk_gc_new( mMerged );
+	GdkPixbuf *scaledThumb = gdk_pixbuf_scale_simple( thumb, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, GDK_INTERP_BILINEAR);
+	gdk_draw_pixbuf( mMerged, gc, scaledThumb, 0, 0, 0, 0, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, GDK_RGB_DITHER_NONE, 0, 0);
+	gdk_draw_drawable( mMerged, gc, histogram, 0, 0, HISTOGRAM_WIDTH, 0, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT);
+	GdkPixbuf *pMerged = gdk_pixbuf_get_from_drawable( NULL, mMerged, GDK_COLORSPACE_RGB, 0, 0, 0, 0, 2*HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT ); 
+	output = gdk_pixbuf_scale_simple( pMerged, 2*THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, GDK_INTERP_BILINEAR);
+    } else {
+	output = thumb;
+    }
+    return output;
+}
+
+static void menu_histogram_window_toggled_cb(GtkCheckMenuItem *item, gpointer user_data)
+{
+    GtkTreePath *path;
+    GtkTreeIter iter;
+    GdkPixbuf *thumb;
+    GdkPixmap *hist;
+    int i;
+
+    GtkWidget *pw = glade_xml_get_widget(xml, "menu_histogram_window");
+    need_histogram = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(pw));
+
+    for (i = 0; i < MAX_BUFFERS; i++) {
+	path = gtk_tree_path_new_from_indices (i, -1);
+	gtk_tree_model_get_iter (GTK_TREE_MODEL (list_store), &iter, path);
+	gtk_tree_path_free (path);
+	gtk_tree_model_get( GTK_TREE_MODEL (list_store), &iter, 0, &thumb, 1, &hist, -1 );
+	if( thumb ) {
+	    GdkPixbuf *pMerged = merge_preview_icons( thumb, hist );
+	    gtk_list_store_set (list_store, &iter, 0, thumb, 1, hist, 2, pMerged, -1);
+	}
+    }
+
 }
 
 void set_preview_icon(int n, GdkPixbuf *pBuf)
@@ -1594,7 +1603,10 @@ void set_preview_icon(int n, GdkPixbuf *pBuf)
                              &iter,
                              path);
     gtk_tree_path_free (path);
-    gtk_list_store_set (list_store, &iter, 0, pBuf, -1);
+    GdkPixmap *gpm = calculate_histogram( pBuf, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT/3 );
+
+    GdkPixbuf *pMerged = merge_preview_icons( pBuf, gpm );
+    gtk_list_store_set (list_store, &iter, 0, pBuf, 1, gpm, 2, pMerged, -1);
 }
 
 static gchar* shutter_scale_format_value_cb(GtkScale *scale, gdouble value)
