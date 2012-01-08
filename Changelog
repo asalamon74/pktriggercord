@@ -1,4 +1,4 @@
-version 0.77.05
+version 0.77.06 ( 2012-01-08 )
 	glade code cleanup
 	Adding libxml2-2.dll to windows zip
 	automatically select new picture in buffer window
