@@ -275,7 +275,7 @@ pslr_handle_t pslr_init() {
 
 int pslr_connect(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    uint8_t statusbuf[16];
+    uint8_t statusbuf[28];
     CHECK(ipslr_status(p, statusbuf));
     CHECK(ipslr_set_mode(p, 1));
     CHECK(ipslr_status(p, statusbuf));
@@ -297,7 +297,7 @@ int pslr_connect(pslr_handle_t h) {
 
 int pslr_disconnect(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    uint8_t statusbuf[16];
+    uint8_t statusbuf[28];
     CHECK(ipslr_cmd_10_0a(p, 0));
     CHECK(ipslr_set_mode(p, 0));
     CHECK(ipslr_status(p, statusbuf));
@@ -1270,7 +1270,7 @@ static int ipslr_next_segment(ipslr_handle_t *p) {
 }
 
 static int ipslr_buffer_segment_info(ipslr_handle_t *p, pslr_buffer_segment_info *pInfo) {
-    uint8_t buf[16];
+    uint8_t buf[28];
     uint32_t n;
 
     CHECK(command(p->fd, 0x04, 0x00, 0x00));
