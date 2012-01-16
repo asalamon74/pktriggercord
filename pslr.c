@@ -1270,7 +1270,7 @@ static int ipslr_next_segment(ipslr_handle_t *p) {
 }
 
 static int ipslr_buffer_segment_info(ipslr_handle_t *p, pslr_buffer_segment_info *pInfo) {
-    uint8_t buf[28];
+    uint8_t buf[16];
     uint32_t n;
 
     CHECK(command(p->fd, 0x04, 0x00, 0x00));
