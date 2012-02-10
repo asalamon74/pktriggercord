@@ -95,12 +95,6 @@ user_file_format_t file_formats[3];
 user_file_format_t *get_file_format_t( user_file_format uff );
 
 typedef enum {
-    PSLR_CUSTOM_EV_STEPS_1_2,
-    PSLR_CUSTOM_EV_STEPS_1_3,
-    PSLR_CUSTOM_EV_STEPS_MAX
-} pslr_custom_ev_steps_t;
-
-typedef enum {
     PSLR_CUSTOM_SENSITIVITY_STEPS_1EV,
     PSLR_CUSTOM_SENSITIVITY_STEPS_AS_EV,
     PSLR_CUSTOM_SENSITIVITY_STEPS_MAX

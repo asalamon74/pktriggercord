@@ -112,6 +112,12 @@ typedef enum {
     PSLR_WHITE_BALANCE_MODE_MAX = 0x11
 } pslr_white_balance_mode_t;
 
+typedef enum {
+    PSLR_CUSTOM_EV_STEPS_1_2,
+    PSLR_CUSTOM_EV_STEPS_1_3,
+    PSLR_CUSTOM_EV_STEPS_MAX
+} pslr_custom_ev_steps_t;
+
 int find_in_array( const char** array, int length, char* str );
 
 pslr_color_space_t get_pslr_color_space( char *str );
@@ -137,5 +143,9 @@ const char *get_pslr_jpeg_image_tone_str( pslr_jpeg_image_tone_t value );
 
 pslr_white_balance_mode_t get_pslr_white_balance_mode( char *str );
 const char *get_pslr_white_balance_mode_str( pslr_white_balance_mode_t value );
+
+//pslr_custom_ev_steps_t get_pslr_custom_ev_steps( char *str );
+const char *get_pslr_custom_ev_steps_str( pslr_custom_ev_steps_t value );
+
 
 #endif
