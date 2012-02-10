@@ -114,6 +114,10 @@ const char* pslr_white_balance_mode_str[PSLR_WHITE_BALANCE_MODE_MAX] = {
     "CTE"
 };
 
+const char* pslr_custom_ev_steps_str[PSLR_CUSTOM_EV_STEPS_MAX] = {
+    "1/2",
+    "1/3"
+};
 
 // case insenstive comparison
 // strnicmp
@@ -211,4 +215,8 @@ pslr_white_balance_mode_t get_pslr_white_balance_mode( char *str ) {
 
 const char *get_pslr_white_balance_mode_str( pslr_white_balance_mode_t value ) {
     return pslr_white_balance_mode_str[value];
+} 	
+
+const char *get_pslr_custom_ev_steps_str( pslr_custom_ev_steps_t value ) {
+    return pslr_custom_ev_steps_str[value];
 }

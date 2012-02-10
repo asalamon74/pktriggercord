@@ -708,7 +708,7 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("%-32s: %d\n", "raw format", status.raw_format);
     printf("%-32s: %d\n", "light meter flags", status.light_meter_flags);
     printf("%-32s: %s\n", "ec", format_rational( status.ec, "%.2f" ) );
-    printf("%-32s: %d\n", "custom ev steps", status.custom_ev_steps);
+    printf("%-32s: %s\n", "custom ev steps", get_pslr_custom_ev_steps_str(status.custom_ev_steps));
     printf("%-32s: %d\n", "custom sensitivity steps", status.custom_sensitivity_steps);
     printf("%-32s: %d (%d)\n", "exposure mode", status.exposure_mode, status.exposure_submode);
     printf("%-32s: %d\n", "user mode flag", status.user_mode_flag);
