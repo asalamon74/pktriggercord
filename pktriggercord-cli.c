@@ -38,7 +38,6 @@
 #include <stdarg.h>
 
 #include "pslr.h"
-#include "pslr_lens.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
@@ -672,64 +671,9 @@ void CLOSE(pslr_handle_t camhandle, int exit_value) {
     exit(exit_value);
 }
 
-char *format_rational( pslr_rational_t rational, char * fmt ) {
-    char *ret = malloc(32);
-    if( rational.denom == 0 ) {
-	snprintf( ret, 32, "unknown" );
-    } else {
-	snprintf( ret, 32, fmt, 1.0 * rational.nom / rational.denom );
-    }
-    return ret;
-}
-
 void print_status_info( pslr_handle_t h, pslr_status status ) {    
     printf("\n");
-    printf("%-32s: %d\n", "current iso", status.current_iso);
-    printf("%-32s: %d/%d\n", "current shutter speed", status.current_shutter_speed.nom, status.current_shutter_speed.denom);
-    printf("%-32s: %d/%d\n", "camera max shutter speed", status.max_shutter_speed.nom, status.max_shutter_speed.denom);
-    printf("%-32s: %s\n", "current aperture", format_rational( status.current_aperture, "%.1f"));
-    printf("%-32s: %s\n", "lens max aperture", format_rational( status.lens_max_aperture, "%.1f"));
-    printf("%-32s: %s\n", "lens min aperture", format_rational( status.lens_min_aperture, "%.1f"));
-    printf("%-32s: %d/%d\n", "set shutter speed", status.set_shutter_speed.nom, status.set_shutter_speed.denom);
-    printf("%-32s: %s\n", "set aperture", format_rational( status.set_aperture, "%.1f"));
-    printf("%-32s: %d\n", "fixed iso", status.fixed_iso);
-    printf("%-32s: %d-%d\n", "auto iso", status.auto_iso_min,status.auto_iso_max);
-    printf("%-32s: %d\n", "jpeg quality", status.jpeg_quality);
-    printf("%-32s: %dM\n", "jpeg resolution", pslr_get_jpeg_resolution( h, status.jpeg_resolution));
-    printf("%-32s: %s\n", "jpeg image tone", get_pslr_jpeg_image_tone_str(status.jpeg_image_tone));
-    printf("%-32s: %d\n", "jpeg saturation", status.jpeg_saturation);
-    printf("%-32s: %d\n", "jpeg contrast", status.jpeg_contrast);
-    printf("%-32s: %d\n", "jpeg sharpness", status.jpeg_sharpness);
-    printf("%-32s: %d\n", "jpeg hue", status.jpeg_hue);
-    printf("%-32s: %s mm\n", "zoom", format_rational(status.zoom, "%.2f"));
-    printf("%-32s: %d\n", "focus", status.focus);
-    printf("%-32s: %s\n", "color space", get_pslr_color_space_str(status.color_space));
-    printf("%-32s: %d\n", "image format", status.image_format);
-    printf("%-32s: %d\n", "raw format", status.raw_format);
-    printf("%-32s: %d\n", "light meter flags", status.light_meter_flags);
-    printf("%-32s: %s\n", "ec", format_rational( status.ec, "%.2f" ) );
-    printf("%-32s: %s\n", "custom ev steps", get_pslr_custom_ev_steps_str(status.custom_ev_steps));
-    printf("%-32s: %d\n", "custom sensitivity steps", status.custom_sensitivity_steps);
-    printf("%-32s: %d (%d)\n", "exposure mode", status.exposure_mode, status.exposure_submode);
-    printf("%-32s: %d\n", "user mode flag", status.user_mode_flag);
-    printf("%-32s: %s\n", "ae metering mode", get_pslr_ae_metering_str(status.ae_metering_mode));
-    printf("%-32s: %s\n", "af mode", get_pslr_af_mode_str(status.af_mode));
-    printf("%-32s: %s\n", "af point select", get_pslr_af_point_sel_str(status.af_point_select));
-    printf("%-32s: %d\n", "selected af point", status.selected_af_point);
-    printf("%-32s: %d\n", "focused af point", status.focused_af_point);
-    printf("%-32s: %s\n", "drive mode", get_pslr_drive_mode_str(status.drive_mode));
-    printf("%-32s: %s\n", "auto bracket mode", status.auto_bracket_mode > 0 ? "on" : "off");
-    printf("%-32s: %d\n", "auto bracket picture count", status.auto_bracket_picture_count);
-    printf("%-32s: %s\n", "auto bracket ev", format_rational(status.auto_bracket_ev, "%.2f"));
-    printf("%-32s: %s\n", "shake reduction", status.shake_reduction > 0 ? "on" : "off");
-    printf("%-32s: %s\n", "white balance mode", get_pslr_white_balance_mode_str(status.white_balance_mode));
-    printf("%-32s: %d\n", "white balance adjust mg", status.white_balance_adjust_mg);
-    printf("%-32s: %d\n", "white balance adjust ba", status.white_balance_adjust_ba);
-    printf("%-32s: %s\n", "flash mode", get_pslr_flash_mode_str(status.flash_mode));
-    printf("%-32s: %.2f\n", "flash exposure compensation", (1.0 * status.flash_exposure_compensation/256));
-    printf("%-32s: %.2f\n", "manual mode ev", (1.0 * status.manual_mode_ev / 10));
-    printf("%-32s: %s\n", "lens", get_lens_name(status.lens_id1, status.lens_id2));
-    printf("%-32s: %.2fV %.2fV %.2fV %.2fV\n", "battery", 0.01 * status.battery_1, 0.01 * status.battery_2, 0.01 * status.battery_3, 0.01 * status.battery_4);
+    printf( collect_status_info( h, status ) );
 }
 
 void usage(char *name) {

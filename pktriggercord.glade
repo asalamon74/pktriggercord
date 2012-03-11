@@ -331,6 +331,19 @@
               </packing>
             </child>
             <child>
+              <widget class="GtkButton" id="status_button">
+                <property name="label" translatable="yes">Status Info</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <signal name="clicked" handler="status_button_clicked_cb"/>
+              </widget>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkButton" id="quick_gimp_button">
                 <property name="label" translatable="yes">Quick Gimp</property>
                 <property name="can_focus">True</property>
@@ -340,7 +353,7 @@
               </widget>
               <packing>
                 <property name="pack_type">end</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </widget>
@@ -378,13 +391,13 @@
           <widget class="GtkIconView" id="preview_icon_view">
             <property name="width_request">480</property>
             <property name="height_request">360</property>
-            <property name="item_width">10</property>
-	    <property name="pixbuf_column">2</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="selection_mode">multiple</property>
             <property name="orientation">horizontal</property>
+            <property name="item_width">10</property>
+	    <property name="pixbuf_column">2</property>
             <signal name="selection_changed" handler="preview_icon_view_selection_changed_cb"/>
           </widget>
           <packing>
@@ -609,10 +622,10 @@
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <property name="has_separator">False</property>
-    <property name="preview_widget_active">False</property>
-    <property name="use_preview_label">False</property>
     <property name="do_overwrite_confirmation">True</property>
     <property name="action">save</property>
+    <property name="preview_widget_active">False</property>
+    <property name="use_preview_label">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -1994,6 +2007,34 @@ X</property>
           <packing>
             <property name="position">0</property>
           </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkWindow" id="statuswindow">
+    <property name="title" translatable="yes">Status Info</property>
+    <property name="width_request">640</property>
+    <property name="height_request">480</property>
+    <signal name="delete_event" handler="statuswindow_delete_event_cb"/>
+    <child>
+      <widget class="GtkScrolledWindow" id="scrolledwindow1">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hscrollbar_policy">automatic</property>
+        <property name="vscrollbar_policy">automatic</property>
+        <child>
+          <widget class="GtkViewport" id="viewport1">
+            <property name="visible">True</property>
+            <property name="resize_mode">queue</property>
+            <child>
+              <widget class="GtkLabel" id="status_label">
+                <property name="visible">True</property>
+                <property name="xalign">0.01</property>
+                <property name="yalign">0.01</property>
+                <property name="label" translatable="yes">label</property>
+              </widget>
+            </child>
+          </widget>
         </child>
       </widget>
     </child>

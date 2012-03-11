@@ -1,6 +1,7 @@
 version 0.77.07
 	K-5 bugfix (patch by Rune Frøysa)
 	Human readable custom ev steps
+	GUI: Status info
 
 version 0.77.06 ( 2012-01-08 )
 	glade code cleanup
