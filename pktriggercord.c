@@ -59,6 +59,7 @@ static struct {
 
 void shutter_press(GtkWidget *widget);
 static void focus_button_clicked_cb(GtkButton *widget);
+static void status_button_clicked_cb(GtkButton *widget);
 
 static void green_button_clicked_cb(GtkButton *widget);
 static void ae_lock_button_toggled_cb(GtkToggleButton *widget);
@@ -75,6 +76,7 @@ static void menu_histogram_window_toggled_cb(GtkCheckMenuItem *item, gpointer us
 
 static gboolean bufferwindow_delete_event_cb(GtkWidget *window, GdkEvent *event, gpointer user_data);
 static gboolean settings_window_delete_event_cb(GtkWidget *window, GdkEvent *event, gpointer user_data);
+static gboolean statuswindow_delete_event_cb(GtkWidget *window, GdkEvent *event, gpointer user_data);
 
 gboolean main_drawing_area_motion_notify_event_cb(GtkWidget *drawing_area, 
                                                   GdkEventMotion *event, 
@@ -296,7 +298,8 @@ int common_init(void)
     glade_xml_signal_connect(xml, "shutter_press", G_CALLBACK(shutter_press));
     glade_xml_signal_connect(xml, "focus_button_clicked_cb", 
                              G_CALLBACK(focus_button_clicked_cb));
-
+    glade_xml_signal_connect(xml, "status_button_clicked_cb", 
+                             G_CALLBACK(status_button_clicked_cb));
     glade_xml_signal_connect(xml, "green_button_clicked_cb", 
                              G_CALLBACK(green_button_clicked_cb));
     glade_xml_signal_connect(xml, "ae_lock_button_toggled_cb", 
@@ -363,6 +366,7 @@ int common_init(void)
 
     glade_xml_signal_connect(xml, "bufferwindow_delete_event_cb", G_CALLBACK(bufferwindow_delete_event_cb));
     glade_xml_signal_connect(xml, "settings_window_delete_event_cb", G_CALLBACK(settings_window_delete_event_cb));
+    glade_xml_signal_connect(xml, "statuswindow_delete_event_cb", G_CALLBACK(statuswindow_delete_event_cb));
 
     glade_xml_signal_connect(xml, "auto_save_folder_button_clicked_cb", 
                              G_CALLBACK(auto_save_folder_button_clicked_cb));
@@ -665,6 +669,8 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     pw = glade_xml_get_widget(xml, "shutter_button");
     gtk_widget_set_sensitive(pw, st_new != NULL);
     pw = glade_xml_get_widget(xml, "focus_button");
+    gtk_widget_set_sensitive(pw, st_new != NULL);
+    pw = glade_xml_get_widget(xml, "status_button");
     gtk_widget_set_sensitive(pw, st_new != NULL);
     pw = glade_xml_get_widget(xml, "quick_gimp_button");
     gtk_widget_set_sensitive(pw, st_new != NULL);
@@ -1434,6 +1440,26 @@ static void focus_button_clicked_cb(GtkButton *widget)
     }
 }
 
+static void status_button_clicked_cb(GtkButton *widget)
+{
+    DPRINT("Status");
+    GtkWidget *pw;
+    pslr_status st;    
+
+    pslr_get_status(camhandle, &st);
+
+    char *collected_status = collect_status_info(  camhandle, st );
+    GtkLabel *label = GTK_LABEL(glade_xml_get_widget(xml, "status_label"));
+
+    char *markup = g_markup_printf_escaped ("<tt>%s</tt>", collected_status);
+    gtk_label_set_markup ( label, markup);
+    g_free (markup);
+    free( collected_status );
+
+    pw = glade_xml_get_widget(xml, "statuswindow");
+    gtk_widget_show(pw);
+}
+
 static void green_button_clicked_cb(GtkButton *widget)
 {
     DPRINT("Green btn");
@@ -1504,6 +1530,15 @@ static gboolean settings_window_delete_event_cb(GtkWidget *window, GdkEvent *eve
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(pw), FALSE);
     return TRUE;
 }
+
+static gboolean statuswindow_delete_event_cb(GtkWidget *window, GdkEvent *event, 
+                                                gpointer user_data)
+{
+    DPRINT("Hide statuswindow.\n");
+    gtk_widget_hide(window);
+    return TRUE;
+}
+
 
 void error_message(const gchar *message)
 {

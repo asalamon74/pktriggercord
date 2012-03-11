@@ -246,6 +246,8 @@ int pslr_focus(pslr_handle_t h);
 int pslr_get_status(pslr_handle_t h, pslr_status *sbuf);
 int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf);
 
+char *collect_status_info( pslr_handle_t h, pslr_status status );
+
 int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution,
                     uint8_t **pdata, uint32_t *pdatalen);
 
