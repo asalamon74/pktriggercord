@@ -169,6 +169,50 @@ static ipslr_model_info_t camera_models[] = {
 const char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
 const char* valid_models[2] = {"DIGITAL_CAMERA", "DSC"}; // no longer list all of them, DSC* should be ok
 
+// x18 cubcommands to change camera properties
+// X18_n: unknown effect
+typedef enum {
+    X18_00,
+    X18_EXPOSURE_MODE,
+    X18_02,
+    X18_AE_METERING_MODE,
+    X18_FLASH_MODE,
+    X18_AF_MODE,
+    X18_AF_POINT_SEL,
+    X18_AF_POINT,
+    X18_08,
+    X18_09,
+    X18_0A,
+    X18_0B,
+    X18_0C,
+    X18_0D,
+    X18_0E,
+    X18_0F,
+    X18_WHITE_BALANCE,
+    X18_11, // also white balance, but only adjustments
+    X18_IMAGE_FORMAT,
+    X18_JPEG_STARS,
+    X18_JPEG_RESOLUTION,
+    X18_ISO,
+    X18_SHUTTER,
+    X18_APERTURE,
+    X18_EC,
+    X18_19,
+    X18_FLASH_EXPOSURE_COMPENSATION,
+    X18_JPEG_IMAGE_TONE,
+    X18_DRIVE_MODE,
+    X18_1D,
+    X18_1E,
+    X18_RAW_FORMAT,
+    X18_JPEG_SATURATION,
+    X18_JPEG_SHARPNESS,
+    X18_JPEG_CONTRAST,
+    X18_COLOR_SPACE,
+    X18_24,
+    X18_JPEG_HUE
+} x18_subcommands_t;
+
+
 user_file_format_t *get_file_format_t( user_file_format uff ) {
     int i;    
     for (i = 0; i<sizeof(file_formats) / sizeof(file_formats[0]); i++) {
@@ -455,57 +499,57 @@ int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int
 
 int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x16, 2, value.nom, value.denom, 0);
+    return ipslr_handle_command_x18( p, true, X18_SHUTTER, 2, value.nom, value.denom, 0);
 }
 
 int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, false, 0x17, 3, value.nom, value.denom, 0);
+    return ipslr_handle_command_x18( p, false, X18_APERTURE, 3, value.nom, value.denom, 0);
 }
 
 int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint32_t auto_max_value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x15, 3, value, auto_min_value, auto_max_value);
+    return ipslr_handle_command_x18( p, true, X18_ISO, 3, value, auto_min_value, auto_max_value);
 }
 
 int pslr_set_ec(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x18, 2, value.nom, value.denom, 0);
+    return ipslr_handle_command_x18( p, true, X18_EC, 2, value.nom, value.denom, 0);
 }
 
 int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x10, 1, wb_mode, 0, 0);
+    return ipslr_handle_command_x18( p, true, X18_WHITE_BALANCE, 1, wb_mode, 0, 0);
 }
 
 int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x04, 1, value, 0, 0);
+    return ipslr_handle_command_x18( p, true, X18_FLASH_MODE, 1, value, 0, 0);
 }
 
 int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x1a, 2, value.nom, value.denom, 0);    
+    return ipslr_handle_command_x18( p, true, X18_FLASH_EXPOSURE_COMPENSATION, 2, value.nom, value.denom, 0);    
 }
 
 int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x1c, 1, drive_mode, 0, 0);    
+    return ipslr_handle_command_x18( p, true, X18_DRIVE_MODE, 1, drive_mode, 0, 0);    
 }
 
 int pslr_set_ae_metering_mode(pslr_handle_t h, pslr_ae_metering_t ae_metering_mode) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x03, 1, ae_metering_mode, 0, 0);    
+    return ipslr_handle_command_x18( p, true, X18_AE_METERING_MODE, 1, ae_metering_mode, 0, 0);    
 }
 
 int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x05, 1, af_mode, 0, 0);    
+    return ipslr_handle_command_x18( p, true, X18_AF_MODE, 1, af_mode, 0, 0);    
 }
 
 int pslr_set_af_point_sel(pslr_handle_t h, pslr_af_point_sel_t af_point_sel) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x06, 1, af_point_sel, 0, 0);    
+    return ipslr_handle_command_x18( p, true, X18_AF_POINT_SEL, 1, af_point_sel, 0, 0);    
 }
 
 int get_hw_jpeg_quality( pslr_handle_t h, int jpeg_stars) {
@@ -524,7 +568,7 @@ int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars ) {
         return PSLR_PARAM;
     }
     hwqual = get_hw_jpeg_quality( h, jpeg_stars );
-    return ipslr_handle_command_x18( p, true, 0x13, 2, 1, hwqual, 0);
+    return ipslr_handle_command_x18( p, true, X18_JPEG_STARS, 2, 1, hwqual, 0);
 }
 
 int _get_user_jpeg_resolution( ipslr_model_info_t *model, int hwres ) {
@@ -547,7 +591,7 @@ int _get_hw_jpeg_resolution( ipslr_model_info_t *model, int megapixel) {
 int pslr_set_jpeg_resolution(pslr_handle_t h, int megapixel) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     int hwres = _get_hw_jpeg_resolution( p->model, megapixel );
-    return ipslr_handle_command_x18( p, true, 0x14, 2, 1, hwres, 0);
+    return ipslr_handle_command_x18( p, true, X18_JPEG_RESOLUTION, 2, 1, hwres, 0);
 }
 
 int pslr_set_jpeg_image_tone(pslr_handle_t h, pslr_jpeg_image_tone_t image_tone) {
@@ -555,7 +599,7 @@ int pslr_set_jpeg_image_tone(pslr_handle_t h, pslr_jpeg_image_tone_t image_tone)
     if (image_tone < 0 || image_tone > PSLR_JPEG_IMAGE_TONE_MAX) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, true, 0x1b, 1, image_tone, 0, 0);
+    return ipslr_handle_command_x18( p, true, X18_JPEG_IMAGE_TONE, 1, image_tone, 0, 0);
 }
 
 int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness) {
@@ -564,7 +608,7 @@ int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness) {
     if (hw_sharpness < 0 || hw_sharpness >=  p->model->jpeg_property_levels) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, false, 0x21, 2, 0, hw_sharpness, 0);
+    return ipslr_handle_command_x18( p, false, X18_JPEG_SHARPNESS, 2, 0, hw_sharpness, 0);
 }
 
 int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast) {
@@ -573,7 +617,7 @@ int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast) {
     if (hw_contrast < 0 || hw_contrast >=  p->model->jpeg_property_levels) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, false, 0x22, 2, 0, hw_contrast, 0);
+    return ipslr_handle_command_x18( p, false, X18_JPEG_CONTRAST, 2, 0, hw_contrast, 0);
 }
 
 int pslr_set_jpeg_hue(pslr_handle_t h, int32_t hue) {
@@ -582,7 +626,7 @@ int pslr_set_jpeg_hue(pslr_handle_t h, int32_t hue) {
     if (hw_hue < 0 || hw_hue >= p->model->jpeg_property_levels) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, false, 0x25, 2, 0, hw_hue, 0);
+    return ipslr_handle_command_x18( p, false, X18_JPEG_HUE, 2, 0, hw_hue, 0);
 }
 
 int pslr_set_jpeg_saturation(pslr_handle_t h, int32_t saturation) {
@@ -591,7 +635,7 @@ int pslr_set_jpeg_saturation(pslr_handle_t h, int32_t saturation) {
     if (hw_saturation < 0 || hw_saturation >=  p->model->jpeg_property_levels) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, false, 0x20, 2, 0, hw_saturation, 0);
+    return ipslr_handle_command_x18( p, false, X18_JPEG_SATURATION, 2, 0, hw_saturation, 0);
 }
 
 int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format) {
@@ -599,7 +643,7 @@ int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format) {
     if (format < 0 || format > PSLR_IMAGE_FORMAT_MAX) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, true, 0x12, 2, 1, format, 0);
+    return ipslr_handle_command_x18( p, true, X18_IMAGE_FORMAT, 2, 1, format, 0);
 }
 
 int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format) {
@@ -607,7 +651,7 @@ int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format) {
     if (format < 0 || format > PSLR_RAW_FORMAT_MAX) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, true, 0x1f, 2, 1, format, 0);
+    return ipslr_handle_command_x18( p, true, X18_RAW_FORMAT, 2, 1, format, 0);
 }
 
 int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space) {
@@ -615,7 +659,7 @@ int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space) {
     if (color_space < 0 || color_space > PSLR_COLOR_SPACE_MAX) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, true, 0x23, 1, color_space, 0, 0);
+    return ipslr_handle_command_x18( p, true, X18_COLOR_SPACE, 1, color_space, 0, 0);
 }
 
 
@@ -668,7 +712,7 @@ int pslr_set_exposure_mode(pslr_handle_t h, pslr_exposure_mode_t mode) {
     if (mode < 0 || mode >= PSLR_EXPOSURE_MODE_MAX) {
         return PSLR_PARAM;
     }
-    return ipslr_handle_command_x18( p, true, 0x01, 2, 1, mode, 0);
+    return ipslr_handle_command_x18( p, true, X18_EXPOSURE_MODE, 2, 1, mode, 0);
 }
 
 int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int bufres) {
@@ -795,7 +839,7 @@ void pslr_buffer_close(pslr_handle_t h) {
 
 int pslr_select_af_point(pslr_handle_t h, uint32_t point) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, 0x07, 1, point, 0, 0);
+    return ipslr_handle_command_x18( p, true, X18_AF_POINT, 1, point, 0, 0);
 }
 
 int pslr_get_model_jpeg_stars(pslr_handle_t h) {
