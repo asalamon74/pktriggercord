@@ -320,7 +320,7 @@ int get_hw_jpeg_quality( pslr_handle_t h, int jpeg_stars);
 
 void hexdump(uint8_t *buf, uint32_t bufLen);
 
-int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3);
+int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4);
 
 void write_debug( const char* message, ... );
 

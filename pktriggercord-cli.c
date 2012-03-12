@@ -557,7 +557,7 @@ int main(int argc, char **argv) {
         pslr_green_button( camhandle );
     }
     
-//  pslr_test( camhandle, true, 0x04, 1, 1,0,0);
+//    pslr_test( camhandle, true, 0x04, 4, 1,0,0,0);
 //    pslr_set_drive_mode( camhandle, 2);
 //    pslr_button_test( camhandle, 0x0d, 1 );
 

@@ -479,11 +479,23 @@ int pslr_set_progress_callback(pslr_handle_t h, pslr_progress_callback_t cb, uin
     return PSLR_OK;
 }
 
-int ipslr_handle_command_x18( ipslr_handle_t *p, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3) {
+int ipslr_handle_command_x18( ipslr_handle_t *p, bool cmd9_wrap, int subcommand, int argnum,  ...) {
     if( cmd9_wrap ) {
         CHECK(ipslr_cmd_00_09(p, 1));
     }
-    CHECK(ipslr_write_args(p, argnum, arg1, arg2, arg3));
+    // max 4 args
+    va_list ap;
+    int args[4];
+    int i;
+    for( i = 0; i < 4; ++i ) {
+	args[i] = 0;
+    }
+    va_start(ap, argnum);
+    for (i = 0; i < argnum; i++) {
+	args[i] = va_arg(ap, int);
+    }
+    va_end(ap);
+    CHECK(ipslr_write_args(p, argnum, args[0], args[1], args[2], args[3]));
     CHECK(command(p->fd, 0x18, subcommand, 4 * argnum));
     CHECK(get_status(p->fd));
     if( cmd9_wrap ) {
@@ -492,9 +504,9 @@ int ipslr_handle_command_x18( ipslr_handle_t *p, bool cmd9_wrap, int subcommand,
     return PSLR_OK;
 }
 
-int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3) {
+int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, cmd9_wrap, subcommand, argnum, arg1, arg2, arg3);
+    return ipslr_handle_command_x18( p, cmd9_wrap, subcommand, argnum, arg1, arg2, arg3, arg4);
 }
 
 int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value) {
