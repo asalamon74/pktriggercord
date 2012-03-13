@@ -65,7 +65,7 @@ const char* pslr_flash_mode_str[PSLR_FLASH_MODE_MAX] = {
 };
 
 const char* pslr_drive_mode_str[PSLR_DRIVE_MODE_MAX] = {
-    "Single",
+    "Single", // Bracketing also returns Single
     "Continuous-HI",
     "SelfTimer-12",
     "SelfTimer-2",
