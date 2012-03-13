@@ -383,6 +383,27 @@ char *format_rational( pslr_rational_t rational, char * fmt ) {
     return ret;
 }
 
+char *get_white_balance_single_adjust_str( uint32_t adjust, char negativeChar, char positiveChar ) {
+    char *ret = malloc(4);
+    if( adjust < 7 ) {
+	snprintf( ret, 4, "%c%d", negativeChar, 7-adjust);
+    } else if( adjust > 7 ) {
+	snprintf( ret, 4, "%c%d", positiveChar, adjust-7);
+    } else {
+	ret = "";
+    }
+    return ret;
+}
+
+char *get_white_balance_adjust_str( uint32_t adjust_mg, uint32_t adjust_ba ) {
+    char *ret = malloc(8);
+    if( adjust_mg != 7 || adjust_ba != 7 ) {
+	snprintf(ret, 8, "%s%s", get_white_balance_single_adjust_str(adjust_mg, 'M', 'G'),get_white_balance_single_adjust_str(adjust_ba, 'B', 'A')); } else {
+	ret = "0";
+    }
+    return ret;
+}  
+
 char *collect_status_info( pslr_handle_t h, pslr_status status ) {    
     char *strbuffer = malloc(8192);
     sprintf(strbuffer,"%-32s: %d\n", "current iso", status.current_iso);
@@ -424,8 +445,7 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "auto bracket ev", format_rational(status.auto_bracket_ev, "%.2f"));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "shake reduction", status.shake_reduction > 0 ? "on" : "off");
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "white balance mode", get_pslr_white_balance_mode_str(status.white_balance_mode));
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "white balance adjust mg", status.white_balance_adjust_mg);
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "white balance adjust ba", status.white_balance_adjust_ba);
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "white balance adjust", get_white_balance_adjust_str(status.white_balance_adjust_mg, status.white_balance_adjust_ba));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "flash mode", get_pslr_flash_mode_str(status.flash_mode));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %.2f\n", "flash exposure compensation", (1.0 * status.flash_exposure_compensation/256));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %.2f\n", "manual mode ev", (1.0 * status.manual_mode_ev / 10));
