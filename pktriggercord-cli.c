@@ -80,6 +80,7 @@ static struct option const longopts[] ={
     {"select_af_point", required_argument, NULL, 12},
     {"jpeg_image_tone", required_argument, NULL, 13},
     {"white_balance_mode", required_argument, NULL, 14},
+    {"white_balance_adjustment", required_argument, NULL, 15},
     { NULL, 0, NULL, 0}
 };
 
@@ -124,15 +125,32 @@ void warning_message( const char* message, ... ) {
     }
 }
 
+void process_wbadj( const char* argv0, const char chr, uint32_t adj, uint32_t *wbadj_mg, uint32_t *wbadj_ba ) {
+    if( chr == 'M' ) {
+        *wbadj_mg = 7 - adj;
+    } else if( chr == 'G' )  {
+	*wbadj_mg = 7 + adj;
+    } else if( chr == 'B' ) {
+	*wbadj_ba = 7 - adj;
+    } else if( chr == 'A' ) {
+	*wbadj_ba = 7 + adj;
+    } else {
+	warning_message("%s: Invalid white_balance_adjustment\n", argv0);
+    }
+}
+
 int main(int argc, char **argv) {
     float F = 0;
     char C;
+    char c1;
+    char c2;
     char *output_file = NULL;
     const char *MODEL;
     char *MODESTRING = NULL;
     int resolution = 0;
     int quality = -1;
     int optc, fd, i;
+    int wbadj_ss=0;
     pslr_handle_t camhandle;
     pslr_status status;
     user_file_format uff = USER_FILE_FORMAT_MAX;
@@ -160,6 +178,10 @@ int main(int argc, char **argv) {
     pslr_af_point_sel_t af_point_sel = -1;
     pslr_jpeg_image_tone_t jpeg_image_tone = -1;
     pslr_white_balance_mode_t white_balance_mode = -1;
+    uint32_t white_balance_adjustment_mg = 0;
+    uint32_t white_balance_adjustment_ba = 0;
+    uint32_t adj1;
+    uint32_t adj2;
 
     while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:8:9:i:F:fghvws246", longopts, NULL)) != -1) {
         switch (optc) {
@@ -311,6 +333,23 @@ int main(int argc, char **argv) {
                 white_balance_mode = get_pslr_white_balance_mode( optarg );
 		if( white_balance_mode == -1 ) {
 		    warning_message("%s: Invalid white_balance_mode\n", argv[0]);
+		}
+		break;
+
+            case 15:
+		wbadj_ss = sscanf(optarg, "%c%d%c%d%c", &c1, &adj1, &c2, &adj2, &C);
+//		printf("wbadjss: %d\n", wbadj_ss);
+		if( wbadj_ss == 4 || wbadj_ss == 2 ) {
+		    c1 = toupper(c1);
+//		    printf("%c %d %c %d\n", c1, white_balance_adjustment_mg, c2, white_balance_adjustment_ba);
+		    process_wbadj( argv[0], c1, adj1, &white_balance_adjustment_mg, &white_balance_adjustment_ba );
+		    if( wbadj_ss == 4 ) {
+			c2 = toupper(c2);
+			process_wbadj( argv[0], c2, adj2, &white_balance_adjustment_mg, &white_balance_adjustment_ba );
+		    }
+//		    warning_message("%s: Valid white_balance_adjustment %d %d\n", argv[0], white_balance_adjustment_mg, white_balance_adjustment_ba);		    
+		} else {
+		    warning_message("%s: Invalid white_balance_adjustment\n", argv[0]);
 		}
 		break;
 
@@ -467,6 +506,11 @@ int main(int argc, char **argv) {
 
     if( white_balance_mode != -1 ) {
 	pslr_set_white_balance( camhandle, white_balance_mode );
+	if( wbadj_ss > 0 ) {
+	    pslr_set_white_balance_adjustment( camhandle, white_balance_mode, white_balance_adjustment_mg, white_balance_adjustment_ba );
+	}
+    } else if( white_balance_mode == -1 && wbadj_ss > 0 ) {
+	pslr_set_white_balance_adjustment( camhandle, status.white_balance_mode, white_balance_adjustment_mg, white_balance_adjustment_ba);
     }
 
     if( drive_mode != -1 ) {
@@ -557,7 +601,7 @@ int main(int argc, char **argv) {
         pslr_green_button( camhandle );
     }
     
-//    pslr_test( camhandle, true, 0x04, 4, 1,0,0,0);
+//    pslr_test( camhandle, true, 0x11, 3, 7, 2, 5, 0);
 //    pslr_set_drive_mode( camhandle, 2);
 //    pslr_button_test( camhandle, 0x0d, 1 );
 
@@ -698,6 +742,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4\n\
       --jpeg_image_tone=IMAGE_TONE      valid values are: Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm\n\
       --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, CTE\n\
+      --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...\n\
   -f, --auto_focus                      autofocus\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\
