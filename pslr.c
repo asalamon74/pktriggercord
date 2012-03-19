@@ -189,7 +189,7 @@ typedef enum {
     X18_0E,
     X18_0F,
     X18_WHITE_BALANCE,
-    X18_11, // also white balance, but only adjustments
+    X18_WHITE_BALANCE_ADJ,
     X18_IMAGE_FORMAT,
     X18_JPEG_STARS,
     X18_JPEG_RESOLUTION,
@@ -551,8 +551,14 @@ int pslr_set_ec(pslr_handle_t h, pslr_rational_t value) {
 
 int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return ipslr_handle_command_x18( p, true, X18_WHITE_BALANCE, 1, wb_mode, 0, 0);
+    return ipslr_handle_command_x18( p, true, X18_WHITE_BALANCE, 1, wb_mode);
 }
+
+int pslr_set_white_balance_adjustment(pslr_handle_t h, pslr_white_balance_mode_t wb_mode, uint32_t wbadj_mg, uint32_t wbadj_ba) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return ipslr_handle_command_x18( p, true, X18_WHITE_BALANCE_ADJ, 3, wb_mode, wbadj_mg, wbadj_ba);
+}
+
 
 int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
