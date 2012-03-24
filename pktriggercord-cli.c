@@ -601,9 +601,10 @@ int main(int argc, char **argv) {
         pslr_green_button( camhandle );
     }
     
-//    pslr_test( camhandle, true, 0x11, 3, 7, 2, 5, 0);
+//    pslr_test( camhandle, true, 0x1c, 4, 8, 17, 10, 10);
+//    pslr_test( camhandle, true, 0x0b, 4, 1, 17, 10, 3);
 //    pslr_set_drive_mode( camhandle, 2);
-//    pslr_button_test( camhandle, 0x0d, 1 );
+//    pslr_button_test( camhandle, 0x0c, 1 );
 
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {

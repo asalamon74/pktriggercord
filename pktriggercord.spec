@@ -1,5 +1,5 @@
 %define name      pktriggercord	
-%define ver       0.77.07
+%define ver       0.77.08
 %define rel       1
 %define prefix    /usr
 %define debug_package %{nil}
@@ -44,6 +44,8 @@ rm -rf $RPM_BUILD_ROOT
 %prefix/../etc/*
 
 %changelog
+* Sun Jan 08 2012 Andras Salamon <andras.salamon@melda.info>
+- built from pkTriggerCord 0.77.08
 * Sun Jan 08 2012 Andras Salamon <andras.salamon@melda.info>
 - built from pkTriggerCord 0.77.06
 * Tue Nov 01 2011 Andras Salamon <andras.salamon@melda.info>
