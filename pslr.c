@@ -257,30 +257,33 @@ user_file_format get_user_file_format( pslr_status *st ) {
 }
 
 static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
-  switch( exp ) {
+    switch( exp ) {
     
     case PSLR_EXPOSURE_MODE_GREEN:
-      return PSLR_GUI_EXPOSURE_MODE_GREEN;
+	return PSLR_GUI_EXPOSURE_MODE_GREEN;
     case PSLR_EXPOSURE_MODE_P:
-      return PSLR_GUI_EXPOSURE_MODE_P;
+	return PSLR_GUI_EXPOSURE_MODE_P;
     case PSLR_EXPOSURE_MODE_SV:
-      return PSLR_GUI_EXPOSURE_MODE_SV;
+	return PSLR_GUI_EXPOSURE_MODE_SV;
     case PSLR_EXPOSURE_MODE_TV:
-      return PSLR_GUI_EXPOSURE_MODE_TV;
+	return PSLR_GUI_EXPOSURE_MODE_TV;
     case PSLR_EXPOSURE_MODE_AV:
-      return PSLR_GUI_EXPOSURE_MODE_AV;
+    case PSLR_EXPOSURE_MODE_AV_OFFAUTO:
+	return PSLR_GUI_EXPOSURE_MODE_AV;
     case PSLR_EXPOSURE_MODE_TAV:
-      return PSLR_GUI_EXPOSURE_MODE_TAV;
+	return PSLR_GUI_EXPOSURE_MODE_TAV;
     case PSLR_EXPOSURE_MODE_M:
-      return PSLR_GUI_EXPOSURE_MODE_M;
+    case PSLR_EXPOSURE_MODE_M_OFFAUTO:
+	return PSLR_GUI_EXPOSURE_MODE_M;
     case PSLR_EXPOSURE_MODE_B:
-      return PSLR_GUI_EXPOSURE_MODE_B;
+    case PSLR_EXPOSURE_MODE_B_OFFAUTO:
+	return PSLR_GUI_EXPOSURE_MODE_B;
     case PSLR_EXPOSURE_MODE_X:
-      return PSLR_GUI_EXPOSURE_MODE_X;
+	return PSLR_GUI_EXPOSURE_MODE_X;
     case PSLR_EXPOSURE_MODE_MAX:
-      return PSLR_GUI_EXPOSURE_MODE_MAX;
-  }    
-  return 0;
+	return PSLR_GUI_EXPOSURE_MODE_MAX;
+    }    
+    return 0;
 }
 
 pslr_handle_t pslr_init() {
@@ -725,11 +728,21 @@ int pslr_dust_removal(pslr_handle_t h) {
     return PSLR_OK;
 }
 
+int pslr_bulb(pslr_handle_t h, bool on ) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    CHECK(ipslr_write_args(p, 1, on ? 1 : 0));
+    CHECK(command(p->fd, 0x10, 0x0d, 0x04));
+    CHECK(get_status(p->fd));
+    return PSLR_OK;
+}
+
 int pslr_button_test(pslr_handle_t h, int bno, int arg) {
+    int r;
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     CHECK(ipslr_write_args(p, 1, arg));
     CHECK(command(p->fd, 0x10, bno, 4));
-    CHECK(get_status(p->fd));
+    r = get_status(p->fd);
+    DPRINT("button result code: 0x%x\n", r);
     return PSLR_OK;
 }
 

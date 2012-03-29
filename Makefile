@@ -7,7 +7,7 @@ MAN1DIR = $(MANDIR)/man1
 LIN_CFLAGS = $(CFLAGS)
 LIN_LDFLAGS = $(LDFLAGS)
 
-VERSION=0.77.08
+VERSION=0.77.09
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec

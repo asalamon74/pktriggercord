@@ -36,6 +36,8 @@
 #include <ctype.h>
 #include <time.h>
 #include <stdarg.h>
+#include <math.h>
+#include <sys/time.h>
 
 #include "pslr.h"
 
@@ -107,12 +109,18 @@ int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
     return ofd;
 }
 
-void sleep_sec(int sec) {
+void sleep_sec(double sec) {
     int i;
-    for(i=0; i<sec; ++i) {
+    for(i=0; i<floor(sec); ++i) {
 	usleep(999999); // 1000000 is not working for Windows
     }
+    usleep(1000000*(sec-floor(sec)));
 }
+
+long int timeval_diff(struct timeval *t2, struct timeval *t1) {
+    return (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
+}
+
 
 void warning_message( const char* message, ... ) {
     if( warnings ) {
@@ -569,11 +577,15 @@ int main(int argc, char **argv) {
 	DPRINT("shutter_speed.nom=%d\n", shutter_speed.nom);
 	DPRINT("shutter_speed.denom=%d\n", shutter_speed.denom);
 
-	if (shutter_speed.nom <= 0 || shutter_speed.nom > 30 || shutter_speed.denom <= 0 || shutter_speed.denom > pslr_get_model_fastest_shutter_speed(camhandle)) {
+	if (shutter_speed.nom <= 0 || (shutter_speed.nom > 30 && status.exposure_mode != PSLR_GUI_EXPOSURE_MODE_B ) || shutter_speed.denom <= 0 || shutter_speed.denom > pslr_get_model_fastest_shutter_speed(camhandle)) {
 	    warning_message("%s: Invalid shutter speed value.\n", argv[0]);
 	}
 
         pslr_set_shutter(camhandle, shutter_speed);
+    } else if( status.exposure_mode == PSLR_GUI_EXPOSURE_MODE_B ) {
+	warning_message("%s: Shutter speed not specified in Bulb mode. Using 30s.\n", argv[0]);
+	shutter_speed.nom = 30;
+	shutter_speed.denom = 1;
     }
 
     if (aperture.nom) {
@@ -603,8 +615,10 @@ int main(int argc, char **argv) {
     
 //    pslr_test( camhandle, true, 0x1c, 4, 8, 17, 10, 10);
 //    pslr_test( camhandle, true, 0x0b, 4, 1, 17, 10, 3);
-//    pslr_set_drive_mode( camhandle, 2);
-//    pslr_button_test( camhandle, 0x0c, 1 );
+//    pslr_button_test( camhandle, 0x0d, 1 );
+//    pslr_button_test( camhandle, 0x05, 2 );
+//    sleep_sec(2);
+//    pslr_button_test( camhandle, 0x0d, 0 );
 
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {
@@ -623,33 +637,45 @@ int main(int argc, char **argv) {
 	exit(0);
     }
 
-    unsigned int waitsec=0;
+    double waitsec=0;
     user_file_format_t ufft = *get_file_format_t(uff);
     int bracket_count = status.auto_bracket_picture_count;
     if( bracket_count < 1 || status.auto_bracket_mode == 0 ) {
 	bracket_count = 1;
     }
-    time_t prev_time = time(NULL);
-    time_t current_time;	
+    struct timeval prev_time;
+    gettimeofday(&prev_time, NULL);
+    struct timeval current_time;
 
     int bracket_index=0;
     int buffer_index;
     for (frameNo = 0; frameNo < frames; ++frameNo) {
-	current_time = time(NULL);
+	gettimeofday(&current_time, NULL);
 	if( bracket_count <= bracket_index ) {
-	    waitsec = (unsigned int)(delay-((long long int)current_time-(long long int)prev_time));
+	    waitsec = 1.0 * delay - timeval_diff(&current_time, &prev_time) / 1000000.0;
 	    if( waitsec > 0 ) {
-		printf("Waiting for %d sec\n", waitsec);	   
+		printf("Waiting for %.2f sec\n", waitsec);	   
 		sleep_sec( waitsec );
 	    }
 	    bracket_index = 0;
-	    current_time = time(NULL);
-	    prev_time=current_time;
+	    gettimeofday(&prev_time, NULL);
 	}
 	if( frames > 1 ) {
 	    printf("Taking picture %d/%d\n", frameNo+1, frames);
 	}
-        pslr_shutter(camhandle);
+	if( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
+	    pslr_bulb( camhandle, true );
+	    pslr_shutter(camhandle);
+	    gettimeofday(&current_time, NULL);
+	    waitsec = 1.0 * shutter_speed.nom / shutter_speed.denom - timeval_diff(&current_time, &prev_time) / 1000000.0;
+	    if( waitsec < 0 ) {
+		waitsec = 0;
+	    }
+	    sleep_sec( waitsec  );
+	    pslr_bulb( camhandle, false );
+	} else {
+	    pslr_shutter(camhandle);
+	}
         pslr_get_status(camhandle, &status);
 	if( bracket_index+1 >= bracket_count || frameNo+1>=frames ) {
 	    if( bracket_index+1 < bracket_count ) {
