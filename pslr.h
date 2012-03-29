@@ -100,6 +100,7 @@ typedef enum {
     PSLR_CUSTOM_SENSITIVITY_STEPS_MAX
 } pslr_custom_sensitivity_steps_t;
 
+// OFF-AUTO: Off-Auto-Aperture
 typedef enum {
     PSLR_EXPOSURE_MODE_P = 0 ,
     PSLR_EXPOSURE_MODE_GREEN = 1,
@@ -112,9 +113,9 @@ typedef enum {
 //    PSLR_EXPOSURE_MODE_AV_SHIFT = 7, //?
     PSLR_EXPOSURE_MODE_M = 8,
     PSLR_EXPOSURE_MODE_B = 9,
-//    PSLR_EXPOSURE_MODE_AV_OFFAUTO = 10, //?
-//    PSLR_EXPOSURE_MODE_M_OFFAUTO = 11, //?
-//    PSLR_EXPOSURE_MODE_B_OFFAUTO = 12, //?
+    PSLR_EXPOSURE_MODE_AV_OFFAUTO = 10,
+    PSLR_EXPOSURE_MODE_M_OFFAUTO = 11,
+    PSLR_EXPOSURE_MODE_B_OFFAUTO = 12,
     PSLR_EXPOSURE_MODE_TAV = 13, // ?
     PSLR_EXPOSURE_MODE_SV = 15,
     PSLR_EXPOSURE_MODE_X = 16, // ?   
@@ -292,6 +293,8 @@ int pslr_button_test(pslr_handle_t h, int bno, int arg);
 int pslr_ae_lock(pslr_handle_t h, bool lock);
 
 int pslr_dust_removal(pslr_handle_t h);
+
+int pslr_bulb(pslr_handle_t h, bool on );
 
 int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution);
 uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size);
