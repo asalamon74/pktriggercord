@@ -613,12 +613,15 @@ int main(int argc, char **argv) {
         pslr_green_button( camhandle );
     }
     
+    // read the status after the settings
+    pslr_get_status(camhandle, &status);
+    
 //    pslr_test( camhandle, true, 0x1c, 4, 8, 17, 10, 10);
 //    pslr_test( camhandle, true, 0x0b, 4, 1, 17, 10, 3);
-//    pslr_button_test( camhandle, 0x0d, 1 );
+//    pslr_button_test( camhandle, 0x0c, 1 );
 //    pslr_button_test( camhandle, 0x05, 2 );
-//    sleep_sec(2);
-//    pslr_button_test( camhandle, 0x0d, 0 );
+//    sleep_sec(3);
+//    pslr_button_test( camhandle, 0x0c, 0 );
 
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {
@@ -627,7 +630,6 @@ int main(int argc, char **argv) {
 	    pslr_get_status_buffer(camhandle, status_buffer);
 	    hexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
         }
-	pslr_get_status(camhandle, &status);
 	print_status_info( camhandle, status );
 	exit(0);
     }
@@ -649,6 +651,11 @@ int main(int argc, char **argv) {
 
     int bracket_index=0;
     int buffer_index;
+
+    bool continuous = status.drive_mode == PSLR_DRIVE_MODE_CONTINUOUS_HI ||
+	status.drive_mode == PSLR_DRIVE_MODE_CONTINUOUS_LO;
+    DPRINT("cont: %d\n", continuous);
+
     for (frameNo = 0; frameNo < frames; ++frameNo) {
 	gettimeofday(&current_time, NULL);
 	if( bracket_count <= bracket_index ) {

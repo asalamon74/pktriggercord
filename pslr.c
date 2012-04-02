@@ -169,7 +169,7 @@ static ipslr_model_info_t camera_models[] = {
 const char* valid_vendors[2] = {"PENTAX", "SAMSUNG"};
 const char* valid_models[2] = {"DIGITAL_CAMERA", "DSC"}; // no longer list all of them, DSC* should be ok
 
-// x18 cubcommands to change camera properties
+// x18 subcommands to change camera properties
 // X18_n: unknown effect
 typedef enum {
     X18_00,
@@ -212,6 +212,28 @@ typedef enum {
     X18_JPEG_HUE
 } x18_subcommands_t;
 
+// x10 subcommands for buttons
+// X10_n: unknown effect
+typedef enum {
+    X10_00,
+    X10_01,
+    X10_02,
+    X10_03,
+    X10_04,
+    X10_SHUTTER,
+    X10_AE_LOCK,
+    X10_GREEN,
+    X10_AE_UNLOCK,
+    X10_09,
+    X10_CONNECT,
+    X10_0B,
+    X10_CONTINUOUS,
+    X10_BULB,
+    X10_0E,
+    X10_0F,
+    X10_10,
+    X10_DUST
+} x10_subcommands_t;
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
     int i;    
@@ -716,14 +738,14 @@ int pslr_delete_buffer(pslr_handle_t h, int bufno) {
 
 int pslr_green_button(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    CHECK(command(p->fd, 0x10, 0x07, 0x00));
+    CHECK(command(p->fd, 0x10, X10_GREEN, 0x00));
     CHECK(get_status(p->fd));
     return PSLR_OK;
 }
 
 int pslr_dust_removal(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    CHECK(command(p->fd, 0x10, 0x11, 0x00));
+    CHECK(command(p->fd, 0x10, X10_DUST, 0x00));
     CHECK(get_status(p->fd));
     return PSLR_OK;
 }
@@ -731,7 +753,7 @@ int pslr_dust_removal(pslr_handle_t h) {
 int pslr_bulb(pslr_handle_t h, bool on ) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     CHECK(ipslr_write_args(p, 1, on ? 1 : 0));
-    CHECK(command(p->fd, 0x10, 0x0d, 0x04));
+    CHECK(command(p->fd, 0x10, X10_BULB, 0x04));
     CHECK(get_status(p->fd));
     return PSLR_OK;
 }
@@ -750,9 +772,9 @@ int pslr_button_test(pslr_handle_t h, int bno, int arg) {
 int pslr_ae_lock(pslr_handle_t h, bool lock) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     if (lock)
-        CHECK(command(p->fd, 0x10, 0x06, 0x00));
+        CHECK(command(p->fd, 0x10, X10_AE_LOCK, 0x00));
     else
-        CHECK(command(p->fd, 0x10, 0x08, 0x00));
+        CHECK(command(p->fd, 0x10, X10_AE_UNLOCK, 0x00));
     CHECK(get_status(p->fd));
     return PSLR_OK;
 }
@@ -988,7 +1010,7 @@ static int ipslr_cmd_00_09(ipslr_handle_t *p, uint32_t mode) {
 
 static int ipslr_cmd_10_0a(ipslr_handle_t *p, uint32_t mode) {
     CHECK(ipslr_write_args(p, 1, mode));
-    CHECK(command(p->fd, 0x10, 0x0a, 4));
+    CHECK(command(p->fd, 0x10, X10_CONNECT, 4));
     CHECK(get_status(p->fd));
     return PSLR_OK;
 }
@@ -1391,7 +1413,7 @@ static int ipslr_press_shutter(ipslr_handle_t *p, bool fullpress) {
     CHECK(ipslr_status_full(p, &p->status));
     DPRINT("before: mask=0x%x\n", p->status.bufmask);
     CHECK(ipslr_write_args(p, 1, fullpress ? 2 : 1));
-    CHECK(command(p->fd, 0x10, 0x05, 0x04));
+    CHECK(command(p->fd, 0x10, X10_SHUTTER, 0x04));
     r = get_status(p->fd);
     DPRINT("shutter result code: 0x%x\n", r);
     return PSLR_OK;
