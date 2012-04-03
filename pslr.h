@@ -34,8 +34,7 @@
 
 #include "pslr_enum.h"
 #include "pslr_scsi.h"
-
-#define MAX_RESOLUTION_SIZE 4
+#include "pslr_model.h"
 
 #define PSLR_LIGHT_METER_AE_LOCK 0x8
 
@@ -50,8 +49,6 @@
 #define PSLR_AF_POINT_BOT_LEFT   0x100
 #define PSLR_AF_POINT_BOT_MID    0x200
 #define PSLR_AF_POINT_BOT_RIGHT  0x400
-
-#define MAX_STATUS_BUF_SIZE 444
 
 typedef enum {
     PSLR_BUF_PEF,
@@ -163,68 +160,7 @@ typedef enum {
     PSLR_GUI_EXPOSURE_MODE_MAX
 } pslr_gui_exposure_mode_t;
 
-typedef struct {
-    int32_t nom;
-    int32_t denom;
-} pslr_rational_t;
-
 typedef void *pslr_handle_t;
-
-typedef struct {
-    uint16_t bufmask;
-    uint32_t current_iso;
-    pslr_rational_t current_shutter_speed;
-    pslr_rational_t current_aperture;
-    pslr_rational_t lens_max_aperture;
-    pslr_rational_t lens_min_aperture;
-    pslr_rational_t set_shutter_speed;
-    pslr_rational_t set_aperture;
-    pslr_rational_t max_shutter_speed;
-    uint32_t auto_bracket_mode; // 1: on, 0: off
-    pslr_rational_t auto_bracket_ev;
-    uint32_t auto_bracket_picture_count;
-    uint32_t fixed_iso;
-    uint32_t jpeg_resolution;
-    uint32_t jpeg_saturation;
-    uint32_t jpeg_quality;
-    uint32_t jpeg_contrast;
-    uint32_t jpeg_sharpness;
-    uint32_t jpeg_image_tone;
-    uint32_t jpeg_hue;
-    pslr_rational_t zoom;
-    int32_t focus;
-    uint32_t image_format;
-    uint32_t raw_format;
-    uint32_t light_meter_flags;
-    pslr_rational_t ec;
-    uint32_t custom_ev_steps;
-    uint32_t custom_sensitivity_steps;
-    uint32_t exposure_mode;
-    uint32_t exposure_submode;
-    uint32_t user_mode_flag;
-    uint32_t ae_metering_mode;
-    uint32_t af_mode;
-    uint32_t af_point_select;
-    uint32_t selected_af_point;
-    uint32_t focused_af_point;
-    uint32_t auto_iso_min;
-    uint32_t auto_iso_max;
-    uint32_t drive_mode;
-    uint32_t shake_reduction;
-    uint32_t white_balance_mode;
-    uint32_t white_balance_adjust_mg;
-    uint32_t white_balance_adjust_ba;
-    uint32_t flash_mode;
-    int32_t flash_exposure_compensation; // 1/256
-    int32_t manual_mode_ev; // 1/10
-    uint32_t color_space;
-    uint32_t lens_id1;
-    uint32_t lens_id2;
-    uint32_t battery_1;
-    uint32_t battery_2;
-    uint32_t battery_3;
-    uint32_t battery_4;
-} pslr_status;
 
 typedef struct {
     uint32_t a;
@@ -321,8 +257,6 @@ pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
 int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
 
 int get_hw_jpeg_quality( pslr_handle_t h, int jpeg_stars);
-
-void hexdump(uint8_t *buf, uint32_t bufLen);
 
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4);
 
