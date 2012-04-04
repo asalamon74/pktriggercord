@@ -3,6 +3,7 @@ version 0.77.09
 	Supporting >30s shutter speeds ( only in Bulb mode )
 	Exposure mode bugfix ( adding off-auto-aperture modes )
 	Command line: status info printing bugfix
+	Light meter flag reading bugfix
 
 version 0.77.08 ( 2012-03-24 )
 	K-5 bugfix (patch by Rune Frøysa)

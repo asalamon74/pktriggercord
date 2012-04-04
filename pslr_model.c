@@ -250,6 +250,9 @@ void ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status) {
 void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift) {
 
     uint8_t *buf = p->status_buffer;
+    // 0x0C: 0x85 0xA5
+    // 0x0F: beginning 0 sometime changes to 1
+    // 0x14: LCD panel 2: turned off 3: on?
     status->bufmask = get_uint16( &buf[0x1E + shift]);
     status->user_mode_flag = get_uint32(&buf[0x24 + shift]);
     status->flash_mode = get_uint32(&buf[0x28 + shift]);
@@ -297,7 +300,7 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift
     status->max_shutter_speed.nom = get_uint32(&buf[0x12C + shift]);
     status->max_shutter_speed.denom = get_uint32(&buf[0x130 + shift]);
     status->current_iso = get_uint32(&buf[0x134 + shift]);
-    status->light_meter_flags = get_uint32(&buf[0x140 + shift]);
+    status->light_meter_flags = get_uint32(&buf[0x13C + shift]);
     status->lens_min_aperture.nom = get_uint32(&buf[0x144 + shift]);
     status->lens_min_aperture.denom = get_uint32(&buf[0x148 + shift]);
     status->lens_max_aperture.nom = get_uint32(&buf[0x14C + shift]);
@@ -316,7 +319,6 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift
 void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
-        /* K-x status block */
     if( debug ) {
         ipslr_status_diff(buf);
     }
@@ -334,7 +336,6 @@ void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 //
 void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    /* K-r status block */
     if( debug ) {
         ipslr_status_diff(buf);
     }
@@ -350,7 +351,6 @@ void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
 
 void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-        /* K-x status block */
     if( debug ) {
         ipslr_status_diff(buf);
     }
@@ -364,7 +364,6 @@ void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id2 = get_uint32( &buf[0x19C]);
     
 // TODO: check these fields
-//status.exposureLock = getInt32(statusBuf, 0x13C);
 //status.focused = getInt32(statusBuf, 0x164);
 }
 
@@ -382,7 +381,6 @@ void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id1 = (get_uint32( &buf[0x170])) & 0x0F;
     status->lens_id2 = get_uint32( &buf[0x17c]);
 // TODO
-// status.exposureLock = getInt32(statusBuf, 0x138);
 // status.focused = getInt32(statusBuf, 0x164);
 }
 

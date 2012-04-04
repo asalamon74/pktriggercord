@@ -1464,7 +1464,7 @@ static void green_button_clicked_cb(GtkButton *widget)
 {
     DPRINT("Green btn");
     int ret;
-    ret = pslr_green_button(camhandle);
+    ret = pslr_green_button( camhandle );
     if (ret != PSLR_OK) {
         DPRINT("Green button failed: %d\n", ret);
     }
@@ -1474,6 +1474,7 @@ static void ae_lock_button_toggled_cb(GtkToggleButton *widget)
 {
     DPRINT("AE Lock");
     gboolean active = gtk_toggle_button_get_active(widget);
+    DPRINT("ACTIVE: %d\n", active);
     int ret;
     gboolean locked;
     if (status_new == NULL)
