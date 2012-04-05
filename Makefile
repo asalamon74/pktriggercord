@@ -1,5 +1,6 @@
 PREFIX ?= /usr/local
 CFLAGS ?= -O3 -g -Wall
+LDFLAGS ?= -lm
 
 MANDIR = $(PREFIX)/share/man
 MAN1DIR = $(MANDIR)/man1
@@ -35,13 +36,13 @@ WINDIR=$(TARDIR)-win
 pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
 
 pktriggercord-cli: pktriggercord-cli.c $(OBJS)
-	$(CC) $(LIN_CFLAGS) $^ $(LIN_LDFLAGS) -DVERSION='"$(VERSION)"' -o $@ -L. 
+	$(CC) $(LIN_CFLAGS) $^ -DVERSION='"$(VERSION)"' -o $@ $(LIN_LDFLAGS) -L. 
 
 %.o : %.c %.h
 	$(CC) $(LIN_CFLAGS) -fPIC -c $<
 
 pktriggercord: pktriggercord.c $(OBJS)
-	$(CC) $(LIN_GUI_CFLAGS) $(LIN_GUI_LDFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LIN_LDFLAGS) -o $@ -L. 
+	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L. 
 
 install-app:
 	install -d $(PREFIX)/bin
