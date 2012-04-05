@@ -1050,7 +1050,6 @@ static int ipslr_download(ipslr_handle_t *p, uint32_t addr, uint32_t length, uin
     uint32_t block;
     int n;
     int retry;
-    int r;
     uint32_t length_start = length;
 
     retry = 0;
@@ -1064,10 +1063,10 @@ static int ipslr_download(ipslr_handle_t *p, uint32_t addr, uint32_t length, uin
         //DPRINT("Get 0x%x bytes from 0x%x\n", block, addr);
         CHECK(ipslr_write_args(p, 2, addr, block));
         CHECK(command(p->fd, 0x06, 0x00, 0x08));
-        r = get_status(p->fd);
+        get_status(p->fd);
 
         n = scsi_read(p->fd, downloadCmd, sizeof (downloadCmd), buf, block);
-        r = get_status(p->fd);
+        get_status(p->fd);
 
         if (n < 0) {
             if (retry < BLOCK_RETRY) {

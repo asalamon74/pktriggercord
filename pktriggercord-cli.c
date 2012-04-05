@@ -728,6 +728,7 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
     if (pslr_buffer_open(camhandle, bufno, imagetype, status->jpeg_resolution) != PSLR_OK) return (1);
 
     length = pslr_buffer_get_size(camhandle);
+    DPRINT("Buffer length: %d\n", length);
     current = 0;
 
     while (1) {
