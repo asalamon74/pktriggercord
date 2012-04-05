@@ -62,7 +62,8 @@ char **get_drives(int *driveNum) {
     d = opendir("/sys/class/scsi_generic");
 
     if (!d) {
-        return 0;
+	*driveNum = 0;
+        return NULL;
     }
     j=0;
     while( (ent = readdir(d)) ) {
