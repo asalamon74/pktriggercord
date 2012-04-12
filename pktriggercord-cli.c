@@ -52,6 +52,8 @@ extern int optind, opterr, optopt;
 bool debug = false;
 bool warnings = false;
 
+const char *shortopts = "m:q:a:r:d:t:o:i:F:fghvsw";
+
 static struct option const longopts[] ={
     {"exposure_mode", required_argument, NULL, 'm'},
     {"resolution", required_argument, NULL, 'r'},
@@ -191,19 +193,30 @@ int main(int argc, char **argv) {
     uint32_t adj1;
     uint32_t adj2;
 
-    while ((optc = getopt_long(argc, argv, "m:q:a:r:d:t:o:1:3:5:7:8:9:i:F:fghvws246", longopts, NULL)) != -1) {
+    // just parse warning, debug flags
+    while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
         switch (optc) {
-                /***************************************************************/
-            case '?': case 'h':
+            case 'w':
+		warnings = true;
+	        break;
+            case 4:
+                debug = true;
+                DPRINT( "Debug messaging is now enabled.\n" );
+                break;
+	}
+    }
+    optind = 1;
+    // parse all the other flags
+    while ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
+        switch (optc) {
+	    case '?': 
+	    case 'h':
                 usage(argv[0]);
                 exit(-1);
                 /***************************************************************/
             case 'v':
                 version(argv[0]);
                 exit(0);
-            case 'w':
-		warnings = true;
-	        break;
             case 6:
 		dust = true;
 	        break;
@@ -230,12 +243,6 @@ int main(int argc, char **argv) {
                 status_hex_info = true;
                 break;
 		
-            case 4:
-                debug = true;
-                DPRINT( "Debug messaging is now enabled.\n" );
-                break;
-
-                /***************************************************************/
             case 'm':
 
                 MODESTRING = optarg;
@@ -243,47 +250,37 @@ int main(int argc, char **argv) {
 
                 if (!strcmp(optarg, "GREEN")) {
                     EM = PSLR_EXPOSURE_MODE_GREEN;
-                    break;
                 }
                 else if (!strcmp(optarg, "P")) {
                     EM = PSLR_EXPOSURE_MODE_P;
-                    break;
                 }
                 else if (!strcmp(optarg, "SV")) {
                     EM = PSLR_EXPOSURE_MODE_SV;
-                    break;
                 }
                 else if (!strcmp(optarg, "TV")) {
                     EM = PSLR_EXPOSURE_MODE_TV;
-                    break;
                 }
                 else if (!strcmp(optarg, "AV")) {
                     EM = PSLR_EXPOSURE_MODE_AV;
-                    break;
                 }
                 else if (!strcmp(optarg, "TAV")) {
                     EM = PSLR_EXPOSURE_MODE_TAV;
-                    break;
                 }
                 else if (!strcmp(optarg, "M")) {
                     EM = PSLR_EXPOSURE_MODE_M;
-                    break;
                 }
                 else if (!strcmp(optarg, "B")) {
                     EM = PSLR_EXPOSURE_MODE_B;
-                    break;
                 }
                 else if (!strcmp(optarg, "X")) {
                     EM = PSLR_EXPOSURE_MODE_X;
-                    break;
                 }
                 else {
                     warning_message("%s: Invalid exposure mode.\n", argv[0]);
                 }
+		break;
 
-                /*****************************************/
             case 'r':
-
                 resolution = atoi(optarg);
                 break;
 
@@ -346,16 +343,13 @@ int main(int argc, char **argv) {
 
             case 15:
 		wbadj_ss = sscanf(optarg, "%c%d%c%d%c", &c1, &adj1, &c2, &adj2, &C);
-//		printf("wbadjss: %d\n", wbadj_ss);
 		if( wbadj_ss == 4 || wbadj_ss == 2 ) {
 		    c1 = toupper(c1);
-//		    printf("%c %d %c %d\n", c1, white_balance_adjustment_mg, c2, white_balance_adjustment_ba);
 		    process_wbadj( argv[0], c1, adj1, &white_balance_adjustment_mg, &white_balance_adjustment_ba );
 		    if( wbadj_ss == 4 ) {
 			c2 = toupper(c2);
 			process_wbadj( argv[0], c2, adj2, &white_balance_adjustment_mg, &white_balance_adjustment_ba );
 		    }
-//		    warning_message("%s: Valid white_balance_adjustment %d %d\n", argv[0], white_balance_adjustment_mg, white_balance_adjustment_ba);		    
 		} else {
 		    warning_message("%s: Invalid white_balance_adjustment\n", argv[0]);
 		}
@@ -368,9 +362,7 @@ int main(int argc, char **argv) {
                 }
                 break;
 
-                /****************************************************/
             case 'a':
-
                 if (sscanf(optarg, "%f%c", &F, &C) != 1) F = 0;
 
                 /*It's unlikely that you want an f-number > 100, even for a pinhole.
@@ -391,9 +383,7 @@ int main(int argc, char **argv) {
 
                 break;
 
-                /*****************************************************/
             case 't':
-
                 if (sscanf(optarg, "1/%d%c", &shutter_speed.denom, &C) == 1) {
 		    shutter_speed.nom = 1;
 		} else if ((sscanf(optarg, "%f%c", &F, &C)) == 1) {
@@ -410,7 +400,6 @@ int main(int argc, char **argv) {
                 }
                 break;
 
-                /*******************************************************/
             case 'o':
                 output_file = optarg;
                 break;
@@ -444,18 +433,19 @@ int main(int argc, char **argv) {
 		    auto_iso_max = 0;
                     iso = atoi(optarg);
 		}
-
                 if (iso==0 && auto_iso_min==0) {
                     warning_message("%s: Invalid iso value\n", argv[0]);
                     exit(-1);
                 }
 		break;
+
             case 3:
 		if( sscanf(optarg, "%f%c", &F, &C) == 1 ) {
 		    ec.nom=10*F;
 		    ec.denom=10;
 		}
 		break;
+
             case 5:
 		if( sscanf(optarg, "%f%c", &F, &C) == 1 ) {
 		    fec.nom=10*F;
@@ -464,7 +454,6 @@ int main(int argc, char **argv) {
 		break;
 
         }
-        /********************************************************/
     }
 
     if (!output_file && frames > 1) {
@@ -613,15 +602,14 @@ int main(int argc, char **argv) {
         pslr_green_button( camhandle );
     }
     
-    // read the status after the settings
-    pslr_get_status(camhandle, &status);
-    
-//    pslr_test( camhandle, true, 0x1c, 4, 8, 17, 10, 10);
-//    pslr_test( camhandle, true, 0x0b, 4, 1, 17, 10, 3);
+//    pslr_test( camhandle, true, 0x1e, 4, 1, 2, 3, 4);
 //    pslr_button_test( camhandle, 0x0c, 1 );
 //    pslr_button_test( camhandle, 0x05, 2 );
 //    sleep_sec(3);
 //    pslr_button_test( camhandle, 0x0c, 0 );
+
+    // read the status after the settings
+    pslr_get_status(camhandle, &status);
 
     if( status_hex_info || status_info ) {
 	if( status_hex_info ) {
@@ -759,7 +747,7 @@ void usage(char *name) {
     printf("\nUsage: %s [OPTIONS]\n\n\
 Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
-      --warnings                        warning mode\n\
+  -w, --warnings                        warning mode\n\
   -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
       --exposure_compensation=VALUE     exposure compensation value\n\
       --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO\n\
