@@ -222,8 +222,8 @@ void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
     status->selected_af_point = get_uint32(&buf[0xc0]);
     status->focused_af_point = get_uint32(&buf[0x160]); // unsure about it, a lot is changing when the camera focuses
     status->af_mode = get_uint32(&buf[0xb8]);
+    status->ae_metering_mode = get_uint32(&buf[0xb4]); // same as c4
     // 0x158 current ev?
-    // 0xB4, 0xC4 - metering mode, 0 - matrix, 1 - center weighted, 2 - spot
     // 0x160 and 0x164 change when AF
 }
 
