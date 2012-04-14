@@ -221,12 +221,10 @@ void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
     status->af_point_select = get_uint32(&buf[0xbc]); // not sure
     status->selected_af_point = get_uint32(&buf[0xc0]);
     status->focused_af_point = get_uint32(&buf[0x160]); // unsure about it, a lot is changing when the camera focuses
+    status->af_mode = get_uint32(&buf[0xb8]);
     // 0x158 current ev?
-    // 0xB8 0 - MF, 1 - AF.S, 2 - AF.C
     // 0xB4, 0xC4 - metering mode, 0 - matrix, 1 - center weighted, 2 - spot
     // 0x160 and 0x164 change when AF
-    // 0xC0 changes when selecting focus point manually or from GUI
-    // 0xBC focus point selection 0 - auto, 1 - manual, 2 - center
 }
 
 void ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status) {
