@@ -6,7 +6,8 @@ version 0.77.09
 	Light meter flag reading bugfix
 	Ubuntu 11.10 compilation bugfix (Neil Gierman)
 	Segmentation fault bugfix ( rhempel )
-	--warnings and --debug switches work regardless of command line position
+	--warnings and --debug switches work regardless of command line	position
+	Reading af mode field ( K20D )
 
 version 0.77.08 ( 2012-03-24 )
 	K-5 bugfix (patch by Rune Frøysa)
