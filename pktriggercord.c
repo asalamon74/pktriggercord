@@ -1805,6 +1805,7 @@ static void ec_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
     assert(idx < steps);
     new_ec.nom = tbl[idx];
     new_ec.denom = 10;
+    DPRINT("new_ec: %d / %d\n", new_ec.nom, new_ec.denom);
     if (status_new == NULL)
         return;
     if (status_new->ec.nom != new_ec.nom || status_new->ec.denom != new_ec.denom) {
@@ -1813,12 +1814,20 @@ static void ec_scale_value_changed_cb(GtkScale *scale, gpointer user_data)
             DPRINT("Set EC failed: %d\n", ret);
         }
     }
+    DPRINT("End of Set EC\n");
 }
 
 static void jpeg_resolution_combo_changed_cb(GtkCombo *combo, gpointer user_data)
 {
+    DPRINT("jpeg res active start\n");
+    if( !status_new ) {
+	DPRINT("jpeg res active !status_new\n");
+        return;
+    }
+
     int ret;
     char *val = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+    DPRINT("jpeg res active->%s\n", val);
     int megapixel = atoi( val );
     DPRINT("jpeg res active->%d\n", megapixel);
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
