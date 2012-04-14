@@ -135,8 +135,10 @@ int _get_user_jpeg_stars( ipslr_model_info_t *model, int hwqual ) {
 }
 
 void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
-    /* K10D status block */
     uint8_t *buf = p->status_buffer;
+    if( debug ) {
+        ipslr_status_diff(buf);
+    }
     memset(status, 0, sizeof (*status));
     status->bufmask = get_uint16(&buf[0x16]);
     status->current_iso = get_uint32(&buf[0x11c]);
