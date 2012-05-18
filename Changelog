@@ -1,3 +1,6 @@
+version 0.77.11
+	--model
+
 version 0.77.10 ( 2012-04-15 )
 	Precisier delay handling
 	Supporting >30s shutter speeds ( only in Bulb mode )
