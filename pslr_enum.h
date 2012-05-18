@@ -118,6 +118,7 @@ typedef enum {
     PSLR_CUSTOM_EV_STEPS_MAX
 } pslr_custom_ev_steps_t;
 
+int str_comparison_i (const char *s1, const char *s2, int n);
 int find_in_array( const char** array, int length, char* str );
 
 pslr_color_space_t get_pslr_color_space( char *str );

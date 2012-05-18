@@ -235,12 +235,13 @@ static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t e
     return 0;
 }
 
-pslr_handle_t pslr_init() {
+pslr_handle_t pslr_init( char *model ) {
     int fd;
     char vendorId[20];
     char productId[20];
     int driveNum;
     char **drives;
+    const char *camera_name;
 
     drives = get_drives(&driveNum);
     int i;
@@ -253,8 +254,17 @@ pslr_handle_t pslr_init() {
 	    if( result == PSLR_OK ) {
 		DPRINT("Found camera %s %s\n", vendorId, productId);
 		pslr.fd = fd;
-		/* Only support first connected camera at this time. */
-		return &pslr;	    
+		if( model != NULL ) {
+		    // user specified the camera model
+		    camera_name = pslr_camera_name( &pslr );
+		    if( str_comparison_i( camera_name, model, strlen( camera_name) ) == 0 ) {
+			return &pslr;	    
+		    } else {
+			DPRINT("Ignoring camera %s %s\n", vendorId, productId);
+		    }
+		} else {
+		    return &pslr;	    
+		}
 	    } else {
 		DPRINT("Cannot get drive info of Pentax camera. Please do not forget to install the program using 'make install'\n");
 		// found the camera but communication is not possible

@@ -85,6 +85,7 @@ static struct option const longopts[] ={
     {"jpeg_image_tone", required_argument, NULL, 13},
     {"white_balance_mode", required_argument, NULL, 14},
     {"white_balance_adjustment", required_argument, NULL, 15},
+    {"model", required_argument, NULL, 16},
     { NULL, 0, NULL, 0}
 };
 
@@ -155,7 +156,8 @@ int main(int argc, char **argv) {
     char c1;
     char c2;
     char *output_file = NULL;
-    const char *MODEL;
+    char *model = NULL;
+    const char *camera_name;
     char *MODESTRING = NULL;
     int resolution = 0;
     int quality = -1;
@@ -355,6 +357,10 @@ int main(int argc, char **argv) {
 		}
 		break;
 
+            case 16:
+                 model = optarg;
+                 break;
+
             case 'q':
                 quality  = atoi(optarg);
                 if (!quality) {
@@ -462,15 +468,15 @@ int main(int argc, char **argv) {
     }
 
     DPRINT("%s %s \n", argv[0], VERSION);
-
-    while (!(camhandle = pslr_init())) {
+    DPRINT("model %s\n", model );
+    while (!(camhandle = pslr_init( model ))) {
 	sleep_sec(1);
     }
 
     if (camhandle) pslr_connect(camhandle);
 
-    MODEL = pslr_camera_name(camhandle);
-    printf("%s: %s Connected...\n", argv[0], MODEL);
+    camera_name = pslr_camera_name(camhandle);
+    printf("%s: %s Connected...\n", argv[0], camera_name);
 
     pslr_get_status(camhandle, &status);
 
@@ -747,6 +753,7 @@ void usage(char *name) {
     printf("\nUsage: %s [OPTIONS]\n\n\
 Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
+      --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-X, K200D, K-7, K-r, K-5, K-2000, K-m, K100D, K110D\n\
   -w, --warnings                        warning mode\n\
   -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
       --exposure_compensation=VALUE     exposure compensation value\n\
