@@ -257,10 +257,14 @@ pslr_handle_t pslr_init( char *model ) {
 		if( model != NULL ) {
 		    // user specified the camera model
 		    camera_name = pslr_camera_name( &pslr );
+		    DPRINT("Name of the camera: %s\n", camera_name);
 		    if( str_comparison_i( camera_name, model, strlen( camera_name) ) == 0 ) {
 			return &pslr;	    
 		    } else {
 			DPRINT("Ignoring camera %s %s\n", vendorId, productId);
+			pslr_shutdown ( &pslr );
+			pslr.id1 = 0;
+			pslr.model = NULL;
 		    }
 		} else {
 		    return &pslr;	    
@@ -1107,7 +1111,6 @@ static int ipslr_identify(ipslr_handle_t *p) {
     CHECK(read_result(p->fd, idbuf, 8));
     p->id1 = get_uint32(&idbuf[0]);
     DPRINT("id1 of the camera: %x\n", p->id1);
-//    p->id2 = get_uint32(&idbuf[4]);
     p->model = find_model_by_id( p->id1 );
     return PSLR_OK;
 }
