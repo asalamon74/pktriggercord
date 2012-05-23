@@ -1,5 +1,5 @@
 version 0.77.11
-	--model
+	--model ( buggy )
 
 version 0.77.10 ( 2012-04-15 )
 	Precisier delay handling
