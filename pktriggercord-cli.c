@@ -86,6 +86,7 @@ static struct option const longopts[] ={
     {"white_balance_mode", required_argument, NULL, 14},
     {"white_balance_adjustment", required_argument, NULL, 15},
     {"model", required_argument, NULL, 16},
+    {"nowarnings", no_argument, NULL, 17},
     { NULL, 0, NULL, 0}
 };
 
@@ -201,6 +202,9 @@ int main(int argc, char **argv) {
             case 'w':
 		warnings = true;
 	        break;
+            case 17:
+                warnings = false;
+		break;
             case 4:
                 debug = true;
                 DPRINT( "Debug messaging is now enabled.\n" );
@@ -754,7 +758,8 @@ void usage(char *name) {
 Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
       --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-X, K200D, K-7, K-r, K-5, K-2000, K-m, K100D, K110D\n\
-  -w, --warnings                        warning mode\n\
+  -w, --warnings                        warning mode on\n\
+      --nowarnings                      warning mode off\n\
   -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
       --exposure_compensation=VALUE     exposure compensation value\n\
       --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO\n\
