@@ -94,7 +94,6 @@ int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, int);
 void print_status_info(pslr_handle_t h, pslr_status status);
 void usage(char*);
 void version(char*);
-void CLOSE(pslr_handle_t, int);
 
 int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
     int ofd = -1;
@@ -149,6 +148,11 @@ void process_wbadj( const char* argv0, const char chr, uint32_t adj, uint32_t *w
     } else {
 	warning_message("%s: Invalid white_balance_adjustment\n", argv0);
     }
+}
+
+void camera_close(pslr_handle_t camhandle) {
+    pslr_disconnect(camhandle);
+    pslr_shutdown(camhandle);
 }
 
 int main(int argc, char **argv) {
@@ -700,10 +704,9 @@ int main(int argc, char **argv) {
 	}
 	++bracket_index;
     }
-    CLOSE(camhandle, 0);
+    camera_close(camhandle);
 
     exit(0);
-
 }
 
 int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status, user_file_format filefmt, int jpeg_stars) {
@@ -740,12 +743,6 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
     }
     pslr_buffer_close(camhandle);
     return (0);
-}
-
-void CLOSE(pslr_handle_t camhandle, int exit_value) {
-    pslr_disconnect(camhandle);
-    pslr_shutdown(camhandle);
-    exit(exit_value);
 }
 
 void print_status_info( pslr_handle_t h, pslr_status status ) {    
