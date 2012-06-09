@@ -26,7 +26,7 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-white_balance_adjustment WB_ADJ
 .OP \-\-auto_focus
 .OP \-\-green
-.OP \-\-warnings
+[\fB\-\-warnings\fR | \fB\-\-nowarnings\fR ]
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-dust_removal\fR | \fB\-\-status\fR |
 \fB\-\-status_hex\fR | \fB\-\-frames\fR NUMBER [ \fB\-\-delay\fR SECONDS] ]
 [ \fB\-\-file_format\fR FORMAT ] [ \fB\-\-output_file\fR FILENAME ] 
@@ -94,6 +94,11 @@ Initiate dust removal process\.
 Specify warning mode. The program prints out warning messages if the
 settings are invalid. It will not stop since the camera can fix most
 of the invalid settings. For instance specifying -iso 796 will change the iso to 800\.
+.RE
+.PP
+\fB\-\-nowarnings\fR
+.RS 4
+Turns off warning mode\.
 .RE
 .PP
 \fB\-m\fR, \fB\-\-exposure_mode\fR \fIEXPOSURE_MODE\fR
