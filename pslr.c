@@ -235,7 +235,7 @@ static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t e
     return 0;
 }
 
-pslr_handle_t pslr_init( char *model ) {
+pslr_handle_t pslr_init( char *model, char *device ) {
     int fd;
     char vendorId[20];
     char productId[20];
@@ -243,12 +243,19 @@ pslr_handle_t pslr_init( char *model ) {
     char **drives;
     const char *camera_name;
 
-    drives = get_drives(&driveNum);
+    if( device == NULL ) {
+	drives = get_drives(&driveNum);
+    } else {
+	driveNum = 1;
+	drives = malloc( driveNum * sizeof(char*) );
+        drives[0] = malloc( sizeof( device ) );
+	strncpy( drives[0], device, sizeof( device ) );
+    }
     int i;
     for( i=0; i<driveNum; ++i ) {
 	pslr_result result = get_drive_info( drives[i], &fd, vendorId, sizeof(vendorId), productId, sizeof(productId));
 
-	DPRINT("Checking drive: %s %s\n", vendorId, productId);
+	DPRINT("Checking drive:  %s %s %s\n", drives[i], vendorId, productId);
 	if( find_in_array( valid_vendors, sizeof(valid_vendors)/sizeof(valid_vendors[0]),vendorId) != -1 
 	    && find_in_array( valid_models, sizeof(valid_models)/sizeof(valid_models[0]), productId) != -1 ) {
 	    if( result == PSLR_OK ) {
