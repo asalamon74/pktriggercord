@@ -87,6 +87,7 @@ static struct option const longopts[] ={
     {"white_balance_adjustment", required_argument, NULL, 15},
     {"model", required_argument, NULL, 16},
     {"nowarnings", no_argument, NULL, 17},
+    {"device", required_argument, NULL, 18},
     { NULL, 0, NULL, 0}
 };
 
@@ -162,6 +163,7 @@ int main(int argc, char **argv) {
     char c2;
     char *output_file = NULL;
     char *model = NULL;
+    char *device = NULL;
     const char *camera_name;
     char *MODESTRING = NULL;
     int resolution = 0;
@@ -369,6 +371,10 @@ int main(int argc, char **argv) {
                  model = optarg;
                  break;
 
+            case 18:
+                 device = optarg;
+                 break;
+
             case 'q':
                 quality  = atoi(optarg);
                 if (!quality) {
@@ -477,7 +483,8 @@ int main(int argc, char **argv) {
 
     DPRINT("%s %s \n", argv[0], VERSION);
     DPRINT("model %s\n", model );
-    while (!(camhandle = pslr_init( model ))) {
+    DPRINT("device %s\n", device );
+    while (!(camhandle = pslr_init( model, device ))) {
 	sleep_sec(1);
     }
 
@@ -755,6 +762,7 @@ void usage(char *name) {
 Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
       --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-X, K200D, K-7, K-r, K-5, K-2000, K-m, K100D, K110D\n\
+      --device=DEVICE                   valid values for Linux: sg0, sg1, ...\n\
   -w, --warnings                        warning mode on\n\
       --nowarnings                      warning mode off\n\
   -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\

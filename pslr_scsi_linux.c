@@ -89,6 +89,8 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     char nmbuf[256];
     int fd;
 
+    vendorId[0] = '\0';
+    productId[0] = '\0';
     snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/vendor", driveName);
     fd = open(nmbuf, O_RDONLY);
     if (fd == -1) {
