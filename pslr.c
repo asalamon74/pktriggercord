@@ -283,7 +283,7 @@ pslr_handle_t pslr_init( char *model, char *device ) {
 		continue;
 	    }
 	} else {
-	    close( fd );
+	    close_drive( &fd );
 	    continue;
 	}
     }
@@ -324,7 +324,7 @@ int pslr_disconnect(pslr_handle_t h) {
 
 int pslr_shutdown(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    close(p->fd);
+    close_drive(&p->fd);
     return PSLR_OK;
 }
 

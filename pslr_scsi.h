@@ -58,4 +58,6 @@ char **get_drives(int *driveNum);
 pslr_result get_drive_info(char* driveName, int* hDevice, 
                             char* vendorId, int vendorIdSizeMax,
                             char* productId, int productIdSizeMax);
+
+void close_drive(int *hDevice);
 #endif

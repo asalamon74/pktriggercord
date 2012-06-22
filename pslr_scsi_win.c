@@ -139,8 +139,8 @@ char **get_drives(int *driveNum) {
     int driveLetter;
     int j=0;
     for( driveLetter = 'C'; driveLetter<='Z'; ++driveLetter ) {
-	ret[j] = malloc( 7 * sizeof (char) );
-	snprintf(ret[j], 7, "\\\\.\\%c:", driveLetter);
+	ret[j] = malloc( 2 * sizeof (char) );
+	snprintf(ret[j], 2, "%c", driveLetter);
 	++j;
     }
     *driveNum = j;
@@ -159,11 +159,16 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     DWORD bytesRead;
     pslr_result drive_status = PSLR_DEVICE_ERROR;
     HANDLE hDrive;
-    
+    char fullDriveName[7];
+
+    vendorId[0] = '\0';
+    productId[0] = '\0';    
     query.PropertyId = StorageDeviceProperty;
     query.QueryType = PropertyStandardQuery;
     
-    hDrive = CreateFile(driveName,
+    snprintf( fullDriveName, 7, "\\\\.\\%s:", driveName);
+
+    hDrive = CreateFile(fullDriveName,
                         GENERIC_READ | GENERIC_WRITE,
                         FILE_SHARE_WRITE,
                         NULL,
@@ -192,8 +197,7 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
        else
        {
 	   *hDevice = (int)hDrive;
-	   drive_status = PSLR_OK;
-          
+	   drive_status = PSLR_OK;          
          
 	   pdescriptor = (STORAGE_DEVICE_DESCRIPTOR *)descriptorBuf;
        
@@ -205,6 +209,7 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
                 vendorId[i] = descriptorBuf[pdescriptor->VendorIdOffset + i];
                 i++;
              }
+	     vendorId[i]='\0';
           }
           if(pdescriptor->ProductIdOffset != 0) {
              int i = 0;
@@ -214,14 +219,16 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
                 productId[i] = descriptorBuf[pdescriptor->ProductIdOffset + i];
                 i++;
              }
+	     productId[i]='\0';
           }
        }
-    }
+    }	
     return drive_status;
 }
-void close_drive(HANDLE hDevice)
+
+void close_drive(int *hDevice)
 {
-    CloseHandle(hDevice);
+    CloseHandle(*hDevice);
 }
 
 int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,

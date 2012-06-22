@@ -117,6 +117,9 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     return PSLR_OK;
 }
 
+void close_drive(int *hDevice) {
+    close( *hDevice );
+}
 
 int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
         uint8_t *buf, uint32_t bufLen) {
