@@ -8,6 +8,8 @@
 pktriggercord-cli - command-line Pentax DSLR tethering software
 .SH "SYNOPSIS"
 .SY pktriggercord-cli
+.OP \-\-model CAMERA_MODEL
+.OP \-\-device DEVICE
 .OP \-\-exposure_mode MODE
 .OP \-\-exposure_compensation VALUE
 .OP \-\-drive_mode DRIVE_MODE
@@ -42,6 +44,25 @@ pkTriggerCord
 .HTML -->
 is a cross\-platform Pentax DSLR tethering software, and
 pktriggercord-cli is a command\-line client for it\.
+.HnS 2
+.SS Connection
+.HnE
+.PP 
+By default the software connects to the first available Pentax camera\.
+.PP
+\fB\-\-model \fR\fB\fICAMERA_MODEL\fR
+.RS 4
+Specify the camera model. Useful if more than one camera is connected.
+Valid ( case-insensitive ) values are: K20d, K10d, GX10, GX20, K-X,
+K200D, K-7, K-r, K-5, K-2000, K-m, K100D, K110D\.
+.RE
+.PP
+\fB\-\-device \fR\fB\fIDEVICE\fR
+.RS 4
+Specify the device. Useful if more than one camera is connected.
+Valid ( case-sensitive ) values are depend on the operating system. 
+Valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...\.
+.RE
 .HnS 2
 .SS Work mode
 .HnE
