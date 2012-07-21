@@ -62,8 +62,12 @@ char **get_drives(int *driveNum) {
     d = opendir("/sys/class/scsi_generic");
 
     if (!d) {
-	*driveNum = 0;
-        return NULL;
+        DPRINT("Cannot open /sys/class/scsi_generic\n");
+	d = opendir("/sys/block");
+	if( !d ) {
+	    *driveNum = 0;
+            return NULL;
+	}
     }
     j=0;
     while( (ent = readdir(d)) ) {
@@ -94,7 +98,11 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/vendor", driveName);
     fd = open(nmbuf, O_RDONLY);
     if (fd == -1) {
+      snprintf(nmbuf, sizeof (nmbuf), "/sys/block/%s/device/vendor", driveName);
+      fd = open(nmbuf, O_RDONLY);
+      if (fd == -1) {
         return PSLR_DEVICE_ERROR;
+      }
     }
     int v_length = read(fd, vendorId, vendorIdSizeMax-1);
     vendorId[v_length]='\0';
@@ -102,8 +110,12 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
 
     snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/model", driveName);
     fd = open(nmbuf, O_RDONLY);
-    if (fd == -1) {
-        return PSLR_DEVICE_ERROR;
+    if (fd == -1) {       
+      snprintf(nmbuf, sizeof (nmbuf), "/sys/block/%s/device/model", driveName);
+      fd = open(nmbuf, O_RDONLY);
+      if (fd == -1) {
+           return PSLR_DEVICE_ERROR;
+      }
     }
     int p_length = read(fd, productId, productIdSizeMax-1);
     productId[p_length]='\0';
