@@ -705,7 +705,7 @@ static gboolean status_poll(gpointer data)
     status_poll_inhibit = true;
 
     if (!camhandle) {
-        camhandle = pslr_init( NULL );
+        camhandle = pslr_init( NULL, NULL );
         if (camhandle) {
             /* Try to reconnect */
             gtk_statusbar_pop(statusbar, sbar_connect_ctx);

@@ -1,5 +1,7 @@
 Known bugs of pkTriggerCord:
 
+  Sometimes it requires root privileges.
+
   Setting jpeg sharpness/contrast/saturation has no effect sometimes.
 
   Taking picture restores jpeg image tone, so jpeg image tone setting
