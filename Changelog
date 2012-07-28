@@ -1,3 +1,6 @@
+version 0.77.13
+	Building deb package for Raspbian
+
 version 0.77.12 ( 2012-07-24 )
 	--model ( buggy )
 	--nowarnings
