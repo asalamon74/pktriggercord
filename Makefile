@@ -8,11 +8,17 @@ MAN1DIR = $(MANDIR)/man1
 LIN_CFLAGS = $(CFLAGS)
 LIN_LDFLAGS = $(LDFLAGS)
 
-VERSION=0.77.12
+VERSION=0.77.13
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec
-RPM_BUILD_ROOT ?=
+
+# variables for DEB creation
+DEBEMAIL="andras.salamon@melda.info"
+DEBFULLNAME="Andras Salamon"
+
+# variables for RPM/DEB creation
+DESTDIR ?=
 
 LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 libglade-2.0)
 LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 libglade-2.0)
@@ -45,20 +51,20 @@ pktriggercord: pktriggercord.c $(OBJS)
 	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L. 
 
 install-app:
-	install -d $(PREFIX)/bin
-	install -s -m 0755 pktriggercord-cli $(PREFIX)/bin/
-	install -d $(RPM_BUILD_ROOT)/etc/udev/rules.d
-	install -m 0644 pentax.rules $(RPM_BUILD_ROOT)/etc/udev/
-	install -m 0644 samsung.rules $(RPM_BUILD_ROOT)/etc/udev/
-	cd $(RPM_BUILD_ROOT)/etc/udev/rules.d;\
+	install -d $(DESTDIR)/$(PREFIX)/bin
+	install -s -m 0755 pktriggercord-cli $(DESTDIR)/$(PREFIX)/bin/
+	install -d $(DESTDIR)/etc/udev/rules.d
+	install -m 0644 pentax.rules $(DESTDIR)/etc/udev/
+	install -m 0644 samsung.rules $(DESTDIR)/etc/udev/
+	cd $(DESTDIR)/etc/udev/rules.d;\
 	ln -sf ../pentax.rules 025_pentax.rules;\
 	ln -sf ../samsung.rules 025_samsung.rules
-	install -d -m 0755 $(MAN1DIR)
-	install -m 0644 $(MANS) $(MAN1DIR)
+	install -d -m 0755 $(DESTDIR)/$(MAN1DIR)
+	install -m 0644 $(MANS) $(DESTDIR)/$(MAN1DIR)
 	if [ -e ./pktriggercord ] ; then \
-	install -s -m 0755 pktriggercord $(PREFIX)/bin/; \
-	install -d $(PREFIX)/share/pktriggercord/; \
-	install -m 0644 pktriggercord.glade $(PREFIX)/share/pktriggercord/ ; \
+	install -s -m 0755 pktriggercord $(DESTDIR)/$(PREFIX)/bin/; \
+	install -d $(DESTDIR)/$(PREFIX)/share/pktriggercord/; \
+	install -m 0644 pktriggercord.glade $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
 	fi
 
 clean:
@@ -94,6 +100,18 @@ rpm: srcrpm
 WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/
 WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include 
 WIN_LDFLAGS=-lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0  -lglade-2.0
+
+deb: srczip
+	rm -f pktriggercord*orig.tar.gz
+	rm -f pktriggercord*debian.tar.gz
+	rm -f pktriggercord*armhf*
+	rm -rf pktriggercord-$(VERSION)
+	tar xvfz pkTriggerCord-$(VERSION).src.tar.gz
+	cd pktriggercord-$(VERSION);\
+	echo '' | dh_make --single -f ../pkTriggerCord-$(VERSION).src.tar.gz;\
+	cp ../debian/* debian/;\
+	find debian/ -size 0 | xargs rm -f;\
+	dpkg-buildpackage -us -uc
 
 # converting lens info from exiftool
 exiftool_pentax_lens.txt:

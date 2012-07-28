@@ -1,5 +1,5 @@
 %define name      pktriggercord	
-%define ver       0.77.12
+%define ver       0.77.13
 %define rel       1
 %define prefix    /usr
 %define debug_package %{nil}
@@ -30,7 +30,7 @@ make PREFIX=%{prefix}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install PREFIX=${RPM_BUILD_ROOT}/%{prefix}
+make install PREFIX=%{prefix} DESTDIR=${RPM_BUILD_ROOT}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
