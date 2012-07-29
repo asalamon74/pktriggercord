@@ -26,7 +26,6 @@ LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 libglade-2.0)
 default: cli pktriggercord
 all: srczip rpm win pktriggercord_commandline.html
 cli: pktriggercord-cli
-install: install-app
 
 MANS = pktriggercord-cli.1 pktriggercord.1
 OBJS = pslr.o pslr_enum.o pslr_scsi.o pslr_lens.o pslr_model.o
@@ -50,7 +49,7 @@ pktriggercord-cli: pktriggercord-cli.c $(OBJS)
 pktriggercord: pktriggercord.c $(OBJS)
 	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L. 
 
-install-app:
+install:
 	install -d $(DESTDIR)/$(PREFIX)/bin
 	install -s -m 0755 pktriggercord-cli $(DESTDIR)/$(PREFIX)/bin/
 	install -d $(DESTDIR)/etc/udev/rules.d
