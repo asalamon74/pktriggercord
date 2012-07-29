@@ -8,7 +8,7 @@ MAN1DIR = $(MANDIR)/man1
 LIN_CFLAGS = $(CFLAGS)
 LIN_LDFLAGS = $(LDFLAGS)
 
-VERSION=0.77.13
+VERSION=0.78.00
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec
@@ -83,6 +83,8 @@ srczip: clean
 	cp -r $(SOURCE_PACKAGE_FILES) $(TARDIR)/
 	mkdir -p $(TARDIR)/$(WIN_DLLS_DIR)
 	cp -r $(WIN_DLLS_DIR)/*.dll $(TARDIR)/$(WIN_DLLS_DIR)/
+	mkdir -p $(TARDIR)/debian
+	cp -r debian/* $(TARDIR)/debian/
 	tar cf - $(TARDIR) | gzip > $(SRCZIP)
 	rm -rf $(TARDIR)
 
