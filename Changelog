@@ -1,3 +1,6 @@
+version 0.78.01
+	Support for K-30 added by Camilo Polymeris <cpolymeris@gmail.com>
+
 version 0.78.00 ( 2012-07-29 )
 	Building deb package for Raspbian ( Raspberry PI )
 
