@@ -87,7 +87,7 @@ typedef struct {
     const char *extension;
 } user_file_format_t;
 
-user_file_format_t file_formats[3];
+extern user_file_format_t file_formats[3];
 
 user_file_format_t *get_file_format_t( user_file_format uff );
 
@@ -171,7 +171,7 @@ typedef struct {
 
 typedef void (*pslr_progress_callback_t)(uint32_t current, uint32_t total);
 
-pslr_handle_t pslr_init();
+pslr_handle_t pslr_init(char *model, char *device);
 int pslr_connect(pslr_handle_t h);
 int pslr_disconnect(pslr_handle_t h);
 int pslr_shutdown(pslr_handle_t h);

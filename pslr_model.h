@@ -35,7 +35,7 @@
 #include "pslr_scsi.h"
 
 #define MAX_RESOLUTION_SIZE 4
-#define MAX_STATUS_BUF_SIZE 444
+#define MAX_STATUS_BUF_SIZE 452
 #define MAX_SEGMENTS 4
 
 typedef struct ipslr_handle ipslr_handle_t;
@@ -144,6 +144,7 @@ void ipslr_status_parse_k10d (ipslr_handle_t *p, pslr_status *status);
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status);
 void ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status);
 void ipslr_status_parse_k5   (ipslr_handle_t *p, pslr_status *status);
+void ipslr_status_parse_k30  (ipslr_handle_t *p, pslr_status *status);
 void ipslr_status_parse_km   (ipslr_handle_t *p, pslr_status *status);
 
 ipslr_model_info_t *find_model_by_id( uint32_t id );
