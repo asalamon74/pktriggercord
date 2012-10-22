@@ -88,6 +88,7 @@ static struct option const longopts[] ={
     {"model", required_argument, NULL, 16},
     {"nowarnings", no_argument, NULL, 17},
     {"device", required_argument, NULL, 18},
+    {"reconnect", no_argument, NULL, 19},
     { NULL, 0, NULL, 0}
 };
 
@@ -201,7 +202,7 @@ int main(int argc, char **argv) {
     uint32_t white_balance_adjustment_ba = 0;
     uint32_t adj1;
     uint32_t adj2;
-
+    bool reconnect = false;
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
         switch (optc) {
@@ -374,6 +375,10 @@ int main(int argc, char **argv) {
             case 18:
                  device = optarg;
                  break;
+
+	    case 19:
+		reconnect = true;
+		break;
 
             case 'q':
                 quality  = atoi(optarg);
@@ -668,6 +673,13 @@ int main(int argc, char **argv) {
     for (frameNo = 0; frameNo < frames; ++frameNo) {
 	gettimeofday(&current_time, NULL);
 	if( bracket_count <= bracket_index ) {
+	    if( reconnect ) {
+		camera_close( camhandle );
+		while (!(camhandle = pslr_init( model, device ))) {
+		    sleep_sec(1);
+		}
+		pslr_connect(camhandle);
+	    }
 	    waitsec = 1.0 * delay - timeval_diff(&current_time, &prev_time) / 1000000.0;
 	    if( waitsec > 0 ) {
 		printf("Waiting for %.2f sec\n", waitsec);	   
