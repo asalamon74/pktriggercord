@@ -360,7 +360,7 @@ void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     memset(status, 0, sizeof (*status));	
     ipslr_status_parse_common( p, status, 0 );
     status->zoom.nom = get_uint32(&buf[0x1A0]);
-    status->zoom.denom = get_uint32(&buf[0x1AC]); // or 0x1A4?
+    status->zoom.denom = get_uint32(&buf[0x1A4]);
     status->focus = get_int32(&buf[0x1A8]); // ?
     status->lens_id1 = (get_uint32( &buf[0x190])) & 0x0F;
     status->lens_id2 = get_uint32( &buf[0x19C]);
