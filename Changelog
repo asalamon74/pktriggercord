@@ -1,6 +1,6 @@
 version 0.79.01
 	--reconnect
-	Attempt to fix K-5 zoom reading bug
+	Fix K-5 zoom reading bug
 
 version 0.79.00 ( 2012-10-03 )
 	Support for K-30 added by Camilo Polymeris <cpolymeris@gmail.com>
