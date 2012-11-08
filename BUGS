@@ -26,3 +26,6 @@ Known bugs of pkTriggerCord:
   --select_af_point Auto-11 changes to Auto-5 instead
 
   Top LCD panel is flashing
+
+  K-x firmware 1.02 or 1.03: Image artifacts during timelapse
+  photos. Workaround: Use firmware 1.01
