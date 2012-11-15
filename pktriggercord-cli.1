@@ -27,6 +27,7 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-white_balance_mode WB_MODE
 .OP \-\-white_balance_adjustment WB_ADJ
 .OP \-\-auto_focus
+.OP \-\-reconnect
 .OP \-\-green
 [\fB\-\-warnings\fR | \fB\-\-nowarnings\fR ]
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-dust_removal\fR | \fB\-\-status\fR |
@@ -85,6 +86,11 @@ bracketing groups.
 \fB\-f\fR, \fB\-\-auto_focus\fR
 .RS 4
 Autofocus before first shot.
+.RE
+.PP
+\fB\-\-reconnect\fR
+.RS 4
+Reconnect between shots. Might solve image artifact problems.
 .RE
 .PP
 \fB\-g\fR, \fB\-\-green\fR
