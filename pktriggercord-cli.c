@@ -796,6 +796,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
       --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, CTE\n\
       --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...\n\
   -f, --auto_focus                      autofocus\n\
+      --reconnect                       reconnect between shots\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\
       --status_hex                      print status hex info\n\
