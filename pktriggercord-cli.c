@@ -813,7 +813,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 
 void version(char *name) {
     printf("\n%s %s\n\n\
-Copyright (C) 2011 Andras Salamon\n\
+Copyright (C) 2011-2012 Andras Salamon\n\
 License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n\
