@@ -19,6 +19,7 @@ DEBFULLNAME="Andras Salamon"
 
 # variables for RPM/DEB creation
 DESTDIR ?=
+ARCH=$(shell uname -m)
 
 LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 libglade-2.0)
 LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 libglade-2.0)
@@ -96,7 +97,7 @@ srcrpm: srczip
 
 rpm: srcrpm
 	rpmbuild -ba $(SPECFILE)
-	cp $(TOPDIR)/RPMS/i386/pktriggercord-$(VERSION)-1.i386.rpm .
+	cp $(TOPDIR)/RPMS/$(ARCH)/pktriggercord-$(VERSION)-1.$(ARCH).rpm .
 
 WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/
 WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include 
