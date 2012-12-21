@@ -3,6 +3,7 @@ version 0.79.01
 	Fix K-5 zoom reading bug
 	Adding command line html file to windows zip
 	Rpm creation 64bit bugfix
+	Updating lens info database ( exiftool 8.770 )
 
 version 0.79.00 ( 2012-10-03 )
 	Support for K-30 added by Camilo Polymeris <cpolymeris@gmail.com>
