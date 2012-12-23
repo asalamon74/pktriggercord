@@ -10,6 +10,7 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .SY pktriggercord-cli
 .OP \-\-model CAMERA_MODEL
 .OP \-\-device DEVICE
+.OP \-\-timeout SECONDS
 .OP \-\-exposure_mode MODE
 .OP \-\-exposure_compensation VALUE
 .OP \-\-drive_mode DRIVE_MODE
@@ -63,6 +64,13 @@ K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D\.
 Specify the device. Useful if more than one camera is connected.
 Valid ( case-sensitive ) values are depend on the operating system. 
 Valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...\.
+.RE
+.PP
+\fB\-\-timeout \fR\fB\fISECONDS\fR
+.RS 4
+Specify the timeout in seconds for camera connection. 0 means no
+timeout, the program will wait forever. By default there is no
+timeout.
 .RE
 .HnS 2
 .SS Work mode
