@@ -89,6 +89,7 @@ static struct option const longopts[] ={
     {"nowarnings", no_argument, NULL, 17},
     {"device", required_argument, NULL, 18},
     {"reconnect", no_argument, NULL, 19},
+    {"timeout", required_argument, NULL, 20},
     { NULL, 0, NULL, 0}
 };
 
@@ -183,6 +184,7 @@ int main(int argc, char **argv) {
     uint32_t auto_iso_max = 0;
     int frames = 1;
     int delay = 0;
+    int timeout = 0;
     bool auto_focus = false;
     bool green = false;
     bool dust = false;
@@ -203,6 +205,9 @@ int main(int argc, char **argv) {
     uint32_t adj1;
     uint32_t adj2;
     bool reconnect = false;
+    struct timeval prev_time;
+    struct timeval current_time;
+
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
         switch (optc) {
@@ -380,6 +385,10 @@ int main(int argc, char **argv) {
 		reconnect = true;
 		break;
 
+            case 20:
+                timeout = atoi(optarg);
+                break;
+
             case 'q':
                 quality  = atoi(optarg);
                 if (!quality) {
@@ -489,8 +498,16 @@ int main(int argc, char **argv) {
     DPRINT("%s %s \n", argv[0], VERSION);
     DPRINT("model %s\n", model );
     DPRINT("device %s\n", device );
+
+    gettimeofday(&prev_time, NULL);
     while (!(camhandle = pslr_init( model, device ))) {
-	sleep_sec(1);
+        gettimeofday(&current_time, NULL);
+	if( timeout == 0 || timeout > timeval_diff(&current_time, &prev_time) / 1000000.0 ) {
+	  sleep_sec(1);
+	} else {
+	  printf("%ds timeout exceeded\n", timeout);
+	  exit(-1);
+	}
     }
 
     if (camhandle) pslr_connect(camhandle);
@@ -659,9 +676,7 @@ int main(int argc, char **argv) {
     if( bracket_count < 1 || status.auto_bracket_mode == 0 ) {
 	bracket_count = 1;
     }
-    struct timeval prev_time;
     gettimeofday(&prev_time, NULL);
-    struct timeval current_time;
 
     int bracket_index=0;
     int buffer_index;
@@ -775,6 +790,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
       --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-X, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D\n\
       --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...\n\
+      --timeout=SECONDS                 timeout for camera connection ( 0 means forever )\n\
   -w, --warnings                        warning mode on\n\
       --nowarnings                      warning mode off\n\
   -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
