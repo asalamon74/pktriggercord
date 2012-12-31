@@ -35,8 +35,8 @@ SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.ru
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
-WINGCC=i586-pc-mingw32-gcc
-WINMINGW=/usr/i586-pc-mingw32/sys-root/mingw
+WINGCC=i686-pc-mingw32-gcc
+WINMINGW=/usr/i686-pc-mingw32/sys-root/mingw
 WINDIR=$(TARDIR)-win
 
 pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
