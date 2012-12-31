@@ -625,7 +625,13 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     /* JPEG quality */
     pw = glade_xml_get_widget(xml, "jpeg_quality_combo");
     if (st_new) {
-        gtk_combo_box_set_active(GTK_COMBO_BOX(pw), get_hw_jpeg_quality(camhandle, st_new->jpeg_quality));
+        GtkTreeModel *jpeg_quality_model = gtk_combo_box_get_model(GTK_COMBO_BOX(pw));
+        gint jpeg_quality_num = gtk_tree_model_iter_n_children( jpeg_quality_model, NULL );
+        int hw_jpeg_quality = get_hw_jpeg_quality(camhandle, st_new->jpeg_quality);
+        if( hw_jpeg_quality >= jpeg_quality_num ) {
+	  hw_jpeg_quality = 0;
+	}
+	gtk_combo_box_set_active(GTK_COMBO_BOX(pw), hw_jpeg_quality);
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
