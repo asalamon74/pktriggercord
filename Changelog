@@ -7,6 +7,7 @@ version 0.79.01
 	--timeout
 	mingw32 ( Windows cross-compiler update )
 	Limited support bugfix
+	Adding limited support for K100D Super
 
 version 0.79.00 ( 2012-10-03 )
 	Support for K-30 added by Camilo Polymeris <cpolymeris@gmail.com>
