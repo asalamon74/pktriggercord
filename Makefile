@@ -116,6 +116,13 @@ deb: srczip
 	dpkg-buildpackage -us -uc
 	rm -rf pktriggercord-$(VERSION)
 
+# Remote deb creation on Raspberry PI
+# address, dir hardwired
+remotedeb:
+	ssh pi@rpi "cd /home/pi/progs/c/pktriggercord && svn update && make clean deb"
+	scp pi@rpi:/home/pi/progs/c/pktriggercord/pktriggercord_*.deb .
+
+
 # converting lens info from exiftool
 exiftool_pentax_lens.txt:
 	cat /usr/lib/perl5/vendor_perl/5.14.2/Image/ExifTool/Pentax.pm | sed -n '/%pentaxLensTypes\ =/,/%pentaxModelID/p' | sed -e "s/[ ]*'\([0-9]\) \([0-9]\{1,3\}\)' => '\(.*\)',.*/{\1, \2, \"\3\"},/g;tx;d;:x" > $@
