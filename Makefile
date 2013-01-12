@@ -110,10 +110,11 @@ deb: srczip
 	rm -rf pktriggercord-$(VERSION)
 	tar xvfz pkTriggerCord-$(VERSION).src.tar.gz
 	cd pktriggercord-$(VERSION);\
-	echo '' | dh_make --single -f ../pkTriggerCord-$(VERSION).src.tar.gz;\
+	dh_make -y --single -f ../pkTriggerCord-$(VERSION).src.tar.gz;\
 	cp ../debian/* debian/;\
 	find debian/ -size 0 | xargs rm -f;\
 	dpkg-buildpackage -us -uc
+	rm -rf pktriggercord-$(VERSION)
 
 # converting lens info from exiftool
 exiftool_pentax_lens.txt:
