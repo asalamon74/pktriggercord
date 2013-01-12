@@ -1,4 +1,4 @@
-version 0.79.01
+version 0.79.02 ( 2013-01-12 )
 	--reconnect
 	Fix K-5 zoom reading bug
 	Adding command line html file to windows zip
