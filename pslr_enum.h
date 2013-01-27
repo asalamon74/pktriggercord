@@ -1,6 +1,6 @@
 /*
     pkTriggerCord
-    Copyright (C) 2011-2012 Andras Salamon <andras.salamon@melda.info>
+    Copyright (C) 2011-2013 Andras Salamon <andras.salamon@melda.info>
     Remote control of Pentax DSLR cameras.
 
     based on:
@@ -82,6 +82,7 @@ typedef enum {
 } pslr_af_point_sel_t;
 
 typedef enum {
+    PSLR_JPEG_IMAGE_TONE_NONE = -1,  
     PSLR_JPEG_IMAGE_TONE_NATURAL,
     PSLR_JPEG_IMAGE_TONE_BRIGHT,
     PSLR_JPEG_IMAGE_TONE_PORTRAIT,

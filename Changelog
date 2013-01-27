@@ -1,3 +1,7 @@
+version 0.79.03
+	code cleanup ( Ethan Queen )
+	Support for K-01 added by Ethan Queen <ethanqueen@gmail.com>
+
 version 0.79.02 ( 2013-01-12 )
 	--reconnect
 	Fix K-5 zoom reading bug
