@@ -1,6 +1,7 @@
 version 0.79.03
 	code cleanup ( Ethan Queen )
 	Support for K-01 added by Ethan Queen <ethanqueen@gmail.com>
+	Bulb mode in GUI version
 
 version 0.79.02 ( 2013-01-12 )
 	--reconnect
