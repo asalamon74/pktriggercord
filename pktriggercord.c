@@ -282,7 +282,7 @@ int common_init(void)
     if( !xml ) {
         xml = glade_xml_new(DATADIR "/pktriggercord.glade", NULL, NULL);
     }
-
+    
     if( !xml ) {
 	return -1;
     }
@@ -774,7 +774,16 @@ static gboolean status_poll(gpointer data)
     }
 
     /* shutter speed label */
-    if (status_new && status_new->current_shutter_speed.denom) {
+    if (status_new && (status_new->exposure_mode == PSLR_GUI_EXPOSURE_MODE_B)) {
+      sprintf(buf, "BULB");
+      pw = glade_xml_get_widget(xml, "label_shutter");
+      gtk_label_set_text(GTK_LABEL(pw), buf);
+      /* inhibit shutter exposure slide */
+      pw = glade_xml_get_widget(xml, "shutter_scale");
+      gtk_widget_set_visible(pw, FALSE);
+      pw = glade_xml_get_widget(xml, "label2");
+      gtk_widget_set_visible(pw, FALSE);
+    } else if (status_new && status_new->current_shutter_speed.denom) {
         if (status_new->current_shutter_speed.nom == 1) {
             sprintf(buf, "1/%ds", status_new->current_shutter_speed.denom);
         } else if (status_new->current_shutter_speed.denom == 1) {
@@ -785,6 +794,10 @@ static gboolean status_poll(gpointer data)
         pw = glade_xml_get_widget(xml, "label_shutter");
         gtk_label_set_text(GTK_LABEL(pw), buf);
 
+	pw = glade_xml_get_widget(xml, "shutter_scale");
+	gtk_widget_set_visible(pw, TRUE);
+	pw = glade_xml_get_widget(xml, "label2");
+	gtk_widget_set_visible(pw, TRUE);
     }
 
     /* ISO label */
@@ -1425,14 +1438,62 @@ GdkPixmap *calculate_histogram( GdkPixbuf *input, int hist_w, int hist_h ) {
 void shutter_press(GtkWidget *widget)
 {
     int r;
+    static gboolean is_bulbing_on = FALSE;
+    int shutter_speed;
+    const gchar * bulb_exp_str = NULL;
+    pslr_status status;
+
+    if (is_bulbing_on == TRUE) {
+      is_bulbing_on = FALSE;
+      gtk_button_set_label((GtkButton *)widget, "Take picture");
+      /* drop current bulb shooting */
+      pslr_bulb(camhandle, false);
+      if (pslr_get_model_only_limited(camhandle)) {
+	manage_camera_buffers_limited();
+      }
+      return;
+    }
     DPRINT("Shutter press.\n");
-    r = pslr_shutter(camhandle);
-    if (r != PSLR_OK) {
+    pslr_get_status(camhandle, &status);
+    if (status.exposure_mode == PSLR_GUI_EXPOSURE_MODE_B) {
+      GtkWidget * pw;
+      pw = glade_xml_get_widget(xml, "bulb_exp_value");
+      bulb_exp_str = gtk_entry_get_text(GTK_ENTRY(pw));
+      if (bulb_exp_str == NULL) {
+	return;
+      }
+      shutter_speed = atoi(bulb_exp_str);
+      if (shutter_speed <= 0) {
+	return;
+      }
+      is_bulbing_on = TRUE;
+      pslr_bulb(camhandle, true);
+      pslr_shutter(camhandle);
+      while(shutter_speed > 0 && is_bulbing_on == TRUE) {
+	static gchar bulb_message[100];
+	sprintf (bulb_message, "BULB -> wait : %d seconds", shutter_speed);
+	gtk_button_set_label((GtkButton *)widget, bulb_message);
+	sleep_sec(1);
+	shutter_speed--;
+	while (gtk_events_pending ()) {
+	  gtk_main_iteration ();
+	}
+      }
+      if (is_bulbing_on == TRUE) {
+	pslr_bulb(camhandle, false);
+	is_bulbing_on = FALSE;
+	gtk_button_set_label((GtkButton *)widget, "Take picture");
+      }
+    } else {
+      r = pslr_shutter(camhandle);
+      if (r != PSLR_OK) {
         DPRINT("shutter error\n");
         return;
+      }
     }
-    if( pslr_get_model_only_limited( camhandle ) ) {
-	manage_camera_buffers_limited();
+
+    if (pslr_get_model_only_limited(camhandle)) {
+      manage_camera_buffers_limited();
     }
 }
 

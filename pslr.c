@@ -44,6 +44,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <dirent.h>
+#include <math.h>
 
 #include "pslr.h"
 #include "pslr_scsi.h"
@@ -63,6 +64,14 @@
             return __r;                                                 \
         }                                                               \
     } while (0)
+
+void sleep_sec(double sec) {
+    int i;
+    for(i=0; i<floor(sec); ++i) {
+	usleep(999999); // 1000000 is not working for Windows
+    }
+    usleep(1000000*(sec-floor(sec)));
+}
 
 ipslr_handle_t pslr;
 

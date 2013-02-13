@@ -115,14 +115,6 @@ int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
     return ofd;
 }
 
-void sleep_sec(double sec) {
-    int i;
-    for(i=0; i<floor(sec); ++i) {
-	usleep(999999); // 1000000 is not working for Windows
-    }
-    usleep(1000000*(sec-floor(sec)));
-}
-
 long int timeval_diff(struct timeval *t2, struct timeval *t1) {
     return (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
 }
