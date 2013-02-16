@@ -2,6 +2,10 @@ version 0.79.03
 	code cleanup ( Ethan Queen )
 	Support for K-01 added by Ethan Queen <ethanqueen@gmail.com>
 	Bulb mode in GUI version
+	Merged save settings into Settings window
+	Merged preview icons into Main window
+	Eliminated Buffer Window
+	Require at least gtk+ 2.16
 
 version 0.79.02 ( 2013-01-12 )
 	--reconnect
