@@ -74,7 +74,6 @@ static void menu_buffer_window_toggled_cb(GtkCheckMenuItem *item, gpointer user_
 static void menu_settings_window_toggled_cb(GtkCheckMenuItem *item, gpointer user_data);
 static void menu_histogram_window_toggled_cb(GtkCheckMenuItem *item, gpointer user_data);
 
-static gboolean bufferwindow_delete_event_cb(GtkWidget *window, GdkEvent *event, gpointer user_data);
 static gboolean settings_window_delete_event_cb(GtkWidget *window, GdkEvent *event, gpointer user_data);
 static gboolean statuswindow_delete_event_cb(GtkWidget *window, GdkEvent *event, gpointer user_data);
 
@@ -364,7 +363,6 @@ int common_init(void)
     glade_xml_signal_connect(xml, "menu_histogram_window_toggled_cb", 
                              G_CALLBACK(menu_histogram_window_toggled_cb));
 
-    glade_xml_signal_connect(xml, "bufferwindow_delete_event_cb", G_CALLBACK(bufferwindow_delete_event_cb));
     glade_xml_signal_connect(xml, "settings_window_delete_event_cb", G_CALLBACK(settings_window_delete_event_cb));
     glade_xml_signal_connect(xml, "statuswindow_delete_event_cb", G_CALLBACK(statuswindow_delete_event_cb));
 
@@ -1180,18 +1178,33 @@ static void menu_about_activate_cb(GtkMenuItem *item, gpointer user_data)
     gtk_widget_hide(pw);
 }
 
+static void resize_preview_icons() {
+    GtkWidget *pw;
+    bool chk_preview;
+    bool chk_histogram;
+
+    pw = glade_xml_get_widget(xml, "menu_buffer_window");
+    chk_preview = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(pw));
+
+    pw = glade_xml_get_widget(xml, "menu_histogram_window");
+    chk_histogram = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(pw));
+
+    pw = glade_xml_get_widget(xml, "preview_icon_view");
+    gtk_widget_set_size_request(pw, chk_preview ? (chk_histogram ? 400 : 200) : 0 , 10 );
+
+    pw = glade_xml_get_widget(xml, "preview_icon_scrollwindow");
+    if( chk_preview ) {
+      gtk_widget_set_size_request(pw, chk_histogram ? 440 : 220, 10 );
+      gtk_widget_show( pw );
+    } else {
+      gtk_widget_set_size_request(pw, 0, 10 );
+      gtk_widget_hide( pw );
+    }
+}
+
 static void menu_buffer_window_toggled_cb(GtkCheckMenuItem *item, gpointer user_data)
 {
-    guint checked;
-    GtkWidget *pw;
-    pw = glade_xml_get_widget(xml, "bufferwindow");
-    checked = item->active;
-    DPRINT("buffer window %d.\n", checked);
-    if (checked) {
-        gtk_widget_show(pw);
-    } else {
-        gtk_widget_hide(pw);
-    }
+    resize_preview_icons();
 }
 
 static void menu_settings_window_toggled_cb(GtkCheckMenuItem *item, gpointer user_data)
@@ -1577,17 +1590,6 @@ void plugin_quit(GtkWidget *widget)
     gtk_main_quit();
 }
 
-static gboolean bufferwindow_delete_event_cb(GtkWidget *window, GdkEvent *event, 
-                                             gpointer user_data)
-{
-    GtkWidget *pw;
-    DPRINT("Hide buffer window.\n");
-    pw = glade_xml_get_widget(xml, "menu_buffer_window");
-    gtk_widget_hide(window);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(pw), FALSE);
-    return TRUE;
-}
-
 static gboolean settings_window_delete_event_cb(GtkWidget *window, GdkEvent *event, 
                                                 gpointer user_data)
 {
@@ -1680,6 +1682,8 @@ static void menu_histogram_window_toggled_cb(GtkCheckMenuItem *item, gpointer us
     GdkPixmap *hist;
     int i;
 
+    resize_preview_icons();
+
     GtkWidget *pw = glade_xml_get_widget(xml, "menu_histogram_window");
     need_histogram = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(pw));
 
@@ -1693,7 +1697,6 @@ static void menu_histogram_window_toggled_cb(GtkCheckMenuItem *item, gpointer us
 	    gtk_list_store_set (list_store, &iter, 0, thumb, 1, hist, 2, pMerged, -1);
 	}
     }
-
 }
 
 void set_preview_icon(int n, GdkPixbuf *pBuf)
