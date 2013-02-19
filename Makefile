@@ -21,8 +21,8 @@ DEBFULLNAME="Andras Salamon"
 DESTDIR ?=
 ARCH=$(shell uname -m)
 
-LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 libglade-2.0)
-LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 libglade-2.0)
+LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
+LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0)
 
 default: cli pktriggercord
 all: srczip rpm win pktriggercord_commandline.html
@@ -31,7 +31,7 @@ cli: pktriggercord-cli
 MANS = pktriggercord-cli.1 pktriggercord.1
 OBJS = pslr.o pslr_enum.o pslr_scsi.o pslr_lens.o pslr_model.o
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.rules samsung.rules pslr_enum.h pslr_enum.c pslr_scsi.h pslr_scsi.c pslr_scsi_linux.c pslr_scsi_win.c pslr_model.h pslr_model.c pslr.h pslr.c exiftool_pentax_lens.txt pslr_lens.h pslr_lens.c pktriggercord.c pktriggercord-cli.c pktriggercord.glade $(SPECFILE)
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.rules samsung.rules pslr_enum.h pslr_enum.c pslr_scsi.h pslr_scsi.c pslr_scsi_linux.c pslr_scsi_win.c pslr_model.h pslr_model.c pslr.h pslr.c exiftool_pentax_lens.txt pslr_lens.h pslr_lens.c pktriggercord.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE)
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
@@ -64,7 +64,7 @@ install:
 	if [ -e ./pktriggercord ] ; then \
 	install -s -m 0755 pktriggercord $(DESTDIR)/$(PREFIX)/bin/; \
 	install -d $(DESTDIR)/$(PREFIX)/share/pktriggercord/; \
-	install -m 0644 pktriggercord.glade $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
+	install -m 0644 pktriggercord.ui $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
 	fi
 
 clean:
@@ -99,9 +99,9 @@ rpm: srcrpm
 	rpmbuild -ba $(SPECFILE)
 	cp $(TOPDIR)/RPMS/$(ARCH)/pktriggercord-$(VERSION)-1.$(ARCH).rpm .
 
-WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/ -I$(WINMINGW)/include/libglade-2.0/
+WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/
 WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include 
-WIN_LDFLAGS=-lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0  -lglade-2.0
+WIN_LDFLAGS=-lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
 
 deb: srczip
 	rm -f pktriggercord*orig.tar.gz
@@ -140,7 +140,7 @@ win: clean pktriggercord_commandline.html
 	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"'  pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) $(WIN_LDFLAGS) -L.
 	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_GUI_CFLAGS) $(WIN_LDFLAGS) -L.
 	mkdir -p $(WINDIR)
-	cp pktriggercord.exe pktriggercord-cli.exe pktriggercord.glade Changelog COPYING pktriggercord_commandline.html $(WINDIR)
+	cp pktriggercord.exe pktriggercord-cli.exe pktriggercord.ui Changelog COPYING pktriggercord_commandline.html $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
 	rm -f $(WINDIR).zip
 	zip -rj $(WINDIR).zip $(WINDIR)

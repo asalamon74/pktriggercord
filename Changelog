@@ -6,6 +6,7 @@ version 0.79.03
 	Merged preview icons into Main window
 	Eliminated Buffer Window
 	Require at least gtk+ 2.16
+	Eliminating libglade ( using GtkBuilder instead )
 
 version 0.79.02 ( 2013-01-12 )
 	--reconnect
