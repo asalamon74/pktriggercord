@@ -1,5 +1,5 @@
 %define name      pktriggercord	
-%define ver       0.79.02
+%define ver       0.79.03
 %define rel       1
 %define prefix    /usr
 %define debug_package %{nil}
@@ -27,7 +27,6 @@ URL: http://pktriggercord.sourceforge.net
 Packager: Andras Salamon <andras.salamon@melda.info>
 BuildRoot: /var/tmp/%{name}-root
 BuildArch: %{_arch}
-BuildRequires: libglade2-devel
 BuildRequires: gtk2-devel
 
 %description
