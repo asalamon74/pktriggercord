@@ -121,6 +121,11 @@ const char* pslr_custom_ev_steps_str[PSLR_CUSTOM_EV_STEPS_MAX] = {
     "1/3"
 };
 
+const char* pslr_raw_format_str[PSLR_RAW_FORMAT_MAX] = {
+    "PEF",
+    "DNG"
+};
+
 // case insenstive comparison
 // strnicmp
 int str_comparison_i (const char *s1, const char *s2, int n) {
@@ -223,4 +228,8 @@ const char *get_pslr_white_balance_mode_str( pslr_white_balance_mode_t value ) {
 
 const char *get_pslr_custom_ev_steps_str( pslr_custom_ev_steps_t value ) {
     return pslr_custom_ev_steps_str[value];
+}
+
+const char *get_pslr_raw_format_str( pslr_raw_format_t value ) {
+    return pslr_raw_format_str[value];
 }

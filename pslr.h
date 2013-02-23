@@ -64,12 +64,6 @@ typedef enum {
 } pslr_buffer_type;
 
 typedef enum {
-    PSLR_RAW_FORMAT_PEF,
-    PSLR_RAW_FORMAT_DNG,
-    PSLR_RAW_FORMAT_MAX
-} pslr_raw_format_t;
-
-typedef enum {
     PSLR_IMAGE_FORMAT_JPEG,
     PSLR_IMAGE_FORMAT_RAW,
     PSLR_IMAGE_FORMAT_RAW_PLUS,

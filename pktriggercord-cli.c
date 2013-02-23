@@ -550,8 +550,14 @@ int main(int argc, char **argv) {
     }
 
     if( uff == USER_FILE_FORMAT_MAX ) {
-	// do not specified: use the default of the camera
-	uff = get_user_file_format( &status );
+	// not specified
+        if( !pslr_get_model_only_limited( camhandle ) ) {
+	    // use the default of the camera
+	    uff = get_user_file_format( &status );
+        } else {
+	    // use PEF, since all the camera supports this
+	    uff = USER_FILE_FORMAT_PEF;
+        }
     } else {
 	// set the requested format
 	pslr_set_user_file_format(camhandle, uff);
