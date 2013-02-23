@@ -412,7 +412,7 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "focus", status.focus);
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "color space", get_pslr_color_space_str(status.color_space));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "image format", status.image_format);
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "raw format", status.raw_format);
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "raw format", get_pslr_raw_format_str(status.raw_format));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "light meter flags", status.light_meter_flags);
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "ec", format_rational( status.ec, "%.2f" ) );
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "custom ev steps", get_pslr_custom_ev_steps_str(status.custom_ev_steps));
@@ -1065,16 +1065,25 @@ static int ipslr_next_segment(ipslr_handle_t *p) {
 static int ipslr_buffer_segment_info(ipslr_handle_t *p, pslr_buffer_segment_info *pInfo) {
     uint8_t buf[16];
     uint32_t n;
+    int num_try = 20;
 
-    CHECK(command(p->fd, 0x04, 0x00, 0x00));
-    n = get_result(p->fd);
-    if (n != 16)
-        return PSLR_READ_ERROR;
-    CHECK(read_result(p->fd, buf, 16));
-    pInfo->a = get_uint32(&buf[0]);
-    pInfo->b = get_uint32(&buf[4]);
-    pInfo->addr = get_uint32(&buf[8]);
-    pInfo->length = get_uint32(&buf[12]);
+    pInfo->b = 0;
+    while( pInfo->b == 0 && --num_try > 0 ) {
+        CHECK(command(p->fd, 0x04, 0x00, 0x00));
+        n = get_result(p->fd);
+        if (n != 16) {
+            return PSLR_READ_ERROR;
+        }
+        CHECK(read_result(p->fd, buf, 16));
+        pInfo->a = get_uint32(&buf[0]);
+        pInfo->b = get_uint32(&buf[4]);
+        pInfo->addr = get_uint32(&buf[8]);
+        pInfo->length = get_uint32(&buf[12]);
+	if( pInfo-> b == 0 ) {
+	  DPRINT("Waiting for segment info addr: 0x%x len: %d B=%d\n", pInfo->addr, pInfo->length, pInfo->b);
+	  sleep_sec( 0.1 );
+	}
+    }
     return PSLR_OK;
 }
 
@@ -1240,7 +1249,7 @@ static int get_result(int fd) {
         DPRINT("ERROR: 0x%x\n", statusbuf[7]);
         return -1;
     }
-    return statusbuf[0] | statusbuf[1] << 8 | statusbuf[2] << 16 | statusbuf[3];
+    return statusbuf[0] | statusbuf[1] << 8 | statusbuf[2] << 16 | statusbuf[3] << 24;
 }
 
 static int read_result(int fd, uint8_t *buf, uint32_t n) {
