@@ -1,3 +1,6 @@
+version 0.80.01
+	Limited support for K-5 II / K-5 IIs
+
 version 0.80.00 ( 2013-04-04 )
 	code cleanup ( Ethan Queen )
 	Support for K-01 added by Ethan Queen <ethanqueen@gmail.com>
