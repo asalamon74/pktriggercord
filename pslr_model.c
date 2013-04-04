@@ -59,8 +59,8 @@ ipslr_model_info_t camera_models[] = {
     { 0x12b9d, "K110D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
     { 0x12b9c, "K100D",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
     { 0x12ba2, "K100D Super",    0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
-    //    { 0x12f70, "K-5 II",    0, 0,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, NULL},
-    //    { 0x12f71, "K-5 II s",  0, 0,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, NULL},
+    { 0x12f70, "K-5 II",    0, 0,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, NULL},
+    { 0x12f71, "K-5 II s",  0, 0,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, NULL},
 };
 
 static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
