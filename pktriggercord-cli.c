@@ -705,6 +705,7 @@ int main(int argc, char **argv) {
 	    printf("Taking picture %d/%d\n", frameNo+1, frames);
 	}
 	if( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
+	    DPRINT("bulb\n");
 	    pslr_bulb( camhandle, true );
 	    pslr_shutter(camhandle);
 	    gettimeofday(&current_time, NULL);
@@ -715,6 +716,7 @@ int main(int argc, char **argv) {
 	    sleep_sec( waitsec  );
 	    pslr_bulb( camhandle, false );
 	} else {
+	    DPRINT("not bulb\n");
 	    pslr_shutter(camhandle);
 	}
         pslr_get_status(camhandle, &status);
