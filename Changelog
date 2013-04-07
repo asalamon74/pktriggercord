@@ -1,5 +1,5 @@
 version 0.80.01
-	Limited support for K-5 II / K-5 IIs
+	Support for K-5 II / K-5 IIs ( thx Thomas Lehmann for testing )
 
 version 0.80.00 ( 2013-04-04 )
 	code cleanup ( Ethan Queen )
