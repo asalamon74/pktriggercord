@@ -167,7 +167,7 @@ void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
     status->custom_sensitivity_steps = get_uint32(&buf[0xa0]);
     status->af_point_select = get_uint32(&buf[0xbc]);
     status->selected_af_point = get_uint32(&buf[0xc0]);
-    status->exposure_mode = get_uint32(&buf[0xe0]);
+    status->exposure_mode = get_uint32(&buf[0xac]);
     status->current_shutter_speed.nom = get_uint32(&buf[0xf4]);
     status->current_shutter_speed.denom = get_uint32(&buf[0xf8]);
     status->current_aperture.nom = get_uint32(&buf[0xfc]);
