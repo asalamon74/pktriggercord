@@ -214,7 +214,7 @@ void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
     status->af_mode = get_uint32(&buf[0xb8]);
     status->af_point_select = get_uint32(&buf[0xbc]); // not sure
     status->selected_af_point = get_uint32(&buf[0xc0]);
-    status->exposure_mode = get_uint32(&buf[0xe0]);
+    status->exposure_mode = get_uint32(&buf[0xac]);
     status->current_shutter_speed.nom = get_uint32(&buf[0x108]);
     status->current_shutter_speed.denom = get_uint32(&buf[0x10C]);
     status->current_aperture.nom = get_uint32(&buf[0x110]);
