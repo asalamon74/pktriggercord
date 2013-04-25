@@ -13,16 +13,18 @@
     <https://sourceforge.net/projects/pkremote>
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
+    it under the terms of the GNU Lesser General Public License as published by 
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+    GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/gpl.html>.
+    and GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <stdbool.h>  
@@ -829,8 +831,8 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 
 void version(char *name) {
     printf("\n%s %s\n\n\
-Copyright (C) 2011-2012 Andras Salamon\n\
-License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>\n\
+Copyright (C) 2011-2013 Andras Salamon\n\
+License LGPLv3: GNU LGPL version 3 <http://gnu.org/licenses/lgpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n\
 \n\
