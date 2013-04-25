@@ -20,7 +20,7 @@ Summary: Remote control program for Pentax DSLR cameras.
 Name: pktriggercord
 Version: %ver
 Release: %rel
-License: GPL
+License: LGPL
 Group: Applications/Tools
 Source: http://sourceforge.net/projects/pktriggercord/files/%ver/pkTriggerCord-%ver.src.tar.gz
 URL: http://pktriggercord.sourceforge.net

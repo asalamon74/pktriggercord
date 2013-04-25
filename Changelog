@@ -1,6 +1,7 @@
 version 0.80.01
 	Support for K-5 II / K-5 IIs ( thx Thomas Lehmann for testing )
 	K10D/K20D: Exposure mode reading bugfix
+	Changing licence to LGPL
 
 version 0.80.00 ( 2013-04-04 )
 	code cleanup ( Ethan Queen )
