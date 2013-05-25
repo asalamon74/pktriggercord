@@ -8,7 +8,7 @@ MAN1DIR = $(MANDIR)/man1
 LIN_CFLAGS = $(CFLAGS)
 LIN_LDFLAGS = $(LDFLAGS)
 
-VERSION=0.81.00
+VERSION=0.81.01
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec
@@ -57,8 +57,8 @@ install:
 	install -m 0644 pentax.rules $(DESTDIR)/etc/udev/
 	install -m 0644 samsung.rules $(DESTDIR)/etc/udev/
 	cd $(DESTDIR)/etc/udev/rules.d;\
-	ln -sf ../pentax.rules 025_pentax.rules;\
-	ln -sf ../samsung.rules 025_samsung.rules
+	ln -sf ../pentax.rules 95_pentax.rules;\
+	ln -sf ../samsung.rules 95_samsung.rules
 	install -d -m 0755 $(DESTDIR)/$(MAN1DIR)
 	install -m 0644 $(MANS) $(DESTDIR)/$(MAN1DIR)
 	if [ -e ./pktriggercord ] ; then \
@@ -75,9 +75,9 @@ uninstall:
 	rm -f $(PREFIX)/bin/pktriggercord $(PREFIX)/bin/pktriggercord-cli
 	rm -rf $(PREFIX)/share/pktriggercord
 	rm -f /etc/udev/pentax.rules
-	rm -f /etc/udev/rules.d/025_pentax.rules
+	rm -f /etc/udev/rules.d/95_pentax.rules
 	rm -f /etc/udev/samsung.rules
-	rm -f /etc/udev/rules.d/025_samsung.rules
+	rm -f /etc/udev/rules.d/95_samsung.rules
 
 srczip: clean
 	mkdir -p $(TARDIR)
