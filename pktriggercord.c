@@ -2066,13 +2066,16 @@ G_MODULE_EXPORT void file_format_combo_changed_cb(GtkAction *action, gpointer us
 
 G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user_data)
 {
-  pslr_exposure_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("user_mode_combo")));
-    if (!status_new)
+    pslr_gui_exposure_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("user_mode_combo")));
+    if (!status_new) {
         return;
+    }
     assert(val >= 0);
-    assert(val < PSLR_EXPOSURE_MODE_MAX);
+    assert(val < PSLR_GUI_EXPOSURE_MODE_MAX);
 
-    pslr_set_exposure_mode(camhandle, val);
+    if (status_new == NULL || val != status_new->exposure_mode ) {
+        pslr_set_exposure_mode(camhandle, val);
+    }
 }
 
 /* ----------------------------------------------------------------------- */
