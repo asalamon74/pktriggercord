@@ -218,7 +218,8 @@ user_file_format get_user_file_format( pslr_status *st ) {
     }
 }
 
-static pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
+// most of the cameras require this exposure mode conversion step
+pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
     switch( exp ) {
     
     case PSLR_EXPOSURE_MODE_GREEN:
@@ -897,6 +898,11 @@ bool pslr_get_model_only_limited(pslr_handle_t h) {
     return p->model->buffer_size == 0 && !p->model->parser_function;
 }
 
+bool pslr_get_model_need_exposure_conversion(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->need_exposure_mode_conversion;
+}
+
 int pslr_get_model_fastest_shutter_speed(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->fastest_shutter_speed;
@@ -1015,8 +1021,9 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     } else {
         // everything OK
         (*p->model->parser_function)(p, status);
-        // required for K-x, probably for other cameras too
-        status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
+	if( p->model->need_exposure_mode_conversion ) {
+            status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
+	}
         return PSLR_OK;
     }
 }

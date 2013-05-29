@@ -250,12 +250,15 @@ int pslr_get_model_extended_iso_min(pslr_handle_t h);
 int pslr_get_model_extended_iso_max(pslr_handle_t h);
 int *pslr_get_model_jpeg_resolutions(pslr_handle_t h);
 bool pslr_get_model_only_limited(pslr_handle_t h);
+bool pslr_get_model_need_exposure_conversion(pslr_handle_t h);
 pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
 int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
 
 int get_hw_jpeg_quality( pslr_handle_t h, int jpeg_stars);
+
+pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp );
 
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4);
 

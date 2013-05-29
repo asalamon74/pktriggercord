@@ -110,6 +110,7 @@ typedef struct {
     uint32_t id1;                                    // Pentax model ID
     const char *name;                                // name
     bool old_scsi_command;                           // 1 for *ist cameras, 0 for the newer cameras
+    bool need_exposure_mode_conversion;              // is exposure_mode_conversion required
     int buffer_size;                                 // buffer size in bytes
     int jpeg_stars;                                  // maximum jpeg stars
     int jpeg_resolutions[MAX_RESOLUTION_SIZE];       // jpeg resolution table
