@@ -2,6 +2,7 @@ version 0.81.01
 	udev rule change
 	K-30 commandline exposure mode bugfix ( thx Camilo Polymeris )
 	User mode combo bugfix
+	K100D / K100D Super connection bugfix
 
 version 0.81.00 ( 2013-04-25 )
 	Support for K-5 II / K-5 IIs ( thx Thomas Lehmann for testing )
