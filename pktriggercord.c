@@ -357,10 +357,10 @@ void iso_speed_table_init(pslr_status *st) {
 }
 
 void camera_specific_init() {
-    gtk_range_set_range( GTK_RANGE(GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_hue_scale"))), -get_jpeg_property_shift(), get_jpeg_property_shift());
-    gtk_range_set_range( GTK_RANGE(GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_sharpness_scale"))), -get_jpeg_property_shift(), get_jpeg_property_shift());
-    gtk_range_set_range( GTK_RANGE(GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_saturation_scale"))), -get_jpeg_property_shift(), get_jpeg_property_shift());
-    gtk_range_set_range( GTK_RANGE(GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_contrast_scale"))), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(GW("jpeg_hue_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(GW("jpeg_sharpness_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(GW("jpeg_saturation_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    gtk_range_set_range( GTK_RANGE(GW("jpeg_contrast_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     int *resolutions = pslr_get_model_jpeg_resolutions( camhandle );
     int resindex=0;
     //    gchar buf[256];
@@ -1832,7 +1832,9 @@ G_MODULE_EXPORT void jpeg_image_tone_combo_changed_cb(GtkAction *action, gpointe
 
 G_MODULE_EXPORT void jpeg_sharpness_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
-    int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_sharpness"))));
+    DPRINT("before get sharpness\n");
+    int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_sharpness_scale"))));
+    DPRINT("after get sharpness\n");
     int ret;
     assert(value >= -get_jpeg_property_shift());
     assert(value <= get_jpeg_property_shift());
@@ -1844,7 +1846,9 @@ G_MODULE_EXPORT void jpeg_sharpness_scale_value_changed_cb(GtkAction *action, gp
 
 G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
+    DPRINT("before get contrast\n");
     int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_contrast_scale"))));
+    DPRINT("after get contrast\n");
     int ret;
     assert(value >= -get_jpeg_property_shift());
     assert(value <= get_jpeg_property_shift());
@@ -1856,7 +1860,9 @@ G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpo
 
 G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
-    int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_hue_sclae"))));
+    DPRINT("before get hue\n");
+    int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_hue_scale"))));
+    DPRINT("after get hue\n");
     int ret;
     assert(value >= -get_jpeg_property_shift());
     assert(value <= get_jpeg_property_shift());
@@ -1869,7 +1875,9 @@ G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer
 
 G_MODULE_EXPORT void jpeg_saturation_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
+    DPRINT("before get saturation\n");
     int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_saturation_scale"))));
+    DPRINT("after get saturation\n");
     int ret;
     assert(value >= -get_jpeg_property_shift());
     assert(value <= get_jpeg_property_shift());
