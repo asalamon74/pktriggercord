@@ -4,6 +4,7 @@ version 0.81.01
 	User mode combo bugfix
 	K100D / K100D Super connection bugfix ( not working )
 	gtk_range_get_value bugfix
+	Human readable exposure submode
 
 version 0.81.00 ( 2013-04-25 )
 	Support for K-5 II / K-5 IIs ( thx Thomas Lehmann for testing )

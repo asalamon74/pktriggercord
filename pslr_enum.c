@@ -127,6 +127,33 @@ const char* pslr_raw_format_str[PSLR_RAW_FORMAT_MAX] = {
     "DNG"
 };
 
+const char* pslr_exposure_submode_str[PSLR_EXPOSURE_SUBMODE_MAX] = {
+    "NONE",
+    "HISPEED",
+    "DOF",
+    "MTF",
+    "STANDARD",
+    "PORTRAIT",
+    "LANDSCAPE",
+    "MACRO",
+    "SPORT",
+    "NIGHTSCENEPORTRAIT",
+    "NOFLASH",
+    "NIGHTSCENE",
+    "SURFANDSNOW",
+    "TEXT",
+    "SUNSET",
+    "KIDS",
+    "PET",
+    "CANDLELIGHT",
+    "MUSEUM",
+    "FOOD",
+    "STAGE",
+    "NIGHTSNAP",
+    "SWALLOWDOF"
+};
+
+
 // case insenstive comparison
 // strnicmp
 int str_comparison_i (const char *s1, const char *s2, int n) {
@@ -233,4 +260,8 @@ const char *get_pslr_custom_ev_steps_str( pslr_custom_ev_steps_t value ) {
 
 const char *get_pslr_raw_format_str( pslr_raw_format_t value ) {
     return pslr_raw_format_str[value];
+}
+
+const char *get_pslr_exposure_submode_str( pslr_exposure_submode_t value ) {
+    return pslr_exposure_submode_str[value];
 }
