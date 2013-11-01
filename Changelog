@@ -1,4 +1,4 @@
-version 0.81.01
+version 0.81.02 ( 2013-11-01 )
 	udev rule change
 	K-30 commandline exposure mode bugfix ( thx Camilo Polymeris )
 	User mode combo bugfix
