@@ -126,6 +126,33 @@ typedef enum {
     PSLR_RAW_FORMAT_MAX
 } pslr_raw_format_t;
 
+typedef enum {
+    PSLR_EXPOSURE_SUBMODE_NONE,
+    PSLR_EXPOSURE_SUBMODE_HISPEED,
+    PSLR_EXPOSURE_SUBMODE_DOF,
+    PSLR_EXPOSURE_SUBMODE_MTF,
+    PSLR_EXPOSURE_SUBMODE_STANDARD,
+    PSLR_EXPOSURE_SUBMODE_PORTRAIT,
+    PSLR_EXPOSURE_SUBMODE_LANDSCAPE,
+    PSLR_EXPOSURE_SUBMODE_MACRO,
+    PSLR_EXPOSURE_SUBMODE_SPORT,
+    PSLR_EXPOSURE_SUBMODE_NIGHTSCENEPORTRAIT,
+    PSLR_EXPOSURE_SUBMODE_NOFLASH,
+    PSLR_EXPOSURE_SUBMODE_NIGHTSCENE,
+    PSLR_EXPOSURE_SUBMODE_SURFANDSNOW,
+    PSLR_EXPOSURE_SUBMODE_TEXT,
+    PSLR_EXPOSURE_SUBMODE_SUNSET,
+    PSLR_EXPOSURE_SUBMODE_KIDS,
+    PSLR_EXPOSURE_SUBMODE_PET,
+    PSLR_EXPOSURE_SUBMODE_CANDLELIGHT,
+    PSLR_EXPOSURE_SUBMODE_MUSEUM,
+    PSLR_EXPOSURE_SUBMODE_FOOD,
+    PSLR_EXPOSURE_SUBMODE_STAGE,
+    PSLR_EXPOSURE_SUBMODE_NIGHTSNAP,
+    PSLR_EXPOSURE_SUBMODE_SWALLOWDOF,
+    PSLR_EXPOSURE_SUBMODE_MAX
+} pslr_exposure_submode_t;
+
 int str_comparison_i (const char *s1, const char *s2, int n);
 int find_in_array( const char** array, int length, char* str );
 
@@ -158,5 +185,6 @@ const char *get_pslr_custom_ev_steps_str( pslr_custom_ev_steps_t value );
 
 const char *get_pslr_raw_format_str( pslr_raw_format_t value );
 
+const char *get_pslr_exposure_submode_str( pslr_exposure_submode_t value );
 
 #endif
