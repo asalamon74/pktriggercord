@@ -92,6 +92,7 @@ static struct option const longopts[] ={
     {"device", required_argument, NULL, 18},
     {"reconnect", no_argument, NULL, 19},
     {"timeout", required_argument, NULL, 20},
+    {"noshutter", no_argument, NULL, 21},
     { NULL, 0, NULL, 0}
 };
 
@@ -201,6 +202,7 @@ int main(int argc, char **argv) {
     bool reconnect = false;
     struct timeval prev_time;
     struct timeval current_time;
+    bool noshutter = false;
 
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
@@ -481,6 +483,10 @@ int main(int argc, char **argv) {
 		}
 		break;
 
+            case 21:
+                noshutter = true;
+                break;
+
         }
     }
 
@@ -703,25 +709,45 @@ int main(int argc, char **argv) {
 	    bracket_index = 0;
 	    gettimeofday(&prev_time, NULL);
 	}
-	if( frames > 1 ) {
-	    printf("Taking picture %d/%d\n", frameNo+1, frames);
-	}
-	if( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
-	    DPRINT("bulb\n");
-	    pslr_bulb( camhandle, true );
-	    pslr_shutter(camhandle);
-	    gettimeofday(&current_time, NULL);
-	    waitsec = 1.0 * shutter_speed.nom / shutter_speed.denom - timeval_diff(&current_time, &prev_time) / 1000000.0;
-	    if( waitsec < 0 ) {
-		waitsec = 0;
+	if( noshutter ) {
+	    while (1) {
+	        if( PSLR_OK != pslr_get_status (camhandle, &status) ) {
+                    break;
+	        }
+
+		if( status.bufmask != 0 ) {
+		    break; //new image ?
+		}
+
+		gettimeofday (&current_time, NULL);
+		if ( timeout != 0 && ( timeval_diff(&current_time, &prev_time) / 1000000.0 >= timeout) ) {
+		    printf("Timeout %d sec passed!\n", timeout);
+		    break;
+		}
+		
+		usleep(0.1); /* 100 ms */
 	    }
-	    sleep_sec( waitsec  );
-	    pslr_bulb( camhandle, false );
 	} else {
-	    DPRINT("not bulb\n");
-	    pslr_shutter(camhandle);
+	    if( frames > 1 ) {
+		printf("Taking picture %d/%d\n", frameNo+1, frames);
+	    }
+	    if( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
+		DPRINT("bulb\n");
+		pslr_bulb( camhandle, true );
+		pslr_shutter(camhandle);
+		gettimeofday(&current_time, NULL);
+		waitsec = 1.0 * shutter_speed.nom / shutter_speed.denom - timeval_diff(&current_time, &prev_time) / 1000000.0;
+		if( waitsec < 0 ) {
+		    waitsec = 0;
+		}
+		sleep_sec( waitsec  );
+		pslr_bulb( camhandle, false );
+	    } else {
+		DPRINT("not bulb\n");
+		pslr_shutter(camhandle);
+	    }
+	    pslr_get_status(camhandle, &status);
 	}
-        pslr_get_status(camhandle, &status);
 	if( bracket_index+1 >= bracket_count || frameNo+1>=frames ) {
 	    if( bracket_index+1 < bracket_count ) {
 		// partial bracket set
@@ -824,6 +850,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
       --file_format=FORMAT              valid values: PEF, DNG, JPEG\n\
   -o, --output_file=FILE                send output to FILE instead of stdout\n\
       --debug                           turn on debug messages\n\
+      --noshutter                       do not send shutter command, just wait for new photo, download and delete from camera\n\
   -v, --version                         display version information and exit\n\
   -h, --help                            display this help and exit\n\
 \n", name);
