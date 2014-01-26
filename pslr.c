@@ -284,7 +284,7 @@ pslr_handle_t pslr_init( char *model, char *device ) {
 		    } else {
 			DPRINT("Ignoring camera %s %s\n", vendorId, productId);
 			pslr_shutdown ( &pslr );
-			pslr.id1 = 0;
+			pslr.id = 0;
 			pslr.model = NULL;
 		    }
 		} else {
@@ -931,7 +931,7 @@ pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h) 
 const char *pslr_camera_name(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     int ret;
-    if (p->id1 == 0) {
+    if (p->id == 0) {
         ret = ipslr_identify(p);
         if (ret != PSLR_OK)
             return NULL;
@@ -940,7 +940,7 @@ const char *pslr_camera_name(pslr_handle_t h) {
         return p->model->name;
     else {
         static char unk_name[256];
-        snprintf(unk_name, sizeof (unk_name), "ID#%x", p->id1);
+        snprintf(unk_name, sizeof (unk_name), "ID#%x", p->id);
         unk_name[sizeof (unk_name) - 1] = '\0';
         return unk_name;
     }
@@ -1140,9 +1140,9 @@ static int ipslr_identify(ipslr_handle_t *p) {
     if (n != 8)
         return PSLR_READ_ERROR;
     CHECK(read_result(p->fd, idbuf, 8));
-    p->id1 = get_uint32(&idbuf[0]);
-    DPRINT("id1 of the camera: %x\n", p->id1);
-    p->model = find_model_by_id( p->id1 );
+    p->id = get_uint32(&idbuf[0]);
+    DPRINT("id of the camera: %x\n", p->id);
+    p->model = find_model_by_id( p->id );
     return PSLR_OK;
 }
 

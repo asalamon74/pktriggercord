@@ -107,7 +107,7 @@ typedef struct {
 typedef void (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);
 
 typedef struct {
-    uint32_t id1;                                    // Pentax model ID
+    uint32_t id;                                     // Pentax model ID
     const char *name;                                // name
     bool old_scsi_command;                           // 1 for *ist cameras, 0 for the newer cameras
     bool need_exposure_mode_conversion;              // is exposure_mode_conversion required
@@ -133,7 +133,7 @@ typedef struct {
 struct ipslr_handle {
     int fd;
     pslr_status status;
-    uint32_t id1;
+    uint32_t id;
     ipslr_model_info_t *model;
     ipslr_segment_t segments[MAX_SEGMENTS];
     uint32_t segment_count;
