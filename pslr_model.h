@@ -156,9 +156,7 @@ ipslr_model_info_t *find_model_by_id( uint32_t id );
 
 int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars);
 
-uint16_t get_uint16(uint8_t *buf);
 uint32_t get_uint32(uint8_t *buf);
-int32_t get_int32(uint8_t *buf);
 
 void hexdump(uint8_t *buf, uint32_t bufLen);
 
