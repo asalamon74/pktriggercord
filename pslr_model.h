@@ -141,17 +141,6 @@ struct ipslr_handle {
     uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
 };
 
-void ipslr_status_parse_kx   (ipslr_handle_t *p, pslr_status *status);
-void ipslr_status_parse_kr   (ipslr_handle_t *p, pslr_status *status);
-void ipslr_status_parse_k20d (ipslr_handle_t *p, pslr_status *status);
-void ipslr_status_parse_k10d (ipslr_handle_t *p, pslr_status *status);
-void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status);
-void ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status);
-void ipslr_status_parse_k5   (ipslr_handle_t *p, pslr_status *status);
-void ipslr_status_parse_k30  (ipslr_handle_t *p, pslr_status *status);
-void ipslr_status_parse_km   (ipslr_handle_t *p, pslr_status *status);
-void ipslr_status_parse_k01  (ipslr_handle_t *p, pslr_status *status);
-
 ipslr_model_info_t *find_model_by_id( uint32_t id );
 
 int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars);
