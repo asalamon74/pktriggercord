@@ -139,8 +139,13 @@ void hexdump(uint8_t *buf, uint32_t bufLen) {
 }
 
 int _get_user_jpeg_stars( ipslr_model_info_t *model, int hwqual ) {
-    return model->jpeg_stars - hwqual;
+    return model->max_jpeg_stars - hwqual;
 }
+
+int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars) {
+    return model->max_jpeg_stars - user_jpeg_stars;
+}
+
 
 void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;

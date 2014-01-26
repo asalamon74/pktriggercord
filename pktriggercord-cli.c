@@ -576,7 +576,7 @@ int main(int argc, char **argv) {
     }
 
     if (quality>-1) {
-        if ( quality > pslr_get_model_jpeg_stars(camhandle) ) {
+        if ( quality > pslr_get_model_max_jpeg_stars(camhandle) ) {
             warning_message("%s: Invalid jpeg quality setting.\n", argv[0]);
         }
         pslr_set_jpeg_stars(camhandle, quality);

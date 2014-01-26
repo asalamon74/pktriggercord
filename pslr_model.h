@@ -112,7 +112,7 @@ typedef struct {
     bool old_scsi_command;                           // 1 for *ist cameras, 0 for the newer cameras
     bool need_exposure_mode_conversion;              // is exposure_mode_conversion required
     int buffer_size;                                 // buffer size in bytes
-    int jpeg_stars;                                  // maximum jpeg stars
+    int max_jpeg_stars;                              // maximum jpeg stars
     int jpeg_resolutions[MAX_RESOLUTION_SIZE];       // jpeg resolution table
     int jpeg_property_levels;                        // 5 [-2, 2] or 7 [-3,3] or 9 [-4,4]
     int fastest_shutter_speed;                       // fastest shutter speed denominator
@@ -153,6 +153,8 @@ void ipslr_status_parse_km   (ipslr_handle_t *p, pslr_status *status);
 void ipslr_status_parse_k01  (ipslr_handle_t *p, pslr_status *status);
 
 ipslr_model_info_t *find_model_by_id( uint32_t id );
+
+int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars);
 
 uint16_t get_uint16(uint8_t *buf);
 uint32_t get_uint32(uint8_t *buf);
