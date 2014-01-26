@@ -38,33 +38,6 @@
 
 #include "pslr_model.h"
 
-ipslr_model_info_t camera_models[] = {
-    { 0x12aa2, "*ist DS",     1, 1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, 200,  3200, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_istds },
-    { 0x12cd2, "K20D",        0, 1, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k20d  },
-    { 0x12c1e, "K10D",        0, 1, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_k10d  },
-    { 0x12c20, "GX10",        0, 1, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_k10d  },
-    { 0x12cd4, "GX20",        0, 1, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k20d  },
-    { 0x12dfe, "K-x",         0, 1, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, 100, 12800, PSLR_JPEG_IMAGE_TONE_MUTED,         ipslr_status_parse_kx    },
-    { 0x12cfa, "K200D",       0, 1, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k200d }, 
-    { 0x12db8, "K-7",         0, 1, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MUTED,         ipslr_status_parse_kx    },
-    { 0x12e6c, "K-r",         0, 1, 440, 3, {12, 10, 6, 2}, 9, 6000, 200,12800, 100, 25600, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_kr    },
-    { 0x12e76, "K-5",         0, 1, 444, 4, {16, 10, 6, 2}, 9, 8000, 100,12800,  80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k5    },
-    { 0x12d72, "K-2000",      0, 1, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_km    },
-    { 0x12d73, "K-m",         0, 1, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_km    },
-    { 0x12f52, "K-30",        0, 0, 452, 3, {16, 12, 8, 5}, 9, 6000, 100,12800, 100, 25600, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k30   },
-    { 0x12ef8, "K-01",        0, 1, 452, 3, {16, 12, 8, 5}, 9, 4000, 100,12800, 100, 25600, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k01   },
-    { 0x12f70, "K-5II",       0, 1, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k5   },
-    { 0x12f71, "K-5IIs",      0, 1, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k5   },
-// only limited support from here
-    { 0x12994, "*ist D",      1, 1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_NONE  , NULL}, // buffersize: 264 
-    { 0x12b60, "*ist DS2",    1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
-    { 0x12b1a, "*ist DL",     1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
-    { 0x12b80, "GX-1L",       1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
-    { 0x12b9d, "K110D",       0, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
-    { 0x12b9c, "K100D",       1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
-    { 0x12ba2, "K100D Super", 1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
-};
-
 static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
 static int first = 1;
 
@@ -89,17 +62,6 @@ static void ipslr_status_diff(uint8_t *buf) {
         memcpy(lastbuf, buf, MAX_STATUS_BUF_SIZE);
     }
 }
-
-ipslr_model_info_t *find_model_by_id( uint32_t id ) {
-    int i;
-    for( i = 0; i<sizeof (camera_models) / sizeof (camera_models[0]); i++) {
-        if( camera_models[i].id1 == id ) {
-            return &camera_models[i];
-        }
-    }
-    return NULL;
-}
-
 
 uint16_t get_uint16(uint8_t *buf) {
     uint16_t res;
@@ -489,4 +451,41 @@ void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     status->focus = get_int32(&buf[0x184]);
     // Drive mode: 0=Single shot, 1= Continous Hi, 2= Continous Low or Self timer 12s, 3=Self timer 2s
     // 4= remote, 5= remote 3s delay
+}
+
+ipslr_model_info_t camera_models[] = {
+    { 0x12aa2, "*ist DS",     1, 1, 264, 3, {6, 4, 2},      5, 4000, 200, 3200, 200,  3200, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_istds },
+    { 0x12cd2, "K20D",        0, 1, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k20d  },
+    { 0x12c1e, "K10D",        0, 1, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_k10d  },
+    { 0x12c20, "GX10",        0, 1, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_k10d  },
+    { 0x12cd4, "GX20",        0, 1, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k20d  },
+    { 0x12dfe, "K-x",         0, 1, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, 100, 12800, PSLR_JPEG_IMAGE_TONE_MUTED,         ipslr_status_parse_kx    },
+    { 0x12cfa, "K200D",       0, 1, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k200d }, 
+    { 0x12db8, "K-7",         0, 1, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MUTED,         ipslr_status_parse_kx    },
+    { 0x12e6c, "K-r",         0, 1, 440, 3, {12, 10, 6, 2}, 9, 6000, 200,12800, 100, 25600, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_kr    },
+    { 0x12e76, "K-5",         0, 1, 444, 4, {16, 10, 6, 2}, 9, 8000, 100,12800,  80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k5    },
+    { 0x12d72, "K-2000",      0, 1, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_km    },
+    { 0x12d73, "K-m",         0, 1, 412, 3, {10, 6, 2},     9, 4000, 100, 3200, 100,  3200, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_km    },
+    { 0x12f52, "K-30",        0, 0, 452, 3, {16, 12, 8, 5}, 9, 6000, 100,12800, 100, 25600, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k30   },
+    { 0x12ef8, "K-01",        0, 1, 452, 3, {16, 12, 8, 5}, 9, 4000, 100,12800, 100, 25600, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k01   },
+    { 0x12f70, "K-5II",       0, 1, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k5   },
+    { 0x12f71, "K-5IIs",      0, 1, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_k5   },
+// only limited support from here
+    { 0x12994, "*ist D",      1, 1, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_NONE  , NULL}, // buffersize: 264 
+    { 0x12b60, "*ist DS2",    1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+    { 0x12b1a, "*ist DL",     1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+    { 0x12b80, "GX-1L",       1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+    { 0x12b9d, "K110D",       0, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+    { 0x12b9c, "K100D",       1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+    { 0x12ba2, "K100D Super", 1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+};
+
+ipslr_model_info_t *find_model_by_id( uint32_t id ) {
+    int i;
+    for( i = 0; i<sizeof (camera_models) / sizeof (camera_models[0]); i++) {
+        if( camera_models[i].id1 == id ) {
+            return &camera_models[i];
+        }
+    }
+    return NULL;
 }
