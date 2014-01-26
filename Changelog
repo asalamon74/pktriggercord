@@ -1,6 +1,7 @@
 version 0.81.03
 	--noshutter ( thx Piotr Dlugosz )
 	Support for Samsung GX-1L ??
+	K-5 IIs jpeg star calculation fix ??
 
 version 0.81.02 ( 2013-11-01 )
 	udev rule change

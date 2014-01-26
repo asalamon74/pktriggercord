@@ -101,11 +101,31 @@ void hexdump(uint8_t *buf, uint32_t bufLen) {
 }
 
 int _get_user_jpeg_stars( ipslr_model_info_t *model, int hwqual ) {
-    return model->max_jpeg_stars - hwqual;
+    if( model->id == 0x12f71 ) {
+        // K5IIs hack
+        // TODO: test it
+        if( hwqual == model->max_jpeg_stars -1 ) {
+            return model->max_jpeg_stars;
+        } else {
+            return model->max_jpeg_stars - 1 - hwqual;
+	}
+    } else {
+        return model->max_jpeg_stars - hwqual;
+    }
 }
 
 int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars) {
-    return model->max_jpeg_stars - user_jpeg_stars;
+    if( model->id == 0x12f71 ) {
+        // K5IIs hack
+        // TODO: test it
+        if( user_jpeg_stars == model->max_jpeg_stars ) {
+            return model->max_jpeg_stars-1;
+        } else {
+            return model->max_jpeg_stars - 1 - user_jpeg_stars;
+	}
+    } else {
+        return model->max_jpeg_stars - user_jpeg_stars;
+    }
 }
 
 
