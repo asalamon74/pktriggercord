@@ -577,18 +577,13 @@ int pslr_set_af_point_sel(pslr_handle_t h, pslr_af_point_sel_t af_point_sel) {
     return ipslr_handle_command_x18( p, true, X18_AF_POINT_SEL, 1, af_point_sel, 0, 0);    
 }
 
-int get_hw_jpeg_quality( pslr_handle_t h, int jpeg_stars) {
-    ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return p->model->jpeg_stars - jpeg_stars;
-}
-
 int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars ) {
     int hwqual;
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if( jpeg_stars > p->model->jpeg_stars ) {
+    if( jpeg_stars > p->model->max_jpeg_stars ) {
         return PSLR_PARAM;
     }
-    hwqual = get_hw_jpeg_quality( h, jpeg_stars );
+    hwqual = get_hw_jpeg_quality( p->model, jpeg_stars );
     return ipslr_handle_command_x18( p, true, X18_JPEG_STARS, 2, 1, hwqual, 0);
 }
 
@@ -873,9 +868,9 @@ int pslr_select_af_point(pslr_handle_t h, uint32_t point) {
     return ipslr_handle_command_x18( p, true, X18_AF_POINT, 1, point, 0, 0);
 }
 
-int pslr_get_model_jpeg_stars(pslr_handle_t h) {
+int pslr_get_model_max_jpeg_stars(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return p->model->jpeg_stars;
+    return p->model->max_jpeg_stars;
 }
 
 int pslr_get_model_buffer_size(pslr_handle_t h) {

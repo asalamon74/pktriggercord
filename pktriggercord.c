@@ -373,7 +373,7 @@ void camera_specific_init() {
 
     combobox_append( GTK_COMBO_BOX(GW("jpeg_resolution_combo")), str_resolutions, MAX_RESOLUTION_SIZE );
 
-    int starindex= pslr_get_model_jpeg_stars( camhandle) ;
+    int starindex= pslr_get_model_max_jpeg_stars( camhandle) ;
     const char ch[] = "*********";
     char **str_jpegstars = malloc( starindex * sizeof( char * ));
     int num_stars = starindex;
@@ -1803,7 +1803,7 @@ G_MODULE_EXPORT void jpeg_quality_combo_changed_cb(GtkAction *action, gpointer u
     int val = strlen(stars);
     int ret;
     assert(val >= 0);
-    assert(val <= pslr_get_model_jpeg_stars( camhandle) );
+    assert(val <= pslr_get_model_max_jpeg_stars( camhandle) );
 
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
     if (status_new == NULL || status_new->jpeg_quality != val) {

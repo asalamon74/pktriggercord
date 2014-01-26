@@ -212,7 +212,7 @@ int pslr_set_exposure_mode(pslr_handle_t h, pslr_exposure_mode_t mode);
 int pslr_select_af_point(pslr_handle_t h, uint32_t point);
 
 const char *pslr_camera_name(pslr_handle_t h);
-int pslr_get_model_jpeg_stars(pslr_handle_t h);
+int pslr_get_model_max_jpeg_stars(pslr_handle_t h);
 int pslr_get_model_jpeg_property_levels(pslr_handle_t h);
 int pslr_get_model_buffer_size(pslr_handle_t h);
 int pslr_get_model_fastest_shutter_speed(pslr_handle_t h);
@@ -227,8 +227,6 @@ pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
 int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
-
-int get_hw_jpeg_quality( pslr_handle_t h, int jpeg_stars);
 
 pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp );
 
