@@ -498,6 +498,7 @@ ipslr_model_info_t camera_models[] = {
     { 0x12b9d, "K110D",       0, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
     { 0x12b9c, "K100D",       1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
     { 0x12ba2, "K100D Super", 1, 1, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, NULL},
+    { 0x12fc0, "K-3"        , 0, 1, 0,   4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, NULL},
 };
 
 ipslr_model_info_t *find_model_by_id( uint32_t id ) {
