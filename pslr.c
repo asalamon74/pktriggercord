@@ -321,13 +321,16 @@ int pslr_connect(pslr_handle_t h) {
     if( !p->model->old_scsi_command ) {
         CHECK(ipslr_cmd_00_09(p, 2));
     }
+    DPRINT("before status1 full\n");
     CHECK(ipslr_status_full(p, &p->status));
+    DPRINT("after status1 full\n");
     CHECK(ipslr_cmd_10_0a(p, 1));
     if( p->model->old_scsi_command ) {
         CHECK(ipslr_cmd_00_05(p));
     }
-
+    DPRINT("before status2 full\n");
     CHECK(ipslr_status_full(p, &p->status));
+    DPRINT("after status2 full\n");
     return 0;
 }
 
@@ -1008,8 +1011,7 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     DPRINT("read %d bytes\n", n);
     int expected_bufsize = p->model != NULL ? p->model->buffer_size : 0;
     if( p->model == NULL ) {
-      DPRINT("p model null\n");
-      
+      DPRINT("p model null\n");     
     }
     DPRINT("expected_bufsize: %d\n",expected_bufsize);
 
