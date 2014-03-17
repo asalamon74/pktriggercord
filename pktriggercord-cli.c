@@ -501,7 +501,7 @@ int main(int argc, char **argv) {
 
     gettimeofday(&prev_time, NULL);
     while (!(camhandle = pslr_init( model, device ))) {
-      DPRINT("foundinwhile\n");
+        DPRINT("foundinwhile\n");
         gettimeofday(&current_time, NULL);
 	if( timeout == 0 || timeout > timeval_diff(&current_time, &prev_time) / 1000000.0 ) {
 	  sleep_sec(1);
