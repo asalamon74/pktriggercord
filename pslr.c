@@ -312,6 +312,10 @@ int pslr_connect(pslr_handle_t h) {
     CHECK(ipslr_set_mode(p, 1));
     CHECK(ipslr_status(p, statusbuf));
     CHECK(ipslr_identify(p));
+    if( !p->model ) {
+      DPRINT("Unknown Pentax camera.\n");
+      return 1;
+    }      
     CHECK(ipslr_status_full(p, &p->status));
     DPRINT("init bufmask=0x%x\n", p->status.bufmask);
     if( !p->model->old_scsi_command ) {
@@ -1002,7 +1006,11 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     CHECK(command(p->fd, 0, 8, 0));
     n = get_result(p->fd);
     DPRINT("read %d bytes\n", n);
-    int expected_bufsize = p->model->buffer_size;
+    int expected_bufsize = p->model != NULL ? p->model->buffer_size : 0;
+    if( p->model == NULL ) {
+      DPRINT("p model null\n");
+      
+    }
     DPRINT("expected_bufsize: %d\n",expected_bufsize);
 
     CHECK(read_result(p->fd, p->status_buffer, n > MAX_STATUS_BUF_SIZE ? MAX_STATUS_BUF_SIZE: n));
