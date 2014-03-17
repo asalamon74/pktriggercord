@@ -1232,8 +1232,8 @@ static int get_status(int fd) {
     while (1) {
         //usleep(POLL_INTERVAL);
         CHECK(read_status(fd, statusbuf));
-        //DPRINT("get_status->\n");
-        //hexdump(statusbuf, 8);
+        DPRINT("get_status->\n");
+        hexdump(statusbuf, 8);
         if ((statusbuf[7] & 0x01) == 0)
             break;
         //DPRINT("Waiting for ready - ");
