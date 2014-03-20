@@ -3,7 +3,7 @@ version 0.81.03
 	Support for Samsung GX-1L ??
 	K-5 IIs jpeg star calculation fix ??
 	Unknown camera segmentation fault bugfix
-	Limited support for K-3 ( testing )
+	Limited support for K-3 ( not working )
 
 version 0.81.02 ( 2013-11-01 )
 	udev rule change
