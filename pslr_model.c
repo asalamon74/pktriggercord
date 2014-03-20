@@ -479,7 +479,7 @@ ipslr_model_info_t camera_models[] = {
     { 0x12c1e, "K10D",        0, 1, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_k10d  },
     { 0x12c20, "GX10",        0, 1, 392, 3, {10, 6, 2},     7, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_BRIGHT,        ipslr_status_parse_k10d  },
     { 0x12cd4, "GX20",        0, 1, 412, 4, {14, 10, 6, 2}, 7, 4000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k20d  },
-    { 0x12dfe, "K-x",         0, 1, 0, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, 100, 12800, PSLR_JPEG_IMAGE_TONE_MUTED,         NULL    },
+    { 0x12dfe, "K-x",         0, 1, 436, 3, {12, 10, 6, 2}, 9, 6000, 200, 6400, 100, 12800, PSLR_JPEG_IMAGE_TONE_MUTED,         ipslr_status_parse_kx    },
     { 0x12cfa, "K200D",       0, 1, 408, 3, {10, 6, 2},     9, 4000, 100, 1600, 100,  1600, PSLR_JPEG_IMAGE_TONE_MONOCHROME,    ipslr_status_parse_k200d }, 
     { 0x12db8, "K-7",         0, 1, 436, 4, {14, 10, 6, 2}, 9, 8000, 100, 3200, 100,  6400, PSLR_JPEG_IMAGE_TONE_MUTED,         ipslr_status_parse_kx    },
     { 0x12e6c, "K-r",         0, 1, 440, 3, {12, 10, 6, 2}, 9, 6000, 200,12800, 100, 25600, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, ipslr_status_parse_kr    },
@@ -508,13 +508,13 @@ ipslr_model_info_t *find_model_by_id( uint32_t id ) {
       ((id>>8)&0xff00) |
       ((id<<8)&0xff0000) | 
       ((id<<24)&0xff000000);
-    DPRINT("id: %x, swappedid: %x\n", id, swappedid );
+    //    DPRINT("id: %x, swappedid: %x\n", id, swappedid );
     for( i = 0; i<sizeof (camera_models) / sizeof (camera_models[0]); i++) {
       if( camera_models[i].id == id || camera_models[i].id == swappedid) {
-	  DPRINT("found %d\n",i);
+	//	  DPRINT("found %d\n",i);
             return &camera_models[i];
         }
     }
-    DPRINT("not found\n");
+    //    DPRINT("not found\n");
     return NULL;
 }
