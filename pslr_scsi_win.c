@@ -39,7 +39,9 @@
 #define SCSI_IOCTL_DATA_IN              1
 #define SCSI_IOCTL_DATA_OUT             0
 
+/*
 #define IOCTL_STORAGE_QUERY_PROPERTY    0x2d1400
+
 
 typedef enum _STORAGE_PROPERTY_ID 
 {
@@ -54,6 +56,7 @@ typedef enum _STORAGE_PROPERTY_ID
     StorageDeviceTrimProperty,
     StorageDeviceWriteAggregationProperty
 } STORAGE_PROPERTY_ID;
+
 
 typedef enum _STORAGE_QUERY_TYPE
 {
@@ -107,7 +110,7 @@ typedef struct _STORAGE_DEVICE_DESCRIPTOR
     DWORD RawPropertiesLength;
     BYTE  RawDeviceProperties[1];
 } STORAGE_DEVICE_DESCRIPTOR;
-
+*/
 
 typedef struct _SCSI_PASS_THROUGH_DIRECT
 {

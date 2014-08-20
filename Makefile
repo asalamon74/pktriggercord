@@ -8,7 +8,7 @@ MAN1DIR = $(MANDIR)/man1
 LIN_CFLAGS = $(CFLAGS)
 LIN_LDFLAGS = $(LDFLAGS)
 
-VERSION=0.81.04
+VERSION=0.81.05
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec
@@ -35,8 +35,8 @@ SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.ru
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
-WINGCC=i686-pc-mingw32-gcc
-WINMINGW=/usr/i686-pc-mingw32/sys-root/mingw
+WINGCC=i686-w64-mingw32-gcc
+WINMINGW=/usr/i686-w64-mingw32/sys-root/mingw
 WINDIR=$(TARDIR)-win
 
 pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
@@ -53,6 +53,7 @@ pktriggercord: pktriggercord.c $(OBJS)
 install:
 	install -d $(DESTDIR)/$(PREFIX)/bin
 	install -s -m 0755 pktriggercord-cli $(DESTDIR)/$(PREFIX)/bin/
+	(which setcap && setcap CAP_SYS_RAWIO+eip $(DESTDIR)/$(PREFIX)/bin/pktriggercord-cli) || true
 	install -d $(DESTDIR)/etc/udev/rules.d
 	install -m 0644 pentax.rules $(DESTDIR)/etc/udev/
 	install -m 0644 samsung.rules $(DESTDIR)/etc/udev/
@@ -63,6 +64,7 @@ install:
 	install -m 0644 $(MANS) $(DESTDIR)/$(MAN1DIR)
 	if [ -e ./pktriggercord ] ; then \
 	install -s -m 0755 pktriggercord $(DESTDIR)/$(PREFIX)/bin/; \
+	(which setcap && setcap CAP_SYS_RAWIO+eip $(DESTDIR)/$(PREFIX)/bin/pktriggercord) || true; \
 	install -d $(DESTDIR)/$(PREFIX)/share/pktriggercord/; \
 	install -m 0644 pktriggercord.ui $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
 	fi
