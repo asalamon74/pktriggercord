@@ -1,5 +1,5 @@
 %define name      pktriggercord	
-%define ver       0.81.04
+%define ver       0.81.05
 %define rel       1
 %define prefix    /usr
 %define debug_package %{nil}
@@ -42,6 +42,10 @@ make PREFIX=%{prefix}
 %install
 rm -rf $RPM_BUILD_ROOT
 make install PREFIX=%{prefix} DESTDIR=${RPM_BUILD_ROOT}
+
+%post
+(which setcap && setcap CAP_SYS_RAWIO+eip /usr/bin/pktriggercord-cli) || true
+(which setcap && setcap CAP_SYS_RAWIO+eip /usr/bin/pktriggercord) || true
 
 %clean
 rm -rf $RPM_BUILD_ROOT

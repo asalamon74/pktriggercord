@@ -8,5 +8,6 @@ LABEL="samsung_rules_start"
 # WAIT_FOR_SYSFS="device/vendor"
 ATTRS{vendor}=="SAMSUNG", ATTRS{model}=="DIGITAL_CAMERA", MODE="0666", GROUP="plugdev"
 ATTRS{vendor}=="SAMSUNG", ATTRS{model}=="DSC*", MODE="0666", GROUP="plugdev"
+ATTRS{vendor}=="SAMSUNG", ATTRS{model}=="K*", MODE="0666", GROUP="plugdev"
 
 LABEL="samsung_rules_end"
