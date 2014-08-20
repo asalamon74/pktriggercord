@@ -1,6 +1,7 @@
 version 0.81.05
 	Using newer mingw for Windows crosscompile
 	Attemp to fix root requirement
+	strncpy bugfix
 
 version 0.81.04 ( 2014-05-01 )
 	--noshutter ( thx Piotr Dlugosz )

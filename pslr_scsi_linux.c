@@ -81,8 +81,9 @@ char **get_drives(int *driveNum) {
     closedir(d);
     ret = malloc( j * sizeof(char*) );
     for( jj=0; jj<j; ++jj ) {
-	ret[jj] = malloc( sizeof(tmp[jj]) );
-	strncpy( ret[jj], tmp[jj], sizeof(tmp[jj]) );
+        ret[jj] = malloc( strlen(tmp[jj])+1 );
+	strncpy( ret[jj], tmp[jj], strlen(tmp[jj]) );
+	ret[jj][strlen(tmp[jj])]='\0';
     }
     *driveNum = j;
     return ret;
