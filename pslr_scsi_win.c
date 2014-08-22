@@ -232,7 +232,7 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
 
 void close_drive(int *hDevice)
 {
-    CloseHandle(*hDevice);
+  CloseHandle((HANDLE)*hDevice);
 }
 
 int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
