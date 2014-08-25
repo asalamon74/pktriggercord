@@ -816,7 +816,7 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
 
 void print_status_info( pslr_handle_t h, pslr_status status ) {    
     printf("\n");
-    printf( collect_status_info( h, status ) );
+    printf( "%s", collect_status_info( h, status ) );
 }
 
 void usage(char *name) {

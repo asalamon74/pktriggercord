@@ -21,6 +21,14 @@ DEBFULLNAME="Andras Salamon"
 DESTDIR ?=
 ARCH=$(shell uname -m)
 
+#variables for Android
+ANDROID=android
+ANDROID_DIR = android
+ANDROID_ANT_FILE = $(ANDROID_DIR)/build.xml
+ANDROID_PROJECT_NAME = PkTriggerCord
+APK_FILE = $(PROJECT_NAME)-debug.apk
+NDK_BUILD = ndk-build
+
 LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
 LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0)
 
@@ -147,3 +155,24 @@ win: clean pktriggercord_commandline.html
 	rm -f $(WINDIR).zip
 	zip -rj $(WINDIR).zip $(WINDIR)
 	rm -r $(WINDIR)
+
+androidcreate:
+	$(ANDROID) create project \
+	--path $(ANDROID_DIR) \
+	--target android-12 \
+	--name $(ANDROID_PROJECT_NAME) \
+	--package info.melda.sala.pktriggercord \
+	--activity MainActivity
+	mkdir $(ANDROID_DIR)/jni
+	ln -s ../.. $(ANDROID_DIR)/jni/src
+
+$(ANDROID_DIR)/build.xml:
+	$(ANDROID) update project --path $(ANDROID_DIR) --target android-12
+
+androidcli: $(ANDROID_DIR)/build.xml
+	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD)
+#	ant -f $(ANDROID_ANT_FILE) debug
+
+androidclean:
+	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD) clean
+

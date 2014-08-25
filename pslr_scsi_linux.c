@@ -28,7 +28,11 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdio.h>
+#ifdef ANDROID
+#include "android_scsi_sg.h"
+#else
 #include <scsi/sg.h>
+#endif
 #include <unistd.h>
 #include <dirent.h>
 
@@ -126,7 +130,11 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     snprintf(nmbuf, sizeof (nmbuf), "/dev/%s", driveName);
     *hDevice = open(nmbuf, O_RDWR);
     if( *hDevice == -1) {
-	return PSLR_DEVICE_ERROR;
+        snprintf(nmbuf, sizeof (nmbuf), "/dev/block/%s", driveName);
+        *hDevice = open(nmbuf, O_RDWR);
+        if( *hDevice == -1 ) {
+	    return PSLR_DEVICE_ERROR;
+        }
     }
     return PSLR_OK;
 }
