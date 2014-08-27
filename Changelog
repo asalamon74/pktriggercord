@@ -4,6 +4,7 @@ version 0.81.05
 	strncpy bugfix
 	Also check /dev/block if device file is not found in /dev
 	android port of pktriggercord-cli
+	Simple android gui to call pktriggercord-cli
 
 version 0.81.04 ( 2014-05-01 )
 	--noshutter ( thx Piotr Dlugosz )

@@ -171,8 +171,13 @@ $(ANDROID_DIR)/build.xml:
 
 androidcli: $(ANDROID_DIR)/build.xml
 	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD)
-#	ant -f $(ANDROID_ANT_FILE) debug
 
 androidclean:
 	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD) clean
+	ant -f $(ANDROID_ANT_FILE) clean
+
+android: androidcli $(ANDROID_DIR)/build.xml
+	mkdir -p $(ANDROID_DIR)/assets
+	cp $(ANDROID_DIR)/libs/armeabi/pktriggercord-cli $(ANDROID_DIR)/assets
+	ant -f $(ANDROID_ANT_FILE) debug
 
