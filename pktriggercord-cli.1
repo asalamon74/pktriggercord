@@ -32,7 +32,8 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-green
 [\fB\-\-warnings\fR | \fB\-\-nowarnings\fR ]
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-dust_removal\fR | \fB\-\-status\fR |
-\fB\-\-status_hex\fR | \fB\-\-frames\fR NUMBER [ \fB\-\-delay\fR SECONDS] ]
+\fB\-\-status_hex\fR | \fB\-\-frames\fR NUMBER [ \fB\-\-delay\fR
+SECONDS] | \fB\-\-noshutter\fR | \fB\-\-servermode\fR ]
 [ \fB\-\-file_format\fR FORMAT ] [ \fB\-\-output_file\fR FILENAME ] 
 .OP \-\-debug 
 .YS
@@ -126,6 +127,12 @@ the camera. The latter does not work for all camera models\.
 \fB\-\-dust_removal\fR
 .RS 4
 Initiate dust removal process\.
+.RE
+.PP
+\fB\-\-servermode\fR
+.RS 4
+The program waits for commands (TODO: describe command) using port
+number 8888. The program ends if no client connects for 15 seconds\.
 .RE
 .HnS 2
 .SS Setting exposure parameters

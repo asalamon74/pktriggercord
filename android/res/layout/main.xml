@@ -5,7 +5,8 @@
     android:layout_height="fill_parent">
 <ScrollView
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_weight="1.0"
     android:fillViewport="true">
 <TextView
         android:id="@+id/text1"
@@ -14,5 +15,58 @@
         android:layout_weight="1.0"
 	android:typeface="monospace" />
 </ScrollView>
+<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+<TextView
+        android:id="@+id/currentshutterspeed"
+        android:layout_width="fill_parent"
+	android:layout_weight="1.0"
+        android:layout_height="wrap_content"
+	android:typeface="monospace"
+	android:layout_marginRight="15sp" />
+<TextView
+        android:id="@+id/currentaperture"
+        android:layout_width="fill_parent"
+	android:layout_weight="1.0"
+        android:layout_height="wrap_content"
+	android:typeface="monospace"
+	android:layout_marginRight="15sp" />
+<TextView
+        android:id="@+id/currentiso"
+        android:layout_width="fill_parent"
+	android:layout_weight="1.0"
+        android:layout_height="wrap_content"
+	android:typeface="monospace"
+	android:layout_marginRight="15sp" />
+</LinearLayout>
+<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+<TextView
+        android:id="@+id/camerastatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+	android:typeface="monospace"/>
+<TextView
+        android:id="@+id/lensstatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	android:typeface="monospace"
+	android:gravity="right"/>
+</LinearLayout>
+<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+<TextView
+        android:id="@+id/errortext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+	android:textColor="#ff0000"
+	android:typeface="monospace"/>
+</LinearLayout>
 </LinearLayout>
 

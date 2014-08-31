@@ -4,7 +4,12 @@ version 0.81.05
 	strncpy bugfix
 	Also check /dev/block if device file is not found in /dev
 	android port of pktriggercord-cli
-	Simple android gui to call pktriggercord-cli
+	pktriggercord-cli: --servermode ( not for Windows )
+	servermode subcommands:
+	    stopserver, disconnect, echo, connect, update_status,
+	    get_camera_name, get_lens_name, get_current_shutter_speed,
+	    get_current_aperture, get_current_iso
+	android GUI: status reading
 
 version 0.81.04 ( 2014-05-01 )
 	--noshutter ( thx Piotr Dlugosz )

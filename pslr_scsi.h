@@ -35,7 +35,12 @@
 extern bool debug;
 extern void write_debug( const char* message, ... );
 
-#define DPRINT(x...) write_debug(x)
+#ifdef ANDROID
+    #include <android/log.h>
+    #define DPRINT(...) __android_log_print(ANDROID_LOG_DEBUG, "PkTriggerCord", __VA_ARGS__)
+#else
+    #define DPRINT(x...) write_debug(x)
+#endif
 
 typedef enum {
     PSLR_OK = 0,
