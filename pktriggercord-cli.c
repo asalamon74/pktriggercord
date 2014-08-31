@@ -42,6 +42,8 @@
 #include <sys/time.h>
 
 #include "pslr.h"
+//#include "pslr_lens.h"
+#include "pktriggercord-servermode.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
@@ -93,6 +95,7 @@ static struct option const longopts[] ={
     {"reconnect", no_argument, NULL, 19},
     {"timeout", required_argument, NULL, 20},
     {"noshutter", no_argument, NULL, 21},
+    {"servermode", no_argument, NULL, 22},
     { NULL, 0, NULL, 0}
 };
 
@@ -118,11 +121,6 @@ int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
     return ofd;
 }
 
-long int timeval_diff(struct timeval *t2, struct timeval *t1) {
-    return (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
-}
-
-
 void warning_message( const char* message, ... ) {
     if( warnings ) {
 	// Write to stderr
@@ -146,11 +144,6 @@ void process_wbadj( const char* argv0, const char chr, uint32_t adj, uint32_t *w
     } else {
 	warning_message("%s: Invalid white_balance_adjustment\n", argv0);
     }
-}
-
-void camera_close(pslr_handle_t camhandle) {
-    pslr_disconnect(camhandle);
-    pslr_shutdown(camhandle);
 }
 
 int main(int argc, char **argv) {
@@ -203,6 +196,7 @@ int main(int argc, char **argv) {
     struct timeval prev_time;
     struct timeval current_time;
     bool noshutter = false;
+    bool servermode = false;
 
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
@@ -487,8 +481,20 @@ int main(int argc, char **argv) {
                 noshutter = true;
                 break;
 
+	    case 22:
+	        servermode = true;
+	        break;
+
         }
     }
+
+    if( servermode ) {
+        #ifndef WIN32
+        // ignore all the other argument and go to server mode
+        servermode_socket();
+        exit(0);
+        #endif
+    } 
 
     if (!output_file && frames > 1) {
         fprintf(stderr, "Should specify output filename if frames>1\n");
@@ -499,7 +505,13 @@ int main(int argc, char **argv) {
     DPRINT("model %s\n", model );
     DPRINT("device %s\n", device );
 
-    gettimeofday(&prev_time, NULL);
+    char buf[2100];
+
+    if( !(camhandle = camera_connect( model, device, timeout, buf)) ) {
+        printf("%s", buf);
+        exit(-1);
+    }
+    /*    gettimeofday(&prev_time, NULL);
     while (!(camhandle = pslr_init( model, device ))) {
         DPRINT("foundinwhile\n");
         gettimeofday(&current_time, NULL);
@@ -517,7 +529,7 @@ int main(int argc, char **argv) {
 	  printf("Unknown Pentax camera found.\n");
 	  exit(-1);
         }
-    }
+	}*/
 
     camera_name = pslr_camera_name(camhandle);
     printf("%s: %s Connected...\n", argv[0], camera_name);
