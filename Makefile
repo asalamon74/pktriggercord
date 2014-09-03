@@ -9,6 +9,7 @@ LIN_CFLAGS = $(CFLAGS)
 LIN_LDFLAGS = $(LDFLAGS)
 
 VERSION=0.81.05
+VERSIONCODE=$(shell echo $(VERSION) | sed s/\\.//g | sed s/^0// )
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
 SPECFILE=pktriggercord.spec
@@ -177,7 +178,11 @@ androidclean:
 	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD) clean
 	ant -f $(ANDROID_ANT_FILE) clean
 
-android: androidcli $(ANDROID_DIR)/build.xml
+androidver:
+	sed -i s/android:versionName=\".*\"/android:versionName=\"$(VERSION)\"/ $(ANDROID_DIR)/AndroidManifest.xml
+	sed -i s/android:versionCode=\".*\"/android:versionCode=\"$(VERSIONCODE)\"/ $(ANDROID_DIR)/AndroidManifest.xml
+
+android: androidcli androidver $(ANDROID_DIR)/build.xml
 	mkdir -p $(ANDROID_DIR)/assets
 	cp $(ANDROID_DIR)/libs/armeabi/pktriggercord-cli $(ANDROID_DIR)/assets
 	ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -f $(ANDROID_ANT_FILE) debug
