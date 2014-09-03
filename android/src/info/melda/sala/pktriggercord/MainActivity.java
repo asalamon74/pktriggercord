@@ -37,8 +37,8 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-	View textScroller = findViewById(R.id.scrolltext);
-	textScroller.setVisibility( View.GONE );
+	//	View textScroller = findViewById(R.id.scrolltext);
+	//	textScroller.setVisibility( View.GONE );
 
 	final Button focusButton = (Button) findViewById(R.id.focus);
         focusButton.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
 		    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, "get_buffer");
 		}
 	    });
-	readbufferButton.setVisibility( View.GONE );
+	//	readbufferButton.setVisibility( View.GONE );
 	File saveDir = new File(OUTDIR);
 	if( !saveDir.mkdir() ) {
 	    Log.e( PkTriggerCord.TAG, "Cannot create output directory" );
@@ -69,8 +69,14 @@ public class MainActivity extends Activity {
 	callAsynchronousTask();
     }
 
+    @Override
+    public void onDestroy() {
+	timer.cancel();
+	super.onDestroy();
+    }
+
     private void callAsynchronousTask() {
-	final Handler handler = new Handler();
+       	final Handler handler = new Handler();
 	timer = new Timer();
 	TimerTask doAsynchronousTask = new TimerTask() {       
 
@@ -88,13 +94,14 @@ public class MainActivity extends Activity {
 			});
 		}
 	    };
-	timer.schedule(doAsynchronousTask, 0, 200);
+	timer.schedule(doAsynchronousTask, 0, 1000);
+	//	timer.scheduleAtFixedRate(doAsynchronousTask, 0, 50);
     }
 
     private void appendText(String txt) {
 	Log.v(PkTriggerCord.TAG, "appendText:"+txt);
-	TextView text = (TextView) findViewById(R.id.text1);
-	text.append(txt);
+	//	TextView text = (TextView) findViewById(R.id.text1);
+	//	text.append(txt);
     }
 
     private class CliHandler extends AsyncTask<String,Map<String,Object>,String> {
@@ -180,7 +187,7 @@ public class MainActivity extends Activity {
 		dos.writeBytes("connect");
 		answer=readLine();
 		if( answer == null ) {
-		    return "answer null\n";
+		    return "answer null";
 		}
 		if( answer.startsWith("0") ) {
 		    dos.writeBytes("update_status");
@@ -206,7 +213,6 @@ public class MainActivity extends Activity {
 			    map.put("jpegbytes",jpegLength);
 			    map.put("preview",bm);
 			    publishProgress(map);
-
 			    dos.writeBytes("get_buffer");
 			    answer = readLine();
 			    map.put("answer", answer);
@@ -227,14 +233,13 @@ public class MainActivity extends Activity {
 			}
 			publishProgress(map);
 		    } else {
-			return "Cannot update status\n";
+			return "Cannot update status";
 		    }
 		} else {
-		    return "No camera connected\n";
+		    return "No camera connected";
 		}
-		//		return null;
 		long time2 = SystemClock.elapsedRealtime();
-		return "time "+ (time2-time1) + " ms\n";
+		return "time "+ (time2-time1) + " ms";
 	    } catch( Exception e ) {
 		return "Error:"+e+"\n";
 	    } finally {

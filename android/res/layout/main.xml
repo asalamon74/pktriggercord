@@ -1,34 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-<ScrollView
-    android:id="@+id/scrolltext"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_weight="1.0"
-    android:fillViewport="true">
-<TextView
-        android:id="@+id/text1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1.0"
-	android:typeface="monospace" />
-</ScrollView>
-<LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 <ImageView
         android:id="@+id/preview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-</LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+	android:layout_above="@+id/statusinfo">
 <Button
         android:id="@+id/shutter"
         android:layout_width="fill_parent"
@@ -62,9 +45,11 @@
 	android:background="#8000ff00" />
 </LinearLayout>
 <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/statusinfo"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+	android:layout_above="@+id/camerainfo">
 <TextView
         android:id="@+id/currentshutterspeed"
         android:layout_width="fill_parent"
@@ -88,9 +73,12 @@
 	android:layout_marginRight="15sp" />
 </LinearLayout>
 <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/camerainfo"        
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+	android:background="#800000af"
+        android:orientation="horizontal"
+	android:layout_above="@+id/errortext">
 <TextView
         android:id="@+id/camerastatus"
         android:layout_width="wrap_content"
@@ -103,16 +91,13 @@
 	android:typeface="monospace"
 	android:gravity="right"/>
 </LinearLayout>
-<LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 <TextView
         android:id="@+id/errortext"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
 	android:textColor="#ff0000"
-	android:typeface="monospace"/>
-</LinearLayout>
-</LinearLayout>
+	android:background="#800000ff"
+	android:typeface="monospace"
+	android:layout_alignParentBottom="true"/>
+</RelativeLayout>
 
