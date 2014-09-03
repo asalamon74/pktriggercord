@@ -32,11 +32,20 @@ public class MainActivity extends Activity {
     private static final String OUTDIR = "/storage/sdcard0/pktriggercord";
     private CliHandler cli;
     private Timer timer;
+    private Bitmap previewBitmap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+	if( savedInstanceState != null ) {
+	    previewBitmap = savedInstanceState.getParcelable("preview");
+	    if( previewBitmap != null ) {
+		ImageView preview = (ImageView) findViewById(R.id.preview);
+		preview.setImageBitmap( previewBitmap );			
+	    }
+	}
 	//	View textScroller = findViewById(R.id.scrolltext);
 	//	textScroller.setVisibility( View.GONE );
 
@@ -73,6 +82,10 @@ public class MainActivity extends Activity {
     public void onDestroy() {
 	timer.cancel();
 	super.onDestroy();
+    }
+
+    protected void onSaveInstanceState (Bundle outState) {
+	outState.putParcelable("preview", previewBitmap);
     }
 
     private void callAsynchronousTask() {
@@ -276,6 +289,7 @@ public class MainActivity extends Activity {
 			currentIsoText.setText("ISO "+entry.getValue()); 
 		    } else if( "preview".equals( entry.getKey() ) ) {
 			ImageView preview = (ImageView) findViewById(R.id.preview);
+			previewBitmap = (Bitmap)entry.getValue();
 			preview.setImageBitmap( (Bitmap)entry.getValue());
 			preview.setAdjustViewBounds(true);        
 			preview.setScaleType(ImageView.ScaleType.FIT_CENTER);
