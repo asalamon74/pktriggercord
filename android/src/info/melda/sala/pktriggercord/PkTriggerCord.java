@@ -43,12 +43,29 @@ public class PkTriggerCord extends Application {
 	}
     }
 
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
+    static int copyStream(InputStream in, OutputStream out, int length) throws IOException {
 	byte[] buffer = new byte[1024];
 	int read;
+	/*
 	while((read = in.read(buffer)) != -1){
 	    out.write(buffer, 0, read);
+	    }*/
+
+	int currentRead = 0;
+	int totalRead = 0;
+	while( totalRead < length && currentRead >= 0 ) {
+	    currentRead = in.read( buffer, 0, Math.min(length-totalRead, buffer.length) );
+	    if( currentRead != -1 ) {
+		out.write( buffer, 0, currentRead );
+		totalRead += currentRead;
+		Log.v( TAG, "Read "+currentRead+" bytes" );
+	    }
 	}
+	return totalRead;
+    }
+
+    static int copyStream(InputStream in, OutputStream out) throws IOException {
+	return copyStream( in, out, Integer.MAX_VALUE);
     }
 
     private void simpleSudoWrapper(String command) throws Exception {
@@ -85,7 +102,7 @@ public class PkTriggerCord extends Application {
 	//	appendText("After rm\n");
 	OutputStream out = new FileOutputStream(fullFileName);
 	//	appendText("Before copyFile\n");
-        copyFile(in, out);
+        copyStream(in, out);
 
 	//	appendText("After copyFile\n");
         in.close();

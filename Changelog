@@ -8,8 +8,9 @@ version 0.81.05
 	servermode subcommands:
 	    stopserver, disconnect, echo, connect, update_status,
 	    get_camera_name, get_lens_name, get_current_shutter_speed,
-	    get_current_aperture, get_current_iso
-	android GUI: status reading
+	    get_current_aperture, get_current_iso, focus, get_bufmask,
+	    get_preview_buffer, get_buffer, delete_buffer
+	android GUI: status reading, focus, single shutter
 
 version 0.81.04 ( 2014-05-01 )
 	--noshutter ( thx Piotr Dlugosz )
