@@ -6,7 +6,9 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.view.View;
+import android.view.Window;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+	getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
 	if( savedInstanceState != null ) {
@@ -53,24 +56,36 @@ public class MainActivity extends Activity {
         focusButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
 		    CliHandler cli = new CliHandler();
-		    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, "focus");
+		    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, new CliParam("focus"));
 		}
 	    });
 	final Button shutterButton = (Button) findViewById(R.id.shutter);
         shutterButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
 		    CliHandler cli = new CliHandler();
-		    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, "shutter");
+		    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, new CliParam("shutter"));
 		}
 	    });
-	final Button readbufferButton = (Button) findViewById(R.id.readbuffer);
-        readbufferButton.setOnClickListener(new View.OnClickListener() {
-		public void onClick(View v) {
-		    CliHandler cli = new CliHandler();
-		    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, "get_buffer");
+
+	final NumberPicker npf = (NumberPicker) findViewById(R.id.frames);
+	final NumberPicker npd = (NumberPicker) findViewById(R.id.delay);
+	npd.setVisibility( View.INVISIBLE );
+	npf.setMaxValue(9);
+	npf.setMinValue(1);
+	npf.setWrapSelectorWheel(false);
+	npf.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+		@Override
+		public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+		    npd.setVisibility( newVal == 1 ? View.INVISIBLE : View.VISIBLE);
 		}
 	    });
-	//	readbufferButton.setVisibility( View.GONE );
+
+
+	npd.setMaxValue(60);
+	npd.setMinValue(5);
+	npd.setWrapSelectorWheel(false);
+
+
 	File saveDir = new File(OUTDIR);
 	if( !saveDir.mkdir() ) {
 	    Log.e( PkTriggerCord.TAG, "Cannot create output directory" );
@@ -117,7 +132,21 @@ public class MainActivity extends Activity {
 	//	text.append(txt);
     }
 
-    private class CliHandler extends AsyncTask<String,Map<String,Object>,String> {
+    private class CliParam {
+	String command;
+	Map commandParams;
+	
+	public CliParam(String command, Map commandParams) {
+	    this.command = command;
+	    this.commandParams = commandParams;
+	}
+
+	public CliParam(String command) {
+	    this(command, null);
+	}
+    }
+
+    private class CliHandler extends AsyncTask<CliParam,Map<String,Object>,String> {
 	Map<String,Object> map;
 	DataOutputStream dos;
 	InputStream is;
@@ -144,7 +173,7 @@ public class MainActivity extends Activity {
 	    return Integer.parseInt(separated[1]);
 	}
        
-	protected String doInBackground(String... commands) {
+	protected String doInBackground(CliParam... params) {
 	    long time1 = SystemClock.elapsedRealtime();
 	    map = new HashMap<String,Object>();
 	    Socket socket=null;
@@ -161,39 +190,10 @@ public class MainActivity extends Activity {
 		dos = new DataOutputStream(outputStream);
 		String answer;
 		int jpegBytes;
-		if( commands.length > 0 ) {
-		    for( String command : commands ) {
-			dos.writeBytes(command);
-			if( "get_preview_buffer".equals(command) ||
-			    "get_buffer".equals(command) ) {
-			    answer = readLine();
-			    map.put("answer", answer);
-			    int jpegLength = getIntParam(answer);
-			    //			    byte []jpegArray = new byte[jpegLength];
-			    //			    ByteArSrayOutputStream bos = new ByteArrayOutputStream(jpegLength);
-			    OutputStream os;
-			    if( "get_preview_buffer".equals(command) ) {
-				os = new ByteArrayOutputStream(jpegLength);
-			    } else {
-				Calendar c = Calendar.getInstance();
-				SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
-				String formattedDate = df.format(c.getTime());
-				File outFile = new File(OUTDIR + "/pktriggercord_"+formattedDate+".dng");
-				os = new FileOutputStream(outFile);
-			    }
-			    //jpegBytes = is.read( jpegArray, 0, jpegLength );
-			    PkTriggerCord.copyStream( is, os, jpegLength );
-			    os.close();
-			    if( "get_preview_buffer".equals(command) ) {
-				Bitmap bm = BitmapFactory.decodeByteArray(((ByteArrayOutputStream)os).toByteArray(), 0, jpegLength);
-				map.put("preview",bm);
-			    }
-			    map.put("jpegbytes",jpegLength);
-			    publishProgress(map);
-			} else {
-			    answer=readLine();
-			}
-			//			SystemClock.sleep(1000);
+		if( params.length > 0 ) {
+		    for( CliParam param : params ) {
+			dos.writeBytes(param.command);
+			answer=readLine();
 		    }
 		    return null;
 		}
@@ -291,11 +291,8 @@ public class MainActivity extends Activity {
 			ImageView preview = (ImageView) findViewById(R.id.preview);
 			previewBitmap = (Bitmap)entry.getValue();
 			preview.setImageBitmap( (Bitmap)entry.getValue());
-			preview.setAdjustViewBounds(true);        
-			preview.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			//preview.setBackgroundColor(0x00000000); 
-			//preview.setPadding(0, 0, 0, 0);
-			//preview.setVisibility(ImageView.VISIBLE);
+			//			preview.setAdjustViewBounds(true);        
+			//			preview.setScaleType(ImageView.ScaleType.FIT_CENTER);
 		    }
 		}
 	    }

@@ -4,8 +4,32 @@
     android:layout_height="fill_parent">
 <ImageView
         android:id="@+id/preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+	android:scaleType="fitStart"/>
+<LinearLayout
+        android:id="@+id/numberpickers"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+	android:layout_above="@+id/buttons">
+<NumberPicker
+        android:id="@+id/frames"
+	android:layout_weight="1.0"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	android:layout_marginLeft="10sp"
+	android:layout_marginRight="10sp"
+ />
+<NumberPicker
+        android:id="@+id/delay"
+	android:layout_weight="1.0"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+	android:layout_marginLeft="10sp"
+	android:layout_marginRight="10sp"
+/>
+</LinearLayout>
 <LinearLayout
         android:id="@+id/buttons"
         android:layout_width="match_parent"
@@ -21,17 +45,6 @@
 	android:text="Shutter"
 	android:layout_marginLeft="5sp"
 	android:layout_marginRight="5sp"
-	android:background="#8000ff00" />
-<Button
-        android:id="@+id/readbuffer"
-        android:layout_width="fill_parent"
-	android:layout_weight="1.0"
-        android:layout_height="wrap_content"
-	android:typeface="monospace"
-	android:text="Readbuf"
-	android:layout_marginLeft="5sp"
-	android:layout_marginRight="5sp"
-	android:padding="5sp"
 	android:background="#8000ff00" />
 <Button
         android:id="@+id/focus"
