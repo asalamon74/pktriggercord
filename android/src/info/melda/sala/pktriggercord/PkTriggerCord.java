@@ -6,12 +6,15 @@ import android.content.res.AssetManager;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 import android.os.SystemClock;
+import java.security.MessageDigest;
 
 public class PkTriggerCord extends Application {
     public static final String TAG = "PkTriggerCord";
     private static final String CLI_HOME = "/data/local/";
     private static final String CLI_DIR = "pktriggercord";
+    private static final int MARK_LIMIT = 1000000;
     private Process p;
     
     @Override
@@ -34,9 +37,37 @@ public class PkTriggerCord extends Application {
 	}
     }
 
+    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+    public static String bytesToHex(byte[] bytes) {
+	char[] hexChars = new char[bytes.length * 2];
+	for ( int j = 0; j < bytes.length; j++ ) {
+	    int v = bytes[j] & 0xFF;
+	    hexChars[j * 2] = hexArray[v >>> 4];
+	    hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+	}
+	return new String(hexChars);
+    }
+
+    private byte []calculateDigest(InputStream in) {
+	try {
+	    MessageDigest digester = MessageDigest.getInstance("MD5");
+	    byte[] bytes = new byte[8192];
+	    int byteCount;
+	    while ((byteCount = in.read(bytes)) > 0) {
+		digester.update(bytes, 0, byteCount);
+	    }
+	    byte[] digest = digester.digest();
+	    Log.v( TAG, "digest: "+bytesToHex(digest));
+	    return digest;
+	} catch( Exception e ) {
+	    return null;
+	}
+    }
+
     private void installCli() {
 	try {
-	    createCliDir();
+	    //	    createCliDir();
 	    copyAsset("pktriggercord-cli");
 	} catch( Exception e ) {
 	    Log.e( TAG, e.getMessage(), e );
@@ -46,11 +77,6 @@ public class PkTriggerCord extends Application {
     static int copyStream(InputStream in, OutputStream out, int length) throws IOException {
 	byte[] buffer = new byte[1024];
 	int read;
-	/*
-	while((read = in.read(buffer)) != -1){
-	    out.write(buffer, 0, read);
-	    }*/
-
 	int currentRead = 0;
 	int totalRead = 0;
 	while( totalRead < length && currentRead >= 0 ) {
@@ -58,7 +84,7 @@ public class PkTriggerCord extends Application {
 	    if( currentRead != -1 ) {
 		out.write( buffer, 0, currentRead );
 		totalRead += currentRead;
-		Log.v( TAG, "Read "+currentRead+" bytes" );
+		//		Log.v( TAG, "Read "+currentRead+" bytes" );
 	    }
 	}
 	return totalRead;
@@ -84,36 +110,48 @@ public class PkTriggerCord extends Application {
 	simpleSudoWrapper( appendedCommands );
     }
 
-    private void createCliDir() throws Exception {
-	final int myUid = android.os.Process.myUid();
-	simpleSudoWrapper( new ArrayList<String>() {{
-		    add("mkdir -p "+CLI_HOME+CLI_DIR);
-		    add("chown "+myUid+" "+CLI_HOME+CLI_DIR);
-		    add("chmod 777 "+CLI_HOME+CLI_DIR);
-		}});
-    }
-
     private void copyAsset(String fileName) throws Exception {
+	boolean needCliInstall;
         AssetManager assetManager =  getAssets();
 	InputStream in = assetManager.open(fileName);
 	String fullFileName = CLI_HOME + CLI_DIR + "/" + fileName;
-	//	appendText("Before rm\n");
-	simpleSudoWrapper("rm -f "+fullFileName);
-	//	appendText("After rm\n");
-	OutputStream out = new FileOutputStream(fullFileName);
-	//	appendText("Before copyFile\n");
-        copyStream(in, out);
 
-	//	appendText("After copyFile\n");
-        in.close();
-	//        in = null;
-        out.flush();
-        out.close();
-	//        out = null;
-	//	appendText("Before chmod\n");
-	//	simpleSudoWrapper("chown root "+fullFileName);
-	simpleSudoWrapper("chmod 4777 "+fullFileName);
-	//	appendText("After chmod\n");
+	try {
+	    FileInputStream fis = new FileInputStream(fullFileName);
+	    byte []fmd5sum = calculateDigest(fis);
+	    fis.close();
+	    in.mark(MARK_LIMIT);
+	    byte md5sum[] = calculateDigest(in);
+	    in.reset();
+	    needCliInstall = !Arrays.equals( fmd5sum, md5sum );
+	} catch( Exception e ) {
+	    Log.e( TAG, e.getMessage(), e);
+	    needCliInstall = true;
+	}
+
+	if( needCliInstall ) {
+	    final int myUid = android.os.Process.myUid();
+	    simpleSudoWrapper( new ArrayList<String>() {{
+			add("mkdir -p "+CLI_HOME+CLI_DIR);
+			add("chown "+myUid+" "+CLI_HOME+CLI_DIR);
+			add("chmod 777 "+CLI_HOME+CLI_DIR);
+		    }});
+
+
+	    simpleSudoWrapper("rm -f "+fullFileName);
+	    OutputStream out = new FileOutputStream(fullFileName);
+	    copyStream(in, out);
+
+	    in.close();
+	    //        in = null;
+	    out.flush();
+	    out.close();
+	    //        out = null;
+	    //	appendText("Before chmod\n");
+	    //	simpleSudoWrapper("chown root "+fullFileName);
+	    simpleSudoWrapper("chmod 4777 "+fullFileName);
+	    //	appendText("After chmod\n");
+	}
     }
 
 }

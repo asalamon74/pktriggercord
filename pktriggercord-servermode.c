@@ -265,7 +265,7 @@ int servermode_socket() {
 		    pslr_buffer_close(camhandle);		    
 		}	
             } else {
-	        write_socket_answer("1 Invalid command\n");
+	        write_socket_answer("1 Invalid servermode command\n");
             }
 	}
      
