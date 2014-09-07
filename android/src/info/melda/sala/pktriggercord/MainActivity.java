@@ -24,6 +24,7 @@ import java.net.Socket;
 import java.net.InetSocketAddress;
 import android.os.SystemClock;
 import android.os.AsyncTask;
+import java.util.concurrent.Executors;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -35,6 +36,8 @@ public class MainActivity extends Activity {
     private CliHandler cli;
     private Timer timer;
     private Bitmap previewBitmap;
+    private NumberPicker npf;
+    private NumberPicker npd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,34 +45,7 @@ public class MainActivity extends Activity {
 	getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
-	if( savedInstanceState != null ) {
-	    previewBitmap = savedInstanceState.getParcelable("preview");
-	    if( previewBitmap != null ) {
-		ImageView preview = (ImageView) findViewById(R.id.preview);
-		preview.setImageBitmap( previewBitmap );			
-	    }
-	}
-	//	View textScroller = findViewById(R.id.scrolltext);
-	//	textScroller.setVisibility( View.GONE );
-
-	final Button focusButton = (Button) findViewById(R.id.focus);
-        focusButton.setOnClickListener(new View.OnClickListener() {
-		public void onClick(View v) {
-		    CliHandler cli = new CliHandler();
-		    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, new CliParam("focus"));
-		}
-	    });
-	final Button shutterButton = (Button) findViewById(R.id.shutter);
-        shutterButton.setOnClickListener(new View.OnClickListener() {
-		public void onClick(View v) {
-		    CliHandler cli = new CliHandler();
-		    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, new CliParam("shutter"));
-		}
-	    });
-
-	final NumberPicker npf = (NumberPicker) findViewById(R.id.frames);
-	final NumberPicker npd = (NumberPicker) findViewById(R.id.delay);
-	npd.setVisibility( View.INVISIBLE );
+	npf = (NumberPicker) findViewById(R.id.frames);
 	npf.setMaxValue(9);
 	npf.setMinValue(1);
 	npf.setWrapSelectorWheel(false);
@@ -80,17 +56,46 @@ public class MainActivity extends Activity {
 		}
 	    });
 
-
+	npd = (NumberPicker) findViewById(R.id.delay);
 	npd.setMaxValue(60);
 	npd.setMinValue(5);
 	npd.setWrapSelectorWheel(false);
 
+	if( savedInstanceState != null ) {
+	    previewBitmap = savedInstanceState.getParcelable("preview");
+	    if( previewBitmap != null ) {
+		ImageView preview = (ImageView) findViewById(R.id.preview);
+		preview.setImageBitmap( previewBitmap );			
+	    }
+	    npf.setValue( savedInstanceState.getInt("frames"));
+	    npd.setValue( savedInstanceState.getInt("delay"));	    
+	    npd.setVisibility( npf.getValue() == 1 ? View.INVISIBLE : View.VISIBLE);
+
+	}
+	final Button focusButton = (Button) findViewById(R.id.focus);
+        focusButton.setOnClickListener(new View.OnClickListener() {
+		public void onClick(View v) {
+
+		    //		    callAsynchronousTask(2, 5000, new CliParam("focus"));
+		    callAsynchronousTask(1, 1000, new CliParam("focus"));
+		}
+	    });
+	final Button shutterButton = (Button) findViewById(R.id.shutter);
+        shutterButton.setOnClickListener(new View.OnClickListener() {
+		public void onClick(View v) {
+		    //		    CliHandler cli = new CliHandler();
+
+		    callAsynchronousTask(npf.getValue(), 1000*npd.getValue(), new CliParam("shutter"));
+
+		}
+	    });
+
 
 	File saveDir = new File(OUTDIR);
-	if( !saveDir.mkdir() ) {
+	if( !saveDir.exists() && !saveDir.mkdir() ) {
 	    Log.e( PkTriggerCord.TAG, "Cannot create output directory" );
 	}
-	callAsynchronousTask();
+	callAsynchronousTask(0, 1000, null);
     }
 
     @Override
@@ -101,28 +106,37 @@ public class MainActivity extends Activity {
 
     protected void onSaveInstanceState (Bundle outState) {
 	outState.putParcelable("preview", previewBitmap);
+	outState.putInt("frames", npf.getValue());
+	outState.putInt("delay", npd.getValue());
     }
 
-    private void callAsynchronousTask() {
+    private void callAsynchronousTask(final int maxRuns, final long period, final CliParam param) {
        	final Handler handler = new Handler();
 	timer = new Timer();
 	TimerTask doAsynchronousTask = new TimerTask() {       
-
+		private int runs=0;
 		@Override
 		public void run() {
 		    handler.post(new Runnable() {
 			    public void run() {       
 				try {
 				    CliHandler cli = new CliHandler();
-				    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+				    if( param != null ) {
+					cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, param);
+				    } else {
+					cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+				    }
 				} catch (Exception e) {
 				    appendText("Error:"+e.getMessage());
+				}
+				if( ++runs == maxRuns ) {
+				    timer.cancel();
 				}
 			    }
 			});
 		}
 	    };
-	timer.schedule(doAsynchronousTask, 0, 1000);
+	timer.schedule(doAsynchronousTask, 0, period);
 	//	timer.scheduleAtFixedRate(doAsynchronousTask, 0, 50);
     }
 
@@ -134,15 +148,22 @@ public class MainActivity extends Activity {
 
     private class CliParam {
 	String command;
-	Map commandParams;
+	Map<String,Object> commandParams;
 	
-	public CliParam(String command, Map commandParams) {
+	public CliParam(String command, Map<String,Object> commandParams) {
 	    this.command = command;
 	    this.commandParams = commandParams;
 	}
 
 	public CliParam(String command) {
 	    this(command, null);
+	}
+
+	public Object getValue(String id) {
+	    if( commandParams == null ) {
+		return null;
+	    }
+	    return commandParams.get(id);
 	}
     }
 
@@ -172,6 +193,10 @@ public class MainActivity extends Activity {
 	    String[] separated = str.split(" ");
 	    return Integer.parseInt(separated[1]);
 	}
+
+	private boolean answerStatus(String answer) {
+	    return answer.startsWith("0");
+	}
        
 	protected String doInBackground(CliParam... params) {
 	    long time1 = SystemClock.elapsedRealtime();
@@ -194,6 +219,19 @@ public class MainActivity extends Activity {
 		    for( CliParam param : params ) {
 			dos.writeBytes(param.command);
 			answer=readLine();
+			if( "shutter".equals(param.command) ) {
+			    Integer frames = (Integer)param.getValue("frames");
+			    int frameNum = frames == null ? 1 : frames.intValue();
+			    Integer delay = (Integer)param.getValue("delay");
+			    int delaySec = delay == null ? 0 : delay.intValue();
+			    if( frameNum > 1 ) {
+				for( int fIndex=2; fIndex <= frameNum; ++fIndex ) {
+				    SystemClock.sleep( delay * 1000 );
+				    dos.writeBytes(param.command);
+				    answer=readLine();
+				}
+			    }
+			}
 		    }
 		    return null;
 		}
@@ -202,10 +240,10 @@ public class MainActivity extends Activity {
 		if( answer == null ) {
 		    return "answer null";
 		}
-		if( answer.startsWith("0") ) {
+		if( answerStatus(answer)  ) {
 		    dos.writeBytes("update_status");
 		    answer=readLine();
-		    if( answer.startsWith("0") ) {
+		    if( answerStatus(answer) ) {
 			readStatus("camera_name");
 			readStatus("lens_name");
 			readStatus("current_shutter_speed");
@@ -256,12 +294,17 @@ public class MainActivity extends Activity {
 	    } catch( Exception e ) {
 		return "Error:"+e+"\n";
 	    } finally {
-		if( socket != null ) {
+		if( socket != null && !socket.isClosed() ) {
 		    try {
-			socket.shutdownInput();
-			socket.shutdownOutput();
+			if( !socket.isInputShutdown() ) {
+			    socket.shutdownInput();
+			}
+			if( !socket.isOutputShutdown() ) {
+			    socket.shutdownOutput();
+			}
 			socket.close();		
 		    } catch( IOException e ) {
+			Log.e( "Cannot close socket", e.getMessage(), e);
 			return "Cannot close socket";
 		    }
 		}
@@ -291,8 +334,6 @@ public class MainActivity extends Activity {
 			ImageView preview = (ImageView) findViewById(R.id.preview);
 			previewBitmap = (Bitmap)entry.getValue();
 			preview.setImageBitmap( (Bitmap)entry.getValue());
-			//			preview.setAdjustViewBounds(true);        
-			//			preview.setScaleType(ImageView.ScaleType.FIT_CENTER);
 		    }
 		}
 	    }
