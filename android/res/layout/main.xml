@@ -89,7 +89,6 @@
         android:id="@+id/camerainfo"        
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-	android:background="#800000af"
         android:orientation="horizontal"
 	android:layout_above="@+id/errortext">
 <TextView
@@ -109,7 +108,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 	android:textColor="#ff0000"
-	android:background="#800000ff"
 	android:typeface="monospace"
 	android:layout_alignParentBottom="true"/>
 </RelativeLayout>
