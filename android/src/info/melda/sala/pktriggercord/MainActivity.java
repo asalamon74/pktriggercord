@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ import android.os.AsyncTask;
 import java.util.concurrent.Executors;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ToneGenerator;
+import android.media.AudioManager;
 
 public class MainActivity extends Activity {
     private static final int BUFF_LEN = 1024;
@@ -34,10 +37,15 @@ public class MainActivity extends Activity {
     private static final int SERVER_PORT = 8888;
     private static final String OUTDIR = "/storage/sdcard0/pktriggercord";
     private CliHandler cli;
-    private Timer timer;
     private Bitmap previewBitmap;
     private NumberPicker npf;
     private NumberPicker npd;
+    private long nextRepeat;
+    private int currentRuns;
+    private int currentMaxRuns;
+    private ToneGenerator toneG;
+    private Timer updateTimer = new Timer();
+    private Timer actionTimer = new Timer();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,18 +83,13 @@ public class MainActivity extends Activity {
 	final Button focusButton = (Button) findViewById(R.id.focus);
         focusButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
-
-		    //		    callAsynchronousTask(2, 5000, new CliParam("focus"));
-		    callAsynchronousTask(1, 1000, new CliParam("focus"));
+		    callAsynchronousTask(0, 1, 0, 1000, new CliParam("focus"));
 		}
 	    });
 	final Button shutterButton = (Button) findViewById(R.id.shutter);
         shutterButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
-		    //		    CliHandler cli = new CliHandler();
-
-		    callAsynchronousTask(npf.getValue(), 1000*npd.getValue(), new CliParam("shutter"));
-
+		    actionTimer = callAsynchronousTask(0, npf.getValue(), 0, 1000*npd.getValue(), new CliParam("shutter"));
 		}
 	    });
 
@@ -95,12 +98,37 @@ public class MainActivity extends Activity {
 	if( !saveDir.exists() && !saveDir.mkdir() ) {
 	    Log.e( PkTriggerCord.TAG, "Cannot create output directory" );
 	}
-	callAsynchronousTask(0, 1000, null);
+	
+	updateTimer = callAsynchronousTask(0, 0, 0, 200, null);
+
+	if( savedInstanceState != null ) {
+	    currentRuns = savedInstanceState.getInt("currentRuns");
+	    currentMaxRuns = savedInstanceState.getInt("currentMaxRuns");
+	    nextRepeat = savedInstanceState.getLong("nextRepeat");
+
+	    if( currentRuns < currentMaxRuns ) {
+		long initialDelay = Math.max( 0, nextRepeat - SystemClock.elapsedRealtime());
+
+		TextView timedown = (TextView) findViewById(R.id.timedown);     
+		timedown.setVisibility ( View.VISIBLE );
+		timedown.setText( String.format("%2d/%d\n ", currentRuns+1, currentMaxRuns));
+
+		actionTimer = callAsynchronousTask( currentRuns, currentMaxRuns, initialDelay, 1000*npd.getValue(), new CliParam("shutter") );
+	    }
+	}
+
     }
 
     @Override
     public void onDestroy() {
-	timer.cancel();
+	if( updateTimer != null ) {
+	    updateTimer.cancel();
+	    updateTimer.purge();
+	}
+	if( actionTimer != null ) {
+	    actionTimer.cancel();
+	    actionTimer.purge();
+	}
 	super.onDestroy();
     }
 
@@ -108,18 +136,42 @@ public class MainActivity extends Activity {
 	outState.putParcelable("preview", previewBitmap);
 	outState.putInt("frames", npf.getValue());
 	outState.putInt("delay", npd.getValue());
+	outState.putLong("nextRepeat", nextRepeat);
+	outState.putInt("currentRuns", currentRuns);
+	outState.putInt("currentMaxRuns", currentMaxRuns);
     }
 
-    private void callAsynchronousTask(final int maxRuns, final long period, final CliParam param) {
+    private Timer callAsynchronousTask(final int cRuns, final int maxRuns, long initialDelay, final long period, final CliParam param) {
        	final Handler handler = new Handler();
-	timer = new Timer();
+	final Timer timer = new Timer();
 	TimerTask doAsynchronousTask = new TimerTask() {       
-		private int runs=0;
+		private int runs=cRuns;
 		@Override
 		public void run() {
 		    handler.post(new Runnable() {
-			    public void run() {       
+			    public void run() {  
+				if( maxRuns > 1 || param != null ) {
+				    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+				} else {
+				    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+				}
+				TextView timedown = (TextView) findViewById(R.id.timedown);     
 				try {
+				    if( maxRuns > 1 ) {
+					timedown.setText( String.format("%2d/%d\n ", runs+1, maxRuns));
+					timedown.setVisibility ( View.VISIBLE );
+					if( runs+1 != maxRuns ) {
+					    nextRepeat = SystemClock.elapsedRealtime()+ period;
+					}
+					currentRuns = runs+1;
+					currentMaxRuns = maxRuns;					
+				    } else if( param != null ) {
+					timedown.setVisibility ( View.INVISIBLE );
+				    } else {
+					long tillNextRepeat = nextRepeat - SystemClock.elapsedRealtime();
+					timedown.setText( String.format("%2d/%d\n%2.1f", currentRuns, currentMaxRuns, Math.round(1.0 * tillNextRepeat / 100) / 10.0 ));
+				    }
+
 				    CliHandler cli = new CliHandler();
 				    if( param != null ) {
 					cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, param);
@@ -131,13 +183,15 @@ public class MainActivity extends Activity {
 				}
 				if( ++runs == maxRuns ) {
 				    timer.cancel();
+				    timedown.setVisibility ( View.INVISIBLE );				    
 				}
 			    }
 			});
 		}
 	    };
-	timer.schedule(doAsynchronousTask, 0, period);
+	timer.schedule(doAsynchronousTask, initialDelay, period);
 	//	timer.scheduleAtFixedRate(doAsynchronousTask, 0, 50);
+	return timer;
     }
 
     private void appendText(String txt) {
@@ -165,6 +219,17 @@ public class MainActivity extends Activity {
 	    }
 	    return commandParams.get(id);
 	}
+    }
+
+    private void beep() {
+	if( toneG == null ) {
+	    toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+	} else {
+	    toneG.release();
+	    toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+	}
+	toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+	//	toneG.release();
     }
 
     private class CliHandler extends AsyncTask<CliParam,Map<String,Object>,String> {
@@ -197,8 +262,14 @@ public class MainActivity extends Activity {
 	private boolean answerStatus(String answer) {
 	    return answer.startsWith("0");
 	}
-       
+       	
 	protected String doInBackground(CliParam... params) {
+
+	    /*	    if( params.length > 0 ) {
+		beep();
+		return "";
+		}*/
+
 	    long time1 = SystemClock.elapsedRealtime();
 	    map = new HashMap<String,Object>();
 	    Socket socket=null;
@@ -305,7 +376,7 @@ public class MainActivity extends Activity {
 			socket.close();		
 		    } catch( IOException e ) {
 			Log.e( "Cannot close socket", e.getMessage(), e);
-			return "Cannot close socket";
+			//			return "Cannot close socket";
 		    }
 		}
 	    }
