@@ -7,6 +7,17 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
 	android:scaleType="fitStart"/>
+<TextView
+        android:id="@+id/timedown"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+	android:typeface="monospace"
+	android:background="#60ffffff"
+	android:textSize="100sp"
+	android:layout_marginBottom="5sp"
+	android:gravity="center"
+	android:visibility="invisible"
+	android:layout_above="@+id/buttons" />
 <LinearLayout
         android:id="@+id/numberpickers"
         android:layout_width="match_parent"
