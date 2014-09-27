@@ -101,7 +101,7 @@ void strip(char *s) {
     *p2 = '\0';
 }
 
-int servermode_socket() {
+int servermode_socket(int servermode_timeout) {
     int socket_desc, c , read_size;
     struct sockaddr_in server , client;
     char client_message[2000];
@@ -141,7 +141,7 @@ int servermode_socket() {
 	int retval;
 	FD_ZERO(&rfds);
 	FD_SET(socket_desc, &rfds);
-	tv.tv_sec = 15;
+	tv.tv_sec = servermode_timeout;
 	tv.tv_usec = 0;
 	retval = select(socket_desc+1, &rfds, NULL, NULL, &tv);
 

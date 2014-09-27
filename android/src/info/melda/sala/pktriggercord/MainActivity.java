@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
 
 	npf = (NumberPicker) findViewById(R.id.frames);
-	npf.setMaxValue(9);
+	npf.setMaxValue(30);
 	npf.setMinValue(1);
 	npf.setWrapSelectorWheel(false);
 	npf.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -273,6 +273,7 @@ public class MainActivity extends Activity {
 	    long time1 = SystemClock.elapsedRealtime();
 	    map = new HashMap<String,Object>();
 	    Socket socket=null;
+	    SimpleDateFormat logDf = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS");
 	    try {
 		socket = new Socket();
 		InetSocketAddress isa = new InetSocketAddress(SERVER_IP, SERVER_PORT);
@@ -288,9 +289,15 @@ public class MainActivity extends Activity {
 		int jpegBytes;
 		if( params.length > 0 ) {
 		    for( CliParam param : params ) {
+			Calendar c = Calendar.getInstance();
+			String formattedDate = logDf.format(c.getTime());
+			Log.i( PkTriggerCord.TAG, "send shutter: "+formattedDate);
 			dos.writeBytes(param.command);
 			answer=readLine();
-			if( "shutter".equals(param.command) ) {
+			c = Calendar.getInstance();
+			formattedDate = logDf.format(c.getTime());			
+			Log.i( PkTriggerCord.TAG, "read answer: "+formattedDate);
+			/*			if( "shutter".equals(param.command) ) {
 			    Integer frames = (Integer)param.getValue("frames");
 			    int frameNum = frames == null ? 1 : frames.intValue();
 			    Integer delay = (Integer)param.getValue("delay");
@@ -302,10 +309,13 @@ public class MainActivity extends Activity {
 				    answer=readLine();
 				}
 			    }
-			}
+			    }*/
 		    }
 		    return null;
 		}
+		Calendar c = Calendar.getInstance();
+		String formattedDate = logDf.format(c.getTime());			
+		Log.i( PkTriggerCord.TAG, "connect: "+formattedDate);
 		dos.writeBytes("connect");
 		answer=readLine();
 		if( answer == null ) {
@@ -340,9 +350,9 @@ public class MainActivity extends Activity {
 			    map.put("answer", answer);
 			    jpegLength = getIntParam(answer);
 			    OutputStream os;
-			    Calendar c = Calendar.getInstance();
+			    c = Calendar.getInstance();
 			    SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
-			    String formattedDate = df.format(c.getTime());
+			    formattedDate = df.format(c.getTime());
 			    File outFile = new File(OUTDIR + "/pktriggercord_"+formattedDate+".dng");
 			    os = new FileOutputStream(outFile);
 			    PkTriggerCord.copyStream( is, os, jpegLength );
@@ -361,6 +371,7 @@ public class MainActivity extends Activity {
 		    return "No camera connected";
 		}
 		long time2 = SystemClock.elapsedRealtime();
+		Log.i( PkTriggerCord.TAG, "time "+ (time2-time1) + " ms");
 		return "time "+ (time2-time1) + " ms";
 	    } catch( Exception e ) {
 		return "Error:"+e+"\n";
