@@ -96,6 +96,7 @@ static struct option const longopts[] ={
     {"timeout", required_argument, NULL, 20},
     {"noshutter", no_argument, NULL, 21},
     {"servermode", no_argument, NULL, 22},
+    {"servermode_timeout", required_argument, NULL, 23},
     { NULL, 0, NULL, 0}
 };
 
@@ -197,6 +198,7 @@ int main(int argc, char **argv) {
     struct timeval current_time;
     bool noshutter = false;
     bool servermode = false;
+    int servermode_timeout = 30;
 
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
@@ -485,13 +487,17 @@ int main(int argc, char **argv) {
 	        servermode = true;
 	        break;
 
+            case 23:
+                servermode_timeout = atoi(optarg);
+                break;
+
         }
     }
 
     if( servermode ) {
         #ifndef WIN32
         // ignore all the other argument and go to server mode
-        servermode_socket();
+        servermode_socket(servermode_timeout);
         exit(0);
         #endif
     } 
@@ -511,25 +517,6 @@ int main(int argc, char **argv) {
         printf("%s", buf);
         exit(-1);
     }
-    /*    gettimeofday(&prev_time, NULL);
-    while (!(camhandle = pslr_init( model, device ))) {
-        DPRINT("foundinwhile\n");
-        gettimeofday(&current_time, NULL);
-	if( timeout == 0 || timeout > timeval_diff(&current_time, &prev_time) / 1000000.0 ) {
-	  sleep_sec(1);
-	} else {
-	  printf("%ds timeout exceeded\n", timeout);
-	  exit(-1);
-	}
-    }
-
-    DPRINT("before connect\n");
-    if (camhandle) {
-        if (pslr_connect(camhandle) ) {
-	  printf("Unknown Pentax camera found.\n");
-	  exit(-1);
-        }
-	}*/
 
     camera_name = pslr_camera_name(camhandle);
     printf("%s: %s Connected...\n", argv[0], camera_name);
@@ -860,6 +847,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
       --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...\n\
   -f, --auto_focus                      autofocus\n\
       --reconnect                       reconnect between shots\n\
+      --servermode                      start in server mode and wait for commands\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\
       --status_hex                      print status hex info\n\
