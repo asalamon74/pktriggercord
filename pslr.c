@@ -88,7 +88,9 @@ static int ipslr_buffer_segment_info(ipslr_handle_t *p, pslr_buffer_segment_info
 static int ipslr_next_segment(ipslr_handle_t *p);
 static int ipslr_download(ipslr_handle_t *p, uint32_t addr, uint32_t length, uint8_t *buf);
 static int ipslr_identify(ipslr_handle_t *p);
-static int ipslr_write_args(ipslr_handle_t *p, int n, ...);
+static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...);
+#define ipslr_write_args(p,n,...) _ipslr_write_args(0,(p),(n),__VA_ARGS__)
+#define ipslr_write_args_special(p,n,...) _ipslr_write_args(4,(p),(n),__VA_ARGS__)
 
 static int command(int fd, int a, int b, int c);
 static int get_status(int fd);
@@ -174,6 +176,99 @@ typedef enum {
     X10_10,
     X10_DUST
 } x10_subcommands_t;
+
+/* ************** Enabling/disabling debug mode *************/
+/* Done by reverse engineering the USB communication between PK Tether and */
+/* Pentax K-10D camera. The debug on/off should work without breaking the  */
+/* camera, but you are invoking this subroutines without any warranties    */
+/* Written by: Samo Penic, 2014 */
+
+#define DEBUG_OFF 0
+#define DEBUG_ON 1
+
+/* a different write_args function needs to be done with slightly changed */
+/* command sequence. Original function was ipslr_write_args(). */
+/*static int ipslr_write_args_special(ipslr_handle_t *p, int n, ...) {
+    va_list ap;
+    int args[n];
+    int i;
+    for( i = 0; i < 4; ++i ) {
+	args[i] = 0;
+    }
+    va_start(ap, n);
+    for (i = 0; i < n; i++) {
+	args[i] = va_arg(ap, int);
+    }
+    va_end(ap);
+    return _ipslr_write_args(4, p, n, args);
+    }*/
+
+/* Commands in form 23 XX YY. I know it si stupid, but ipslr_cmd functions  */
+/* are sooooo handy.                                                        */
+static int ipslr_cmd_23_XX(ipslr_handle_t *p, char XX, char YY, uint32_t mode) {
+    CHECK(ipslr_write_args(p, 1, mode));
+    CHECK(command(p->fd, 0x23, XX, YY));
+    CHECK(get_status(p->fd));
+    return PSLR_OK;
+}
+
+/* First of two exceptions. Command 0x23 0x06 0x14 behaves differently than */
+/* generic 23 XX YY commands                                                */
+static int ipslr_cmd_23_06(ipslr_handle_t *p, char debug_on_off) {
+    CHECK(ipslr_write_args(p, 1, 3));
+    if(debug_on_off==0){
+        CHECK(ipslr_write_args_special(p, 4,0,0,0,0));
+    } else {
+        CHECK(ipslr_write_args_special(p, 4,1,1,0,0));
+    }
+    CHECK(command(p->fd, 0x23, 0x06, 0x14));
+    CHECK(get_status(p->fd));
+    return PSLR_OK;
+}
+
+/* Second exception. Command 0x23 0x04 0x08 behaves differently than generic */
+/* 23 XX YY commands                                                         */
+static int ipslr_cmd_23_04(ipslr_handle_t *p) {
+    CHECK(ipslr_write_args(p, 1, 3)); // posebni ARGS-i
+    CHECK(ipslr_write_args_special(p, 1, 1)); // posebni ARGS-i
+    CHECK(command(p->fd, 0x23, 0x04, 0x08));
+    CHECK(get_status(p->fd));
+    return PSLR_OK;
+}
+
+/* Function called to enable/disable debug mode. If debug_mode argument is 0 */
+/* function disables debug mode, else debug mode is enabled                  */
+int debug_onoff(ipslr_handle_t *p, char debug_mode){
+    uint8_t buf[16]; /* buffer for storing statuses and read_results */
+    
+    ipslr_cmd_00_09(p,1);
+
+    ipslr_cmd_23_XX(p,0x07,0x04,3);
+    read_result(p->fd,buf,0x10);
+
+    ipslr_cmd_23_XX(p,0x05,0x04,3);
+    read_result(p->fd,buf,0x04);
+    ipslr_status(p,buf);
+
+	if(debug_mode==0){
+    		ipslr_cmd_23_06(p,DEBUG_OFF);
+	} else {
+    		ipslr_cmd_23_06(p,DEBUG_ON);
+	}
+    ipslr_status(p,buf);
+
+
+    ipslr_cmd_23_04(p);
+
+    ipslr_cmd_23_XX(p,0x00,0x04, 0);
+
+    ipslr_cmd_00_09(p,2);
+    ipslr_status(p,buf);
+
+    return PSLR_OK;
+}
+
+/* ************* End enabling/disabling debug mode ************ */
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
     int i;    
@@ -322,16 +417,12 @@ int pslr_connect(pslr_handle_t h) {
     if( !p->model->old_scsi_command ) {
         CHECK(ipslr_cmd_00_09(p, 2));
     }
-    DPRINT("before status1 full\n");
     CHECK(ipslr_status_full(p, &p->status));
-    DPRINT("after status1 full\n");
     CHECK(ipslr_cmd_10_0a(p, 1));
     if( p->model->old_scsi_command ) {
         CHECK(ipslr_cmd_00_05(p));
     }
-    DPRINT("before status2 full\n");
     CHECK(ipslr_status_full(p, &p->status));
-    DPRINT("after status2 full\n");
     return 0;
 }
 
@@ -1157,9 +1248,9 @@ static int ipslr_identify(ipslr_handle_t *p) {
     return PSLR_OK;
 }
 
-static int ipslr_write_args(ipslr_handle_t *p, int n, ...) {
+static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
     va_list ap;
-    uint8_t cmd[8] = {0xf0, 0x4f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    uint8_t cmd[8] = {0xf0, 0x4f, cmd_2, 0x00, 0x00, 0x00, 0x00, 0x00};
     uint8_t buf[4 * n];
     int fd = p->fd;
     int res;

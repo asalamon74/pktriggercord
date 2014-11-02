@@ -97,6 +97,7 @@ static struct option const longopts[] ={
     {"noshutter", no_argument, NULL, 21},
     {"servermode", no_argument, NULL, 22},
     {"servermode_timeout", required_argument, NULL, 23},
+    {"pentax_debug_mode", required_argument, NULL,24},
     { NULL, 0, NULL, 0}
 };
 
@@ -199,6 +200,9 @@ int main(int argc, char **argv) {
     bool noshutter = false;
     bool servermode = false;
     int servermode_timeout = 30;
+
+    int modify_debug_mode=0;
+    char debug_mode=0;
 
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
@@ -491,6 +495,9 @@ int main(int argc, char **argv) {
                 servermode_timeout = atoi(optarg);
                 break;
 
+	    case 24:
+		modify_debug_mode=1;
+		debug_mode=atoi(optarg);
         }
     }
 
@@ -520,6 +527,13 @@ int main(int argc, char **argv) {
 
     camera_name = pslr_camera_name(camhandle);
     printf("%s: %s Connected...\n", argv[0], camera_name);
+
+/* if debug mode switch is on, there is a possibility someone just want to alter debug mode */
+    if( modify_debug_mode == 1) {
+	debug_onoff(camhandle,debug_mode);
+	camera_close(camhandle);
+	exit(0);
+    }
 
     pslr_get_status(camhandle, &status);
 
@@ -860,6 +874,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
       --noshutter                       do not send shutter command, just wait for new photo, download and delete from camera\n\
   -v, --version                         display version information and exit\n\
   -h, --help                            display this help and exit\n\
+      --pentax_debug_mode={0|1}		enable or disable camera debug mode and exit (DANGEROUS). Valid values are: 0, 1\n\
 \n", name);
 }
 

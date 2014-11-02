@@ -1,3 +1,6 @@
+version 0.82.01
+	--pentax_debug_mode ( thx Samo Penic )
+
 version 0.82.00 ( 2014-11-01 )
 	Using newer mingw for Windows crosscompile
 	Attemp to fix root requirement
