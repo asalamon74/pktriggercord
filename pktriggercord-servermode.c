@@ -37,7 +37,6 @@
 
 #include <unistd.h>
 
-
 #include "pslr.h"
 #include "pslr_lens.h"
 
