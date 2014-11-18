@@ -1046,7 +1046,8 @@ const char *pslr_camera_name(pslr_handle_t h) {
 }
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int jpeg_stars) {
-    return 2 + get_hw_jpeg_quality( h, jpeg_stars );
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return 2 + get_hw_jpeg_quality( p->model, jpeg_stars );
 }
 
 /* ----------------------------------------------------------------------- */

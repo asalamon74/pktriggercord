@@ -2,6 +2,7 @@ version 0.82.01
 	--pentax_debug_mode ( thx Samo Penic )
 	Testing support for K-50
 	Updating lens info database ( exiftool 9.700 )
+	Jpeg quality bugfix
 
 version 0.82.00 ( 2014-11-01 )
 	Using newer mingw for Windows crosscompile
