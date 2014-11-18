@@ -95,8 +95,10 @@ static struct option const longopts[] ={
     {"reconnect", no_argument, NULL, 19},
     {"timeout", required_argument, NULL, 20},
     {"noshutter", no_argument, NULL, 21},
+#ifndef WIN32
     {"servermode", no_argument, NULL, 22},
     {"servermode_timeout", required_argument, NULL, 23},
+#endif
     {"pentax_debug_mode", required_argument, NULL,24},
     { NULL, 0, NULL, 0}
 };
@@ -198,8 +200,10 @@ int main(int argc, char **argv) {
     struct timeval prev_time;
     struct timeval current_time;
     bool noshutter = false;
+#ifndef WIN32
     bool servermode = false;
     int servermode_timeout = 30;
+#endif
 
     int modify_debug_mode=0;
     char debug_mode=0;
@@ -487,6 +491,7 @@ int main(int argc, char **argv) {
                 noshutter = true;
                 break;
 
+#ifndef WIN32
 	    case 22:
 	        servermode = true;
 	        break;
@@ -494,6 +499,7 @@ int main(int argc, char **argv) {
             case 23:
                 servermode_timeout = atoi(optarg);
                 break;
+#endif
 
 	    case 24:
 		modify_debug_mode=1;
@@ -501,13 +507,13 @@ int main(int argc, char **argv) {
         }
     }
 
+#ifndef WIN32
     if( servermode ) {
-        #ifndef WIN32
         // ignore all the other argument and go to server mode
         servermode_socket(servermode_timeout);
         exit(0);
-        #endif
     } 
+#endif
 
     if (!output_file && frames > 1) {
         fprintf(stderr, "Should specify output filename if frames>1\n");
