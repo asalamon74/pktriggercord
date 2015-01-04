@@ -543,8 +543,9 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     if (st_new) {
         GtkTreeModel *jpeg_quality_model = gtk_combo_box_get_model(GTK_COMBO_BOX(pw));
         gint jpeg_quality_num = gtk_tree_model_iter_n_children( jpeg_quality_model, NULL );
-        int hw_jpeg_quality = get_hw_jpeg_quality(camhandle, st_new->jpeg_quality);
-        if( hw_jpeg_quality >= jpeg_quality_num ) {
+	ipslr_handle_t *p = (ipslr_handle_t *)camhandle;
+	int hw_jpeg_quality = get_hw_jpeg_quality(p->model, st_new->jpeg_quality);	
+        if( st_new->jpeg_quality >= jpeg_quality_num ) {
 	  hw_jpeg_quality = 0;
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(pw), hw_jpeg_quality);
