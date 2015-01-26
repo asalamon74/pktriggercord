@@ -109,7 +109,7 @@ user_file_format_t file_formats[3] = {
 
 
 const char* valid_vendors[3] = {"PENTAX", "SAMSUNG", "RICOHIMG"};
-const char* valid_models[2] = {"DIGITAL_CAMERA", "DSC"}; // no longer list all of them, DSC* should be ok
+const char* valid_models[3] = {"DIGITAL_CAMERA", "DSC", "Digital Camera"};
 
 // x18 subcommands to change camera properties
 // X18_n: unknown effect
