@@ -67,7 +67,6 @@ public class PkTriggerCord extends Application {
 
     private void installCli() {
 	try {
-	    //	    createCliDir();
 	    copyAsset("pktriggercord-cli");
 	} catch( Exception e ) {
 	    Log.e( TAG, e.getMessage(), e );
@@ -147,10 +146,8 @@ public class PkTriggerCord extends Application {
 	    out.flush();
 	    out.close();
 	    //        out = null;
-	    //	appendText("Before chmod\n");
 	    //	simpleSudoWrapper("chown root "+fullFileName);
 	    simpleSudoWrapper("chmod 4777 "+fullFileName);
-	    //	appendText("After chmod\n");
 	}
     }
 
