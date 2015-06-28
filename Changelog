@@ -1,4 +1,4 @@
-version 0.82.01
+version 0.82.02 ( 2015-06-28 )
 	--pentax_debug_mode ( thx Samo Penic )
 	Testing support for K-50
 	Updating lens info database ( exiftool 9.700 )
