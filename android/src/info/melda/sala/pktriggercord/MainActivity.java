@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
 
 	npf = (NumberPicker) findViewById(R.id.frames);
-	npf.setMaxValue(30);
+	npf.setMaxValue(99);
 	npf.setMinValue(1);
 	npf.setWrapSelectorWheel(false);
 	npf.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -65,9 +65,16 @@ public class MainActivity extends Activity {
 	    });
 
 	npd = (NumberPicker) findViewById(R.id.delay);
-	npd.setMaxValue(60);
+	npd.setMaxValue(120);
 	npd.setMinValue(5);
 	npd.setWrapSelectorWheel(false);
+
+	npd.setFormatter(new NumberPicker.Formatter() {
+		@Override
+		public String format(int i) {
+		    return String.format("%d s", i);
+		}
+	});
 
 	if( savedInstanceState != null ) {
 	    previewBitmap = savedInstanceState.getParcelable("preview");

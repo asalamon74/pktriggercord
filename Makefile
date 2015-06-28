@@ -187,5 +187,5 @@ android: androidcli androidver $(ANDROID_DIR)/build.xml
 	cp $(ANDROID_DIR)/libs/armeabi/pktriggercord-cli $(ANDROID_DIR)/assets
 	ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -f $(ANDROID_ANT_FILE) debug
 	cp $(ANDROID_DIR)/bin/$(ANDROID_PROJECT_NAME)-debug.apk $(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk
-	echo "android build is EXPERIMENTAL. Do NOT use it"
+	echo "android build is EXPERIMENTAL. Use it at your own risk"
 

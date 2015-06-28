@@ -113,6 +113,11 @@ int servermode_socket(int servermode_timeout) {
     if (socket_desc == -1) {
         fprintf(stderr, "Could not create socket");
     }
+
+    int enable = 1;
+    if (setsockopt(socket_desc, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
+      fprintf(stderr, "setsockopt(SO_REUSEADDR) failed");
+    }
     DPRINT("Socket created\n");
      
     //Prepare the sockaddr_in structure
@@ -156,6 +161,7 @@ int servermode_socket(int servermode_timeout) {
             DPRINT("Connection accepted\n");
 	} else {
             DPRINT("Timeout\n");
+	    close(socket_desc);
 	    exit(0);
 	}
      
