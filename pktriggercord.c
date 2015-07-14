@@ -415,6 +415,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     int i;
     bool disable = false;
 
+    DPRINT("start initcontrols\n");
     if (st_new == NULL)
         disable = true;
 
@@ -603,6 +604,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pw), lock);
     }
     gtk_widget_set_sensitive(pw, st_new != NULL);
+    DPRINT("end initcontrols\n");
 }
 
 static pslr_status cam_status[2];
@@ -617,6 +619,7 @@ static gboolean status_poll(gpointer data)
     int ret;
     static bool status_poll_inhibit = false;
 
+    DPRINT("start status_poll\n");
     if (status_poll_inhibit)
         return TRUE;
 
@@ -640,7 +643,9 @@ static gboolean status_poll(gpointer data)
 
         gtk_statusbar_pop(statusbar, sbar_connect_ctx);
         if (camhandle) {
+  	    DPRINT("before camera_specific_init\n");
             camera_specific_init();
+  	    DPRINT("after camera_specific_init\n");
             const char *name;
             name = pslr_camera_name(camhandle);
 
@@ -651,6 +656,7 @@ static gboolean status_poll(gpointer data)
             gtk_statusbar_push(statusbar, sbar_connect_ctx, "No camera connected.");
         }
         status_poll_inhibit = false;
+	DPRINT("end status_poll\n");
         return TRUE;
     }
 
@@ -783,7 +789,7 @@ static gboolean status_poll(gpointer data)
     }
     /* Camera buffer checks */
     manage_camera_buffers(status_new, status_old);
-    DPRINT("end poll\n");
+    DPRINT("end status_poll\n");
 
     status_poll_inhibit = false;
     return TRUE;
@@ -1863,7 +1869,7 @@ G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer
 {
     DPRINT("before get hue\n");
     int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_hue_scale"))));
-    DPRINT("after get hue\n");
+    DPRINT("after get hue %d\n",value);
     int ret;
     assert(value >= -get_jpeg_property_shift());
     assert(value <= get_jpeg_property_shift());
@@ -1871,6 +1877,7 @@ G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer
     if (ret != PSLR_OK) {
         DPRINT("Set JPEG hue failed.\n");
     }
+    DPRINT("end jpeg_hue_scale_value_changed_cb\n");
 }
 
 
