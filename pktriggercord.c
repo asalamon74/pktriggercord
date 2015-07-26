@@ -197,6 +197,7 @@ bool need_histogram=false;
 static GtkListStore *list_store;
 
 bool debug = false;
+bool in_initcontrols = false;
 
 static const int THUMBNAIL_WIDTH = 160;
 static const int THUMBNAIL_HEIGHT = 120;
@@ -415,6 +416,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     int i;
     bool disable = false;
 
+    in_initcontrols = true;
     DPRINT("start initcontrols\n");
     if (st_new == NULL)
         disable = true;
@@ -513,28 +515,30 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     /* JPEG contrast */
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_contrast_scale"));
     if (st_new) {
-        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_contrast - get_jpeg_property_shift());
+        gtk_range_set_value(GTK_RANGE(pw), (gdouble)st_new->jpeg_contrast - get_jpeg_property_shift());
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
     /* JPEG hue */
+    DPRINT("init controls hue\n");
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_hue_scale"));
     if (st_new) {
-        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_hue - get_jpeg_property_shift());
+        gtk_range_set_value(GTK_RANGE(pw), (gdouble)st_new->jpeg_hue - get_jpeg_property_shift());
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
 
     /* JPEG saturation */
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_saturation_scale"));
-    if (st_new)
-        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_saturation - get_jpeg_property_shift());
+    if (st_new) {
+        gtk_range_set_value(GTK_RANGE(pw), (gdouble)st_new->jpeg_saturation - get_jpeg_property_shift());
+    }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
     /* JPEG sharpness */
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_sharpness_scale"));
     if (st_new) {
-        gtk_range_set_value(GTK_RANGE(pw), st_new->jpeg_sharpness - get_jpeg_property_shift());
+        gtk_range_set_value(GTK_RANGE(pw), (gdouble)st_new->jpeg_sharpness - get_jpeg_property_shift());
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
@@ -604,6 +608,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pw), lock);
     }
     gtk_widget_set_sensitive(pw, st_new != NULL);
+    in_initcontrols = false;
     DPRINT("end initcontrols\n");
 }
 
@@ -1806,6 +1811,7 @@ G_MODULE_EXPORT void jpeg_resolution_combo_changed_cb(GtkAction *action, gpointe
 
 G_MODULE_EXPORT void jpeg_quality_combo_changed_cb(GtkAction *action, gpointer user_data)
 {
+    DPRINT("start jpeg_quality_combo_changed_cb\n");
     gchar *stars = gtk_combo_box_get_active_text(GTK_COMBO_BOX(GW("jpeg_quality_combo")));
     int val = strlen(stars);
     int ret;
@@ -1839,6 +1845,9 @@ G_MODULE_EXPORT void jpeg_image_tone_combo_changed_cb(GtkAction *action, gpointe
 
 G_MODULE_EXPORT void jpeg_sharpness_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
+    if( in_initcontrols ) {
+        return;
+    }
     DPRINT("before get sharpness\n");
     int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_sharpness_scale"))));
     DPRINT("after get sharpness\n");
@@ -1853,6 +1862,9 @@ G_MODULE_EXPORT void jpeg_sharpness_scale_value_changed_cb(GtkAction *action, gp
 
 G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
+    if( in_initcontrols ) {
+        return;
+    }
     DPRINT("before get contrast\n");
     int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_contrast_scale"))));
     DPRINT("after get contrast\n");
@@ -1867,12 +1879,18 @@ G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpo
 
 G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
-    DPRINT("before get hue\n");
+    if( in_initcontrols ) {
+        return;
+    }
+    DPRINT("before get hue %f\n", gtk_range_get_value(GTK_RANGE(GW("jpeg_hue_scale"))));
     int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_hue_scale"))));
     DPRINT("after get hue %d\n",value);
     int ret;
+    DPRINT("get_jpeg_property_shift %d\n",  get_jpeg_property_shift() );
     assert(value >= -get_jpeg_property_shift());
+    DPRINT("after assert1\n");
     assert(value <= get_jpeg_property_shift());
+    DPRINT("after assert2\n");
     ret = pslr_set_jpeg_hue(camhandle, value);
     if (ret != PSLR_OK) {
         DPRINT("Set JPEG hue failed.\n");
@@ -1883,6 +1901,9 @@ G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer
 
 G_MODULE_EXPORT void jpeg_saturation_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
+    if( in_initcontrols ) {
+        return;
+    }
     DPRINT("before get saturation\n");
     int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_saturation_scale"))));
     DPRINT("after get saturation\n");
@@ -2076,12 +2097,14 @@ G_MODULE_EXPORT void preview_delete_button_clicked_cb(GtkAction *action)
 
 G_MODULE_EXPORT void file_format_combo_changed_cb(GtkAction *action, gpointer user_data)
 {
+    DPRINT("file_format_combo_changed_cb\n");
     int val = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("file_format_combo")));
     pslr_set_user_file_format( camhandle, val );
 }
 
 G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user_data)
 {
+    DPRINT("user_mode_combo_changed_cb\n");  
     pslr_gui_exposure_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("user_mode_combo")));
     if (!status_new) {
         return;

@@ -736,11 +736,14 @@ int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast) {
 }
 
 int pslr_set_jpeg_hue(pslr_handle_t h, int32_t hue) {
+    DPRINT("start pslr_set_jpeg_hue %d\n", hue);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     int hw_hue = hue + (pslr_get_model_jpeg_property_levels( h )-1) / 2;
+    DPRINT("hw_hue: %d\n", hw_hue);
     if (hw_hue < 0 || hw_hue >= p->model->jpeg_property_levels) {
         return PSLR_PARAM;
     }
+    DPRINT("before return\n");
     return ipslr_handle_command_x18( p, false, X18_JPEG_HUE, 2, 0, hw_hue, 0);
 }
 
