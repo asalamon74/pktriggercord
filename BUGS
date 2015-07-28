@@ -17,6 +17,8 @@ Known bugs of pkTriggerCord:
 
   K-x: Cannot change ISO in M mode.
 
+  K-x: Muted jpeg image tone is not working
+
   ISO table of GUI only shows the extended iso range even is base iso
   range is set.
 
