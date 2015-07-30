@@ -3,6 +3,7 @@ version 0.82.03
 	jpeg contrast/hue/sharpness/saturation GUI bugfix
 	Image tone bugfix (thx Mike Protts)
 	Disable muted jpeg image tone for bugfix because it's not working correctly
+	Android build fixes
 
 version 0.82.02 ( 2015-06-28 )
 	--pentax_debug_mode ( thx Samo Penic )
