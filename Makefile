@@ -40,7 +40,7 @@ cli: pktriggercord-cli
 MANS = pktriggercord-cli.1 pktriggercord.1
 OBJS = pslr.o pslr_enum.o pslr_scsi.o pslr_lens.o pslr_model.o pktriggercord-servermode.o
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.rules samsung.rules pslr_enum.h pslr_enum.c pslr_scsi.h pslr_scsi.c pslr_scsi_linux.c pslr_scsi_win.c pslr_model.h pslr_model.c pslr.h pslr.c exiftool_pentax_lens.txt pslr_lens.h pslr_lens.c pktriggercord.c pktriggercord-servermode.h pktriggercord-servermode.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE)
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.rules samsung.rules pslr_enum.h pslr_enum.c pslr_scsi.h pslr_scsi.c pslr_scsi_linux.c pslr_scsi_win.c pslr_model.h pslr_model.c pslr.h pslr.c exiftool_pentax_lens.txt pslr_lens.h pslr_lens.c pktriggercord.c pktriggercord-servermode.h pktriggercord-servermode.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE) android_scsi_sg.h
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
@@ -97,6 +97,17 @@ srczip: clean
 	cp -r $(WIN_DLLS_DIR)/*.dll $(TARDIR)/$(WIN_DLLS_DIR)/
 	mkdir -p $(TARDIR)/debian
 	cp -r debian/* $(TARDIR)/debian/
+	mkdir -p $(TARDIR)/android/res
+	cp -r $(ANDROID_DIR)/res/* $(TARDIR)/$(ANDROID_DIR)/res/
+	mkdir -p $(TARDIR)/android/src
+	cp -r $(ANDROID_DIR)/src/* $(TARDIR)/$(ANDROID_DIR)/src/
+	mkdir -p $(TARDIR)/android/jni
+	cp -r $(ANDROID_DIR)/jni/* $(TARDIR)/$(ANDROID_DIR)/jni/
+	cp $(ANDROID_DIR)/build.xml $(TARDIR)/$(ANDROID_DIR)/
+	cp $(ANDROID_DIR)/ant.properties $(TARDIR)/$(ANDROID_DIR)/
+	cp $(ANDROID_DIR)/project.properties $(TARDIR)/$(ANDROID_DIR)/
+	cp $(ANDROID_DIR)/proguard-project.txt $(TARDIR)/$(ANDROID_DIR)/
+	cp $(ANDROID_DIR)/AndroidManifest.xml $(TARDIR)/$(ANDROID_DIR)/
 	tar cf - $(TARDIR) | gzip > $(SRCZIP)
 	rm -rf $(TARDIR)
 
@@ -168,15 +179,17 @@ androidcreate:
 	mkdir $(ANDROID_DIR)/jni
 	ln -s ../.. $(ANDROID_DIR)/jni/src
 
-$(ANDROID_DIR)/build.xml:
+$(ANDROID_DIR)/build.xml $(ANDROID_DIR)/local.properties:
 	$(ANDROID) update project --path $(ANDROID_DIR) --target android-12
 
-androidcli: $(ANDROID_DIR)/build.xml
+androidcli: $(ANDROID_DIR)/build.xml $(ANDROID_DIR)/local.properties
 	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD)
 
 androidclean:
 	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD) clean
 	ant -f $(ANDROID_ANT_FILE) clean
+	rm -rf $(ANDROID_DIR)/assets
+	rm -rf $(ANDROID_DIR)/libs
 
 androidver:
 	sed -i s/android:versionName=\".*\"/android:versionName=\"$(VERSION)\"/ $(ANDROID_DIR)/AndroidManifest.xml
