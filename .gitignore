@@ -1,0 +1,14 @@
+old_releases
+*.o
+pktriggercord
+pktriggercord-cli
+*~
+*.exe
+pktriggercord_commandline.html
+pktriggercord-*-win.zip
+PkTriggerCord*.apk
+android/bin
+android/gen
+android/libs
+android/local.properties
+.#*
