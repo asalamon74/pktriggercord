@@ -1874,7 +1874,7 @@ G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpo
     }
     DPRINT("before get contrast\n");
     int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_contrast_scale"))));
-    DPRINT("after get contrast\n");
+    DPRINT("after get contrast %d\n",value);
     int ret;
     assert(value >= -get_jpeg_property_shift());
     assert(value <= get_jpeg_property_shift());
