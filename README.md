@@ -21,7 +21,7 @@ the camera.
 - Pentax K-x
 - Pentax K10D (Samsung GX-10)
 - Pentax K20D (Samsung GX-20)
-- Pentax istDS Not working
+- Pentax istDS (Not working)
 - Pentax K200D
 - Pentax K-7
 - Pentax K-r
