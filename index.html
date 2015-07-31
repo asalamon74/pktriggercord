@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type"
+  />
+  <link rel="stylesheet" href="pktriggercord.css" />
+  <title>pkTriggerCord</title>
+</head>
+<body>
+<h1>pkTriggerCord</h1>
+
+<p>Remote control (tethering) Linux (x86, arm), Windows, Android software for Pentax DSLR cameras.</p>
+
+<p>pkTriggerCord is available under the GNU Lesser General Public License.</p>
+
+<p>This program is based
+on <a href="http://pkremote.sourceforge.net/">PKRemote for Linux</a>
+and <a href="https://sites.google.com/a/pentax.org.pl/tomaszkos/en/pkremote-for-windows">PKRemote
+  for Windows</a> programs.</p>
+
+<h2>Description</h2>
+
+<p>After you connect the camera to your PC with the USB cable, you can
+control the camera from pkTriggerCord. You can read status
+information, you can change several settings, and you can take
+  pictures. The pictures are stored in the camera's buffer and can be
+  downloaded to the PC. Pictures are not written on the SD card of
+  the camera.</p>
+
+<h3>Commandline interface</h3>
+
+<pre>
+<code>
+pktriggercord-cli
+
+      --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-X, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01
+      --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...
+      --timeout=SECONDS                 timeout for camera connection ( 0 means forever )
+  -w, --warnings                        warning mode on
+      --nowarnings                      warning mode off
+  -m, --exposure_mode=MODE		valid values are GREEN, P, SV, TV, AV, TAV, M and X
+      --exposure_compensation=VALUE     exposure compensation value
+      --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO
+  -i, --iso=ISO                         single value (400) or interval (200-800)
+      --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB
+      --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A
+      --select_af_point=AF_SELECT_MODE  valid values are: Auto-5, Auto-11, Spot, Select
+      --ae_metering=AE_METERING         valid values are: Multi, Center, Spot
+      --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless
+      --flash_exposure_compensation=VAL flash exposure compensation value
+  -a, --aperture=APERTURE
+  -t, --shutter_speed=SHUTTER SPEED	values can be given in rational form (eg. 1/90)
+					or decimal form (eg. 0.8)
+  -r, --resolution=RESOLUTION		resolution in megapixels
+  -q, --quality=QUALITY			valid values are 1, 2, 3 and 4
+      --jpeg_image_tone=IMAGE_TONE      valid values are: Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm
+      --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, CTE
+      --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...
+  -f, --auto_focus			autofocus
+      --reconnect                       reconnect between shots
+      --servermode                      start in server mode and wait for commands
+  -g, --green                           green button
+  -s, --status			        print status info
+      --status_hex			print status hex info
+      --dust_removal                    dust removal
+  -F, --frames=NUMBER			number of frames
+  -d, --delay=SECONDS			delay between the frames (seconds)
+      --file_format=FORMAT		valid values: PEF, DNG, JPEG
+  -o, --output_file=FILE		send output to FILE instead of stdout
+      --debug	                        turn on debug messages
+  -v, --version				display version information and exit
+  -h, --help				display this help and exit
+      --pentax_debug_mode={0|1}		enable or disable camera debug mode and exit (DANGEROUS). Valid values are: 0, 1
+</code>
+</pre>
+
+<p>Detailed description can be found <a href="pktriggercord_commandline.html">here</a>.</p>
+
+<p>Timelapse video creation tutorial can be found <a href="timelapse.html">here</a>.</p>
+<h3>GUI</h3>
+
+<p>The GUI requires GTK2.</p>
+<p>
+<a href="https://sourceforge.net/dbimage.php?id=301743">
+<img style="border:0;" src="https://sourceforge.net/dbimage.php?id=301743"
+     alt="pktriggercord camera settings" height="150"/></a>
+<a href="https://sourceforge.net/dbimage.php?id=301745">
+<img style="border:0;" src="https://sourceforge.net/dbimage.php?id=301745"
+     alt="pktriggercord camera buffers" height="150"/></a>
+<a href="https://sourceforge.net/dbimage.php?id=301747">
+<img style="border:0;" src="https://sourceforge.net/dbimage.php?id=301747"
+     alt="pktriggercord main window" height="150"/></a>
+<a href="https://sourceforge.net/dbimage.php?id=323016">
+<img style="border:0;" src="https://sourceforge.net/dbimage.php?id=323016"
+     alt="pktriggercord status info window" height="150"/></a>
+</p>
+
+<a name="cameras"></a><h2>Supported cameras</h2>
+
+<ul>
+<li>Pentax K-x</li>
+<li>Pentax K10D (Samsung GX-10)</li>
+<li>Pentax K20D (Samsung GX-20)</li>
+<li>Pentax istDS <span style="color: orange; font-style: italic;
+			     font-weight:bold;">Not working</span></li>
+<li>Pentax K200D</li>
+<li>Pentax K-7</li>
+<li>Pentax K-r</li>
+<li>Pentax K-5</li>
+<li>Pentax K-m / K2000</li>
+<li>Pentax K-30</li>
+<li>Pentax K-01 <span style="color: orange; font-style: italic;
+			    font-weight:bold;">bugs</span></li>
+<li>Pentax K-5 II / K-5 IIs<!-- <span style="color: red; font-style: italic; font-weight:bold;">NEW</span>--></li>
+</ul>
+
+<h3>Limited support</h3>
+
+<p>Limited support available for the following cameras:</p>
+
+<ul>
+<li>Pentax istD <span style="color: orange; font-style: italic;
+			     font-weight:bold;">Not working</span></li>
+<li>Pentax istDS2</li>
+<li>Pentax istDL</li>
+<li>Pentax K110D <span style="color: orange; font-style: italic;
+			     font-weight:bold;">Not working</span></li>
+<li>Pentax K100D <span style="color: orange; font-style: italic;
+			     font-weight:bold;">Not working</span></li>
+<li>Pentax K100D Super</li>
+</ul>
+
+<p>Limited support: You can take pictures, change settings using the
+  command line version, but you cannot read the status
+  fields. Limited version of GUI allows taking a picture (only one,
+  you need to save (only PEF) or delete it before taking the next one), but camera
+  settings cannot be read or modified.</p>
+
+<p>A few camera models are <span style="color: orange; font-style:
+		italic;font-weight:bold;">Not working</span>
+		correctly. Feel free to send patches.</p> 		 
+
+<p><em>I cannot test the program for all the cameras. Please inform <a href="mailto:asalamon@users.sourceforge.net">me</a>
+  if you test the program with any of the cameras above.</em></p>
+
+<h2>Download</h2>
+
+<h3>Source</h3>
+
+<ul>
+<li>Source: <a href="http://sourceforge.net/projects/pktriggercord/files/0.82.02/pkTriggerCord-0.82.02.src.tar.gz/download">pkTriggerCord-0.82.02.src.tar.gz</a></li>
+<li>Source
+  rpm: <a href="http://sourceforge.net/projects/pktriggercord/files/0.82.02/pktriggercord-0.82.02-1.src.rpm/download">pktriggercord-0.82.02-1.src.rpm</a></li>
+<li>It is also possible to checkout the latest version from SVN repository:
+<p>
+<!--<code class="block">svn checkout
+  svn://svn.code.sf.net/p/pktriggercord/code/
+  pktriggercord-code<br /></code>-->
+<code class="block">svn checkout
+  https://svn.code.sf.net/p/pktriggercord/code/ pktriggercord<br /></code>
+</p>
+</li>
+</ul>
+
+<p><em>Please note: This software is crosscompiled under Linux for
+  Windows. If you want to compile it, you need Linux.</em></p>
+
+<h3>Binary</h3>
+
+<ul>
+<li>Rpm file for Mageia 2 (64 bit): <a href="http://sourceforge.net/projects/pktriggercord/files/0.82.02/pktriggercord-0.82.02-1.x86_64.rpm/download">pktriggercord-0.82.02-1.x86_64.rpm</a></li>
+<li>Rpms for ALT Linux can be downloaded
+  from <a href="http://sisyphus.ru/en/srpm/Sisyphus/pktriggercord">Sisyphus
+    repository</a>.</li>
+<li>Deb file for Raspbian ( Raspberry PI ):
+<a href="http://sourceforge.net/projects/pktriggercord/files/0.82.02/pktriggercord_0.82.02-1_armhf.deb/download">pktriggercord_0.82.02-1_armhf.deb</a>
+
+</li>
+<li>Windows (requires <a href="http://gtk-win.sourceforge.net">GTK2</a>
+  ): <a href="http://sourceforge.net/projects/pktriggercord/files/0.82.02/pktriggercord-0.82.02-win.zip/download">pktriggercord-0.82.02-win.zip</a></li>
+<li>Android: <a href="pktriggercord_android.html">Please read this</a>.</li>
+</ul>
+
+<p><em>You can also download previous releases from <a href="https://sourceforge.net/projects/pktriggercord/files/">here</a>.</em></p> 
+
+
+<p><strong>Use it at your own risk</strong></p>
+
+<p>If you need more info, please go to
+  the <a href="http://sourceforge.net/projects/pktriggercord">project
+    page</a></p>
+<hr />
+<p>
+<a href="http://sourceforge.net/projects/pktriggercord"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=394488&amp;type=13"
+							     width="120"
+							     height="30"
+							     alt="Get
+								  pkTriggerCord
+								  at
+								  SourceForge.net. Fast,
+								  secure
+								  and
+								  Free
+								  Open
+								  Source
+								  software
+								  downloads"
+							     /></a>
+</p>
+</body>
+</html>

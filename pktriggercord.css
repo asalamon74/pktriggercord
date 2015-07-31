@@ -1,0 +1,16 @@
+code.block {
+background-color: #cccccc;
+padding: 5px;
+display: block;
+}
+
+p.arg {
+display: block;
+padding: 2px;
+background-color: #dddddd;
+font-family: monospace;
+}
+
+body {
+margin-left: 5%;
+}

@@ -1,0 +1,486 @@
+<!-- Creator     : groff version 1.22.2 -->
+<!-- CreationDate: Tue Nov  4 07:58:29 2014 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>PKTRIGGERCORD</title>
+
+ <STYLE type="text/css"> h3 { margin-left: 5%} </STYLE>
+</head>
+<body>
+
+<h1 align="center">PKTRIGGERCORD</h1>
+
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">pktriggercord-cli
+- command-line Pentax DSLR tethering software</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="26%">
+
+
+<p style="margin-top: 1em"><b>pktriggercord-cli</b></p></td>
+<td width="1%"></td>
+<td width="62%">
+
+
+
+<p style="margin-top: 1em">[<b>&minus;&minus;model&nbsp;</b><i>CAMERA_MODEL</i>]
+[<b>&minus;&minus;device&nbsp;</b><i>DEVICE</i>]
+[<b>&minus;&minus;timeout&nbsp;</b><i>SECONDS</i>]
+[<b>&minus;&minus;exposure_mode&nbsp;</b><i>MODE</i>]
+[<b>&minus;&minus;exposure_compensation&nbsp;</b><i>VALUE</i>]
+[<b>&minus;&minus;drive_mode&nbsp;</b><i>DRIVE_MODE</i>]
+[<b>&minus;&minus;flash_mode&nbsp;</b><i>FLASH_MODE</i>]
+[<b>&minus;&minus;flash_exposure_compensation&nbsp;</b><i>VALUE</i>]
+[<b>&minus;&minus;iso&nbsp;</b><i>ISO</i>]
+[<b>&minus;&minus;aperture&nbsp;</b><i>APERTURE</i>]
+[<b>&minus;&minus;shutter_speed&nbsp;</b><i>SHUTTER_SPEED</i>]
+[<b>&minus;&minus;af_mode&nbsp;</b><i>AF_MODE</i>]
+[<b>&minus;&minus;select_af_point&nbsp;</b><i>AF_SELECT_MODE</i>]
+[<b>&minus;&minus;ae_metering&nbsp;</b><i>AE_METERING</i>]
+[<b>&minus;&minus;resolution&nbsp;</b><i>RESOLUTION</i>]
+[<b>&minus;&minus;quality&nbsp;</b><i>QUALITY</i>]
+[<b>&minus;&minus;jpeg_image_tone&nbsp;</b><i>IMAGE_TONE</i>]
+[<b>&minus;&minus;white_balance_mode&nbsp;</b><i>WB_MODE</i>]
+[<b>&minus;&minus;white_balance_adjustment&nbsp;</b><i>WB_ADJ</i>]
+[<b>&minus;&minus;auto_focus</b>]
+[<b>&minus;&minus;reconnect</b>]
+[<b>&minus;&minus;green</b>] [<b>&minus;&minus;warnings</b>
+| <b>&minus;&minus;nowarnings</b> ]
+[<b>&minus;&minus;version</b> | <b>&minus;&minus;help</b> |
+<b>&minus;&minus;dust_removal</b> |
+<b>&minus;&minus;status</b> |
+<b>&minus;&minus;status_hex</b> |
+<b>&minus;&minus;frames</b> NUMBER [
+<b>&minus;&minus;delay</b> SECONDS] |
+<b>&minus;&minus;noshutter</b> |
+<b>&minus;&minus;servermode</b> |
+<b>&minus;&minus;pentax_debug_mode</b> VALUE] [
+<b>&minus;&minus;file_format</b> FORMAT ] [
+<b>&minus;&minus;output_file</b> FILENAME ]
+[<b>&minus;&minus;debug</b>]</p> </td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Syntax shows
+only long option names.</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="http://pktriggercord.sourceforge.net">pkTriggerCord</a>
+<!-- pkTriggerCord --> is a cross&minus;platform Pentax DSLR
+tethering software, and pktriggercord-cli is a
+command&minus;line client for it.</p>
+
+<h3>Connection
+<a name="Connection"></a>
+</h3>
+
+
+<p style="margin-left:11%; margin-top: 1em">By default the
+software connects to the first available Pentax camera.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;model</b>
+<i>CAMERA_MODEL</i></p>
+
+<p style="margin-left:17%;">Specify the camera model.
+Useful if more than one camera is connected. Valid (
+case-insensitive ) values are: K20d, K10d, GX10, GX20, K-X,
+K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01,
+K-5II, K-5IIs.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;device</b>
+<i>DEVICE</i></p>
+
+<p style="margin-left:17%;">Specify the device. Useful if
+more than one camera is connected. Valid ( case-sensitive )
+values are depend on the operating system. Valid values for
+Linux: sg0, sg1, ..., for Windows: C, D, E, ....</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;timeout</b>
+<i>SECONDS</i></p>
+
+<p style="margin-left:17%;">Specify the timeout in seconds
+for camera connection. 0 means no timeout, the program will
+wait forever. By default there is no timeout.</p>
+
+<h3>Work mode
+<a name="Work mode"></a>
+</h3>
+
+
+<p style="margin-left:11%; margin-top: 1em">Without
+specifying work mode the program takes 1 picture.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;F</b>,
+<b>&minus;&minus;frames</b></p>
+
+<p style="margin-left:17%;">Specify the number of shots.
+Maximum number of pictures is 10000.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;d</b>,
+<b>&minus;&minus;delay</b> <i>SECONDS</i></p>
+
+<p style="margin-left:17%;">Specify the delay between the
+shots (if number of frames is greater than 1). The minimum
+delay is based on several factors, approximately 3 seconds.
+If auto bracketing is set there is only delay after
+bracketing groups.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;f</b>,
+<b>&minus;&minus;auto_focus</b></p>
+
+<p style="margin-left:17%;">Autofocus before first
+shot.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;reconnect</b></p>
+
+<p style="margin-left:17%;">Reconnect between shots. Might
+solve image artifact problems.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;g</b>,
+<b>&minus;&minus;green</b></p>
+
+<p style="margin-left:17%;">Green button before first
+shot.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;s</b>,
+<b>&minus;&minus;status</b></p>
+
+<p style="margin-left:17%;">Print human readable status
+info and do not take pictures.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;status_hex</b></p>
+
+<p style="margin-left:17%;">Print raw (hexadecimal) and
+human readable status info and do not take pictures.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;noshutter</b></p>
+
+<p style="margin-left:17%;">Do not send shutter command
+just wait for new images. Shutter should be released by
+using a cable release or by pressing the shutter button of
+the camera. The latter does not work for all camera
+models.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;dust_removal</b></p>
+
+<p style="margin-left:17%;">Initiate dust removal
+process.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;servermode</b></p>
+
+<p style="margin-left:17%;">The program waits for commands
+(TODO: describe command) using port number 8888. The program
+ends if no client connects for 15 seconds.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;pentax_debug_mode
+VALUE</b></p>
+
+<p style="margin-left:17%;">Enable (VALUE=1) or disable
+(VALUE=0) the camera debug mode. This is DANGEROUS, use it
+only if you know camera debug mode..</p>
+
+<h3>Setting exposure parameters
+<a name="Setting exposure parameters"></a>
+</h3>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-w</b>,
+<b>&minus;&minus;warnings</b></p>
+
+<p style="margin-left:17%;">Specify warning mode. The
+program prints out warning messages if the settings are
+invalid. It will not stop since the camera can fix most of
+the invalid settings. For instance specifying -iso 796 will
+change the iso to 800.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;nowarnings</b></p>
+
+<p style="margin-left:17%;">Turns off warning mode.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;m</b>,
+<b>&minus;&minus;exposure_mode</b> <i>EXPOSURE_MODE</i></p>
+
+<p style="margin-left:17%;">Specify exposure mode. Does NOT
+work correctly. Please do not use it.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;i</b>,
+<b>&minus;&minus;iso</b> <i>ISO</i></p>
+
+<p style="margin-left:17%;">Specify ISO settings. Single
+value (400) or interval (200-800) can be used.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;a</b>,
+<b>&minus;&minus;aperture</b> <i>APERTURE</i></p>
+
+<p style="margin-left:17%;">Specify aperture. Sample valid
+valus: 2.8, 5.6, 11 (depends on the lens).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;t</b>,
+<b>&minus;&minus;shutter_speed</b> <i>SHUTTER_SPEED</i></p>
+
+<p style="margin-left:17%;">Specify shutter speed. Value
+should be specified in the following format: 1/50, 1/500,
+... Values greater than 30 sec only allowed if Bulb mode is
+already set.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;af_mode</b>
+<i>AF_MODE</i></p>
+
+<p style="margin-left:17%;">Specify the autofocus mode.
+Valid values are: AF.S, AF.C, AF.A.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;select_af_point</b>
+<i>AF_SELECT_MODE</i></p>
+
+<p style="margin-left:17%;">Specify the autofocus point
+selection mode. Valid values are: Auto-5, Auto-11, Select,
+Spot.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;ae_metering</b>
+<i>AE_METERING</i></p>
+
+<p style="margin-left:17%;">Specify the autoexposure
+metering mode. Valid values are: Multi, Center, Spot.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;exposure_correction</b>
+<i>VALUE</i></p>
+
+<p style="margin-left:17%;">Specify exposure compensation
+value.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;drive_mode</b>
+<i>DRIVE_MODE</i></p>
+
+<p style="margin-left:17%;">Specify the drive mode. Valid
+values are: Single, Continuous-HI, SelfTimer-12,
+SelfTimer-2, Remote, Remote-3, Continuous-LO.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;flash_mode</b>
+<i>FLASH_MODE</i></p>
+
+<p style="margin-left:17%;">Specify the flash mode. Valid
+values are: Manual, Manual-RedEye, Slow, Slow-RedEye,
+TrailingCurtain, Auto, Auto-RedEye, Wireless.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;flash_exposure_correction</b>
+<i>VALUE</i></p>
+
+<p style="margin-left:17%;">Specify flash exposure
+compensation value.</p>
+
+<h3>Output file specification
+<a name="Output file specification"></a>
+</h3>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;o</b>,<b>&minus;&minus;output_file</b>
+<i>FILENAME</i></p>
+
+<p style="margin-left:17%;">Specify the name of the output
+file prefix. Frame number and extension will be
+automatically added. If not specified the file will be sent
+to standard output.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;file_format</b>
+<i>FORMAT</i></p>
+
+<p style="margin-left:17%;">Specify the output file format.
+Valid values are: PEF, DNG, JPEG. It also changes the
+default file format in the camera.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;color_space</b>
+<i>COLOR_SPACE</i></p>
+
+<p style="margin-left:17%;">Specify the color space. Valid
+values are: sRGB, AdobeRGB.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;q</b>,<b>&minus;&minus;quality</b>
+<i>QUALITY</i></p>
+
+<p style="margin-left:17%;">Specify jpeg quality using the
+&rsquo;star&rsquo; rating of the camera. 1, 2, 3 can be used
+for all the cameras, for some cameras 4 is also allowed. It
+also changes the jpeg quality in the camera.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;r</b>,<b>&minus;&minus;resolution</b>
+<i>RESOLUTION</i></p>
+
+<p style="margin-left:17%;">Specify jpeg resolution. While
+this changes the jpeg resolution setting in the camera, it
+will not affect the resolution of the downloaded jpeg file.
+(it&rsquo;s a bug).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;jpeg_image_tone</b>
+<i>IMAGE_TONE</i></p>
+
+<p style="margin-left:17%;">Specify the jpeg image tone.
+Valid values are: Natural, Bright, Portrait, Landscape,
+Vibrant, Monochrome, Muted, ReversalFilm. Currently this
+setting is temporary, picture taking restores it back to the
+original, so it&rsquo;s quite useless.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;white_balance_mode</b>
+<i>WB_MODE</i></p>
+
+<p style="margin-left:17%;">Specify the white balance mode.
+Valid values are: Auto, Daylight, Shade, Cloudy,
+Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L,
+Tungsten, Flash, Manual, CTE.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;white_balance_adjustment</b>
+<i>WB_ADJ</i></p>
+
+<p style="margin-left:17%;">Specify the white balance
+adjustment. Valid values like: G5B2, G3A5, B5, A3, G5,
+M4.</p>
+
+<h3>Other
+<a name="Other"></a>
+</h3>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;v</b>,
+<b>&minus;&minus;version</b></p>
+
+<p style="margin-left:17%;">Display version and exit.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;h</b>,
+<b>&minus;&minus;help</b></p>
+
+<p style="margin-left:17%;">Display a short usage
+message.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;debug</b></p>
+
+<p style="margin-left:17%;">Debug info.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>The
+pktriggercord.sourceforge.net website</i>[1],</p>
+
+<h2>EXAMPLES
+<a name="EXAMPLES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pktriggercord&minus;cli
+&minus;&minus;status</b></p>
+
+<p style="margin-left:17%;">Connects to the camera and
+prints out status info.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pktriggercord&minus;cli
+&minus;&minus;status_hex</b></p>
+
+<p style="margin-left:17%;">Connects to the camera and
+prints out hexadecimal and human-readable status info.</p>
+
+<p style="margin-left:11%; margin-top: 1em">To track down
+errors, you can add the <b>&minus;&minus;debug</b> parameter
+to the <b>pktriggercord-cli</b> command line.</p>
+
+<h2>NOTES
+<a name="NOTES"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="12%"></td>
+<td width="3%">
+
+
+<p style="margin-top: 1em">1.</p></td>
+<td width="2%"></td>
+<td width="66%">
+
+
+<p style="margin-top: 1em"><!-- The
+pktriggercord.sourceforge.net website --></p></td>
+<td width="17%">
+</td></tr>
+</table>
+
+<p style="margin-left:17%;"><!--
+http://pktriggercord.sourceforge.net/ -->
+<a href="http://pktriggercord.sourceforge.net/">http://pktriggercord.sourceforge.net/</a></p> <hr>
+
+
+<p><p>If you need more info, please go to the <a href="http://sourceforge.net/projects/pktriggercord">project page</a></p> <hr /> <p> <a href="http://sourceforge.net/projects/pktriggercord"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=394488&amp;type=13" width="120" height="30" alt="pkTriggerCord at SourceForge"/></a></p></p>
+</body>
+</html>
