@@ -222,6 +222,7 @@ int pslr_get_model_extended_iso_min(pslr_handle_t h);
 int pslr_get_model_extended_iso_max(pslr_handle_t h);
 int *pslr_get_model_jpeg_resolutions(pslr_handle_t h);
 bool pslr_get_model_only_limited(pslr_handle_t h);
+bool pslr_get_model_has_jpeg_hue(pslr_handle_t h);
 bool pslr_get_model_need_exposure_conversion(pslr_handle_t h);
 pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h);
 

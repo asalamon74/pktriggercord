@@ -358,7 +358,10 @@ void iso_speed_table_init(pslr_status *st) {
 }
 
 void camera_specific_init() {
-    gtk_range_set_range( GTK_RANGE(GW("jpeg_hue_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    bool has_jpeg_hue = pslr_get_model_has_jpeg_hue( camhandle );
+    if( has_jpeg_hue ) {
+        gtk_range_set_range( GTK_RANGE(GW("jpeg_hue_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
+    }
     gtk_range_set_range( GTK_RANGE(GW("jpeg_sharpness_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     gtk_range_set_range( GTK_RANGE(GW("jpeg_saturation_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     gtk_range_set_range( GTK_RANGE(GW("jpeg_contrast_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
@@ -523,11 +526,14 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     /* JPEG hue */
     DPRINT("init controls hue\n");
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_hue_scale"));
+    bool sensitive_hue = st_new;
     if (st_new) {
         gtk_range_set_value(GTK_RANGE(pw), (gdouble)st_new->jpeg_hue - get_jpeg_property_shift());
+	bool has_jpeg_hue = pslr_get_model_has_jpeg_hue( camhandle );
+	DPRINT("has_jpeg_hue %d\n",has_jpeg_hue);
+	sensitive_hue &= has_jpeg_hue;
     }
-
-    gtk_widget_set_sensitive(pw, st_new != NULL);
+    gtk_widget_set_sensitive(pw, sensitive_hue);
 
     /* JPEG saturation */
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_saturation_scale"));

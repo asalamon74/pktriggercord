@@ -995,6 +995,11 @@ bool pslr_get_model_only_limited(pslr_handle_t h) {
     return p->model->buffer_size == 0 && !p->model->parser_function;
 }
 
+bool pslr_get_model_has_jpeg_hue(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->has_jpeg_hue;
+}
+
 bool pslr_get_model_need_exposure_conversion(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->need_exposure_mode_conversion;
