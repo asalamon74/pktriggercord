@@ -1,5 +1,5 @@
 %define name      pktriggercord	
-%define ver       0.82.02
+%define ver       0.82.03
 %define rel       1
 %define prefix    /usr
 %define debug_package %{nil}
