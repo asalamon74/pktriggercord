@@ -6,6 +6,8 @@ pktriggercord-cli
 *.exe
 pktriggercord_commandline.html
 pktriggercord-*-win.zip
+pkTriggerCord-*.src.tar.gz
+pktriggercord-*.rpm
 PkTriggerCord*.apk
 android/bin
 android/gen
