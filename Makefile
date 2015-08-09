@@ -142,8 +142,8 @@ deb: srczip
 # Remote deb creation on Raspberry PI
 # address, dir hardwired
 remotedeb:
-	ssh pi@raspberrypi "cd /home/pi/progs/c/pktriggercord && svn update && make clean deb"
-	scp pi@raspberrypi:/home/pi/progs/c/pktriggercord/pktriggercord_*.deb .
+	ssh pi@raspberrypi "rm -rf /tmp/pktriggercord && cd /tmp && git clone --depth 1 https://github.com/asalamon74/pktriggercord.git && cd pktriggercord && make clean deb"
+	scp pi@raspberrypi:/tmp/pktriggercord/pktriggercord_*.deb .
 
 
 # converting lens info from exiftool

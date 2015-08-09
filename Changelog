@@ -6,6 +6,7 @@ version 0.82.03
 	Android build fixes
 	Disable jpeg hue change for old cameras without jpeg hue setting
 	Makefile code cleanup
+	Project moved to github.com
 
 version 0.82.02 ( 2015-06-28 )
 	--pentax_debug_mode ( thx Samo Penic )
