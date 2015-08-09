@@ -14,7 +14,7 @@ the camera.
 - Linux x86
 - Linux arm (Raspberry PI)
 - Windows
-- Android
+- [Android](http://pktriggercord.melda.info/pktriggercord_android.html)
 
 ##Cameras
 
