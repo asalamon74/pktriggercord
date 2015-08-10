@@ -7,6 +7,7 @@ version 0.82.03
 	Disable jpeg hue change for old cameras without jpeg hue setting
 	Makefile code cleanup
 	Project moved to github.com
+	Update/addition of dlls to windows port
 
 version 0.82.02 ( 2015-06-28 )
 	--pentax_debug_mode ( thx Samo Penic )
