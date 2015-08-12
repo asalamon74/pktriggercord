@@ -32,11 +32,12 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-green
 [\fB\-\-warnings\fR | \fB\-\-nowarnings\fR ]
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-dust_removal\fR | \fB\-\-status\fR |
-\fB\-\-status_hex\fR | \fB\-\-frames\fR NUMBER [ \fB\-\-delay\fR
-SECONDS] | \fB\-\-noshutter\fR | \fB\-\-servermode\fR
-[\fB\-\-servermode_timeout SECONDS\fR]  |
-\fB\-\-pentax_debug_mode\fR VALUE]
-[ \fB\-\-file_format\fR FORMAT ] [ \fB\-\-output_file\fR FILENAME ] 
+\fB\-\-status_hex\fR | \fB\-\-frames \fINUMBER\fR [ \fB\-\-delay
+\fISECONDS\fR ] 
+| \fB\-\-noshutter\fR | \fB\-\-servermode\fR
+[ \fB\-\-servermode_timeout \fISECONDS\fR]  |
+\fB\-\-pentax_debug_mode\fI VALUE\fR]
+[ \fB\-\-file_format\fI FORMAT\fR ] [ \fB\-\-output_file\fI FILENAME\fR ] 
 .OP \-\-debug 
 .YS
 .PP
@@ -55,7 +56,7 @@ pktriggercord-cli is a command\-line client for it\.
 .PP 
 By default the software connects to the first available Pentax camera\.
 .PP
-\fB\-\-model \fR\fB\fICAMERA_MODEL\fR
+\fB\-\-model \fR\fICAMERA_MODEL\fR
 .RS 4
 Specify the camera model. Useful if more than one camera is connected.
 Valid ( case-insensitive ) values are: K20d, K10d, GX10, GX20, K-X,
@@ -81,7 +82,7 @@ timeout.
 .PP 
 Without specifying work mode the program takes 1 picture.
 .PP
-\fB\-F\fR, \fB\-\-frames\fR
+\fB\-F\fR, \fB\-\-frames \fR\fB\fINUMBER\fR
 .RS 4
 Specify the number of shots. Maximum number of pictures is 10000.
 .RE
