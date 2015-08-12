@@ -868,6 +868,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -f, --auto_focus                      autofocus\n\
       --reconnect                       reconnect between shots\n\
       --servermode                      start in server mode and wait for commands\n\
+      --servermode_timeout=SECONDS      servermode timeout\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\
       --status_hex                      print status hex info\n\

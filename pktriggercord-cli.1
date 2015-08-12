@@ -33,7 +33,8 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 [\fB\-\-warnings\fR | \fB\-\-nowarnings\fR ]
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-dust_removal\fR | \fB\-\-status\fR |
 \fB\-\-status_hex\fR | \fB\-\-frames\fR NUMBER [ \fB\-\-delay\fR
-SECONDS] | \fB\-\-noshutter\fR | \fB\-\-servermode\fR |
+SECONDS] | \fB\-\-noshutter\fR | \fB\-\-servermode\fR
+[\fB\-\-servermode_timeout SECONDS\fR]  |
 \fB\-\-pentax_debug_mode\fR VALUE]
 [ \fB\-\-file_format\fR FORMAT ] [ \fB\-\-output_file\fR FILENAME ] 
 .OP \-\-debug 
@@ -132,8 +133,13 @@ Initiate dust removal process\.
 .PP
 \fB\-\-servermode\fR
 .RS 4
-The program waits for commands (TODO: describe command) using port
-number 8888. The program ends if no client connects for 15 seconds\.
+The program waits for commands using port number 8888. The program
+ends if no client connects for 30 seconds\. Different timeout value
+can be specified by --servermode_timeout\.
+.RE
+\fB\-\-servermode_timeout \fR\fB\fISECONDS\fR
+.RS 4
+Specify timeout for servermode. Default value: 30 seconds
 .RE
 .PP
 \fB\-\-pentax_debug_mode VALUE\fR
@@ -282,6 +288,93 @@ Display a short usage message\.
 .RS 4
 Debug info\.
 .RE
+.HnS 2
+.SS Servermode
+.HnE
+.PP
+The program accepts the following commands in servermode:
+.PP
+\fBconnect\fR
+.RS 4
+Connect to the camera\.
+.RE
+.PP
+\fBfocus\fR
+.RS 4
+Focus (half pressing the shutter)\.
+.RE
+.PP
+\fBshutter\fR
+.RS 4
+Shutter (full pressing)\.
+.RE
+.PP
+\fBdelete_buffer\fR
+.RS 4
+Delete the first buffer image\.
+.RE
+.PP
+\fBupdate_status\fR
+.RS 4
+Read camera status info\.
+.RE
+.PP
+\fBget_camera_name\fR
+.RS 4
+Get camera name\.
+.RE
+.PP
+\fBget_lens_name\fR
+.RS 4
+Get lens name\.
+.RE
+.PP
+\fBget_current_shutter_speed\fR
+.RS 4
+Get current shutter speed\.
+.RE
+.PP
+\fBget_current_aperture\fR
+.RS 4
+Get current aperture\.
+.RE
+.PP
+\fBget_current_iso\fR
+.RS 4
+Get current ISO\.
+.RE
+.PP
+\fBget_bufmask\fR
+.RS 4
+Get buffer mask\.
+.RE
+.PP
+\fBget_preview_buffer\fR
+.RS 4
+Get the first preview buffer\.
+.RE
+.PP
+\fBget_buffer\fR
+.RS 4
+Get the first buffer\.
+.RE
+.PP
+\fBdisconnect\fR
+.RS 4
+Disconnects the client\. The server keeps running (for a while) and
+waits for a new client to connect\.
+.RE
+.PP
+\fBstopserver\fR
+.RS 4
+Stops the server\.
+.RE
+.PP
+\fBecho\fR
+.RS 4
+Test command\.
+.RE
+
 .SH "SEE ALSO"
 .PP
 \fIThe pktriggercord.melda.info website\fR\&[1],
