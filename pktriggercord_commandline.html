@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.2 -->
-<!-- CreationDate: Fri Jul 31 14:28:25 2015 -->
+<!-- CreationDate: Wed Aug 26 07:52:25 2015 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -77,13 +77,14 @@
 <b>&minus;&minus;dust_removal</b> |
 <b>&minus;&minus;status</b> |
 <b>&minus;&minus;status_hex</b> |
-<b>&minus;&minus;frames</b> NUMBER [
-<b>&minus;&minus;delay</b> SECONDS] |
+<b>&minus;&minus;frames</b> <i>NUMBER</i> [
+<b>&minus;&minus;delay</b> <i>SECONDS</i> ] |
 <b>&minus;&minus;noshutter</b> |
-<b>&minus;&minus;servermode</b> |
-<b>&minus;&minus;pentax_debug_mode</b> VALUE] [
-<b>&minus;&minus;file_format</b> FORMAT ] [
-<b>&minus;&minus;output_file</b> FILENAME ]
+<b>&minus;&minus;servermode</b> [
+<b>&minus;&minus;servermode_timeout</b> <i>SECONDS</i>] |
+<b>&minus;&minus;pentax_debug_mode</b> <i>VALUE</i>] [
+<b>&minus;&minus;file_format</b> <i>FORMAT</i> ] [
+<b>&minus;&minus;output_file</b> <i>FILENAME</i> ]
 [<b>&minus;&minus;debug</b>]</p> </td></tr>
 </table>
 
@@ -146,7 +147,7 @@ specifying work mode the program takes 1 picture.</p>
 
 
 <p style="margin-left:11%; margin-top: 1em"><b>&minus;F</b>,
-<b>&minus;&minus;frames</b></p>
+<b>&minus;&minus;frames</b> <i>NUMBER</i></p>
 
 <p style="margin-left:17%;">Specify the number of shots.
 Maximum number of pictures is 10000.</p>
@@ -213,8 +214,16 @@ process.</p>
 <p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;servermode</b></p>
 
 <p style="margin-left:17%;">The program waits for commands
-(TODO: describe command) using port number 8888. The program
-ends if no client connects for 15 seconds.</p>
+using port number 8888. The program ends if no client
+connects for 30 seconds. Different timeout value can be
+specified by --servermode_timeout.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;servermode_timeout</b>
+<i>SECONDS</i></p>
+
+<p style="margin-left:17%;">Specify timeout for servermode.
+Default value: 30 seconds</p>
 
 
 <p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;pentax_debug_mode
@@ -421,6 +430,99 @@ message.</p>
 <p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;debug</b></p>
 
 <p style="margin-left:17%;">Debug info.</p>
+
+<h3>Servermode
+<a name="Servermode"></a>
+</h3>
+
+
+<p style="margin-left:11%; margin-top: 1em">The program
+accepts the following commands in servermode:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>connect</b></p>
+
+<p style="margin-left:17%;">Connect to the camera.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>focus</b></p>
+
+<p style="margin-left:17%;">Focus (half pressing the
+shutter).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>shutter</b></p>
+
+<p style="margin-left:17%;">Shutter (full pressing).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>delete_buffer</b></p>
+
+<p style="margin-left:17%;">Delete the first buffer
+image.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>update_status</b></p>
+
+<p style="margin-left:17%;">Read camera status info.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_camera_name</b></p>
+
+<p style="margin-left:17%;">Get camera name.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_lens_name</b></p>
+
+<p style="margin-left:17%;">Get lens name.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_current_shutter_speed</b></p>
+
+<p style="margin-left:17%;">Get current shutter speed.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_current_aperture</b></p>
+
+<p style="margin-left:17%;">Get current aperture.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_current_iso</b></p>
+
+<p style="margin-left:17%;">Get current ISO.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_bufmask</b></p>
+
+<p style="margin-left:17%;">Get buffer mask.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_preview_buffer</b></p>
+
+<p style="margin-left:17%;">Get the first preview
+buffer.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_buffer</b></p>
+
+<p style="margin-left:17%;">Get the first buffer.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>disconnect</b></p>
+
+<p style="margin-left:17%;">Disconnects the client. The
+server keeps running (for a while) and waits for a new
+client to connect.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>stopserver</b></p>
+
+<p style="margin-left:17%;">Stops the server.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>echo</b></p>
+
+<p style="margin-left:17%;">Test command.</p>
 
 <h2>SEE ALSO
 <a name="SEE ALSO"></a>
