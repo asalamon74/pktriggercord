@@ -1,4 +1,4 @@
-version 0.82.03
+version 0.82.04 ( 2015-08-28 )
 	More debug messages
 	jpeg contrast/hue/sharpness/saturation GUI bugfix
 	Image tone bugfix (thx Mike Protts)
