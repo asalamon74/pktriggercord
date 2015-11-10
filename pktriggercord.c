@@ -9,7 +9,7 @@
     Copyright (C) 2008 Pontus Lidman <pontus@lysator.liu.se>
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by 
+    it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -166,7 +166,7 @@ static pslr_rational_t shutter_tbl_1_2[] = {
 
 
 static const int iso_tbl_1_3[] = {
-    80, 100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1250, 1600, 2000, 2500, 
+    80, 100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1250, 1600, 2000, 2500,
     3200, 4000, 5000, 6400, 8000, 10000, 12800, 16000, 20000, 25600, 32000, 40000, 51200
 };
 
@@ -257,7 +257,7 @@ int common_init(void)
 	  return -1;
 	}
       }
-    }    
+    }
 
     init_preview_area();
 
@@ -321,7 +321,7 @@ void shutter_speed_table_init(pslr_status *st) {
     if( tbl[max_valid_shutter_speed_index].denom != fastest_shutter_speed ) {
         // not an exact match
         ++max_valid_shutter_speed_index;
-        tbl[max_valid_shutter_speed_index].denom = fastest_shutter_speed; 	
+        tbl[max_valid_shutter_speed_index].denom = fastest_shutter_speed;
     }
     GtkWidget *pw;
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale"));
@@ -331,7 +331,7 @@ void shutter_speed_table_init(pslr_status *st) {
 }
 
 void iso_speed_table_init(pslr_status *st) {
-    GtkWidget *pw;    
+    GtkWidget *pw;
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "iso_scale"));
 
     const int *tbl = 0;
@@ -371,7 +371,7 @@ void camera_specific_init() {
     char **str_resolutions = malloc( MAX_RESOLUTION_SIZE * sizeof( char * ));
     while( resindex < MAX_RESOLUTION_SIZE ) {
         str_resolutions[resindex] = malloc( 10 );
-        sprintf( str_resolutions[resindex], "%dM", resolutions[resindex]); 
+        sprintf( str_resolutions[resindex], "%dM", resolutions[resindex]);
 	++resindex;
     }
 
@@ -396,7 +396,7 @@ void camera_specific_init() {
     int max_supported_image_tone = pslr_get_model_max_supported_image_tone( camhandle )+1;
     DPRINT("max image tone:%d", max_supported_image_tone);
     GtkComboBox *pw = (GtkComboBox*)GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_image_tone_combo"));
-        
+
     char **imagetones = malloc( max_supported_image_tone * sizeof(char*) );
     int i;
     for (i = 0; i<max_supported_image_tone; i++) {
@@ -409,7 +409,7 @@ void camera_specific_init() {
     combobox_append( pw, imagetones, max_supported_image_tone );
 
     gtk_widget_set_sensitive( GTK_WIDGET(pw), max_supported_image_tone > -1 );
-}   
+}
 
 static void init_controls(pslr_status *st_new, pslr_status *st_old)
 {
@@ -459,7 +459,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     if (st_new) {
         idx = -1;
 	pslr_rational_t *tbl = 0;
-        int steps = 0;    
+        int steps = 0;
         which_shutter_table( st_new, &tbl, &steps );
         for (i=0; i<steps; i++) {
             if (st_new->set_shutter_speed.nom == tbl[i].nom
@@ -511,7 +511,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
         }
         if (!st_old || st_old->custom_ev_steps != st_new->custom_ev_steps)
             gtk_range_set_range(GTK_RANGE(pw), 0.0, steps-1);
-        if (!st_old || st_old->ec.nom != st_new->ec.nom 
+        if (!st_old || st_old->ec.nom != st_new->ec.nom
             || st_old->ec.denom != st_new->ec.denom)
             gtk_range_set_value(GTK_RANGE(pw), idx);
     }
@@ -550,19 +550,19 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
     /* JPEG quality */
-    
+
     pw = GW("jpeg_quality_combo");
     if (st_new) {
         GtkTreeModel *jpeg_quality_model = gtk_combo_box_get_model(GTK_COMBO_BOX(pw));
         gint jpeg_quality_num = gtk_tree_model_iter_n_children( jpeg_quality_model, NULL );
 	ipslr_handle_t *p = (ipslr_handle_t *)camhandle;
-	int hw_jpeg_quality = get_hw_jpeg_quality(p->model, st_new->jpeg_quality);	
+	int hw_jpeg_quality = get_hw_jpeg_quality(p->model, st_new->jpeg_quality);
         if( st_new->jpeg_quality >= jpeg_quality_num ) {
 	  hw_jpeg_quality = 0;
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(pw), hw_jpeg_quality);
     }
-    
+
     gtk_widget_set_sensitive(pw, st_new != NULL);
     /* JPEG resolution */
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_resolution_combo"));
@@ -591,7 +591,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "file_format_combo"));
     if (st_new) {
         int val = get_user_file_format(st_new);
-        gtk_combo_box_set_active(GTK_COMBO_BOX(pw), val);        
+        gtk_combo_box_set_active(GTK_COMBO_BOX(pw), val);
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
@@ -739,14 +739,14 @@ static gboolean status_poll(gpointer data)
     }
 
     /* EV label */
-    if (status_new && status_new->current_aperture.denom 
+    if (status_new && status_new->current_aperture.denom
         && status_new->current_shutter_speed.denom) {
         float ev, a, s;
         a = (float)status_new->current_aperture.nom/(float)status_new->current_aperture.denom;
         s = (float)status_new->current_shutter_speed.nom/(float)status_new->current_shutter_speed.denom;
 
         ev = log(a*a/s)/M_LN2 - log(status_new->current_iso/100)/M_LN2;
-    
+
         sprintf(buf, "<span size=\"xx-large\">EV %.2f</span>", ev);
         pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_ev"));
         gtk_label_set_markup(GTK_LABEL(pw), buf);
@@ -785,7 +785,7 @@ static gboolean status_poll(gpointer data)
             /* Same as previous check, stop indicating */
             focus_indicated_af_points = 0;
             gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
-        } 
+        }
 
         if (!status_old || status_old->selected_af_point != status_new->selected_af_point) {
             /* Change in selected AF points */
@@ -951,8 +951,8 @@ static bool auto_save_check(int format, int buffer)
         old_path = getcwd(NULL, 0);
         if (chdir(plugin_config.autosave_path) == -1) {
             char msg[256];
-            
-            snprintf(msg, sizeof(msg), "Could not save in folder %s: %s", 
+
+            snprintf(msg, sizeof(msg), "Could not save in folder %s: %s",
                      plugin_config.autosave_path, strerror(errno));
             error_message(msg);
             free(old_path);
@@ -1000,7 +1000,11 @@ static bool auto_save_check(int format, int buffer)
     gtk_spin_button_set_value(spin, counter);
 
     if (old_path) {
-        chdir(old_path);
+        ssize_t r = chdir(old_path);
+        if (r != 0) {
+          fprintf(stderr, "chdir(old_path) failed");
+        }
+
         free(old_path);
     }
 
@@ -1043,7 +1047,7 @@ static void update_main_area(int buffer)
     g_object_ref(pixBuf);
     pError = NULL;
     pMainPixbuf = pixBuf;
-    
+
   the_end:
     gtk_statusbar_pop(statusbar, sbar_download_ctx);
 
@@ -1059,7 +1063,7 @@ static void update_preview_area(int buffer)
     //    GtkWidget *pw;
 
     //    pw = GTK_WIDGET (gtk_builder_get_object (xml, "test_draw_area"));
-    
+
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Getting thumbnails");
     while (gtk_events_pending())
         gtk_main_iteration();
@@ -1188,7 +1192,7 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData)
                 the_gc = gc_presel;
         }
         fill = focus_indicated_af_points & (1<<i) ? TRUE : FALSE;
-        gdk_draw_rectangle(pw->window, the_gc, fill, 
+        gdk_draw_rectangle(pw->window, the_gc, fill,
                            af_points[i].x, af_points[i].y,
                            af_points[i].w, af_points[i].h);
     }
@@ -1232,7 +1236,7 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
                 preselect_reselect = false;
             }
             pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
-            gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);            
+            gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
             while (gtk_events_pending())
                 gtk_main_iteration();
             if (status_new && status_new->af_point_select == PSLR_AF_POINT_SEL_SELECT) {
@@ -1334,7 +1338,7 @@ GdkPixmap *calculate_histogram( GdkPixbuf *input, int hist_w, int hist_h ) {
                 scale = histogram[x][y];
         }
     }
-    // draw onto 
+    // draw onto
     GdkPixmap *output = gdk_pixmap_new( NULL, hist_w, 3*hist_h, 24);
     gc = gdk_gc_new(output);
     gdk_gc_set_rgb_fg_color(gc, &cWhite);
@@ -1432,7 +1436,7 @@ G_MODULE_EXPORT void status_button_clicked_cb(GtkAction *action)
 {
     DPRINT("Status");
     GtkWidget *pw;
-    pslr_status st;    
+    pslr_status st;
 
     pslr_get_status(camhandle, &st);
 
@@ -1550,7 +1554,7 @@ void init_preview_area(void)
     list_store = gtk_list_store_new (3,
                                      GDK_TYPE_PIXBUF, // thumbnail
 				     GDK_TYPE_PIXMAP, // histogram
-				     GDK_TYPE_PIXBUF  // visible icon 
+				     GDK_TYPE_PIXBUF  // visible icon
 	);
 
     for (i = 0; i < MAX_BUFFERS; i++) {
@@ -1572,7 +1576,7 @@ GdkPixbuf *merge_preview_icons( GdkPixbuf *thumb, GdkPixmap *histogram ) {
 	GdkPixbuf *scaledThumb = gdk_pixbuf_scale_simple( thumb, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, GDK_INTERP_BILINEAR);
 	gdk_draw_pixbuf( mMerged, gc, scaledThumb, 0, 0, 0, 0, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, GDK_RGB_DITHER_NONE, 0, 0);
 	gdk_draw_drawable( mMerged, gc, histogram, 0, 0, HISTOGRAM_WIDTH, 0, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT);
-	GdkPixbuf *pMerged = gdk_pixbuf_get_from_drawable( NULL, mMerged, GDK_COLORSPACE_RGB, 0, 0, 0, 0, 2*HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT ); 
+	GdkPixbuf *pMerged = gdk_pixbuf_get_from_drawable( NULL, mMerged, GDK_COLORSPACE_RGB, 0, 0, 0, 0, 2*HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT );
 	output = gdk_pixbuf_scale_simple( pMerged, 2*THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, GDK_INTERP_BILINEAR);
     } else {
 	output = thumb;
@@ -1628,7 +1632,7 @@ G_MODULE_EXPORT gchar* shutter_scale_format_value_cb(GtkAction *action, gdouble 
     //printf("shutter value: %f\n", value);
 
     pslr_rational_t *tbl = 0;
-    int steps = 0;    
+    int steps = 0;
     if (!status_new) {
 	return g_strdup_printf("(%f)", value);
     }
@@ -1683,7 +1687,7 @@ G_MODULE_EXPORT gchar* ec_scale_format_value_cb(GtkAction *action, gdouble value
         which_ec_table(status_new, &tbl, &steps);
         if (i >= 0 && i < steps) {
             return g_strdup_printf("%.1f", tbl[i]/10.0);
-        } 
+        }
     }
     return g_strdup_printf("(%f)", value);
 }
@@ -2005,7 +2009,11 @@ static void save_buffer(int bufno, const char *filename)
         //printf("Read %d bytes\n", bytes);
         if (bytes == 0)
             break;
-        write(fd, buf, bytes);
+        ssize_t r = write(fd, buf, bytes);
+        if (r != 0) {
+          fprintf(stderr, "write(buf) failed");
+        }
+
         current += bytes;
         gtk_progress_bar_update(GTK_PROGRESS_BAR(pw), (gdouble) current / (gdouble) length);
         /* process pending events */
@@ -2111,7 +2119,7 @@ G_MODULE_EXPORT void file_format_combo_changed_cb(GtkAction *action, gpointer us
 
 G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user_data)
 {
-    DPRINT("user_mode_combo_changed_cb\n");  
+    DPRINT("user_mode_combo_changed_cb\n");
     pslr_gui_exposure_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("user_mode_combo")));
     if (!status_new) {
         return;
@@ -2128,7 +2136,7 @@ G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user
 
 static void which_iso_table(pslr_status *st, const int **table, int *steps)
 {
-    if (st->custom_sensitivity_steps == PSLR_CUSTOM_SENSITIVITY_STEPS_1EV) { 
+    if (st->custom_sensitivity_steps == PSLR_CUSTOM_SENSITIVITY_STEPS_1EV) {
         *table = iso_tbl_1;
         *steps = sizeof(iso_tbl_1)/sizeof(iso_tbl_1[0]);
     }else if (st->custom_ev_steps == PSLR_CUSTOM_EV_STEPS_1_2) {
