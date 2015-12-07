@@ -751,7 +751,7 @@ int main(int argc, char **argv) {
 		    break;
 		}
 		
-		usleep(0.1); /* 100 ms */
+		usleep(100000); /* 100 ms */
 	    }
 	} else {
 	    if( frames > 1 ) {
