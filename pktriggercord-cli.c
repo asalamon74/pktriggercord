@@ -827,8 +827,12 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
             break;
       	}
         ssize_t r = write(fd, buf, bytes);
-        if (r != 0) {
-          fprintf(stderr, "write(buf) failed");
+        if (r == 0) {
+            DPRINT("write(buf): Nothing has been written to buf.\n");
+        } else if (r == -1) {
+            perror("write(buf)");
+        } else if (r < bytes) {
+            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
         }
         current += bytes;
     }

@@ -38,7 +38,7 @@ all: srczip rpm win pktriggercord_commandline.html
 cli: pktriggercord-cli
 
 MANS = pktriggercord-cli.1 pktriggercord.1
-SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode 
+SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
 OBJS = $(SRCOBJNAMES:=.o)
 WIN_DLLS_DIR=win_dlls
 SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE) android_scsi_sg.h
@@ -52,15 +52,15 @@ WINDIR=$(TARDIR)-win
 pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
 
 pktriggercord-cli: pktriggercord-cli.c $(OBJS)
-	$(CC) $(LIN_CFLAGS) $^ -DVERSION='"$(VERSION)"' -o $@ $(LIN_LDFLAGS) -L. 
+	$(CC) $(LIN_CFLAGS) $^ -DVERSION='"$(VERSION)"' -o $@ $(LIN_LDFLAGS) -L.
 
 %.o : %.c %.h
 	$(CC) $(LIN_CFLAGS) -fPIC -c $<
 
 pktriggercord: pktriggercord.c $(OBJS)
-	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L. 
+	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L.
 
-install:
+install: pktriggercord-cli pktriggercord
 	install -d $(DESTDIR)/$(PREFIX)/bin
 	install -s -m 0755 pktriggercord-cli $(DESTDIR)/$(PREFIX)/bin/
 	(which setcap && setcap CAP_SYS_RAWIO+eip $(DESTDIR)/$(PREFIX)/bin/pktriggercord-cli) || true
@@ -123,7 +123,7 @@ rpm: srcrpm
 	cp $(TOPDIR)/RPMS/$(ARCH)/pktriggercord-$(VERSION)-1.$(ARCH).rpm .
 
 WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/
-WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include 
+WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include
 WIN_LDFLAGS=-lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
 
 deb: srczip
@@ -197,4 +197,3 @@ android: androidcli androidver $(ANDROID_DIR)/build.xml
 	ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -f $(ANDROID_ANT_FILE) debug
 	cp $(ANDROID_DIR)/bin/$(ANDROID_PROJECT_NAME)-debug.apk $(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
-
