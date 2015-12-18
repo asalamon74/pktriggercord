@@ -1,3 +1,6 @@
+version 0.82.05
+	Limited K-3 II support (Not working)
+
 version 0.82.04 ( 2015-08-28 )
 	More debug messages
 	jpeg contrast/hue/sharpness/saturation GUI bugfix
