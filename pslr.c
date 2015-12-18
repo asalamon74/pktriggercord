@@ -937,7 +937,7 @@ int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int b
     j = 0;
     do {
         CHECK(ipslr_buffer_segment_info(p, &info));
-        DPRINT("\t%d: addr: 0x%x len: %d B=%d\n", i, info.addr, info.length, info.b);
+        DPRINT("\t%d: Addr: 0x%X Len: %d(0x%08X) B=%d\n", i, info.addr, info.length, info.length, info.b);
         if (info.b == 4)
             p->segments[j].offset = info.length;
         else if (info.b == 3) {
@@ -1444,15 +1444,12 @@ static int get_status(int fd) {
     }
     if ((statusbuf[7] & 0xff) != 0) {
         DPRINT("\tERROR: 0x%x\n", statusbuf[7]);
-    } else {
-        DPRINT("[R]\t\t\t => [%02X %02X %02X %02X %02X %02X %02X]\n"
-            , statusbuf[0], statusbuf[1], statusbuf[2], statusbuf[3]
-            , statusbuf[4], statusbuf[5], statusbuf[6], statusbuf[7]);
     }
     return statusbuf[7];
 }
 
 static int get_result(int fd) {
+    DPRINT("[C]\t\t\tget_result(0x%x)\n", fd);
     uint8_t statusbuf[8];
     while (1) {
         //DPRINT("read out status\n");
@@ -1467,20 +1464,44 @@ static int get_result(int fd) {
     if ((statusbuf[7] & 0xff) != 0) {
         DPRINT("\tERROR: 0x%x\n", statusbuf[7]);
         return -1;
+    } else {
+        DPRINT("[R]\t\t\t\t => [%02X %02X %02X %02X]\n",
+            statusbuf[0], statusbuf[1], statusbuf[2], statusbuf[3]);
     }
     return statusbuf[0] | statusbuf[1] << 8 | statusbuf[2] << 16 | statusbuf[3] << 24;
 }
 
 static int read_result(int fd, uint8_t *buf, uint32_t n) {
+    DPRINT("[C]\t\t\tread_result(0x%x, size=%d)\n", fd, n);
     uint8_t cmd[8] = {0xf0, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     int r;
+    int i;
     cmd[4] = n;
     cmd[5] = n >> 8;
     cmd[6] = n >> 16;
     cmd[7] = n >> 24;
     r = scsi_read(fd, cmd, sizeof (cmd), buf, n);
-    if (r != n)
+    if (r != n) {
         return PSLR_READ_ERROR;
+    }  else {
+        //  Print first 32 bytes of the result.
+        DPRINT("[R]\t\t\t\t => [");
+        for (i = 0; i < n && i < 32; ++i) {
+            if (i > 0) {
+                if (i % 16 == 0) {
+                    DPRINT("\n\t\t\t\t    ");
+                } else if ((i%4) == 0 ) {
+                    DPRINT(" ");
+                }
+                DPRINT(" ");
+            }
+            DPRINT("%02X", buf[i]);
+        }
+        if (n > 32) {
+            DPRINT(" ... (%d bytes more)", (n-32));
+        }
+        DPRINT("]\n");
+    }
     return PSLR_OK;
 }
 

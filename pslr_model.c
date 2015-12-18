@@ -53,7 +53,7 @@ static void ipslr_status_diff(uint8_t *buf) {
     diffs = 0;
     for (n = 0; n < MAX_STATUS_BUF_SIZE; n++) {
         if (lastbuf[n] != buf[n]) {
-            DPRINT("buf[%03X] last %02Xh %3d new %02Xh %3d\n", n, lastbuf[n], lastbuf[n], buf[n], buf[n]);
+            DPRINT("\t\tbuf[%03X] last %02Xh %3d new %02Xh %3d\n", n, lastbuf[n], lastbuf[n], buf[n], buf[n]);
             diffs++;
         }
     }
