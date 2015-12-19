@@ -2010,10 +2010,14 @@ static void save_buffer(int bufno, const char *filename)
         if (bytes == 0)
             break;
         ssize_t r = write(fd, buf, bytes);
-        if (r != 0) {
-          fprintf(stderr, "write(buf) failed");
+        if (r == 0) {
+            DPRINT("write(buf): Nothing has been written to buf.\n");
+        } else if (r == -1) {
+            perror("write(buf)");
+        } else if (r < bytes) {
+            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
         }
-
+        
         current += bytes;
         gtk_progress_bar_update(GTK_PROGRESS_BAR(pw), (gdouble) current / (gdouble) length);
         /* process pending events */
