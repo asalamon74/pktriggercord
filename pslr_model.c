@@ -63,19 +63,19 @@ static void ipslr_status_diff(uint8_t *buf) {
     }
 }
 
-uint16_t get_uint16(uint8_t *buf) {
+uint16_t get_uint16_be(uint8_t *buf) {
     uint16_t res;
     res = buf[0] << 8 | buf[1];
     return res;
 }
 
-uint32_t get_uint32(uint8_t *buf) {
+uint32_t get_uint32_be(uint8_t *buf) {
     uint32_t res;
     res = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
     return res;
 }
 
-int32_t get_int32(uint8_t *buf) {
+int32_t get_int32_be(uint8_t *buf) {
     int32_t res;
     res = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
     return res;
@@ -99,14 +99,14 @@ int32_t get_int32_le(uint8_t *buf) {
     return res;
 }
 
-void set_uint32_be(uint32_t v, uint8_t *buf) {
-    buf[3] = v >> 24;
-    buf[2] = v >> 16;
-    buf[1] = v >> 8;
+void set_uint32_le(uint32_t v, uint8_t *buf) {
     buf[0] = v;
+    buf[1] = v >> 8;
+    buf[2] = v >> 16;
+    buf[3] = v >> 24;
 }
 
-void set_uint32_le(uint32_t v, uint8_t *buf) {
+void set_uint32_be(uint32_t v, uint8_t *buf) {
     buf[0] = v >> 24;
     buf[1] = v >> 16;
     buf[2] = v >> 8;
@@ -186,42 +186,42 @@ void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
         ipslr_status_diff(buf);
     }
     memset(status, 0, sizeof (*status));
-    status->bufmask = get_uint16(&buf[0x16]);
-    status->user_mode_flag = get_uint32(&buf[0x1c]);
-    status->set_shutter_speed.nom = get_uint32(&buf[0x2c]);
-    status->set_shutter_speed.denom = get_uint32(&buf[0x30]);
-    status->set_aperture.nom = get_uint32(&buf[0x34]);
-    status->set_aperture.denom = get_uint32(&buf[0x38]);
-    status->ec.nom = get_uint32(&buf[0x3c]);
-    status->ec.denom = get_uint32(&buf[0x40]);
-    status->fixed_iso = get_uint32(&buf[0x60]);
-    status->image_format = get_uint32(&buf[0x78]);
-    status->jpeg_resolution = get_uint32(&buf[0x7c]);
-    status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x80]));
-    status->raw_format = get_uint32(&buf[0x84]);
-    status->jpeg_image_tone = get_uint32(&buf[0x88]);
-    status->jpeg_saturation = get_uint32(&buf[0x8c]);
-    status->jpeg_sharpness = get_uint32(&buf[0x90]);
-    status->jpeg_contrast = get_uint32(&buf[0x94]);
-    status->custom_ev_steps = get_uint32(&buf[0x9c]);
-    status->custom_sensitivity_steps = get_uint32(&buf[0xa0]);
-    status->af_point_select = get_uint32(&buf[0xbc]);
-    status->selected_af_point = get_uint32(&buf[0xc0]);
-    status->exposure_mode = get_uint32(&buf[0xac]);
-    status->current_shutter_speed.nom = get_uint32(&buf[0xf4]);
-    status->current_shutter_speed.denom = get_uint32(&buf[0xf8]);
-    status->current_aperture.nom = get_uint32(&buf[0xfc]);
-    status->current_aperture.denom = get_uint32(&buf[0x100]);
-    status->current_iso = get_uint32(&buf[0x11c]);
-    status->light_meter_flags = get_uint32(&buf[0x124]);
-    status->lens_min_aperture.nom = get_uint32(&buf[0x12c]);
-    status->lens_min_aperture.denom = get_uint32(&buf[0x130]);
-    status->lens_max_aperture.nom = get_uint32(&buf[0x134]);
-    status->lens_max_aperture.denom = get_uint32(&buf[0x138]);
-    status->focused_af_point = get_uint32(&buf[0x150]);
-    status->zoom.nom = get_uint32(&buf[0x16c]);
-    status->zoom.denom = get_uint32(&buf[0x170]);
-    status->focus = get_int32(&buf[0x174]);
+    status->bufmask = get_uint16_be(&buf[0x16]);
+    status->user_mode_flag = get_uint32_be(&buf[0x1c]);
+    status->set_shutter_speed.nom = get_uint32_be(&buf[0x2c]);
+    status->set_shutter_speed.denom = get_uint32_be(&buf[0x30]);
+    status->set_aperture.nom = get_uint32_be(&buf[0x34]);
+    status->set_aperture.denom = get_uint32_be(&buf[0x38]);
+    status->ec.nom = get_uint32_be(&buf[0x3c]);
+    status->ec.denom = get_uint32_be(&buf[0x40]);
+    status->fixed_iso = get_uint32_be(&buf[0x60]);
+    status->image_format = get_uint32_be(&buf[0x78]);
+    status->jpeg_resolution = get_uint32_be(&buf[0x7c]);
+    status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32_be(&buf[0x80]));
+    status->raw_format = get_uint32_be(&buf[0x84]);
+    status->jpeg_image_tone = get_uint32_be(&buf[0x88]);
+    status->jpeg_saturation = get_uint32_be(&buf[0x8c]);
+    status->jpeg_sharpness = get_uint32_be(&buf[0x90]);
+    status->jpeg_contrast = get_uint32_be(&buf[0x94]);
+    status->custom_ev_steps = get_uint32_be(&buf[0x9c]);
+    status->custom_sensitivity_steps = get_uint32_be(&buf[0xa0]);
+    status->af_point_select = get_uint32_be(&buf[0xbc]);
+    status->selected_af_point = get_uint32_be(&buf[0xc0]);
+    status->exposure_mode = get_uint32_be(&buf[0xac]);
+    status->current_shutter_speed.nom = get_uint32_be(&buf[0xf4]);
+    status->current_shutter_speed.denom = get_uint32_be(&buf[0xf8]);
+    status->current_aperture.nom = get_uint32_be(&buf[0xfc]);
+    status->current_aperture.denom = get_uint32_be(&buf[0x100]);
+    status->current_iso = get_uint32_be(&buf[0x11c]);
+    status->light_meter_flags = get_uint32_be(&buf[0x124]);
+    status->lens_min_aperture.nom = get_uint32_be(&buf[0x12c]);
+    status->lens_min_aperture.denom = get_uint32_be(&buf[0x130]);
+    status->lens_max_aperture.nom = get_uint32_be(&buf[0x134]);
+    status->lens_max_aperture.denom = get_uint32_be(&buf[0x138]);
+    status->focused_af_point = get_uint32_be(&buf[0x150]);
+    status->zoom.nom = get_uint32_be(&buf[0x16c]);
+    status->zoom.denom = get_uint32_be(&buf[0x170]);
+    status->focus = get_int32_be(&buf[0x174]);
 }
 
 void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
@@ -231,44 +231,44 @@ void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
         ipslr_status_diff(buf);
     }
     memset(status, 0, sizeof (*status));
-    status->bufmask = get_uint16( &buf[0x16]);
-    status->user_mode_flag = get_uint32(&buf[0x1c]);
-    status->set_shutter_speed.nom = get_uint32(&buf[0x2c]);
-    status->set_shutter_speed.denom = get_uint32(&buf[0x30]);
-    status->set_aperture.nom = get_uint32(&buf[0x34]);
-    status->set_aperture.denom = get_uint32(&buf[0x38]);
-    status->ec.nom = get_uint32(&buf[0x3c]);
-    status->ec.denom = get_uint32(&buf[0x40]);
-    status->fixed_iso = get_uint32(&buf[0x60]);
-    status->image_format = get_uint32(&buf[0x78]);
-    status->jpeg_resolution = get_uint32(&buf[0x7c]);
-    status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x80]));
-    status->raw_format = get_uint32(&buf[0x84]);
-    status->jpeg_image_tone = get_uint32(&buf[0x88]);
-    status->jpeg_saturation = get_uint32(&buf[0x8c]); // commands do now work for it?
-    status->jpeg_sharpness = get_uint32(&buf[0x90]); // commands do now work for it?
-    status->jpeg_contrast = get_uint32(&buf[0x94]); // commands do now work for it?
-    status->custom_ev_steps = get_uint32(&buf[0x9c]);
-    status->custom_sensitivity_steps = get_uint32(&buf[0xa0]);
-    status->ae_metering_mode = get_uint32(&buf[0xb4]); // same as c4
-    status->af_mode = get_uint32(&buf[0xb8]);
-    status->af_point_select = get_uint32(&buf[0xbc]); // not sure
-    status->selected_af_point = get_uint32(&buf[0xc0]);
-    status->exposure_mode = get_uint32(&buf[0xac]);
-    status->current_shutter_speed.nom = get_uint32(&buf[0x108]);
-    status->current_shutter_speed.denom = get_uint32(&buf[0x10C]);
-    status->current_aperture.nom = get_uint32(&buf[0x110]);
-    status->current_aperture.denom = get_uint32(&buf[0x114]);
-    status->current_iso = get_uint32(&buf[0x130]);
-    status->light_meter_flags = get_uint32(&buf[0x138]);
-    status->lens_min_aperture.nom = get_uint32(&buf[0x140]);
-    status->lens_min_aperture.denom = get_uint32(&buf[0x144]);
-    status->lens_max_aperture.nom = get_uint32(&buf[0x148]);
-    status->lens_max_aperture.denom = get_uint32(&buf[0x14B]);
-    status->focused_af_point = get_uint32(&buf[0x160]); // unsure about it, a lot is changing when the camera focuses
-    status->zoom.nom = get_uint32(&buf[0x180]);
-    status->zoom.denom = get_uint32(&buf[0x184]);
-    status->focus = get_int32(&buf[0x188]); // current focus ring position?
+    status->bufmask = get_uint16_be( &buf[0x16]);
+    status->user_mode_flag = get_uint32_be(&buf[0x1c]);
+    status->set_shutter_speed.nom = get_uint32_be(&buf[0x2c]);
+    status->set_shutter_speed.denom = get_uint32_be(&buf[0x30]);
+    status->set_aperture.nom = get_uint32_be(&buf[0x34]);
+    status->set_aperture.denom = get_uint32_be(&buf[0x38]);
+    status->ec.nom = get_uint32_be(&buf[0x3c]);
+    status->ec.denom = get_uint32_be(&buf[0x40]);
+    status->fixed_iso = get_uint32_be(&buf[0x60]);
+    status->image_format = get_uint32_be(&buf[0x78]);
+    status->jpeg_resolution = get_uint32_be(&buf[0x7c]);
+    status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32_be(&buf[0x80]));
+    status->raw_format = get_uint32_be(&buf[0x84]);
+    status->jpeg_image_tone = get_uint32_be(&buf[0x88]);
+    status->jpeg_saturation = get_uint32_be(&buf[0x8c]); // commands do now work for it?
+    status->jpeg_sharpness = get_uint32_be(&buf[0x90]); // commands do now work for it?
+    status->jpeg_contrast = get_uint32_be(&buf[0x94]); // commands do now work for it?
+    status->custom_ev_steps = get_uint32_be(&buf[0x9c]);
+    status->custom_sensitivity_steps = get_uint32_be(&buf[0xa0]);
+    status->ae_metering_mode = get_uint32_be(&buf[0xb4]); // same as c4
+    status->af_mode = get_uint32_be(&buf[0xb8]);
+    status->af_point_select = get_uint32_be(&buf[0xbc]); // not sure
+    status->selected_af_point = get_uint32_be(&buf[0xc0]);
+    status->exposure_mode = get_uint32_be(&buf[0xac]);
+    status->current_shutter_speed.nom = get_uint32_be(&buf[0x108]);
+    status->current_shutter_speed.denom = get_uint32_be(&buf[0x10C]);
+    status->current_aperture.nom = get_uint32_be(&buf[0x110]);
+    status->current_aperture.denom = get_uint32_be(&buf[0x114]);
+    status->current_iso = get_uint32_be(&buf[0x130]);
+    status->light_meter_flags = get_uint32_be(&buf[0x138]);
+    status->lens_min_aperture.nom = get_uint32_be(&buf[0x140]);
+    status->lens_min_aperture.denom = get_uint32_be(&buf[0x144]);
+    status->lens_max_aperture.nom = get_uint32_be(&buf[0x148]);
+    status->lens_max_aperture.denom = get_uint32_be(&buf[0x14B]);
+    status->focused_af_point = get_uint32_be(&buf[0x160]); // unsure about it, a lot is changing when the camera focuses
+    status->zoom.nom = get_uint32_be(&buf[0x180]);
+    status->zoom.denom = get_uint32_be(&buf[0x184]);
+    status->focus = get_int32_be(&buf[0x188]); // current focus ring position?
     // 0x158 current ev?
     // 0x160 and 0x164 change when AF
 }
@@ -278,15 +278,15 @@ void ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     /* *ist DS status block */
     memset(status, 0, sizeof (*status));
-    status->bufmask = get_uint16(&buf[0x12]);
-    status->set_shutter_speed.nom = get_uint32(&buf[0x80]);
-    status->set_shutter_speed.denom = get_uint32(&buf[0x84]);
-    status->set_aperture.nom = get_uint32(&buf[0x88]);
-    status->set_aperture.denom = get_uint32(&buf[0x8c]);
-    status->lens_min_aperture.nom = get_uint32(&buf[0xb8]);
-    status->lens_min_aperture.denom = get_uint32(&buf[0xbc]);
-    status->lens_max_aperture.nom = get_uint32(&buf[0xc0]);
-    status->lens_max_aperture.denom = get_uint32(&buf[0xc4]);
+    status->bufmask = get_uint16_be(&buf[0x12]);
+    status->set_shutter_speed.nom = get_uint32_be(&buf[0x80]);
+    status->set_shutter_speed.denom = get_uint32_be(&buf[0x84]);
+    status->set_aperture.nom = get_uint32_be(&buf[0x88]);
+    status->set_aperture.denom = get_uint32_be(&buf[0x8c]);
+    status->lens_min_aperture.nom = get_uint32_be(&buf[0xb8]);
+    status->lens_min_aperture.denom = get_uint32_be(&buf[0xbc]);
+    status->lens_max_aperture.nom = get_uint32_be(&buf[0xc0]);
+    status->lens_max_aperture.denom = get_uint32_be(&buf[0xc4]);
 
     // no DNG support so raw format is PEF
     status->raw_format = PSLR_RAW_FORMAT_PEF;
@@ -308,9 +308,9 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift
         get_int32_func_ptr = get_int32_le;
         get_uint16_func_ptr = get_uint16_le;
     } else {
-        get_uint32_func_ptr = get_uint32;
-        get_int32_func_ptr = get_int32;
-        get_uint16_func_ptr = get_uint16;
+        get_uint32_func_ptr = get_uint32_be;
+        get_int32_func_ptr = get_int32_be;
+        get_uint16_func_ptr = get_uint16_be;
     }
 
     // 0x0C: 0x85 0xA5
@@ -388,11 +388,11 @@ void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 
     memset(status, 0, sizeof (*status));
     ipslr_status_parse_common( p, status, 0);
-    status->zoom.nom = get_uint32(&buf[0x198]);
-    status->zoom.denom = get_uint32(&buf[0x19C]);
-    status->focus = get_int32(&buf[0x1A0]);
-    status->lens_id1 = (get_uint32( &buf[0x188])) & 0x0F;
-    status->lens_id2 = get_uint32( &buf[0x194]);
+    status->zoom.nom = get_uint32_be(&buf[0x198]);
+    status->zoom.denom = get_uint32_be(&buf[0x19C]);
+    status->focus = get_int32_be(&buf[0x1A0]);
+    status->lens_id1 = (get_uint32_be( &buf[0x188])) & 0x0F;
+    status->lens_id2 = get_uint32_be( &buf[0x194]);
 }
 
 // Vince: K-r support 2011-06-22
@@ -405,11 +405,11 @@ void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
 
     memset(status, 0, sizeof (*status));
     ipslr_status_parse_common( p, status, 0 );
-    status->zoom.nom = get_uint32(&buf[0x19C]);
-    status->zoom.denom = get_uint32(&buf[0x1A0]);
-    status->focus = get_int32(&buf[0x1A4]);
-    status->lens_id1 = (get_uint32( &buf[0x18C])) & 0x0F;
-    status->lens_id2 = get_uint32( &buf[0x198]);
+    status->zoom.nom = get_uint32_be(&buf[0x19C]);
+    status->zoom.denom = get_uint32_be(&buf[0x1A0]);
+    status->focus = get_int32_be(&buf[0x1A4]);
+    status->lens_id1 = (get_uint32_be( &buf[0x18C])) & 0x0F;
+    status->lens_id2 = get_uint32_be( &buf[0x198]);
 }
 
 void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
@@ -420,11 +420,11 @@ void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
 
     memset(status, 0, sizeof (*status));
     ipslr_status_parse_common( p, status, 0 );
-    status->zoom.nom = get_uint32(&buf[0x1A0]);
-    status->zoom.denom = get_uint32(&buf[0x1A4]);
-    status->focus = get_int32(&buf[0x1A8]); // ?
-    status->lens_id1 = (get_uint32( &buf[0x190])) & 0x0F;
-    status->lens_id2 = get_uint32( &buf[0x19C]);
+    status->zoom.nom = get_uint32_be(&buf[0x1A0]);
+    status->zoom.denom = get_uint32_be(&buf[0x1A4]);
+    status->focus = get_int32_be(&buf[0x1A8]); // ?
+    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F;
+    status->lens_id2 = get_uint32_be( &buf[0x19C]);
 
 // TODO: check these fields
 //status.focused = getInt32(statusBuf, 0x164);
@@ -442,11 +442,11 @@ void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
     //~ status->jpeg_hue -= 4;
     //~ status->jpeg_sharpness -= 4;
     //~ status->jpeg_saturation -= 4;
-    status->zoom.nom = get_uint32(&buf[0x1A0]);
+    status->zoom.nom = get_uint32_be(&buf[0x1A0]);
     status->zoom.denom = 100;
-    status->focus = get_int32(&buf[0x1A8]); // ?
-    status->lens_id1 = (get_uint32( &buf[0x190])) & 0x0F;
-    status->lens_id2 = get_uint32( &buf[0x19C]);
+    status->focus = get_int32_be(&buf[0x1A8]); // ?
+    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F;
+    status->lens_id2 = get_uint32_be( &buf[0x19C]);
 }
 
 // status check seems to be the same as K30
@@ -462,11 +462,11 @@ void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
     //~ status->jpeg_hue -= 4;
     //~ status->jpeg_sharpness -= 4;
     //~ status->jpeg_saturation -= 4;
-    status->zoom.nom = get_uint32(&buf[0x1A0]); // - good for K01
+    status->zoom.nom = get_uint32_be(&buf[0x1A0]); // - good for K01
     status->zoom.denom = 100; // good for K-01
-    status->focus = get_int32(&buf[0x1A8]); // ? - good for K01
-    status->lens_id1 = (get_uint32( &buf[0x190])) & 0x0F; // - good for K01
-    status->lens_id2 = get_uint32( &buf[0x19C]); // - good for K01
+    status->focus = get_int32_be(&buf[0x1A8]); // ? - good for K01
+    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F; // - good for K01
+    status->lens_id2 = get_uint32_be( &buf[0x19C]); // - good for K01
 }
 
 void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
@@ -477,11 +477,11 @@ void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
 
     memset(status, 0, sizeof (*status));
     ipslr_status_parse_common( p, status, 0 );
-    status->zoom.nom = get_uint32(&buf[0x1A0]);
-    status->zoom.denom = get_uint32(&buf[0x1A4]);
-    //    status->focus = get_int32(&buf[0x1A8]); // ?
-    status->lens_id1 = (get_uint32( &buf[0x190])) & 0x0F;
-    status->lens_id2 = get_uint32( &buf[0x19C]);
+    status->zoom.nom = get_uint32_be(&buf[0x1A0]);
+    status->zoom.denom = get_uint32_be(&buf[0x1A4]);
+    //    status->focus = get_int32_be(&buf[0x1A8]); // ?
+    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F;
+    status->lens_id2 = get_uint32_be( &buf[0x19C]);
 }
 
 
@@ -493,10 +493,10 @@ void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
 
     memset(status, 0, sizeof (*status));
     ipslr_status_parse_common( p, status, -4);
-    status->zoom.nom = get_uint32(&buf[0x180]);
-    status->zoom.denom = get_uint32(&buf[0x184]);
-    status->lens_id1 = (get_uint32( &buf[0x170])) & 0x0F;
-    status->lens_id2 = get_uint32( &buf[0x17c]);
+    status->zoom.nom = get_uint32_be(&buf[0x180]);
+    status->zoom.denom = get_uint32_be(&buf[0x184]);
+    status->lens_id1 = (get_uint32_be( &buf[0x170])) & 0x0F;
+    status->lens_id2 = get_uint32_be( &buf[0x17c]);
 // TODO
 // status.focused = getInt32(statusBuf, 0x164);
 }
@@ -525,48 +525,48 @@ void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     }
 
     memset(status, 0, sizeof (*status));
-    status->bufmask = get_uint16(&buf[0x16]);
-    status->user_mode_flag = get_uint32(&buf[0x1c]);
-    status->set_shutter_speed.nom = get_uint32(&buf[0x2c]);
-    status->set_shutter_speed.denom = get_uint32(&buf[0x30]);
-    status->current_aperture.nom = get_uint32(&buf[0x034]);
-    status->current_aperture.denom = get_uint32(&buf[0x038]);
-    status->set_aperture.nom = get_uint32(&buf[0x34]);
-    status->set_aperture.denom = get_uint32(&buf[0x38]);
-    status->ec.nom = get_uint32(&buf[0x3c]);
-    status->ec.denom = get_uint32(&buf[0x40]);
-    status->current_iso = get_uint32(&buf[0x060]);
-    status->fixed_iso = get_uint32(&buf[0x60]);
-    status->auto_iso_min = get_uint32(&buf[0x64]);
-    status->auto_iso_max = get_uint32(&buf[0x68]);
-    status->image_format = get_uint32(&buf[0x78]);
-    status->jpeg_resolution = get_uint32(&buf[0x7c]);
-    status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32(&buf[0x80]));
-    status->raw_format = get_uint32(&buf[0x84]);
-    status->jpeg_image_tone = get_uint32(&buf[0x88]);
-    status->jpeg_saturation = get_uint32(&buf[0x8c]);
-    status->jpeg_sharpness = get_uint32(&buf[0x90]);
-    status->jpeg_contrast = get_uint32(&buf[0x94]);
-    //status->custom_ev_steps = get_uint32(&buf[0x9c]);
-    //status->custom_sensitivity_steps = get_uint32(&buf[0xa0]);
-    status->exposure_mode = get_uint32(&buf[0xac]);
-    status->af_mode = get_uint32(&buf[0xb8]);
-    status->af_point_select = get_uint32(&buf[0xbc]);
-    status->selected_af_point = get_uint32(&buf[0xc0]);
-    status->drive_mode = get_uint32(&buf[0xcc]);
-    status->shake_reduction = get_uint32(&buf[0xda]);
-    status->jpeg_hue = get_uint32(&buf[0xf4]);
-    status->current_shutter_speed.nom = get_uint32(&buf[0x0104]);
-    status->current_shutter_speed.denom = get_uint32(&buf[0x108]);
-    status->light_meter_flags = get_uint32(&buf[0x124]);
-    status->lens_min_aperture.nom = get_uint32(&buf[0x13c]);
-    status->lens_min_aperture.denom = get_uint32(&buf[0x140]);
-    status->lens_max_aperture.nom = get_uint32(&buf[0x144]);
-    status->lens_max_aperture.denom = get_uint32(&buf[0x148]);
-    status->focused_af_point = get_uint32(&buf[0x150]);
-    status->zoom.nom = get_uint32(&buf[0x17c]);
-    status->zoom.denom = get_uint32(&buf[0x180]);
-    status->focus = get_int32(&buf[0x184]);
+    status->bufmask = get_uint16_be(&buf[0x16]);
+    status->user_mode_flag = get_uint32_be(&buf[0x1c]);
+    status->set_shutter_speed.nom = get_uint32_be(&buf[0x2c]);
+    status->set_shutter_speed.denom = get_uint32_be(&buf[0x30]);
+    status->current_aperture.nom = get_uint32_be(&buf[0x034]);
+    status->current_aperture.denom = get_uint32_be(&buf[0x038]);
+    status->set_aperture.nom = get_uint32_be(&buf[0x34]);
+    status->set_aperture.denom = get_uint32_be(&buf[0x38]);
+    status->ec.nom = get_uint32_be(&buf[0x3c]);
+    status->ec.denom = get_uint32_be(&buf[0x40]);
+    status->current_iso = get_uint32_be(&buf[0x060]);
+    status->fixed_iso = get_uint32_be(&buf[0x60]);
+    status->auto_iso_min = get_uint32_be(&buf[0x64]);
+    status->auto_iso_max = get_uint32_be(&buf[0x68]);
+    status->image_format = get_uint32_be(&buf[0x78]);
+    status->jpeg_resolution = get_uint32_be(&buf[0x7c]);
+    status->jpeg_quality = _get_user_jpeg_stars( p->model, get_uint32_be(&buf[0x80]));
+    status->raw_format = get_uint32_be(&buf[0x84]);
+    status->jpeg_image_tone = get_uint32_be(&buf[0x88]);
+    status->jpeg_saturation = get_uint32_be(&buf[0x8c]);
+    status->jpeg_sharpness = get_uint32_be(&buf[0x90]);
+    status->jpeg_contrast = get_uint32_be(&buf[0x94]);
+    //status->custom_ev_steps = get_uint32_be(&buf[0x9c]);
+    //status->custom_sensitivity_steps = get_uint32_be(&buf[0xa0]);
+    status->exposure_mode = get_uint32_be(&buf[0xac]);
+    status->af_mode = get_uint32_be(&buf[0xb8]);
+    status->af_point_select = get_uint32_be(&buf[0xbc]);
+    status->selected_af_point = get_uint32_be(&buf[0xc0]);
+    status->drive_mode = get_uint32_be(&buf[0xcc]);
+    status->shake_reduction = get_uint32_be(&buf[0xda]);
+    status->jpeg_hue = get_uint32_be(&buf[0xf4]);
+    status->current_shutter_speed.nom = get_uint32_be(&buf[0x0104]);
+    status->current_shutter_speed.denom = get_uint32_be(&buf[0x108]);
+    status->light_meter_flags = get_uint32_be(&buf[0x124]);
+    status->lens_min_aperture.nom = get_uint32_be(&buf[0x13c]);
+    status->lens_min_aperture.denom = get_uint32_be(&buf[0x140]);
+    status->lens_max_aperture.nom = get_uint32_be(&buf[0x144]);
+    status->lens_max_aperture.denom = get_uint32_be(&buf[0x148]);
+    status->focused_af_point = get_uint32_be(&buf[0x150]);
+    status->zoom.nom = get_uint32_be(&buf[0x17c]);
+    status->zoom.denom = get_uint32_be(&buf[0x180]);
+    status->focus = get_int32_be(&buf[0x184]);
     // Drive mode: 0=Single shot, 1= Continous Hi, 2= Continous Low or Self timer 12s, 3=Self timer 2s
     // 4= remote, 5= remote 3s delay
 }

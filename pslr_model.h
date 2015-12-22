@@ -147,7 +147,7 @@ ipslr_model_info_t *find_model_by_id( uint32_t id );
 
 int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars);
 
-uint32_t get_uint32(uint8_t *buf);
+uint32_t get_uint32_be(uint8_t *buf);
 uint32_t get_uint32_le(uint8_t *buf);
 void set_uint32_be(uint32_t v, uint8_t *buf);
 void set_uint32_le(uint32_t v, uint8_t *buf);

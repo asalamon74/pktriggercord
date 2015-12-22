@@ -1254,7 +1254,7 @@ static int ipslr_buffer_segment_info(ipslr_handle_t *p, pslr_buffer_segment_info
         if (p->model->is_little_endian) {
             get_uint32_func_ptr = get_uint32_le;
         } else {
-            get_uint32_func_ptr = get_uint32;
+            get_uint32_func_ptr = get_uint32_be;
         }
 
         pInfo->a = (*get_uint32_func_ptr)(&buf[0]);
@@ -1323,7 +1323,7 @@ static int ipslr_identify(ipslr_handle_t *p) {
     CHECK(read_result(p->fd, idbuf, 8));
     //  Check the camera endian, which affect ID
     if (idbuf[0] == 0) {
-        p->id = get_uint32(&idbuf[0]);
+        p->id = get_uint32_be(&idbuf[0]);
     } else {
         p->id = get_uint32_le(&idbuf[0]);
     }
@@ -1359,8 +1359,7 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
         for (i = 0; i < n; i++) {
             data = va_arg(ap, uint32_t);
 
-            //  For some reason, the endian of the args is not as same as model's.
-            if (p->model != NULL && p->model->is_little_endian) {
+            if (p->model == NULL || !p->model->is_little_endian) {
                 set_uint32_be(data, &buf[4*i]);
             } else {
                 set_uint32_le(data, &buf[4*i]);
@@ -1378,7 +1377,7 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
         for (i = 0; i < n; i++) {
             data = va_arg(ap, uint32_t);
 
-            if (p->model != NULL && p->model->is_little_endian) {
+            if (p->model == NULL || !p->model->is_little_endian) {
                 set_uint32_be(data, &buf[0]);
             } else {
                 set_uint32_le(data, &buf[0]);

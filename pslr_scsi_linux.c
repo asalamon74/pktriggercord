@@ -167,6 +167,18 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     /* io.pack_id = 0; */
     /* io.usr_ptr = NULL; */
 
+    DPRINT("[S]\t\t\t\t\t >>> [");
+    for (i = 0; i < cmdLen; ++i) {
+        if (i > 0) {
+            DPRINT(" ");
+            if ((i%4) == 0 ) {
+                DPRINT(" ");
+            }
+        }
+        DPRINT("%02X", cmd[i]);
+    }
+    DPRINT("]\n");
+
     r = ioctl(sg_fd, SG_IO, &io);
     if (r == -1) {
         perror("ioctl");
@@ -177,17 +189,6 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
         print_scsi_error(&io, sense);
         return -PSLR_SCSI_ERROR;
     } else {
-        DPRINT("[S]\t\t\t\t\t >>> [");
-        for (i = 0; i < cmdLen; ++i) {
-            if (i > 0) {
-                DPRINT(" ");
-                if ((i%4) == 0 ) {
-                    DPRINT(" ");
-                }
-            }
-            DPRINT("%02X", cmd[i]);
-        }
-        DPRINT("]\n");
         DPRINT("[S]\t\t\t\t\t <<< [");
         for (i = 0; i < 32 && i < (bufLen - io.resid); ++i) {
             if (i > 0) {
@@ -235,6 +236,35 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     /* io.pack_id = 0; */
     /* io.usr_ptr = NULL; */
 
+    //  print debug scsi cmd
+    DPRINT("[S]\t\t\t\t\t >>> [");
+    for (i = 0; i < cmdLen; ++i) {
+        if (i > 0) {
+            DPRINT(" ");
+            if ((i%4) == 0 ) {
+                DPRINT(" ");
+            }
+        }
+        DPRINT("%02X", cmd[i]);
+    }
+    DPRINT("]\n");
+    if (bufLen > 0) {
+        //  print debug write buffer
+        DPRINT("[S]\t\t\t\t\t >>> [");
+        for (i = 0; i < 32 && i < bufLen; ++i) {
+            if (i > 0) {
+                DPRINT(" ");
+                if (i % 16 == 0) {
+                    DPRINT("\n\t\t\t\t\t      ");
+                } else if ((i%4) == 0 ) {
+                    DPRINT(" ");
+                }
+            }
+            DPRINT("%02X", buf[i]);
+        }
+        DPRINT("]\n");
+    }
+
     r = ioctl(sg_fd, SG_IO, &io);
 
     if (r == -1) {
@@ -246,32 +276,6 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
         print_scsi_error(&io, sense);
         return PSLR_SCSI_ERROR;
     } else {
-        DPRINT("[S]\t\t\t\t\t >>> [");
-        for (i = 0; i < cmdLen; ++i) {
-            if (i > 0) {
-                DPRINT(" ");
-                if ((i%4) == 0 ) {
-                    DPRINT(" ");
-                }
-            }
-            DPRINT("%02X", cmd[i]);
-        }
-        DPRINT("]\n");
-        if (bufLen > 0) {
-            DPRINT("[S]\t\t\t\t\t >>> [");
-            for (i = 0; i < 32 && i < bufLen; ++i) {
-                if (i > 0) {
-                    DPRINT(" ");
-                    if (i % 16 == 0) {
-                        DPRINT("\n\t\t\t\t\t      ");
-                    } else if ((i%4) == 0 ) {
-                        DPRINT(" ");
-                    }
-                }
-                DPRINT("%02X", buf[i]);
-            }
-            DPRINT("]\n");
-        }
         return PSLR_OK;
     }
 }
