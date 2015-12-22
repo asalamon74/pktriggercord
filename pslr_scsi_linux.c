@@ -10,7 +10,7 @@
     Copyright (C) 2008 Pontus Lidman <pontus@lysator.liu.se>
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by 
+    it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -35,6 +35,7 @@
 #endif
 #include <unistd.h>
 #include <dirent.h>
+#include "pslr_model.h"
 
 #include "pslr_scsi.h"
 
@@ -93,7 +94,7 @@ char **get_drives(int *driveNum) {
     return ret;
 }
 
-pslr_result get_drive_info(char* driveName, int* hDevice, 
+pslr_result get_drive_info(char* driveName, int* hDevice,
                             char* vendorId, int vendorIdSizeMax,
 			   char* productId, int productIdSizeMax) {
     char nmbuf[256];
@@ -116,7 +117,7 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
 
     snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/model", driveName);
     fd = open(nmbuf, O_RDONLY);
-    if (fd == -1) {       
+    if (fd == -1) {
       snprintf(nmbuf, sizeof (nmbuf), "/sys/block/%s/device/model", driveName);
       fd = open(nmbuf, O_RDONLY);
       if (fd == -1) {
@@ -148,6 +149,7 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     sg_io_hdr_t io;
     uint8_t sense[32];
     int r;
+    int i;
 
     memset(&io, 0, sizeof (io));
 
@@ -175,6 +177,31 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
         print_scsi_error(&io, sense);
         return -PSLR_SCSI_ERROR;
     } else {
+        DPRINT("[S]\t\t\t\t\t >>> [");
+        for (i = 0; i < cmdLen; ++i) {
+            if (i > 0) {
+                DPRINT(" ");
+                if ((i%4) == 0 ) {
+                    DPRINT(" ");
+                }
+            }
+            DPRINT("%02X", cmd[i]);
+        }
+        DPRINT("]\n");
+        DPRINT("[S]\t\t\t\t\t <<< [");
+        for (i = 0; i < 32 && i < (bufLen - io.resid); ++i) {
+            if (i > 0) {
+                DPRINT(" ");
+                if (i % 16 == 0) {
+                    DPRINT("\n\t\t\t\t\t      ");
+                } else if ((i%4) == 0 ) {
+                    DPRINT(" ");
+                }
+            }
+            DPRINT("%02X", buf[i]);
+        }
+        DPRINT("]\n");
+
         /* Older Pentax DSLR will report all bytes remaining, so make
          * a special case for this (treat it as all bytes read). */
         if (io.resid == bufLen)
@@ -190,6 +217,7 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     sg_io_hdr_t io;
     uint8_t sense[32];
     int r;
+    int i;
 
     memset(&io, 0, sizeof (io));
 
@@ -218,6 +246,32 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
         print_scsi_error(&io, sense);
         return PSLR_SCSI_ERROR;
     } else {
+        DPRINT("[S]\t\t\t\t\t >>> [");
+        for (i = 0; i < cmdLen; ++i) {
+            if (i > 0) {
+                DPRINT(" ");
+                if ((i%4) == 0 ) {
+                    DPRINT(" ");
+                }
+            }
+            DPRINT("%02X", cmd[i]);
+        }
+        DPRINT("]\n");
+        if (bufLen > 0) {
+            DPRINT("[S]\t\t\t\t\t >>> [");
+            for (i = 0; i < 32 && i < bufLen; ++i) {
+                if (i > 0) {
+                    DPRINT(" ");
+                    if (i % 16 == 0) {
+                        DPRINT("\n\t\t\t\t\t      ");
+                    } else if ((i%4) == 0 ) {
+                        DPRINT(" ");
+                    }
+                }
+                DPRINT("%02X", buf[i]);
+            }
+            DPRINT("]\n");
+        }
         return PSLR_OK;
     }
 }

@@ -1361,9 +1361,9 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
 
             //  For some reason, the endian of the args is not as same as model's.
             if (p->model != NULL && p->model->is_little_endian) {
-                put_uint32_be(data, &buf[4*i]);
+                set_uint32_be(data, &buf[4*i]);
             } else {
-                put_uint32_le(data, &buf[4*i]);
+                set_uint32_le(data, &buf[4*i]);
             }
         }
         cmd[4] = 4 * n;
@@ -1379,9 +1379,9 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
             data = va_arg(ap, uint32_t);
 
             if (p->model != NULL && p->model->is_little_endian) {
-                put_uint32_be(data, &buf[0]);
+                set_uint32_be(data, &buf[0]);
             } else {
-                put_uint32_le(data, &buf[0]);
+                set_uint32_le(data, &buf[0]);
             }
 
             cmd[4] = 4;
@@ -1434,12 +1434,10 @@ static int get_status(int fd) {
     while (1) {
         //usleep(POLL_INTERVAL);
         CHECK(read_status(fd, statusbuf));
-        // DPRINT("get_status->\n");
-        // hexdump_debug(statusbuf, 8);
         if ((statusbuf[7] & 0x01) == 0)
             break;
         //DPRINT("Waiting for ready - ");
-        //hexdump_debug(statusbuf, 8);
+        DPRINT("[R]\t\t\t\t => ERROR: 0x%02X\n", statusbuf[7]);
         usleep(POLL_INTERVAL);
     }
     if ((statusbuf[7] & 0xff) != 0) {
@@ -1476,10 +1474,7 @@ static int read_result(int fd, uint8_t *buf, uint32_t n) {
     uint8_t cmd[8] = {0xf0, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     int r;
     int i;
-    cmd[4] = n;
-    cmd[5] = n >> 8;
-    cmd[6] = n >> 16;
-    cmd[7] = n >> 24;
+    set_uint32_le(n, &cmd[4]);
     r = scsi_read(fd, cmd, sizeof (cmd), buf, n);
     if (r != n) {
         return PSLR_READ_ERROR;
