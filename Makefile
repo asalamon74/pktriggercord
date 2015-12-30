@@ -49,6 +49,8 @@ WINGCC=i686-w64-mingw32-gcc
 WINMINGW=/usr/i686-w64-mingw32/sys-root/mingw
 WINDIR=$(TARDIR)-win
 
+EXIFTOOL_PENTAXPM=/usr/lib/perl5/vendor_perl/5.20.1/Image/ExifTool/Pentax.pm
+
 pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
 
 pktriggercord-cli: pktriggercord-cli.c $(OBJS)
@@ -147,8 +149,8 @@ remotedeb:
 
 
 # converting lens info from exiftool
-exiftool_pentax_lens.txt: /usr/lib/perl5/vendor_perl/5.18.1/Image/ExifTool/Pentax.pm
-	cat /usr/lib/perl5/vendor_perl/5.18.1/Image/ExifTool/Pentax.pm | sed -n '/%pentaxLensTypes\ =/,/%pentaxModelID/p' | grep -v '^\s*#' | sed -e "s/[ ]*'\([0-9]\) \([0-9]\{1,3\}\)' => '\(.*\)',.*/{\1, \2, \"\3\"},/g;tx;d;:x" > $@
+exiftool_pentax_lens.txt: $(EXIFTOOL_PENTAXPM)
+	cat $(EXIFTOOL_PENTAXPM) | sed -n '/%pentaxLensTypes\ =/,/%pentaxModelID/p' | grep -v '^\s*#' | sed -e "s/[ ]*'\([0-9]\) \([0-9]\{1,3\}\)' => '\(.*\)',.*/{\1, \2, \"\3\"},/g;tx;d;:x" > $@
 
 pktriggercord_commandline.html: pktriggercord-cli.1
 	groff $< -man -Thtml -mwww -P "-lr" > $@
