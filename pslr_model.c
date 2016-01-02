@@ -603,14 +603,8 @@ ipslr_model_info_t camera_models[] = {
 
 ipslr_model_info_t *find_model_by_id( uint32_t id ) {
     int i;
-    // K-3 id is swapped
-    // int swappedid = ((id>>24)&0xff) |
-    //   ((id>>8)&0xff00) |
-    //   ((id<<8)&0xff0000) |
-    //   ((id<<24)&0xff000000);
-    //    DPRINT("id: %x, swappedid: %x\n", id, swappedid );
     for( i = 0; i<sizeof (camera_models) / sizeof (camera_models[0]); i++) {
-      if( camera_models[i].id == id /*|| camera_models[i].id == swappedid*/) {
+      if( camera_models[i].id == id ) {
 	//	  DPRINT("found %d\n",i);
             return &camera_models[i];
         }
