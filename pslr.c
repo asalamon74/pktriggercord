@@ -7,7 +7,7 @@
     Support for K-r added by Vincenc Podobnik <vincenc.podobnik@gmail.com> 06/2011
     Support for K-30 added by Camilo Polymeris <cpolymeris@gmail.com> 09/2012
     Support for K-01 added by Ethan Queen <ethanqueen@gmail.com> 01/2013
-
+    Support for K-3 added by Tao Wang <twang2218@gmail.com> 01/2016
 
     based on:
 
