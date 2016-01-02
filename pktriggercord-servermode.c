@@ -1,7 +1,7 @@
 /*
     pkTriggerCord
     Remote control of Pentax DSLR cameras.
-    Copyright (C) 2011-2015 Andras Salamon <andras.salamon@melda.info>
+    Copyright (C) 2011-2016 Andras Salamon <andras.salamon@melda.info>
 
     based on:
 

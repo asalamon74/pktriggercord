@@ -1,7 +1,7 @@
 /*
     pkTriggerCord
     Remote control of Pentax DSLR cameras.
-    Copyright (C) 2011-2015 Andras Salamon <andras.salamon@melda.info>
+    Copyright (C) 2011-2016 Andras Salamon <andras.salamon@melda.info>
 
     based on:
 
@@ -894,7 +894,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
 
 void version(char *name) {
     printf("\n%s %s\n\n\
-Copyright (C) 2011-2015 Andras Salamon\n\
+Copyright (C) 2011-2016 Andras Salamon\n\
 License LGPLv3: GNU LGPL version 3 <http://gnu.org/licenses/lgpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n\
