@@ -18,7 +18,7 @@
     Copyright (C) 2010 Tomasz Kos
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by 
+    it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -111,6 +111,7 @@ typedef struct {
     const char *name;                                // name
     bool old_scsi_command;                           // 1 for *ist cameras, 0 for the newer cameras
     bool need_exposure_mode_conversion;              // is exposure_mode_conversion required
+    bool is_little_endian;                           // whether the return value should be parsed as little-endian
     int buffer_size;                                 // buffer size in bytes
     int max_jpeg_stars;                              // maximum jpeg stars
     int jpeg_resolutions[MAX_RESOLUTION_SIZE];       // jpeg resolution table
@@ -146,8 +147,16 @@ ipslr_model_info_t *find_model_by_id( uint32_t id );
 
 int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars);
 
-uint32_t get_uint32(uint8_t *buf);
+uint32_t get_uint32_be(uint8_t *buf);
+uint32_t get_uint32_le(uint8_t *buf);
+void set_uint32_be(uint32_t v, uint8_t *buf);
+void set_uint32_le(uint32_t v, uint8_t *buf);
+
+typedef uint32_t (*get_uint32_func)(uint8_t *buf);
+typedef uint16_t (*get_uint16_func)(uint8_t *buf);
+typedef int32_t (*get_int32_func)(uint8_t *buf);
 
 void hexdump(uint8_t *buf, uint32_t bufLen);
+void hexdump_debug(uint8_t *buf, uint32_t bufLen);
 
 #endif

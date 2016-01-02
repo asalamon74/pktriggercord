@@ -9,11 +9,11 @@
 
     Command line remote control of Pentax DSLR cameras.
     Copyright (C) 2009 Ramiro Barreiro <ramiro_barreiro69@yahoo.es>
-    With fragments of code from PK-Remote by Pontus Lidman. 
+    With fragments of code from PK-Remote by Pontus Lidman.
     <https://sourceforge.net/projects/pkremote>
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by 
+    it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -28,7 +28,7 @@
  */
 #ifndef WIN32
 #include <sys/socket.h>
-#include <arpa/inet.h> 
+#include <arpa/inet.h>
 #endif
 
 #include <stdio.h>
@@ -81,11 +81,18 @@ pslr_handle_t camera_connect( char *model, char *device, int timeout, char *erro
 int client_sock;
 
 void write_socket_answer( char *answer ) {
-    write(client_sock , answer , strlen(answer));
+    ssize_t r = write(client_sock , answer , strlen(answer));
+    if (r != 0) {
+      fprintf(stderr, "write(answer) failed");
+    }
 }
 
 void write_socket_answer_bin( uint8_t *answer, uint32_t length ) {
-    write(client_sock , answer , length);
+    ssize_t r = write(client_sock , answer , length);
+    if (r != 0) {
+      fprintf(stderr, "write(answer) failed");
+    }
+
 }
 
 void strip(char *s) {
@@ -107,7 +114,7 @@ int servermode_socket(int servermode_timeout) {
     char buf[2100];
     pslr_handle_t camhandle=NULL;
     pslr_status status;
-     
+
     //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_desc == -1) {
@@ -119,22 +126,22 @@ int servermode_socket(int servermode_timeout) {
       fprintf(stderr, "setsockopt(SO_REUSEADDR) failed");
     }
     DPRINT("Socket created\n");
-     
+
     //Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons( 8888 );
-     
+
     //Bind
     if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0) {
         fprintf(stderr, "bind failed. Error");
         return 1;
     }
     DPRINT("bind done\n");
-     
+
     //Listen
     listen(socket_desc , 3);
-     
+
     //Accept and incoming connection
     DPRINT("Waiting for incoming connections...\n");
     c = sizeof(struct sockaddr_in);
@@ -164,7 +171,7 @@ int servermode_socket(int servermode_timeout) {
 	    close(socket_desc);
 	    exit(0);
 	}
-     
+
         //Receive a message from client
         while( (read_size = recv(client_sock , client_message , 2000 , 0)) > 0 ) {
             client_message[read_size]='\0';
@@ -174,13 +181,13 @@ int servermode_socket(int servermode_timeout) {
 	        if( camhandle ) {
 	            camera_close(camhandle);
 	        }
-	        write_socket_answer("0\n");	
+	        write_socket_answer("0\n");
 	        exit(0);
 	    } else if( !strcmp(client_message, "disconnect" ) ) {
 	        if( camhandle ) {
 	            camera_close(camhandle);
 	        }
-	        write_socket_answer("0\n");	
+	        write_socket_answer("0\n");
             } else if( !strcmp(client_message, "echo") ) {
 	        sprintf( buf, "0 %s\n", client_message);
 	        write_socket_answer(buf);
@@ -205,45 +212,45 @@ int servermode_socket(int servermode_timeout) {
 	        } else {
 	            sprintf(buf, "%d not connected\n", 1);
 	        }
-	        write_socket_answer(buf);        
-	    } else if( !strcmp(client_message, "get_lens_name") ) {	  
+	        write_socket_answer(buf);
+	    } else if( !strcmp(client_message, "get_lens_name") ) {
 	        sprintf(buf, "%d %s\n", 0, get_lens_name(status.lens_id1, status.lens_id2));
-	        write_socket_answer(buf);        
+	        write_socket_answer(buf);
 	    } else if( !strcmp(client_message, "get_current_shutter_speed") ) {
   	        sprintf(buf, "%d %d/%d\n", 0, status.current_shutter_speed.nom, status.current_shutter_speed.denom);
-	        write_socket_answer(buf);        
+	        write_socket_answer(buf);
 	    } else if( !strcmp(client_message, "get_current_aperture") ) {
 		sprintf(buf, "%d %s\n", 0, format_rational( status.current_aperture, "%.1f"));
-	        write_socket_answer(buf);        
+	        write_socket_answer(buf);
 	    } else if( !strcmp(client_message, "get_current_iso") ) {
 		sprintf(buf, "%d %d\n", 0, status.current_iso);
-	        write_socket_answer(buf);        
+	        write_socket_answer(buf);
 	    } else if( !strcmp(client_message, "get_bufmask") ) {
 		sprintf(buf, "%d %d\n", 0, status.bufmask);
-	        write_socket_answer(buf);        
+	        write_socket_answer(buf);
 	    } else if( !strcmp(client_message, "focus") ) {
 		pslr_focus(camhandle);
 		sprintf(buf, "%d\n", 0);
-	        write_socket_answer(buf);        
+	        write_socket_answer(buf);
 	    } else if( !strcmp(client_message, "shutter") ) {
 		pslr_shutter(camhandle);
 		sprintf(buf, "%d\n", 0);
-	        write_socket_answer(buf);        
+	        write_socket_answer(buf);
 	    } else if( !strcmp(client_message, "delete_buffer") ) {
 		// TODO: bufferindex
 		pslr_delete_buffer(camhandle,0);
 		sprintf(buf, "%d\n", 0);
-	        write_socket_answer(buf);        
+	        write_socket_answer(buf);
 	    } else if( !strcmp(client_message, "get_preview_buffer") ) {
 		// TODO: bufferindex
 		uint8_t *pImage;
 		uint32_t imageSize;
 		if( pslr_get_buffer(camhandle, 0, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize) ) {
 		    sprintf(buf, "%d %d\n", 1, imageSize);
-		    write_socket_answer(buf);        
+		    write_socket_answer(buf);
 		} else {
 		    sprintf(buf, "%d %d\n", 0, imageSize);
-		    write_socket_answer(buf);        
+		    write_socket_answer(buf);
 		    write_socket_answer_bin(pImage, imageSize);
 		}
 	    } else if( !strcmp(client_message, "get_buffer") ) {
@@ -251,12 +258,12 @@ int servermode_socket(int servermode_timeout) {
 		uint32_t imageSize;
 		if( pslr_buffer_open(camhandle, 0, PSLR_BUF_DNG, 0) ) {
 		    sprintf(buf, "%d\n", 1);
-		    write_socket_answer(buf);        
+		    write_socket_answer(buf);
 		} else {
 		    imageSize = pslr_buffer_get_size(camhandle);
 		    sprintf(buf, "%d %d\n", 0, imageSize);
-		    write_socket_answer(buf);        
-		    uint32_t current = 0;		    
+		    write_socket_answer(buf);
+		    uint32_t current = 0;
 		    while (1) {
 			uint32_t bytes;
 			uint8_t buf[65536];
@@ -267,20 +274,20 @@ int servermode_socket(int servermode_timeout) {
 			write_socket_answer_bin( buf, bytes);
 			current += bytes;
 		    }
-		    pslr_buffer_close(camhandle);		    
-		}	
+		    pslr_buffer_close(camhandle);
+		}
             } else {
 	        write_socket_answer("1 Invalid servermode command\n");
             }
 	}
-     
+
 	if(read_size == 0) {
 	    DPRINT("Client disconnected\n");
 	    fflush(stdout);
 	} else if(read_size == -1) {
 	    fprintf(stderr, "recv failed\n");
 	}
-    }     
+    }
     return 0;
 }
 #endif

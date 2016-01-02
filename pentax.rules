@@ -8,6 +8,7 @@ LABEL="pentax_rules_start"
 # WAIT_FOR_SYSFS="device/vendor"
 ATTRS{vendor}=="PENTAX", ATTRS{model}=="DIGITAL_CAMERA", MODE="0666", GROUP="plugdev"
 ATTRS{vendor}=="PENTAX", ATTRS{model}=="DSC*", MODE="0666", GROUP="plugdev"
+ATTRS{vendor}=="RICOHIMG", ATTRS{model}=="DSC*", MODE="0666", GROUP="plugdev"
 ATTRS{vendor}=="PENTAX", ATTRS{model}=="K*", MODE="0666", GROUP="plugdev"
 
 LABEL="pentax_rules_end"
