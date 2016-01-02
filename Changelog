@@ -1,6 +1,7 @@
 version 0.82.05
-	Limited K-3 II support (Not working)
+	Limited K-3 II support (Testing)
 	Makefile cleanup (exiftool)
+	K-3 support ( thx Tao Wang )
 
 version 0.82.04 ( 2015-08-28 )
 	More debug messages
