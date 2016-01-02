@@ -9,11 +9,11 @@
 
     Command line remote control of Pentax DSLR cameras.
     Copyright (C) 2009 Ramiro Barreiro <ramiro_barreiro69@yahoo.es>
-    With fragments of code from PK-Remote by Pontus Lidman. 
+    With fragments of code from PK-Remote by Pontus Lidman.
     <https://sourceforge.net/projects/pkremote>
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by 
+    it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -27,7 +27,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdbool.h>  
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -114,7 +114,7 @@ int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
 
     if (!output_file) {
         ofd = 1;
-    } else {       
+    } else {
         snprintf(fileName, 256, "%s-%04d.%s", output_file, frameNo, ufft.extension);
         ofd = open(fileName, FILE_ACCESS, 0664);
         if (ofd == -1) {
@@ -227,7 +227,7 @@ int main(int argc, char **argv) {
     // parse all the other flags
     while ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
         switch (optc) {
-	    case '?': 
+	    case '?':
 	    case 'h':
                 usage(argv[0]);
                 exit(-1);
@@ -260,7 +260,7 @@ int main(int argc, char **argv) {
             case 2:
                 status_hex_info = true;
                 break;
-		
+
             case 'm':
 
                 MODESTRING = optarg;
@@ -512,7 +512,7 @@ int main(int argc, char **argv) {
         // ignore all the other argument and go to server mode
         servermode_socket(servermode_timeout);
         exit(0);
-    } 
+    }
 #endif
 
     if (!output_file && frames > 1) {
@@ -676,7 +676,7 @@ int main(int argc, char **argv) {
     if (green) {
         pslr_green_button( camhandle );
     }
-    
+
 //    pslr_test( camhandle, true, 0x1e, 4, 1, 2, 3, 4);
 //    pslr_button_test( camhandle, 0x0c, 1 );
 //    pslr_button_test( camhandle, 0x05, 2 );
@@ -729,7 +729,7 @@ int main(int argc, char **argv) {
 	    }
 	    waitsec = 1.0 * delay - timeval_diff(&current_time, &prev_time) / 1000000.0;
 	    if( waitsec > 0 ) {
-		printf("Waiting for %.2f sec\n", waitsec);	   
+		printf("Waiting for %.2f sec\n", waitsec);
 		sleep_sec( waitsec );
 	    }
 	    bracket_index = 0;
@@ -750,7 +750,7 @@ int main(int argc, char **argv) {
 		    printf("Timeout %d sec passed!\n", timeout);
 		    break;
 		}
-		
+
 		usleep(100000); /* 100 ms */
 	    }
 	} else {
@@ -825,15 +825,22 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
         bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
         if (bytes == 0) {
             break;
-	}
-        write(fd, buf, bytes);
+      	}
+        ssize_t r = write(fd, buf, bytes);
+        if (r == 0) {
+            DPRINT("write(buf): Nothing has been written to buf.\n");
+        } else if (r == -1) {
+            perror("write(buf)");
+        } else if (r < bytes) {
+            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
+        }
         current += bytes;
     }
     pslr_buffer_close(camhandle);
     return (0);
 }
 
-void print_status_info( pslr_handle_t h, pslr_status status ) {    
+void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("\n");
     printf( "%s", collect_status_info( h, status ) );
 }
@@ -896,4 +903,3 @@ Based on:\n\
 pslr-shoot (C) 2009 Ramiro Barreiro\n\
 PK-Remote (C) 2008 Pontus Lidman \n\n", name, VERSION);
 }
-
