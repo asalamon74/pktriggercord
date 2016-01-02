@@ -626,7 +626,7 @@ int ipslr_handle_command_x18( ipslr_handle_t *p, bool cmd9_wrap, int subcommand,
 }
 
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4) {
-    DPRINT("[C]\tpslr_test(wrap=%d, subcommand=0x%x, %x, %x, %x, %x)\n", arg1, arg2, arg3, arg4);
+  DPRINT("[C]\tpslr_test(wrap=%d, subcommand=0x%x, %x, %x, %x, %x)\n", cmd9_wrap, subcommand, arg1, arg2, arg3, arg4);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, cmd9_wrap, subcommand, argnum, arg1, arg2, arg3, arg4);
 }
