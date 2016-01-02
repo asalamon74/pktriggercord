@@ -30,6 +30,7 @@ the camera.
 - Pentax K-30
 - Pentax K-01 (bugs)
 - Pentax K-5 II / K-5 IIs
+- Pentax K-3 / K-3 II
 
 ###Limited support
 
