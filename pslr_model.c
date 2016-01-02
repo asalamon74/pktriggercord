@@ -591,6 +591,8 @@ ipslr_model_info_t camera_models[] = {
     { 0x12f70, "K-5II",       0, 1, 0, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k5    },
     { 0x12f71, "K-5IIs",      0, 1, 0, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k5    },
     { 0x12fb6, "K-50",        0, 1, 0, 452,  4, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k50   },
+    { 0x12fc0, "K-3"        , 0, 1, 1, 452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k3    },
+    { 0x1309c, "K-3II"      , 0, 1, 1, 452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k3    },
     // only limited support from here
     { 0x12994, "*ist D",      1, 1, 0, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_NONE  , 0, NULL}, // buffersize: 264
     { 0x12b60, "*ist DS2",    1, 1, 0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, 0, NULL},
@@ -599,8 +601,6 @@ ipslr_model_info_t camera_models[] = {
     { 0x12b9d, "K110D",       0, 1, 0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, 0, NULL},
     { 0x12b9c, "K100D",       1, 1, 0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, 0, NULL},
     { 0x12ba2, "K100D Super", 1, 1, 0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, 0, NULL},
-    { 0x12fc0, "K-3"        , 0, 1, 1, 452,   4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k3}, // buffersize: 452,
-    { 0x1309c, "K-3II"      , 0, 1, 1, 452,   4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k3}, // buffersize: 452,
 };
 
 ipslr_model_info_t *find_model_by_id( uint32_t id ) {
