@@ -1504,11 +1504,11 @@ G_MODULE_EXPORT void plugin_quit(GtkAction *action)
 
 G_MODULE_EXPORT gboolean settings_window_delete_event_cb(GtkAction *action, gpointer user_data)
 {
-    GtkWidget *pw;
+    GtkToggleAction *pw;
     DPRINT("Hide settings window.\n");
-    pw = GTK_WIDGET (gtk_builder_get_object (xml, "menu_settings_window"));
+    pw = GTK_TOGGLE_ACTION (gtk_builder_get_object (xml, "menu_settings_window"));
     gtk_widget_hide(GW("settings_window"));
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(pw), FALSE);
+    gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(pw), FALSE);
     return TRUE;
 }
 
