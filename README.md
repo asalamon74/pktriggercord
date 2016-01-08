@@ -41,6 +41,13 @@ the camera.
 - Pentax K100D (Not working)
 - Pentax K100D Super
 
+###Testing
+
+*The following cameras are not yet tested, please contact us if you can help.*
+
+- Pentax K-S1
+- Pentax K-S2
+
 ##More info
 
 You can find more info at http://pktriggercord.melda.info
