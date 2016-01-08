@@ -10,7 +10,7 @@ Vendor specific SCSI command is used to communicate with Pentax camera.
 
 Command contains `8` bytes in following format:
 ```Javascript
-F0 TT X2 X3 X4 X5 X6 X7
+[F0 TT X2 X3 X4 X5 X6 X7]
 ```
 
 The leading byte is the SCSI opcode, and always be `0xF0`.
@@ -53,7 +53,7 @@ The `TT` code for sending arguments is `0x49`
 The SCSI command format of sending arguments is following:
 
 ```Javascript
-F0 49 X0 X1 Y0 Y1 00 00
+[F0 49 X0 X1 Y0 Y1 00 00]
 ```
 
  * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is `the offset of the arguments`;
@@ -77,13 +77,13 @@ The `TT` code for sending command is `0x24`.
 The SCSI command format of sending command is following:
 
 ```Javascript
-F0 24 CC SS X0 X1 00 00
+[F0 24 CC SS X0 X1 00 00]
 ```
 
  * `CC` is Command, `SS` is Subcommand. The combination of `CC SS` defines the intention of the command.
  * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is the byte length of the previously sent arguments. For example, if one argument was sent via `0x49` previously, the `X0 X1` should be `04 00`.
 
-### Definition of Each Command
+### 3.1 Definition of Each Command
 
 Here is the list of `[CC SS]` commands have been discovered by now.
 
@@ -368,7 +368,7 @@ After the command `0x24` has been sent, we need to know what's the status of the
 `TT` code is `0x26`. SCSI command format is following,
 
 ```Javascript
-F0 26 00 00 00 00 00 00
+[F0 26 00 00 00 00 00 00]
 ```
 
 As the status data will be returned from camera, this command should be sent by `scsi_read()`, and the status data will be return via attached buffer.
@@ -376,16 +376,16 @@ As the status data will be returned from camera, this command should be sent by 
 The status data which camera returned is an 8 bytes array, in following format.
 
 ```Javascript
-L0 L1 L2 L3 00 00 S0 S1
+[L0 L1 L2 L3 00 00 S0 S1]
 ```
 
  * `L0 L1 L2 L3` is a Little-Endian 32-bit integer, `0xL3L2L1L0`, which is the length of the returned data.
- * `S0 S1` is the status code.
+ * `S0` and `S1` are the status code.
    * (S0 == 0x01): Ready to read the result;
-   * ((S1 & 0x01) != 0): Completed Successfully;
-   * (S1 == 0x81): Error: Command not available?
-   * (S1 == 0x82): Error: Command Rejected?
-   * (S1 == 0x83): Error: Illegal Parameter?
+   * (S1 == 0x01): Completed Successfully;
+   * (S1 == 0x81): Error: Command not available
+   * (S1 == 0x82): Error: Command Rejected
+   * (S1 == 0x83): Error: Illegal Parameter
 
 5. Read Result
 -------------------------
@@ -393,7 +393,7 @@ L0 L1 L2 L3 00 00 S0 S1
 To retrieve the result data of the command we sent earlier, this SCSI command will be used, the `TT` code is `0x49`. The SCSI command will be send via `scsi_read()`, and the attached buffer will be the result data. The command format is following,
 
 ```Javascript
-F0 49 X0 X1 L0 L1 00 00
+[F0 49 X0 X1 L0 L1 00 00]
 ```
 
  * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is the offset of the result data.
