@@ -4,6 +4,8 @@ Pentax Camera SCSI protocol
 1. General
 -----------
 
+This is the documentation of the USB SCSI communication between host(computer) and camera. Although several requests had been made, there is no official documents from Pentax. This is a summary from understanding of current implementations and analysis of Pentax camera/firmware.
+
 To control the Pentax camera, the camera has to be set to Mass Storage (MSC) mode, rather than PTP mode.
 
 Vendor specific SCSI command is used to communicate with Pentax camera.
@@ -20,8 +22,8 @@ The leading byte is the SCSI opcode, and always be `0xF0`.
 ```Javascript
 0x24:   Send Command
 0x26:   Get Command Status
-0x49:   Send Arguments
-0x4F:   Read Result
+0x4F:   Send Arguments
+0x49:   Read Result
 ```
 
  * `X2, X3, X4, X5` have different meaning for different `TT`.
@@ -36,24 +38,24 @@ As we may send data to camera via the attached data buffer, as well as receive d
 
 Normal communication flow would be following:
 
- 1. Host sends the arguments by `0x49` first, if there is any;
+ 1. Host sends the arguments by `0x4F` first, if there is any;
  2. Host send a command by `0x24`;
  3. Host keep checking the status by `0x26` until the status is ok;
- 4. Host receive the result by `0x4F`;
+ 4. Host receive the result by `0x49`;
 
 2. Send Arguments
 -------------------------
 
 Each command can have arguments. If the command does have one or more arguments, the arguments will be send to camera separately, before sending the command.
 
-The `TT` code for sending arguments is `0x49`
+The `TT` code for sending arguments is `0x4F`
 
-  `0x49` SCSI command will not be sent if there is no any argument.
+  `0x4F` SCSI command will not be sent if there is no any argument.
 
 The SCSI command format of sending arguments is following:
 
 ```Javascript
-[F0 49 X0 X1 Y0 Y1 00 00]
+[F0 4F X0 X1 Y0 Y1 00 00]
 ```
 
  * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is `the offset of the arguments`;
@@ -61,13 +63,13 @@ The SCSI command format of sending arguments is following:
 
 Both of the `offset` and `size` are in bytes, and should be aligned to 4 (32-bit).
 
+There is not many arguments used in the current implementation, so `X1` and `Y1` are always be `0x00`.
+
 To explain the concept of `offset of the arguments`, we can imagine that there is an ``arguments buffer`` on the camera side, for each time we send a argument(s), we need to specify where we want to put our arguments in the arguments buffer. The location is specified by the `offset`. Camera will simply follow our instruction and save the argument in the buffer at the given offset, and later the `0x24` SCSI command will trigger the camera to load arguments list from this buffer.
 
-So, for example, if we're going to send the first argument, the offset should be `0`. After the first argument sent, if we decide to send more arguments, we will need to call `0x49` SCSI command again. But as camera side didn't keep how many arguments we have sent, we need to specify the offset for those new arguments. This time, the offset should be `0x4`, as we have put our first argument in the buffer at offset `0`, and each argument should be 4 bytes(32-bit) aligned.
+So, for example, if we're going to send the first argument, the offset should be `0x00`. After the first argument sent, if we decide to send more arguments, we will need to call `0x4F` SCSI command again. But as camera side didn't keep how many arguments we have sent, we need to specify the offset for those new arguments. This time, the offset should be `0x04`, as we have put our first argument in the buffer at offset `0x00`, and each argument should be 4 bytes(32-bit) aligned.
 
 The reason Pentax is using `offset` way to pass the arguments in multiple calls, instead of passing the arguments in one batch, is that, on some old Pentax cameras, the buffer to receive SCSI command's data is very small (maybe just 4 bytes), so the arguments has to be passed through the SCSI connection in multiple times (like one by one), so an `offset` is needed to tell the camera where the arguments in current SCSI command's data should be put in the buffer.
-
-Just to be noticed, still, the buffer is very small, just 32 bytes, so no more than 8 arguments.
 
 3. Send Command
 -------------------------
@@ -81,29 +83,36 @@ The SCSI command format of sending command is following:
 ```
 
  * `CC` is Command, `SS` is Subcommand. The combination of `CC SS` defines the intention of the command.
- * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is the byte length of the previously sent arguments. For example, if one argument was sent via `0x49` previously, the `X0 X1` should be `04 00`.
+ * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is the byte length of the previously sent arguments, and should be aligned to 4 (32-bit). For example, if one argument was sent previously, the `X0 X1` should be `04 00`.
 
 ### 3.1 Definition of Each Command
 
 Here is the list of `[CC SS]` commands have been discovered by now.
 
+#### 3.1.1 Command Group 00 - Information
 
-#### [00 00] Set Connect Mode (on_off)
+##### [00 00] Set Connect Mode (on_off)
 
 `on_off`: 1: Connect, 0: Disconnect
 
-#### [00 01] Get Status ()
-#### [00 04] Get Identity ()
-#### [00 05] Connect ()
+##### [00 01] Get Status ()
+##### [00 04] Get Identity ()
+##### [00 05] Connect ()
 
 This command is for old camera only.
 
-#### [00 08] Get Full Status ()
-#### [00 09] DSPTaskWUReq ()
-#### [01 00] GetDSPInfo ()
-#### [02 01] Select Buffer (buffer_number, buffer_type, buffer_resolution)
+##### [00 08] Get Full Status ()
+##### [00 09] DSPTaskWUReq ()
 
-For old camera, there is one more argument, `0`:
+#### 3.1.2 Command Group 01 - Information
+
+##### [01 00] GetDSPInfo ()
+
+#### 3.1.2 Command Group 02 - Image Buffer Related
+
+##### [02 01] Select Buffer (buffer_number, buffer_type, buffer_resolution)
+
+For old camera, there is one more argument, `0x00`:
 
 ```C
 (buffer_number, buffer_type, buffer_resolution, 0)
@@ -124,36 +133,51 @@ typedef enum {
 } pslr_buffer_type;
 ```
 
-#### [02 03] Delete Buffer (buffer_number)
-#### [04 00] Get Buffer Segment Information ()
-#### [04 01] Next Buffer Segment (0)
-#### [06 00] Prepare Download (address, block)
+##### [02 03] Delete Buffer (buffer_number)
+
+#### 3.1.3 Command Group 04 - Image Buffer Related
+
+##### [04 00] Get Buffer Segment Information ()
+##### [04 01] Next Buffer Segment (0)
+
+#### 3.1.4 Command Group 06 - Image Download/Upload
+
+##### [06 00] Prepare Download (address, block)
 
 This command seems to dump given memory area to a buffer, so it can be retrieved later.
 
-#### [06 02] Get Download Data ()
+##### [06 02] Get Download Data ()
+
+##### [06 03] Upload?
+
+##### [06 04] Upload?
 
 This is a `scsi_read()` command, and the attached buffer will be the downloaded data.
 
-#### [10 05] Shutter Release (press_status)
+#### 3.1.5 Command Group 10 - Action
+
+##### [10 05] Shutter Release (press_status)
 
 `press_status`: 1: Half pressed, 2: Full pressed.
 
-#### [10 06] AE Lock ()
-#### [10 07] Green ()
-#### [10 08] AE Unlock ()
-#### [10 0A] Connect (on_off)
+##### [10 06] AE Lock ()
+##### [10 07] Green ()
+##### [10 08] AE Unlock ()
+##### [10 0A] Connect (on_off)
 
 `on_off`:   1: Connect, 0: Disconnect
 
-#### [10 0C] Continuous Shooting ()
-#### [10 0D] Bulb (on_off)
+##### [10 0C] Continuous Shooting ()
+##### [10 0D] Bulb (on_off)
 
 `on_off`:   1: Start, 0: Stop
 
-#### [10 11] Dust Removal ()
+##### [10 11] Dust Removal ()
 
-#### [18 01] Exposure Mode (1, exposure_mode)
+
+#### 3.1.6 Command Group 18 - Change Camera Settings
+
+##### [18 01] Exposure Mode (1, exposure_mode)
 
 ```C
 typedef enum {
@@ -178,7 +202,7 @@ typedef enum {
 } pslr_exposure_mode_t;
 ```
 
-#### [18 03] AE Metering Mode (metering_mode)
+##### [18 03] AE Metering Mode (metering_mode)
 
 ```C
 typedef enum {
@@ -189,7 +213,7 @@ typedef enum {
 } pslr_ae_metering_t;
 ```
 
-#### [18 04] Flash Mode (flash_mode)
+##### [18 04] Flash Mode (flash_mode)
 
 ```C
 typedef enum {
@@ -206,7 +230,7 @@ typedef enum {
 } pslr_flash_mode_t;
 ```
 
-#### [18 05] AF Mode (af_mode)
+##### [18 05] AF Mode (af_mode)
 
 ```C
 typedef enum {
@@ -218,7 +242,7 @@ typedef enum {
 } pslr_af_mode_t;
 ```
 
-#### [18 06] AF Point Selection (selection)
+##### [18 06] AF Point Selection (selection)
 
 ```C
 typedef enum {
@@ -230,7 +254,7 @@ typedef enum {
 } pslr_af_point_sel_t;
 ```
 
-#### [18 07] AF Point (point)
+##### [18 07] AF Point (point)
 
 ```C
 #define PSLR_AF_POINT_TOP_LEFT   0x1
@@ -246,7 +270,7 @@ typedef enum {
 #define PSLR_AF_POINT_BOT_RIGHT  0x400
 ```
 
-#### [18 10] White Balance (white_balance_mode)
+##### [18 10] White Balance (white_balance_mode)
 
 ```C
 typedef enum {
@@ -267,8 +291,8 @@ typedef enum {
 } pslr_white_balance_mode_t;
 ```
 
-#### [18 11] White Balance Adjustment (white_balance_mode, tint, temperature)
-#### [18 12] Image Format (1, format)
+##### [18 11] White Balance Adjustment (white_balance_mode, tint, temperature)
+##### [18 12] Image Format (1, format)
 
 ```C
 typedef enum {
@@ -279,17 +303,17 @@ typedef enum {
 } pslr_image_format_t;
 ```
 
-#### [18 13] JPEG Stars (1, star)
-#### [18 14] JPEG Resolution (1, resolution)
+##### [18 13] JPEG Stars (1, star)
+##### [18 14] JPEG Resolution (1, resolution)
 
 `resolution`:   Number in megapixel
 
-#### [18 15] ISO (value, auto_min, auto_max)
-#### [18 16] Shutter Speed (nom, denom)
-#### [18 17] Aperture (nom, denom, 0)
-#### [18 18] Exposure Compensation (nom, denom)
-#### [18 1A] Flash Exposure Compensation (nom, denom)
-#### [18 1B] JPEG Image Tone (tone)
+##### [18 15] ISO (value, auto_min, auto_max)
+##### [18 16] Shutter Speed (nom, denom)
+##### [18 17] Aperture (nom, denom, 0)
+##### [18 18] Exposure Compensation (nom, denom)
+##### [18 1A] Flash Exposure Compensation (nom, denom)
+##### [18 1B] JPEG Image Tone (tone)
 
 ```C
 typedef enum {
@@ -308,7 +332,7 @@ typedef enum {
 } pslr_jpeg_image_tone_t;
 ```
 
-#### [18 1C] Drive Mode (drive_mode)
+##### [18 1C] Drive Mode (drive_mode)
 
 ```C
 typedef enum {
@@ -323,7 +347,7 @@ typedef enum {
 } pslr_drive_mode_t;
 ```
 
-#### [18 1F] Raw Format (1, format)
+##### [18 1F] Raw Format (1, format)
 
 ```C
 typedef enum {
@@ -333,10 +357,10 @@ typedef enum {
 } pslr_raw_format_t;
 ```
 
-#### [18 20] JPEG Saturation (0, saturation)
-#### [18 21] JPEG Sharpness (0, sharpness)
-#### [18 22] JPEG Contrast (0, contrast)
-#### [18 23] Color Space (color_space)
+##### [18 20] JPEG Saturation (0, saturation)
+##### [18 21] JPEG Sharpness (0, sharpness)
+##### [18 22] JPEG Contrast (0, contrast)
+##### [18 23] Color Space (color_space)
 
 ```C
 typedef enum {
@@ -346,18 +370,22 @@ typedef enum {
 } pslr_color_space_t;
 ```
 
-#### [18 25] JPEG Hue (0, hue)
+##### [18 25] JPEG Hue (0, hue)
 
-#### [20 06] Read DateTime ()
-#### [20 08] Write Setting (index, value)
-#### [20 09] Read Setting (index)
+#### 3.1.7 Command Group 20
 
-#### [23 00] WriteAdjData (value)
-#### [23 04] SetAdjModeFlag (mode, value)
-#### [23 05] GetAdjModeFlag (mode)
-#### [23 06] SetAdjData (mode, arg1, arg2, ...)
-#### [23 07] GetAdjData (mode)
-#### [23 11] GetAFTestData ()
+##### [20 06] Read DateTime ()
+##### [20 08] Write Setting (index, value)
+##### [20 09] Read Setting (index)
+
+#### 3.1.8 Command Group 23
+
+##### [23 00] WriteAdjData (value)
+##### [23 04] SetAdjModeFlag (mode, value)
+##### [23 05] GetAdjModeFlag (mode)
+##### [23 06] SetAdjData (mode, arg1, arg2, ...)
+##### [23 07] GetAdjData (mode)
+##### [23 11] GetAFTestData ()
 
 
 4. Get Command Status
@@ -396,7 +424,7 @@ To retrieve the result data of the command we sent earlier, this SCSI command wi
 [F0 49 X0 X1 L0 L1 00 00]
 ```
 
- * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is the offset of the result data.
- * `L0 L1` is a Little-Endian 16-bit integer, `0xL1L0`, which is the size of the result data we want to read.
+ * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is the offset of the result data, and should be aligned to 4 (32-bit).
+ * `L0 L1` is a Little-Endian 16-bit integer, `0xL1L0`, which is the size of the result data we want to read, and should be aligned to 4 (32-bit).
 
 Normally, we'll just leave `X0 X1` to zero, and `L0 L1` to the length of the whole content to be read.
