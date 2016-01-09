@@ -108,7 +108,7 @@ This command is for old camera only.
 
 ##### [01 00] GetDSPInfo ()
 
-#### 3.1.2 Command Group 02 - Image Buffer Related
+#### 3.1.3 Command Group 02 - Image Buffer Related
 
 ##### [02 01] Select Buffer (buffer_number, buffer_type, buffer_resolution)
 
@@ -135,12 +135,12 @@ typedef enum {
 
 ##### [02 03] Delete Buffer (buffer_number)
 
-#### 3.1.3 Command Group 04 - Image Buffer Related
+#### 3.1.4 Command Group 04 - Image Buffer Related
 
 ##### [04 00] Get Buffer Segment Information ()
 ##### [04 01] Next Buffer Segment (0)
 
-#### 3.1.4 Command Group 06 - Image Download/Upload
+#### 3.1.5 Command Group 06 - Image Download/Upload
 
 ##### [06 00] Prepare Download (address, block)
 
@@ -154,7 +154,7 @@ This command seems to dump given memory area to a buffer, so it can be retrieved
 
 This is a `scsi_read()` command, and the attached buffer will be the downloaded data.
 
-#### 3.1.5 Command Group 10 - Action
+#### 3.1.6 Command Group 10 - Action
 
 ##### [10 05] Shutter Release (press_status)
 
@@ -175,7 +175,7 @@ This is a `scsi_read()` command, and the attached buffer will be the downloaded 
 ##### [10 11] Dust Removal ()
 
 
-#### 3.1.6 Command Group 18 - Change Camera Settings
+#### 3.1.7 Command Group 18 - Change Camera Settings
 
 ##### [18 01] Exposure Mode (1, exposure_mode)
 
@@ -372,13 +372,13 @@ typedef enum {
 
 ##### [18 25] JPEG Hue (0, hue)
 
-#### 3.1.7 Command Group 20
+#### 3.1.8 Command Group 20
 
 ##### [20 06] Read DateTime ()
 ##### [20 08] Write Setting (index, value)
 ##### [20 09] Read Setting (index)
 
-#### 3.1.8 Command Group 23
+#### 3.1.9 Command Group 23
 
 ##### [23 00] WriteAdjData (value)
 ##### [23 04] SetAdjModeFlag (mode, value)
