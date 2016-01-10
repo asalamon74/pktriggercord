@@ -4,6 +4,7 @@ version 0.82.05
 	K-3 support ( thx Tao Wang )
 	Eliminate GTK settings window closing warning
 	Limited K-S1, K-S2 support ( thx Tao Wang )
+	Eliminate segmentation fault (non-root Linux usage)
 
 version 0.82.04 ( 2015-08-28 )
 	More debug messages

@@ -417,7 +417,7 @@ int pslr_connect(pslr_handle_t h) {
     CHECK(ipslr_identify(p));
     if( !p->model ) {
       DPRINT("\nUnknown Pentax camera.\n");
-      return 1;
+      return -1;
     }
     CHECK(ipslr_status_full(p, &p->status));
     DPRINT("\tinit bufmask=0x%x\n", p->status.bufmask);

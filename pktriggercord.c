@@ -628,7 +628,7 @@ static gboolean status_poll(gpointer data)
     GtkWidget *pw;
     gchar buf[256];
     pslr_status *tmp;
-    int ret;
+    int ret=0;
     static bool status_poll_inhibit = false;
 
     DPRINT("start status_poll\n");
@@ -650,10 +650,19 @@ static gboolean status_poll(gpointer data)
                 gtk_main_iteration();
 
             /* Connect */
-            pslr_connect(camhandle);
+            ret = pslr_connect(camhandle);
+	    DPRINT("ret: %d\n", ret);
+	    if( ret == -1 ) {
+	      gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+	      gtk_statusbar_push(statusbar, sbar_connect_ctx, "Unknown Pentax camera found.");
+	      camhandle=NULL;
+	    } else if( ret != 0 ) {
+	      gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+	      gtk_statusbar_push(statusbar, sbar_connect_ctx, "Cannot connect to Pentax camera.");
+	      camhandle=NULL;
+	    }
         }
 
-        gtk_statusbar_pop(statusbar, sbar_connect_ctx);
         if (camhandle) {
   	    DPRINT("before camera_specific_init\n");
             camera_specific_init();
@@ -663,8 +672,10 @@ static gboolean status_poll(gpointer data)
 
             snprintf(buf, sizeof(buf), "Connected: %s", name);
             buf[sizeof(buf)-1] = '\0';
+	    gtk_statusbar_pop(statusbar, sbar_connect_ctx);
             gtk_statusbar_push(statusbar, sbar_connect_ctx, buf);
-        } else {
+        } else if( ret == 0 ) {
+	    gtk_statusbar_pop(statusbar, sbar_connect_ctx);
             gtk_statusbar_push(statusbar, sbar_connect_ctx, "No camera connected.");
         }
         status_poll_inhibit = false;

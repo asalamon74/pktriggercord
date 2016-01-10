@@ -53,6 +53,7 @@ pslr_handle_t camera_connect( char *model, char *device, int timeout, char *erro
     struct timeval prev_time;
     struct timeval current_time;
     pslr_handle_t camhandle;
+    int r;
 
     gettimeofday(&prev_time, NULL);
     while (!(camhandle = pslr_init( model, device ))) {
@@ -69,8 +70,12 @@ pslr_handle_t camera_connect( char *model, char *device, int timeout, char *erro
 
     DPRINT("before connect\n");
     if (camhandle) {
-        if (pslr_connect(camhandle) ) {
-	  snprintf(error_message, 1000, "%d Unknown Pentax camera found.\n",1);
+      if ((r=pslr_connect(camhandle)) ) {
+	  if( r != -1 ) {
+	    snprintf(error_message, 1000, "%d Cannot connect to Pentax camera. Please start the program as root.\n",1);
+	  } else {
+	    snprintf(error_message, 1000, "%d Unknown Pentax camera found.\n",1);
+	  }
 	  return NULL;
         }
     }
