@@ -43,8 +43,10 @@ Normal communication flow would be following:
  3. Host keep checking the status by `0x26` until the status is ok;
  4. Host receive the result by `0x49`;
 
-2. Send Arguments
+2. SCSI Commands Types
 -------------------------
+
+### 2.1 Send Arguments
 
 Each command can have arguments. If the command does have one or more arguments, the arguments will be send to camera separately, before sending the command.
 
@@ -71,8 +73,7 @@ So, for example, if we're going to send the first argument, the offset should be
 
 The reason Pentax is using `offset` way to pass the arguments in multiple calls, instead of passing the arguments in one batch, is that, on some old Pentax cameras, the buffer to receive SCSI command's data is very small (maybe just 4 bytes), so the arguments has to be passed through the SCSI connection in multiple times (like one by one), so an `offset` is needed to tell the camera where the arguments in current SCSI command's data should be put in the buffer.
 
-3. Send Command
--------------------------
+### 2.2 Send Command
 
 The `TT` code for sending command is `0x24`.
 
@@ -85,9 +86,7 @@ The SCSI command format of sending command is following:
  * `CC` is Command, `SS` is Subcommand. The combination of `CC SS` defines the intention of the command.
  * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is the byte length of the previously sent arguments, and should be aligned to 4 (32-bit). For example, if one argument was sent previously, the `X0 X1` should be `04 00`. As the arguments number is quite small, `X1` will always be zero.
 
-
-4. Get Command Status
--------------------------
+### 2.3 Get Command Status
 
 After the command `0x24` has been sent, we need to know what's the status of the execution. Is it still running? or completed successfully? or got any error? This SCSI command is to retrieve the current command execution status, and the length of the result may also be returned.
 
@@ -113,8 +112,7 @@ The status data which camera returned is an 8 bytes array, in following format.
    * (S1 == 0x82): Error: Command Rejected
    * (S1 == 0x83): Error: Illegal Parameter
 
-5. Read Result
--------------------------
+### 2.4 Read Result
 
 To retrieve the result data of the command we sent earlier, this SCSI command will be used, the `TT` code is `0x49`. The SCSI command will be send via `scsi_read()`, and the attached buffer will be the result data. The command format is following,
 
@@ -127,12 +125,12 @@ To retrieve the result data of the command we sent earlier, this SCSI command wi
 
 Normally, we'll just leave `X0 X1` to zero, and `L0 L1` to the length of the whole content to be read.
 
-6. Definition of Each Command
+3. Definition of Each Command
 -------------------------------
 
 Here is the list of `[CC SS]` commands have been discovered by now.
 
-### 6.1 Command Group 00 - Information
+### 3.1 Command Group 00 - Information
 
 #### [00 00] Set Connect Mode (on_off)
 
@@ -149,11 +147,11 @@ This command is for old camera only.
 
 `mode`: 1: Before our commands; 2: After our commands
 
-### 6.2 Command Group 01 - Information
+### 3.2 Command Group 01 - Information
 
 #### [01 00] GetDSPInfo ()
 
-### 6.3 Command Group 02 - Image Buffer Related
+### 3.3 Command Group 02 - Image Buffer Related
 
 #### [02 00] Get Buffer Status ()
 
@@ -190,12 +188,12 @@ typedef enum {
 
 #### [02 03] Delete Buffer (buffer_number)
 
-### 6.4 Command Group 04 - Image Buffer Related
+### 3.4 Command Group 04 - Image Buffer Related
 
 #### [04 00] Get Buffer Segment Information ()
 #### [04 01] Next Buffer Segment (0)
 
-### 6.5 Command Group 06 - Image Download/Upload
+### 3.5 Command Group 06 - Image Download/Upload
 
 #### [06 00] Prepare Download (address, block)
 
@@ -209,7 +207,7 @@ This is a `scsi_read()` command, and the attached buffer will be the downloaded 
 
 #### [06 04] Upload?
 
-### 6.6 Command Group 10 - Action
+### 3.6 Command Group 10 - Action
 
 #### [10 05] Shutter Release (press_status)
 
@@ -230,7 +228,7 @@ This is a `scsi_read()` command, and the attached buffer will be the downloaded 
 #### [10 11] Dust Removal ()
 
 
-### 6.7 Command Group 18 - Change Camera Settings
+### 3.7 Command Group 18 - Change Camera Settings
 
 #### [18 01] Exposure Mode (1, exposure_mode)
 
@@ -427,13 +425,13 @@ typedef enum {
 
 #### [18 25] JPEG Hue (0, hue)
 
-### 6.8 Command Group 20
+### 3.8 Command Group 20
 
 #### [20 06] Read DateTime ()
 #### [20 08] Write Setting (offset, value)
 #### [20 09] Read Setting (offset)
 
-### 6.9 Command Group 23
+### 3.9 Command Group 23
 
 #### [23 00] WriteAdjData (value)
 #### [23 04] SetAdjModeFlag (mode, value)
