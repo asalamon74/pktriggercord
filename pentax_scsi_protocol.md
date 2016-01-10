@@ -4,7 +4,8 @@
 
 - [Pentax Camera SCSI protocol](#pentax-camera-scsi-protocol)
   - [1. General](#1-general)
-    - [1.1 Normal Use Case](#11-normal-use-case)
+    - [1.1 SCSI Command](#11-scsi-command)
+    - [1.2 Command](#12-command)
   - [2. SCSI Commands Types](#2-scsi-commands-types)
     - [2.1 Send Arguments](#21-send-arguments)
     - [2.2 Send Command](#22-send-command)
@@ -90,16 +91,19 @@ This is the documentation of the USB SCSI communication between computer and Pen
 
 To control the Pentax camera, the camera has to be set to Mass Storage (MSC) mode, rather than PTP mode.
 
-Vendor specific SCSI command is used to communicate with Pentax camera.
+There are 2 kind of commands referenced in this document, one is the low level `SCSI command`, another is the higher level `Command`, which is consist of several low level `SCSI commands`.
 
-Command contains `8` bytes in following format:
+### 1.1 SCSI Command
+
+Pentax camera is controlled via SCSI Pass-through interface of USB Mass Storage. Vendor specific `SCSI command` is used to communicate with Pentax camera.
+
+`SCSI command` contains `8` bytes in the following format:
 ```Javascript
 [F0 TT X2 X3 X4 X5 X6 X7]
 ```
 
-The leading byte is the SCSI opcode, and always be `0xF0`.
-
- * `TT` is the type of this SCSI command, can be following values:
+ * The leading byte is the SCSI opcode, and always be `0xF0`, which means Vendor Specific.
+ * `TT` is the type of this `SCSI command`, can be following values:
 
 ```Javascript
 0x24:   Send Command
@@ -111,32 +115,38 @@ The leading byte is the SCSI opcode, and always be `0xF0`.
  * `X2, X3, X4, X5` have different meaning for different `TT`.
  * `X6, X7` are always zero.
 
-This SCSI command is limited to 8 bytes, if there are more data to pass to/from camera, a data buffer can be attached to the command. The attached data buffer is used in this protocol in both direction, such as sending arguments, or get result data.
+The `SCSI command` is limited to 8 bytes, a data buffer associated with the `SCSI command` can be used to transfer more data to/from camera. The associated data buffer is used in this protocol for both data transfer direction.
 
-As we may send data to camera via the attached data buffer, as well as receive data via attached data buffer from camera, there are 2 kind of SCSI operation, `scsi_write()` and `scsi_read()`, for those purpose.
+Such as, Send Arguments `SCSI command` will use the associated data buffer to send arguments to camera, and Read Result `SCSI command` will use the associated data buffer to receive the result from camera.
 
+For the reason, there are 2 kind of SCSI operation, `scsi_write()` and `scsi_read()`.
 
-### 1.1 Normal Use Case
+Most `SCSI commands` will be called via `scsi_write()`, as they are simply passing data to the camera, however, some will be called via `scsi_read()` to receive data.
 
-Normal communication flow would be following:
+### 1.2 Command
 
- 1. Computer sends the arguments by `0x4F` first, if there is any;
- 2. Computer send a command by `0x24`;
- 3. Computer keep checking the status by `0x26` until the status is ok;
- 4. Computer receive the result by `0x49`;
+The high level `Command` is more like a function, which has function name, arguments, and returned data. To achieve such task, several `SCSI Commands` are used in the following way:
+
+ 1. Computer sends the arguments by `SCSI Command - 0x4F` first, if there is any;
+ 2. Computer sends a command call by `SCSI Command - 0x24`;
+ 3. Computer keep checking the status by `SCSI Command - 0x26` until the status is ok;
+ 4. Computer receive the result by `SCSI Command - 0x49`, if needed.
+
+The individual commands will be discussed later.
 
 2. SCSI Commands Types
 -------------------------
 
 ### 2.1 Send Arguments
 
-Each command can have arguments. If the command does have one or more arguments, the arguments will be send to camera separately, before sending the command.
+Each `Command` can have arguments. If the command does have one or more arguments, the arguments will be send to camera separately, before sending the command.
+
+This `SCSI command` will not be sent if there is no any argument.
 
 The `TT` code for sending arguments is `0x4F`
 
-  `0x4F` SCSI command will not be sent if there is no any argument.
 
-The SCSI command format of sending arguments is following:
+The `SCSI command` format of sending arguments is:
 
 ```Javascript
 [F0 4F X0 X1 Y0 Y1 00 00]
@@ -149,38 +159,38 @@ Both of the `offset` and `size` are in bytes, and should be aligned to 4 (32-bit
 
 There is not many arguments used in the current implementation, so `X1` and `Y1` are always be `0x00`.
 
-To explain the concept of `offset of the arguments`, we can imagine that there is an ``arguments buffer`` on the camera side, for each time we send a argument(s), we need to specify where we want to put our arguments in the arguments buffer. The location is specified by the `offset`. Camera will simply follow our instruction and save the argument in the buffer at the given offset, and later the `0x24` SCSI command will trigger the camera to load arguments list from this buffer.
+To explain the concept of `offset of the arguments`, we can imagine that there is an `arguments buffer` on the camera side, and for each time we send an argument(s), we need to specify where we want to put our arguments in the `arguments buffer`. The location is specified by the `offset`. Camera will simply follow our instruction and save the argument in the buffer at the given `offset`, and later the `SCSI command - 0x24` will trigger the camera to load arguments list from this buffer.
 
-So, for example, if we're going to send the first argument, the offset should be `0x00`. After the first argument sent, if we decide to send more arguments, we will need to call `0x4F` SCSI command again. But as camera side didn't keep how many arguments we have sent, we need to specify the offset for those new arguments. This time, the offset should be `0x04`, as we have put our first argument in the buffer at offset `0x00`, and each argument should be 4 bytes(32-bit) aligned.
+So, for example, if we're going to send the first argument, the offset should be `0x00`. After the first argument sent, if we decide to send more arguments, we will need to call `SCSI command - 0x4F` again. But as camera side didn't keep how many arguments we have sent, we need to specify the offset for those new arguments. This time, the offset should be `0x04`, as we have put our first argument in the buffer at offset `0x00`, and each argument should be 4 bytes(32-bit) aligned.
 
-The reason Pentax is using `offset` way to pass the arguments in multiple calls, instead of passing the arguments in one batch, is that, on some old Pentax cameras, the buffer to receive SCSI command's data is very small (maybe just 4 bytes), so the arguments has to be passed through the SCSI connection in multiple times (like one by one), so an `offset` is needed to tell the camera where the arguments in current SCSI command's data should be put in the buffer.
+The reason Pentax is using `offset` design to pass the arguments is that, on some old Pentax cameras, the buffer to receive `SCSI command` associated data is very small (maybe just 4 bytes), so the arguments has to be passed in multiple times (such as one by one), so an `offset` is necessary to tell the camera where the arguments in current `SCSI command` should be put in the `arguments buffer`.
 
 ### 2.2 Send Command
 
 The `TT` code for sending command is `0x24`.
 
-The SCSI command format of sending command is following:
+The `SCSI command` format of sending command is:
 
 ```Javascript
-[F0 24 CC SS X0 X1 00 00]
+[F0 24 C0 C1 X0 X1 00 00]
 ```
 
- * `CC` is Command, `SS` is Subcommand. The combination of `CC SS` defines the intention of the command.
+ * `C0` is `Command Group`, `C1` is the command number in the group. The combination of `C0 C1` defines the `Command`.
  * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is the byte length of the previously sent arguments, and should be aligned to 4 (32-bit). For example, if one argument was sent previously, the `X0 X1` should be `04 00`. As the arguments number is quite small, `X1` will always be zero.
 
 ### 2.3 Get Command Status
 
-After the command `0x24` has been sent, we need to know what's the status of the execution. Is it still running? or completed successfully? or got any error? This SCSI command is to retrieve the current command execution status, and the length of the result may also be returned.
+After the `SCSI command - 0x24` has been sent, we need to know what's the status of the execution. Is it still running? or completed successfully? or got any error? This `SCSI command` is to retrieve the current command execution status, and the length of the result may also be returned.
 
-`TT` code is `0x26`. SCSI command format is following,
+`TT` code is `0x26`. `SCSI command` format is:
 
 ```Javascript
 [F0 26 00 00 00 00 00 00]
 ```
 
-As the status data will be returned from camera, this command should be sent by `scsi_read()`, and the status data will be return via attached buffer.
+As the status data will be returned from camera, this `SCSI command` should be sent by `scsi_read()`, and the status data will be return via associated data buffer.
 
-The status data which camera returned is an 8 bytes array, in following format.
+The status data which camera returned is an `8` bytes array, in following format.
 
 ```Javascript
 [L0 L1 L2 L3 00 00 S0 S1]
@@ -196,7 +206,7 @@ The status data which camera returned is an 8 bytes array, in following format.
 
 ### 2.4 Read Result
 
-To retrieve the result data of the command we sent earlier, this SCSI command will be used, the `TT` code is `0x49`. The SCSI command will be send via `scsi_read()`, and the attached buffer will be the result data. The command format is following,
+To retrieve the result data of the command we sent earlier, this `SCSI command` will be used, the `TT` code is `0x49`. The `SCSI command` will be send via `scsi_read()`, and the associated buffer will be the result data. The `SCSI command` format is:
 
 ```Javascript
 [F0 49 X0 X1 L0 L1 00 00]
@@ -210,7 +220,17 @@ Normally, we'll just leave `X0 X1` to zero, and `L0 L1` to the length of the who
 3. Definition of Each Command
 -------------------------------
 
-Here is the list of `[CC SS]` commands have been discovered by now.
+
+This is the list of `Commands` have been discovered by now. The `Command` will be defined as:
+
+```
+[C0 C1] Command Name (arg0, arg1, ...)
+```
+
+ * The arguments, `(arg0, arg1, ...)`, will be sent via `SCSI Command - 0x4F - Send Arguments`.
+ * If the arguments is `()`, that means there is no arguments for the `command`, so no `SCSI Command - 0x4F` will be called.
+ * `C0` is the `Command Group`, and `C1` is the `command number in the group`, the combination of `[C0 C1]` will be sent via `SCSI Command - 0x24 - Send Command`.
+
 
 ### 3.1 Command Group 00 - Information
 
