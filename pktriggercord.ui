@@ -913,6 +913,7 @@ Library.
       </object>
     </child>
     <action-widgets>
+      <action-widget response="0">button7</action-widget>
       <action-widget response="1">button8</action-widget>
     </action-widgets>
   </object>
