@@ -4,7 +4,7 @@ Pentax Camera SCSI protocol
 1. General
 -----------
 
-This is the documentation of the USB SCSI communication between host(computer) and camera. Although several requests had been made, there is no official documents from Pentax. This is a summary from understanding of current implementations and analysis of Pentax camera/firmware.
+This is the documentation of the USB SCSI communication between computer and Pentax camera. Although several requests had been made, there is no official documents from Pentax. This is a summary from understanding of current implementations and analysis of Pentax camera/firmware.
 
 To control the Pentax camera, the camera has to be set to Mass Storage (MSC) mode, rather than PTP mode.
 
@@ -38,10 +38,10 @@ As we may send data to camera via the attached data buffer, as well as receive d
 
 Normal communication flow would be following:
 
- 1. Host sends the arguments by `0x4F` first, if there is any;
- 2. Host send a command by `0x24`;
- 3. Host keep checking the status by `0x26` until the status is ok;
- 4. Host receive the result by `0x49`;
+ 1. Computer sends the arguments by `0x4F` first, if there is any;
+ 2. Computer send a command by `0x24`;
+ 3. Computer keep checking the status by `0x26` until the status is ok;
+ 4. Computer receive the result by `0x49`;
 
 2. SCSI Commands Types
 -------------------------
