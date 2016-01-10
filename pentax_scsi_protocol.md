@@ -102,7 +102,9 @@ Here is the list of `[CC SS]` commands have been discovered by now.
 This command is for old camera only.
 
 ##### [00 08] Get Full Status ()
-##### [00 09] DSPTaskWUReq ()
+##### [00 09] DSPTaskWUReq (mode)
+
+`mode`: 1: Before our commands; 2: After our commands
 
 #### 3.1.2 Command Group 01 - Information
 
@@ -110,12 +112,22 @@ This command is for old camera only.
 
 #### 3.1.3 Command Group 02 - Image Buffer Related
 
-##### [02 01] Select Buffer (buffer_number, buffer_type, buffer_resolution)
+##### [02 00] Get Buffer Status ()
 
-For old camera, there is one more argument, `0x00`:
+This command requests the image buffer status, and the result should be read by `0x49`, Read Result, command. The result is 8 bytes data in following format:
+
+```
+[X0 X1 X2 X3 Y0 Y1 Y2 Y2]
+```
+
+`X0 X1 X2 X3` is an 32-bit integer, for each bit is corresponding a buffer status, `0` is empty, `1` is not empty.
+
+##### [02 01] Select Buffer (buffer_number, buffer_type, buffer_resolution, 0)
+
+For old camera, there is only 3 arguments:
 
 ```C
-(buffer_number, buffer_type, buffer_resolution, 0)
+(buffer_number, buffer_type, buffer_resolution)
 ```
 
 `buffer_type`
@@ -148,11 +160,11 @@ This command seems to dump given memory area to a buffer, so it can be retrieved
 
 ##### [06 02] Get Download Data ()
 
+This is a `scsi_read()` command, and the attached buffer will be the downloaded data.
+
 ##### [06 03] Upload?
 
 ##### [06 04] Upload?
-
-This is a `scsi_read()` command, and the attached buffer will be the downloaded data.
 
 #### 3.1.6 Command Group 10 - Action
 
@@ -375,16 +387,23 @@ typedef enum {
 #### 3.1.8 Command Group 20
 
 ##### [20 06] Read DateTime ()
-##### [20 08] Write Setting (index, value)
-##### [20 09] Read Setting (index)
+##### [20 08] Write Setting (offset, value)
+##### [20 09] Read Setting (offset)
 
 #### 3.1.9 Command Group 23
 
 ##### [23 00] WriteAdjData (value)
 ##### [23 04] SetAdjModeFlag (mode, value)
 ##### [23 05] GetAdjModeFlag (mode)
-##### [23 06] SetAdjData (mode, arg1, arg2, ...)
+##### [23 06] SetAdjData (mode, arg0, arg1, arg2, arg3)
+
+When turn on the debug mode, the `arg0` and `arg1` should be `0x01`;
+When turn off the debug mode, `arg{0-3}` should all be zero.
+
 ##### [23 07] GetAdjData (mode)
+
+`mode` is 3 when turn on/off the debug mode.
+
 ##### [23 11] GetAFTestData ()
 
 
