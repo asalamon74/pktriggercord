@@ -12,28 +12,29 @@
     - [2.3 Get Command Status](#23-get-command-status)
     - [2.4 Read Result](#24-read-result)
   - [3. Definition of Each Command](#3-definition-of-each-command)
-    - [3.1 Command Group 00 - Information](#31-command-group-00---information)
+    - [3.1 Command Group 0x00/0x01 - System](#31-command-group-0x000x01---system)
       - [[00 00] Set Connect Mode (on_off)](#00-00-set-connect-mode-on_off)
       - [[00 01] Get Status ()](#00-01-get-status-)
       - [[00 04] Get Identity ()](#00-04-get-identity-)
       - [[00 05] Connect ()](#00-05-connect-)
       - [[00 08] Get Full Status ()](#00-08-get-full-status-)
       - [[00 09] DSPTaskWUReq (mode)](#00-09-dsptaskwureq-mode)
-    - [3.2 Command Group 01 - Information](#32-command-group-01---information)
       - [[01 00] GetDSPInfo ()](#01-00-getdspinfo-)
-    - [3.3 Command Group 02 - Image Buffer Related](#33-command-group-02---image-buffer-related)
+    - [3.2 Command Group 0x02/0x03 - Image Buffer Related](#32-command-group-0x020x03---image-buffer-related)
       - [[02 00] Get Buffer Status ()](#02-00-get-buffer-status-)
       - [[02 01] Select Buffer (buffer_number, buffer_type, buffer_resolution, 0)](#02-01-select-buffer-buffer_number-buffer_type-buffer_resolution-0)
       - [[02 03] Delete Buffer (buffer_number)](#02-03-delete-buffer-buffer_number)
-    - [3.4 Command Group 04 - Image Buffer Related](#34-command-group-04---image-buffer-related)
+    - [3.3 Command Group 0x04/0x05 - Image Buffer Related](#33-command-group-0x040x05---image-buffer-related)
       - [[04 00] Get Buffer Segment Information ()](#04-00-get-buffer-segment-information-)
       - [[04 01] Next Buffer Segment (0)](#04-01-next-buffer-segment-0)
-    - [3.5 Command Group 06 - Image Download/Upload](#35-command-group-06---image-downloadupload)
+    - [3.4 Command Group 0x06 - Image Download/Upload](#34-command-group-0x06---image-downloadupload)
       - [[06 00] Prepare Download (address, block)](#06-00-prepare-download-address-block)
       - [[06 02] Get Download Data ()](#06-02-get-download-data-)
       - [[06 03] Upload?](#06-03-upload)
       - [[06 04] Upload?](#06-04-upload)
-    - [3.6 Command Group 10 - Action](#36-command-group-10---action)
+    - [3.5 Command Group 0x09 - Play](#35-command-group-0x09---play)
+    - [3.6 Command Group 0x0B - GUI](#36-command-group-0x0b---gui)
+    - [3.7 Command Group 0x10/0x11 - Action](#37-command-group-0x100x11---action)
       - [[10 05] Shutter Release (press_status)](#10-05-shutter-release-press_status)
       - [[10 06] AE Lock ()](#10-06-ae-lock-)
       - [[10 07] Green ()](#10-07-green-)
@@ -42,7 +43,10 @@
       - [[10 0C] Continuous Shooting ()](#10-0c-continuous-shooting-)
       - [[10 0D] Bulb (on_off)](#10-0d-bulb-on_off)
       - [[10 11] Dust Removal ()](#10-11-dust-removal-)
-    - [3.7 Command Group 18 - Change Camera Settings](#37-command-group-18---change-camera-settings)
+    - [3.8 Command Group 0x13 - Sequence](#38-command-group-0x13---sequence)
+    - [3.9 Command Group 0x14/15 - Auto Focus](#39-command-group-0x1415---auto-focus)
+    - [3.10 Command Group 0x16/0x17 - Auto Exposoure](#310-command-group-0x160x17---auto-exposoure)
+    - [3.11 Command Group 0x18/0x19 - Change Camera Settings](#311-command-group-0x180x19---change-camera-settings)
       - [[18 01] Exposure Mode (1, exposure_mode)](#18-01-exposure-mode-1-exposure_mode)
       - [[18 03] AE Metering Mode (metering_mode)](#18-03-ae-metering-mode-metering_mode)
       - [[18 04] Flash Mode (flash_mode)](#18-04-flash-mode-flash_mode)
@@ -67,17 +71,20 @@
       - [[18 22] JPEG Contrast (0, contrast)](#18-22-jpeg-contrast-0-contrast)
       - [[18 23] Color Space (color_space)](#18-23-color-space-color_space)
       - [[18 25] JPEG Hue (0, hue)](#18-25-jpeg-hue-0-hue)
-    - [3.8 Command Group 20](#38-command-group-20)
+    - [3.12 Command Group 0x1A/0x1B - Accessory](#312-command-group-0x1a0x1b---accessory)
+    - [3.13 Command Group 0x1D - Shack Reduction](#313-command-group-0x1d---shack-reduction)
+    - [3.14 Command Group 0x20/0x21 - Settings](#314-command-group-0x200x21---settings)
       - [[20 06] Read DateTime ()](#20-06-read-datetime-)
       - [[20 08] Write Setting (offset, value)](#20-08-write-setting-offset-value)
       - [[20 09] Read Setting (offset)](#20-09-read-setting-offset)
-    - [3.9 Command Group 23](#39-command-group-23)
+    - [3.15 Command Group 0x23 - Adjustment](#315-command-group-0x23---adjustment)
       - [[23 00] WriteAdjData (value)](#23-00-writeadjdata-value)
       - [[23 04] SetAdjModeFlag (mode, value)](#23-04-setadjmodeflag-mode-value)
       - [[23 05] GetAdjModeFlag (mode)](#23-05-getadjmodeflag-mode)
       - [[23 06] SetAdjData (mode, arg0, arg1, arg2, arg3)](#23-06-setadjdata-mode-arg0-arg1-arg2-arg3)
       - [[23 07] GetAdjData (mode)](#23-07-getadjdata-mode)
       - [[23 11] GetAFTestData ()](#23-11-getaftestdata-)
+    - [3.16 Command Group 0x25 - CPU Adjustment](#316-command-group-0x25---cpu-adjustment)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -157,13 +164,15 @@ The `SCSI command` format of sending arguments is:
 
 Both of the `offset` and `size` are in bytes, and should be aligned to 4 (32-bit).
 
-There is not many arguments used in the current implementation, so `X1` and `Y1` are always be `0x00`.
+The maximum number of arguments are limited to `8`, which is `32 bytes`, so `X1` and `Y1` are always be `0x00`.
 
 To explain the concept of `offset of the arguments`, we can imagine that there is an `arguments buffer` on the camera side, and for each time we send an argument(s), we need to specify where we want to put our arguments in the `arguments buffer`. The location is specified by the `offset`. Camera will simply follow our instruction and save the argument in the buffer at the given `offset`, and later the `SCSI command - 0x24` will trigger the camera to load arguments list from this buffer.
 
 So, for example, if we're going to send the first argument, the offset should be `0x00`. After the first argument sent, if we decide to send more arguments, we will need to call `SCSI command - 0x4F` again. But as camera side didn't keep how many arguments we have sent, we need to specify the offset for those new arguments. This time, the offset should be `0x04`, as we have put our first argument in the buffer at offset `0x00`, and each argument should be 4 bytes(32-bit) aligned.
 
 The reason Pentax is using `offset` design to pass the arguments is that, on some old Pentax cameras, the buffer to receive `SCSI command` associated data is very small (maybe just 4 bytes), so the arguments has to be passed in multiple times (such as one by one), so an `offset` is necessary to tell the camera where the arguments in current `SCSI command` should be put in the `arguments buffer`.
+
+As discovered in K-S1 firmware, the `offset` is not used anymore, so `X0 X1` are always zero for the case.
 
 ### 2.2 Send Command
 
@@ -177,6 +186,7 @@ The `SCSI command` format of sending command is:
 
  * `C0` is `Command Group`, `C1` is the command number in the group. The combination of `C0 C1` defines the `Command`.
  * `X0 X1` is a Little-Endian 16-bit integer, `0xX1X0`, which is the byte length of the previously sent arguments, and should be aligned to 4 (32-bit). For example, if one argument was sent previously, the `X0 X1` should be `04 00`. As the arguments number is quite small, `X1` will always be zero.
+ * As discovered in K-S1 firmware, `X0 X1` are not used anymore.
 
 ### 2.3 Get Command Status
 
@@ -232,7 +242,7 @@ This is the list of `Commands` have been discovered by now. The `Command` will b
  * `C0` is the `Command Group`, and `C1` is the `command number in the group`, the combination of `[C0 C1]` will be sent via `SCSI Command - 0x24 - Send Command`.
 
 
-### 3.1 Command Group 00 - Information
+### 3.1 Command Group 0x00/0x01 - System
 
 #### [00 00] Set Connect Mode (on_off)
 
@@ -249,11 +259,9 @@ This command is for old camera only.
 
 `mode`: 1: Before our commands; 2: After our commands
 
-### 3.2 Command Group 01 - Information
-
 #### [01 00] GetDSPInfo ()
 
-### 3.3 Command Group 02 - Image Buffer Related
+### 3.2 Command Group 0x02/0x03 - Image Buffer Related
 
 #### [02 00] Get Buffer Status ()
 
@@ -290,12 +298,12 @@ typedef enum {
 
 #### [02 03] Delete Buffer (buffer_number)
 
-### 3.4 Command Group 04 - Image Buffer Related
+### 3.3 Command Group 0x04/0x05 - Image Buffer Related
 
 #### [04 00] Get Buffer Segment Information ()
 #### [04 01] Next Buffer Segment (0)
 
-### 3.5 Command Group 06 - Image Download/Upload
+### 3.4 Command Group 0x06 - Image Download/Upload
 
 #### [06 00] Prepare Download (address, block)
 
@@ -309,7 +317,11 @@ This is a `scsi_read()` command, and the attached buffer will be the downloaded 
 
 #### [06 04] Upload?
 
-### 3.6 Command Group 10 - Action
+### 3.5 Command Group 0x09 - Play
+
+### 3.6 Command Group 0x0B - GUI
+
+### 3.7 Command Group 0x10/0x11 - Action
 
 #### [10 05] Shutter Release (press_status)
 
@@ -329,8 +341,13 @@ This is a `scsi_read()` command, and the attached buffer will be the downloaded 
 
 #### [10 11] Dust Removal ()
 
+### 3.8 Command Group 0x13 - Sequence
 
-### 3.7 Command Group 18 - Change Camera Settings
+### 3.9 Command Group 0x14/15 - Auto Focus
+
+### 3.10 Command Group 0x16/0x17 - Auto Exposoure
+
+### 3.11 Command Group 0x18/0x19 - Change Camera Settings
 
 #### [18 01] Exposure Mode (1, exposure_mode)
 
@@ -527,13 +544,17 @@ typedef enum {
 
 #### [18 25] JPEG Hue (0, hue)
 
-### 3.8 Command Group 20
+### 3.12 Command Group 0x1A/0x1B - Accessory
+
+### 3.13 Command Group 0x1D - Shack Reduction
+
+### 3.14 Command Group 0x20/0x21 - Settings
 
 #### [20 06] Read DateTime ()
 #### [20 08] Write Setting (offset, value)
 #### [20 09] Read Setting (offset)
 
-### 3.9 Command Group 23
+### 3.15 Command Group 0x23 - Adjustment
 
 #### [23 00] WriteAdjData (value)
 #### [23 04] SetAdjModeFlag (mode, value)
@@ -548,3 +569,5 @@ When turn off the debug mode, `arg{0-3}` should all be zero.
 `mode` is 3 when turn on/off the debug mode.
 
 #### [23 11] GetAFTestData ()
+
+### 3.16 Command Group 0x25 - CPU Adjustment
