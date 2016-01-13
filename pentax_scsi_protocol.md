@@ -172,6 +172,8 @@ So, for example, if we're going to send the first argument, the offset should be
 
 The reason Pentax is using `offset` design to pass the arguments is that, on some old Pentax cameras, the buffer to receive `SCSI command` associated data is very small (maybe just 4 bytes), so the arguments has to be passed in multiple times (such as one by one), so an `offset` is necessary to tell the camera where the arguments in current `SCSI command` should be put in the `arguments buffer`.
 
+It's important to check the byte-order of the camera. Older Pentax cameras have Big-Endian system, K-3 or later Pentax cameras have a Little-Endian system. The arguments data buffer should be constructed in the same way of camera's.
+
 ### 2.2 Send Command
 
 The `TT` code for sending command is `0x24`.
@@ -225,9 +227,10 @@ To retrieve the result data of the command we sent earlier, this `SCSI command` 
 
 Normally, we'll just leave `X0 X1` to zero, and `L0 L1` to the length of the whole content to be read.
 
+When parsing the result data buffer, it's very important to check the byte-order of the camera, the returned result should be as same as camera's internal byte-order. Older Pentax cameras have Big-Endian system, K-3 or later Pentax cameras have a Little-Endian system, we need to parse the data in the same way of the camera.
+
 3. Definition of Each Command
 -------------------------------
-
 
 This is the list of `Commands` have been discovered by now. The `Command` will be defined as:
 
@@ -247,12 +250,31 @@ This is the list of `Commands` have been discovered by now. The `Command` will b
 `on_off`: 1: Connect, 0: Disconnect
 
 #### [00 01] Get Status ()
+
+This command will return first `16` or `28` bytes of the whole status data.
+
 #### [00 04] Get Identity ()
+
+The camera id consists of two 32-bit integers, the format is:
+
+```Javascript
+[A0 A1 A2 A3 B0 B1 B2 B3]
+```
+
+It will be returned in the same byte order of the camera, so for Little-Endian system, such as K-3, the id is `{0xA3A2A1A0, 0xB3B2B1B0}`.
+
 #### [00 05] Connect ()
 
-This command is for old camera only.
+This command is used for old camera only.
 
 #### [00 08] Get Full Status ()
+
+This command will return the full status data, normally several hundreds bytes.
+
+The status data includes camera settings, the range of some settings, battery status, etc. Although many fields are shared in different models, the offset of each fields may be different, and there might be new fields added in later model. It's very important to check whether the status data is correct or not for debugging or supporting new Pentax cameras.
+
+The status data is actually a memory dump of the camera, so it's very important to check the byte order of the camera, the data should be parsed as the same way of camera.
+
 #### [00 09] DSPTaskWUReq (mode)
 
 `mode`: 1: Before our commands; 2: After our commands
