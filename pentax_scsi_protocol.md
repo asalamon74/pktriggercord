@@ -172,8 +172,6 @@ So, for example, if we're going to send the first argument, the offset should be
 
 The reason Pentax is using `offset` design to pass the arguments is that, on some old Pentax cameras, the buffer to receive `SCSI command` associated data is very small (maybe just 4 bytes), so the arguments has to be passed in multiple times (such as one by one), so an `offset` is necessary to tell the camera where the arguments in current `SCSI command` should be put in the `arguments buffer`.
 
-As discovered in K-S1 firmware, the `offset` is not used anymore, so `X0 X1` are always zero for the case.
-
 ### 2.2 Send Command
 
 The `TT` code for sending command is `0x24`.
@@ -345,7 +343,7 @@ This is a `scsi_read()` command, and the attached buffer will be the downloaded 
 
 ### 3.9 Command Group 0x14/15 - Auto Focus
 
-### 3.10 Command Group 0x16/0x17 - Auto Exposoure
+### 3.10 Command Group 0x16/0x17 - Auto Exposure
 
 ### 3.11 Command Group 0x18/0x19 - Change Camera Settings
 
