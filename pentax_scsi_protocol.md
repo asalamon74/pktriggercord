@@ -2,7 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Pentax Camera SCSI protocol](#pentax-camera-scsi-protocol)
+- [Pentax USB SCSI Communication Protocol](#pentax-usb-scsi-communication-protocol)
   - [1. General](#1-general)
     - [1.1 SCSI Command](#11-scsi-command)
     - [1.2 Command](#12-command)
@@ -45,7 +45,7 @@
       - [[10 11] Dust Removal ()](#10-11-dust-removal-)
     - [3.8 Command Group 0x13 - Sequence](#38-command-group-0x13---sequence)
     - [3.9 Command Group 0x14/15 - Auto Focus](#39-command-group-0x1415---auto-focus)
-    - [3.10 Command Group 0x16/0x17 - Auto Exposoure](#310-command-group-0x160x17---auto-exposoure)
+    - [3.10 Command Group 0x16/0x17 - Auto Exposure](#310-command-group-0x160x17---auto-exposure)
     - [3.11 Command Group 0x18/0x19 - Change Camera Settings](#311-command-group-0x180x19---change-camera-settings)
       - [[18 01] Exposure Mode (1, exposure_mode)](#18-01-exposure-mode-1-exposure_mode)
       - [[18 03] AE Metering Mode (metering_mode)](#18-03-ae-metering-mode-metering_mode)
@@ -88,7 +88,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-Pentax Camera SCSI protocol
+Pentax USB SCSI Communication Protocol
 ===============================
 
 1. General
