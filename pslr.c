@@ -367,6 +367,7 @@ pslr_handle_t pslr_init( char *model, char *device ) {
 	strncpy( drives[0], device, strlen( device ) );
 	drives[0][strlen(device)]='\0';
     }
+    DPRINT("driveNum:%d\n",driveNum);
     int i;
     for( i=0; i<driveNum; ++i ) {
 	pslr_result result = get_drive_info( drives[i], &fd, vendorId, sizeof(vendorId), productId, sizeof(productId));

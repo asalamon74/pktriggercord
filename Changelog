@@ -6,6 +6,7 @@ version 0.82.05
 	Limited K-S1, K-S2 support ( thx Tao Wang )
 	Eliminate segmentation fault (non-root Linux usage)
 	autosave, save as dialog cancel bugfix
+	Linux/Android: driveinfo bugfix
 
 version 0.82.04 ( 2015-08-28 )
 	More debug messages

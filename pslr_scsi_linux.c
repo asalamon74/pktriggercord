@@ -62,7 +62,7 @@ void print_scsi_error(sg_io_hdr_t *pIo, uint8_t *sense_buffer) {
 char **get_drives(int *driveNum) {
     DIR *d;
     struct dirent *ent;
-    char *tmp[64];
+    char *tmp[256];
     char **ret;
     int j,jj;
     d = opendir("/sys/class/scsi_generic");
@@ -71,6 +71,7 @@ char **get_drives(int *driveNum) {
         DPRINT("Cannot open /sys/class/scsi_generic\n");
 	d = opendir("/sys/block");
 	if( !d ) {
+	    DPRINT("Cannot open /sys/block\n");
 	    *driveNum = 0;
             return NULL;
 	}
@@ -78,8 +79,8 @@ char **get_drives(int *driveNum) {
     j=0;
     while( (ent = readdir(d)) ) {
         if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-	    tmp[j] = malloc( sizeof(ent->d_name) );
-	    strncpy(tmp[j], ent->d_name, sizeof(ent->d_name));
+	    tmp[j] = malloc( strlen(ent->d_name)+1 );
+	    strncpy(tmp[j], ent->d_name, strlen(ent->d_name)+1);
 	    ++j;
 	}
     }
