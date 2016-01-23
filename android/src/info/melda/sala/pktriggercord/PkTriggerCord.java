@@ -73,8 +73,12 @@ public class PkTriggerCord extends Application {
 	}
     }
 
-    static int copyStream(InputStream in, OutputStream out, int length) throws IOException {
-	byte[] buffer = new byte[1024];
+    static interface ProgressCallback {
+	void progressUpdate(double progress);
+    }
+
+    static int copyStream(InputStream in, OutputStream out, int length, ProgressCallback callback) throws IOException {
+	byte[] buffer = new byte[16*1024];
 	int read;
 	int currentRead = 0;
 	int totalRead = 0;
@@ -85,8 +89,15 @@ public class PkTriggerCord extends Application {
 		totalRead += currentRead;
 		//		Log.v( TAG, "Read "+currentRead+" bytes" );
 	    }
+	    if( callback != null ) {
+		callback.progressUpdate( 1.0 * totalRead / length);
+	    }
 	}
 	return totalRead;
+    }
+
+    static int copyStream(InputStream in, OutputStream out, int length) throws IOException {
+	return copyStream(in, out, length, null);
     }
 
     static int copyStream(InputStream in, OutputStream out) throws IOException {

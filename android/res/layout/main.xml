@@ -18,6 +18,12 @@
 	android:gravity="center"
 	android:visibility="invisible"
 	android:layout_above="@+id/buttons" />
+ <ProgressBar
+        android:id="@+id/downloadprogress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_above="@+id/numberpickers"/>
 <LinearLayout
         android:id="@+id/numberpickers"
         android:layout_width="match_parent"

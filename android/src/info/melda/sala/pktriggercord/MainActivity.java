@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.NumberPicker;
 import android.view.View;
 import android.view.Window;
@@ -38,6 +39,7 @@ public class MainActivity extends Activity {
     private static final String OUTDIR = "/storage/sdcard0/pktriggercord";
     private CliHandler cli;
     private Bitmap previewBitmap;
+    private ProgressBar progressBar;
     private NumberPicker npf;
     private NumberPicker npd;
     private long nextRepeat;
@@ -53,6 +55,9 @@ public class MainActivity extends Activity {
 	getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
+	progressBar = (ProgressBar) findViewById(R.id.downloadprogress);
+	progressBar.setVisibility( View.INVISIBLE );
+
 	npf = (NumberPicker) findViewById(R.id.frames);
 	npf.setMaxValue(99);
 	npf.setMinValue(1);
@@ -66,7 +71,7 @@ public class MainActivity extends Activity {
 
 	npd = (NumberPicker) findViewById(R.id.delay);
 	npd.setMaxValue(120);
-	npd.setMinValue(5);
+	npd.setMinValue(3);
 	npd.setWrapSelectorWheel(false);
 
 	npd.setFormatter(new NumberPicker.Formatter() {
@@ -84,9 +89,9 @@ public class MainActivity extends Activity {
 	    }
 	    npf.setValue( savedInstanceState.getInt("frames"));
 	    npd.setValue( savedInstanceState.getInt("delay"));	    
-	    npd.setVisibility( npf.getValue() == 1 ? View.INVISIBLE : View.VISIBLE);
-
 	}
+	npd.setVisibility( npf.getValue() == 1 ? View.INVISIBLE : View.VISIBLE);
+
 	final Button focusButton = (Button) findViewById(R.id.focus);
         focusButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
@@ -269,6 +274,16 @@ public class MainActivity extends Activity {
 	private boolean answerStatus(String answer) {
 	    return answer.startsWith("0");
 	}
+
+	private class DownloadProgressCallback implements PkTriggerCord.ProgressCallback {
+
+	    Map<String,Object> pmap = new HashMap<String, Object>();
+
+	    public void progressUpdate(double progress) {
+		pmap.put("progress", (int)(100*progress));
+		publishProgress(pmap);
+	    }
+	}
        	
 	protected String doInBackground(CliParam... params) {
 
@@ -281,6 +296,7 @@ public class MainActivity extends Activity {
 	    map = new HashMap<String,Object>();
 	    Socket socket=null;
 	    SimpleDateFormat logDf = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS");
+	    DownloadProgressCallback pCallback = new DownloadProgressCallback();
 	    try {
 		socket = new Socket();
 		InetSocketAddress isa = new InetSocketAddress(SERVER_IP, SERVER_PORT);
@@ -362,7 +378,7 @@ public class MainActivity extends Activity {
 			    formattedDate = df.format(c.getTime());
 			    File outFile = new File(OUTDIR + "/pktriggercord_"+formattedDate+".dng");
 			    os = new FileOutputStream(outFile);
-			    PkTriggerCord.copyStream( is, os, jpegLength );
+			    PkTriggerCord.copyStream( is, os, jpegLength, pCallback );
 			    os.close();
 			    map.put("jpegbytes",jpegLength);
 			    publishProgress(map);
@@ -423,6 +439,10 @@ public class MainActivity extends Activity {
 			ImageView preview = (ImageView) findViewById(R.id.preview);
 			previewBitmap = (Bitmap)entry.getValue();
 			preview.setImageBitmap( (Bitmap)entry.getValue());
+		    } else if( "progress".equals( entry.getKey() ) ) {
+			int prog = (Integer)entry.getValue();
+			progressBar.setProgress(prog);
+			progressBar.setVisibility( prog>0 && prog<100 ? View.VISIBLE : View.INVISIBLE );
 		    }
 		}
 	    }
