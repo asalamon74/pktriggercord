@@ -865,8 +865,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
       --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless\n\
       --flash_exposure_compensation=VAL flash exposure compensation value\n\
   -a, --aperture=APERTURE\n\
-  -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90)\n\
-                                        or decimal form (eg. 0.8)\n\
+  -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90) or decimal form (eg. 0.8)\n\
   -r, --resolution=RESOLUTION           resolution in megapixels\n\
   -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4\n\
       --jpeg_image_tone=IMAGE_TONE      valid values are: Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm\n\
