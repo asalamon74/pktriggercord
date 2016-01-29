@@ -193,8 +193,8 @@ int servermode_socket(int servermode_timeout) {
 	            camera_close(camhandle);
 	        }
 	        write_socket_answer("0\n");
-            } else if( !strcmp(client_message, "echo") ) {
-	        sprintf( buf, "0 %s\n", client_message);
+            } else if( !strncmp(client_message, "echo", 4) ) {
+	        sprintf( buf, "0 %.100s\n", client_message+4);
 	        write_socket_answer(buf);
             } else if( !strcmp(client_message, "connect") ) {
 	        if( camhandle ) {
