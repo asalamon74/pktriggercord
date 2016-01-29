@@ -51,4 +51,6 @@ the camera.
 
 ##More info
 
-You can find more info at http://pktriggercord.melda.info
+You can find more info about the project at http://pktriggercord.melda.info
+
+More info about the Pentax SCSI protocol can be found here: https://github.com/asalamon74/pktriggercord/blob/master/pentax_scsi_protocol.md
