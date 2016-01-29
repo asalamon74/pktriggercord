@@ -326,13 +326,13 @@ int servermode_socket(int servermode_timeout) {
                         pslr_buffer_close(camhandle);
                     }
                 }
-            } else if( !strncmp(client_message, "set_shutter_speed ",18 )) {
+            } else if(  (arg = is_string_prefix( client_message, "set_shutter_speed")) != NULL ) {
                 if( check_camera(camhandle) ) {
                     // TODO: merge with pktriggercord-cli shutter speed parse
-                    if (sscanf(client_message+18, "1/%d%c", &shutter_speed.denom, &C) == 1) {
+                    if (sscanf(arg, "1/%d%c", &shutter_speed.denom, &C) == 1) {
                         shutter_speed.nom = 1;
                         sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
-                    } else if ((sscanf(client_message+18, "%f%c", &F, &C)) == 1) {
+                    } else if ((sscanf(arg, "%f%c", &F, &C)) == 1) {
                         if (F < 2) {
                             F = F * 10;
                             shutter_speed.denom = 10;
@@ -341,10 +341,10 @@ int servermode_socket(int servermode_timeout) {
                             shutter_speed.denom = 1;
                             shutter_speed.nom = F;
                         }
-                         sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
+                        sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
                     } else {
-                         shutter_speed.nom = 0;
-                         sprintf(buf,"1 Invalid shutter speed value.\n");
+                        shutter_speed.nom = 0;
+                        sprintf(buf,"1 Invalid shutter speed value.\n");
                     }
                     if (shutter_speed.nom) {
                         pslr_set_shutter(camhandle, shutter_speed);
