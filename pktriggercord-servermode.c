@@ -101,8 +101,12 @@ void write_socket_answer_bin( uint8_t *answer, uint32_t length ) {
 }
 
 char *is_string_prefix(char *str, char *prefix) {
-    if( !strcmp(str, prefix ) ) {
-        return str+strlen(prefix);
+    if( !strncmp(str, prefix, strlen(prefix) ) ) {
+        if( strlen(str) <= strlen(prefix)+1 ) {
+            return str;
+        } else {
+            return str+strlen(prefix)+1;
+        }
     } else {
         return NULL;
     }
@@ -133,6 +137,7 @@ int servermode_socket(int servermode_timeout) {
     int socket_desc, c , read_size;
     struct sockaddr_in server , client;
     char client_message[2000];
+    char *arg;
     char buf[2100];
     pslr_handle_t camhandle=NULL;
     pslr_status status;
@@ -213,8 +218,8 @@ int servermode_socket(int servermode_timeout) {
                     camera_close(camhandle);
                 }
                 write_socket_answer("0\n");
-            } else if( !strncmp(client_message, "echo", 4) ) {
-                sprintf( buf, "0 %.100s\n", client_message+4);
+            } else if( (arg = is_string_prefix( client_message, "echo")) != NULL ) {
+                sprintf( buf, "0 %.100s\n", arg);
                 write_socket_answer(buf);
             } else if( !strcmp(client_message, "connect") ) {
                 if( camhandle ) {
