@@ -58,25 +58,25 @@ pslr_handle_t camera_connect( char *model, char *device, int timeout, char *erro
     gettimeofday(&prev_time, NULL);
     while (!(camhandle = pslr_init( model, device ))) {
         gettimeofday(&current_time, NULL);
-	DPRINT("diff: %f\n", timeval_diff(&current_time, &prev_time) / 1000000.0);
-	if( timeout == 0 || timeout > timeval_diff(&current_time, &prev_time) / 1000000.0 ) {
-	  DPRINT("sleep 1 sec\n");
-	  sleep_sec(1);
-	} else {
-	  snprintf(error_message, 1000, "%d %ds timeout exceeded\n", 1, timeout);
-	  return NULL;
-	}
+        DPRINT("diff: %f\n", timeval_diff(&current_time, &prev_time) / 1000000.0);
+        if( timeout == 0 || timeout > timeval_diff(&current_time, &prev_time) / 1000000.0 ) {
+          DPRINT("sleep 1 sec\n");
+          sleep_sec(1);
+        } else {
+          snprintf(error_message, 1000, "%d %ds timeout exceeded\n", 1, timeout);
+          return NULL;
+        }
     }
 
     DPRINT("before connect\n");
     if (camhandle) {
       if ((r=pslr_connect(camhandle)) ) {
-	  if( r != -1 ) {
-	    snprintf(error_message, 1000, "%d Cannot connect to Pentax camera. Please start the program as root.\n",1);
-	  } else {
-	    snprintf(error_message, 1000, "%d Unknown Pentax camera found.\n",1);
-	  }
-	  return NULL;
+          if( r != -1 ) {
+            snprintf(error_message, 1000, "%d Cannot connect to Pentax camera. Please start the program as root.\n",1);
+          } else {
+            snprintf(error_message, 1000, "%d Unknown Pentax camera found.\n",1);
+          }
+          return NULL;
         }
     }
     return camhandle;
@@ -103,11 +103,11 @@ void write_socket_answer_bin( uint8_t *answer, uint32_t length ) {
 void strip(char *s) {
     char *p2 = s;
     while(*s != '\0') {
-    	if(*s != '\r' && *s != '\n') {
-    		*p2++ = *s++;
-    	} else {
-    		++s;
-    	}
+            if(*s != '\r' && *s != '\n') {
+            	*p2++ = *s++;
+            } else {
+            	++s;
+            }
     }
     *p2 = '\0';
 }
@@ -156,29 +156,29 @@ int servermode_socket(int servermode_timeout) {
 
     while( true ) {
         fd_set rfds;
-	struct timeval tv;
-	int retval;
-	FD_ZERO(&rfds);
-	FD_SET(socket_desc, &rfds);
-	tv.tv_sec = servermode_timeout;
-	tv.tv_usec = 0;
-	retval = select(socket_desc+1, &rfds, NULL, NULL, &tv);
+        struct timeval tv;
+        int retval;
+        FD_ZERO(&rfds);
+        FD_SET(socket_desc, &rfds);
+        tv.tv_sec = servermode_timeout;
+        tv.tv_usec = 0;
+        retval = select(socket_desc+1, &rfds, NULL, NULL, &tv);
 
-	if (retval == -1) {
-  	    DPRINT("select error\n");
-	    exit(1);
+        if (retval == -1) {
+              DPRINT("select error\n");
+            exit(1);
         } else if (retval) {
             client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
             if (client_sock < 0) {
-  	        fprintf(stderr, "accept failed");
-	        return 1;
-	    }
+                  fprintf(stderr, "accept failed");
+                return 1;
+            }
             DPRINT("Connection accepted\n");
-	} else {
+        } else {
             DPRINT("Timeout\n");
-	    close(socket_desc);
-	    exit(0);
-	}
+            close(socket_desc);
+            exit(0);
+        }
 
         //Receive a message from client
         while( (read_size = recv(client_sock , client_message , 2000 , 0)) > 0 ) {
@@ -186,110 +186,110 @@ int servermode_socket(int servermode_timeout) {
             strip( client_message );
             DPRINT(":%s:\n",client_message);
             if( !strcmp(client_message, "stopserver" ) ) {
-	        if( camhandle ) {
-	            camera_close(camhandle);
-	        }
-	        write_socket_answer("0\n");
-	        exit(0);
-	    } else if( !strcmp(client_message, "disconnect" ) ) {
-	        if( camhandle ) {
-	            camera_close(camhandle);
-	        }
-	        write_socket_answer("0\n");
-            } else if( !strncmp(client_message, "echo", 4) ) {
-	        sprintf( buf, "0 %.100s\n", client_message+4);
-	        write_socket_answer(buf);
-            } else if( !strcmp(client_message, "connect") ) {
-	        if( camhandle ) {
-	            write_socket_answer("0\n");
-		} else if( (camhandle = camera_connect( NULL, NULL, -1, buf ))  ) {
-	            write_socket_answer("0\n");
-	        } else {
-	            write_socket_answer(buf);
-	        }
-            } else if( !strcmp(client_message, "update_status") ) {
-	        if( !pslr_get_status(camhandle, &status) ) {
-		    sprintf( buf, "%d\n", 0);
-		} else {
-		    sprintf( buf, "%d\n", 1);
+                if( camhandle ) {
+                    camera_close(camhandle);
                 }
-	        write_socket_answer(buf);
+                write_socket_answer("0\n");
+                exit(0);
+            } else if( !strcmp(client_message, "disconnect" ) ) {
+                if( camhandle ) {
+                    camera_close(camhandle);
+                }
+                write_socket_answer("0\n");
+            } else if( !strncmp(client_message, "echo", 4) ) {
+                sprintf( buf, "0 %.100s\n", client_message+4);
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "connect") ) {
+                if( camhandle ) {
+                    write_socket_answer("0\n");
+        	} else if( (camhandle = camera_connect( NULL, NULL, -1, buf ))  ) {
+                    write_socket_answer("0\n");
+                } else {
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "update_status") ) {
+                if( !pslr_get_status(camhandle, &status) ) {
+        	    sprintf( buf, "%d\n", 0);
+        	} else {
+        	    sprintf( buf, "%d\n", 1);
+                }
+                write_socket_answer(buf);
             } else if( !strcmp(client_message, "get_camera_name") ) {
-	        if( camhandle ) {
-	            sprintf(buf, "%d %s\n", 0, pslr_camera_name(camhandle));
-	        } else {
-	            sprintf(buf, "%d not connected\n", 1);
-	        }
-	        write_socket_answer(buf);
-	    } else if( !strcmp(client_message, "get_lens_name") ) {
-	        sprintf(buf, "%d %s\n", 0, get_lens_name(status.lens_id1, status.lens_id2));
-	        write_socket_answer(buf);
-	    } else if( !strcmp(client_message, "get_current_shutter_speed") ) {
-  	        sprintf(buf, "%d %d/%d\n", 0, status.current_shutter_speed.nom, status.current_shutter_speed.denom);
-	        write_socket_answer(buf);
-	    } else if( !strcmp(client_message, "get_current_aperture") ) {
-		sprintf(buf, "%d %s\n", 0, format_rational( status.current_aperture, "%.1f"));
-	        write_socket_answer(buf);
-	    } else if( !strcmp(client_message, "get_current_iso") ) {
-		sprintf(buf, "%d %d\n", 0, status.current_iso);
-	        write_socket_answer(buf);
-	    } else if( !strcmp(client_message, "get_bufmask") ) {
-		sprintf(buf, "%d %d\n", 0, status.bufmask);
-	        write_socket_answer(buf);
-	    } else if( !strcmp(client_message, "focus") ) {
-		pslr_focus(camhandle);
-		sprintf(buf, "%d\n", 0);
-	        write_socket_answer(buf);
-	    } else if( !strcmp(client_message, "shutter") ) {
-		pslr_shutter(camhandle);
-		sprintf(buf, "%d\n", 0);
-	        write_socket_answer(buf);
-	    } else if( !strcmp(client_message, "delete_buffer") ) {
-		// TODO: bufferindex
-		pslr_delete_buffer(camhandle,0);
-		sprintf(buf, "%d\n", 0);
-	        write_socket_answer(buf);
-	    } else if( !strcmp(client_message, "get_preview_buffer") ) {
-		// TODO: bufferindex
-		uint8_t *pImage;
-		uint32_t imageSize;
-		if( pslr_get_buffer(camhandle, 0, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize) ) {
-		    sprintf(buf, "%d %d\n", 1, imageSize);
-		    write_socket_answer(buf);
-		} else {
-		    sprintf(buf, "%d %d\n", 0, imageSize);
-		    write_socket_answer(buf);
-		    write_socket_answer_bin(pImage, imageSize);
-		}
-	    } else if( !strcmp(client_message, "get_buffer") ) {
-		// TODO: bufferindex
-		uint32_t imageSize;
-		if( pslr_buffer_open(camhandle, 0, PSLR_BUF_DNG, 0) ) {
-		    sprintf(buf, "%d\n", 1);
-		    write_socket_answer(buf);
-		} else {
-		    imageSize = pslr_buffer_get_size(camhandle);
-		    sprintf(buf, "%d %d\n", 0, imageSize);
-		    write_socket_answer(buf);
-		    uint32_t current = 0;
-		    while (1) {
-			uint32_t bytes;
-			uint8_t buf[65536];
-			bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
-			if (bytes == 0) {
-			    break;
-			}
-			write_socket_answer_bin( buf, bytes);
-			current += bytes;
-		    }
-		    pslr_buffer_close(camhandle);
-		}
-	    } else if( !strncmp(client_message, "set_shutter_speed ",18 )) {
-	        // TODO: merge with pktriggercord-cli shutter speed parse
+                if( camhandle ) {
+                    sprintf(buf, "%d %s\n", 0, pslr_camera_name(camhandle));
+                } else {
+                    sprintf(buf, "%d not connected\n", 1);
+                }
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "get_lens_name") ) {
+                sprintf(buf, "%d %s\n", 0, get_lens_name(status.lens_id1, status.lens_id2));
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "get_current_shutter_speed") ) {
+                  sprintf(buf, "%d %d/%d\n", 0, status.current_shutter_speed.nom, status.current_shutter_speed.denom);
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "get_current_aperture") ) {
+        	sprintf(buf, "%d %s\n", 0, format_rational( status.current_aperture, "%.1f"));
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "get_current_iso") ) {
+        	sprintf(buf, "%d %d\n", 0, status.current_iso);
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "get_bufmask") ) {
+        	sprintf(buf, "%d %d\n", 0, status.bufmask);
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "focus") ) {
+        	pslr_focus(camhandle);
+        	sprintf(buf, "%d\n", 0);
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "shutter") ) {
+        	pslr_shutter(camhandle);
+        	sprintf(buf, "%d\n", 0);
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "delete_buffer") ) {
+        	// TODO: bufferindex
+        	pslr_delete_buffer(camhandle,0);
+        	sprintf(buf, "%d\n", 0);
+                write_socket_answer(buf);
+            } else if( !strcmp(client_message, "get_preview_buffer") ) {
+        	// TODO: bufferindex
+        	uint8_t *pImage;
+        	uint32_t imageSize;
+        	if( pslr_get_buffer(camhandle, 0, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize) ) {
+        	    sprintf(buf, "%d %d\n", 1, imageSize);
+        	    write_socket_answer(buf);
+        	} else {
+        	    sprintf(buf, "%d %d\n", 0, imageSize);
+        	    write_socket_answer(buf);
+        	    write_socket_answer_bin(pImage, imageSize);
+        	}
+            } else if( !strcmp(client_message, "get_buffer") ) {
+        	// TODO: bufferindex
+        	uint32_t imageSize;
+        	if( pslr_buffer_open(camhandle, 0, PSLR_BUF_DNG, 0) ) {
+        	    sprintf(buf, "%d\n", 1);
+        	    write_socket_answer(buf);
+        	} else {
+        	    imageSize = pslr_buffer_get_size(camhandle);
+        	    sprintf(buf, "%d %d\n", 0, imageSize);
+        	    write_socket_answer(buf);
+        	    uint32_t current = 0;
+        	    while (1) {
+        		uint32_t bytes;
+        		uint8_t buf[65536];
+        		bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
+        		if (bytes == 0) {
+        		    break;
+        		}
+        		write_socket_answer_bin( buf, bytes);
+        		current += bytes;
+        	    }
+        	    pslr_buffer_close(camhandle);
+        	}
+            } else if( !strncmp(client_message, "set_shutter_speed ",18 )) {
+                // TODO: merge with pktriggercord-cli shutter speed parse
                 if (sscanf(client_message+18, "1/%d%c", &shutter_speed.denom, &C) == 1) {
-		    shutter_speed.nom = 1;
-		    sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
-		} else if ((sscanf(client_message+18, "%f%c", &F, &C)) == 1) {
+        	    shutter_speed.nom = 1;
+        	    sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
+        	} else if ((sscanf(client_message+18, "%f%c", &F, &C)) == 1) {
                     if (F < 2) {
                         F = F * 10;
                         shutter_speed.denom = 10;
@@ -298,26 +298,26 @@ int servermode_socket(int servermode_timeout) {
                         shutter_speed.denom = 1;
                         shutter_speed.nom = F;
                     }
-		    sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
+        	    sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
                 } else {
-		  shutter_speed.nom = 0;
-		  sprintf(buf,"1 Invalid shutter speed value.\n");
+        	  shutter_speed.nom = 0;
+        	  sprintf(buf,"1 Invalid shutter speed value.\n");
                 }
-		if (shutter_speed.nom) {
+        	if (shutter_speed.nom) {
                     pslr_set_shutter(camhandle, shutter_speed);
-		}
-		write_socket_answer(buf);
+        	}
+        	write_socket_answer(buf);
             } else {
-	        write_socket_answer("1 Invalid servermode command\n");
+                write_socket_answer("1 Invalid servermode command\n");
             }
-	}
+        }
 
-	if(read_size == 0) {
-	    DPRINT("Client disconnected\n");
-	    fflush(stdout);
-	} else if(read_size == -1) {
-	    fprintf(stderr, "recv failed\n");
-	}
+        if(read_size == 0) {
+            DPRINT("Client disconnected\n");
+            fflush(stdout);
+        } else if(read_size == -1) {
+            fprintf(stderr, "recv failed\n");
+        }
     }
     return 0;
 }
