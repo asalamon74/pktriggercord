@@ -22,8 +22,8 @@ Version: %ver
 Release: %rel
 License: LGPL
 Group: Applications/Tools
-Source: http://sourceforge.net/projects/pktriggercord/files/%ver/pkTriggerCord-%ver.src.tar.gz
-URL: http://pktriggercord.sourceforge.net
+Source: https://github.com/asalamon74/pktriggercord/releases/download/v%ver/pkTriggerCord-%ver.src.tar.gz
+URL: http://pktriggercord.melda.info/
 Packager: Andras Salamon <andras.salamon@melda.info>
 BuildRoot: /var/tmp/%{name}-root
 BuildArch: %{_arch}
@@ -59,6 +59,8 @@ rm -rf $RPM_BUILD_ROOT
 %prefix/../etc/*
 
 %changelog
+* Fri Jan 29 2016 Andras Salamon <andras.salamon@melda.info>
+- built from pkTriggerCord 0.83.00
 * Fri Aug 28 2015 Andras Salamon <andras.salamon@melda.info>
 - built from pkTriggerCord 0.82.04
 * Sun Jun 28 2015 Andras Salamon <andras.salamon@melda.info>

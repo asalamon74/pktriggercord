@@ -1,6 +1,6 @@
 Format: http://dep.debian.net/deps/dep5
 Upstream-Name: pktriggercord
-Source: http://pktriggercord.sourceforge.net/
+Source: http://pktriggercord.melda.info
 
 Files: *
 Copyright: 2011-2013 Andras Salamon <andras.salamon@melda.info>
