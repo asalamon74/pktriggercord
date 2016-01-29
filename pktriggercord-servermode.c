@@ -119,6 +119,9 @@ int servermode_socket(int servermode_timeout) {
     char buf[2100];
     pslr_handle_t camhandle=NULL;
     pslr_status status;
+    char C;
+    float F = 0;
+    pslr_rational_t shutter_speed = {0, 0};
 
     //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
@@ -281,6 +284,29 @@ int servermode_socket(int servermode_timeout) {
 		    }
 		    pslr_buffer_close(camhandle);
 		}
+	    } else if( !strncmp(client_message, "set_shutter_speed ",18 )) {
+	        // TODO: merge with pktriggercord-cli shutter speed parse
+                if (sscanf(client_message+18, "1/%d%c", &shutter_speed.denom, &C) == 1) {
+		    shutter_speed.nom = 1;
+		    sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
+		} else if ((sscanf(client_message+18, "%f%c", &F, &C)) == 1) {
+                    if (F < 2) {
+                        F = F * 10;
+                        shutter_speed.denom = 10;
+                        shutter_speed.nom = F;
+                    } else {
+                        shutter_speed.denom = 1;
+                        shutter_speed.nom = F;
+                    }
+		    sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
+                } else {
+		  shutter_speed.nom = 0;
+		  sprintf(buf,"1 Invalid shutter speed value.\n");
+                }
+		if (shutter_speed.nom) {
+                    pslr_set_shutter(camhandle, shutter_speed);
+		}
+		write_socket_answer(buf);
             } else {
 	        write_socket_answer("1 Invalid servermode command\n");
             }
