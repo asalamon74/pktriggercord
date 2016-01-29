@@ -288,16 +288,18 @@ int servermode_socket(int servermode_timeout) {
                     write_socket_answer(buf);
                 }
             } else if( !strcmp(client_message, "get_preview_buffer") ) {
-                // TODO: bufferindex
-                uint8_t *pImage;
-                uint32_t imageSize;
-                if( pslr_get_buffer(camhandle, 0, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize) ) {
-                    sprintf(buf, "%d %d\n", 1, imageSize);
-                    write_socket_answer(buf);
-                } else {
-                    sprintf(buf, "%d %d\n", 0, imageSize);
-                    write_socket_answer(buf);
-                    write_socket_answer_bin(pImage, imageSize);
+                if( check_camera(camhandle) ) {
+                    // TODO: bufferindex
+                    uint8_t *pImage;
+                    uint32_t imageSize;
+                    if( pslr_get_buffer(camhandle, 0, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize) ) {
+                        sprintf(buf, "%d %d\n", 1, imageSize);
+                        write_socket_answer(buf);
+                    } else {
+                        sprintf(buf, "%d %d\n", 0, imageSize);
+                        write_socket_answer(buf);
+                        write_socket_answer_bin(pImage, imageSize);
+                    }
                 }
             } else if( !strcmp(client_message, "get_buffer") ) {
                 if( check_camera(camhandle) ) {
