@@ -287,12 +287,12 @@ int servermode_socket(int servermode_timeout) {
                     sprintf(buf, "%d\n", 0);
                     write_socket_answer(buf);
                 }
-            } else if( !strcmp(client_message, "get_preview_buffer") ) {
+            } else if(  (arg = is_string_prefix( client_message, "get_preview_buffer")) != NULL ) {
+                int bufno = atoi(arg);
                 if( check_camera(camhandle) ) {
-                    // TODO: bufferindex
                     uint8_t *pImage;
                     uint32_t imageSize;
-                    if( pslr_get_buffer(camhandle, 0, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize) ) {
+                    if( pslr_get_buffer(camhandle, bufno, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize) ) {
                         sprintf(buf, "%d %d\n", 1, imageSize);
                         write_socket_answer(buf);
                     } else {
