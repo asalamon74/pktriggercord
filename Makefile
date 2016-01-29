@@ -8,7 +8,7 @@ MAN1DIR = $(MANDIR)/man1
 LIN_CFLAGS = $(CFLAGS)
 LIN_LDFLAGS = $(LDFLAGS)
 
-VERSION=0.82.05
+VERSION=0.83.00
 VERSIONCODE=$(shell echo $(VERSION) | sed s/\\.//g | sed s/^0// )
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
@@ -41,7 +41,7 @@ MANS = pktriggercord-cli.1 pktriggercord.1
 SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
 OBJS = $(SRCOBJNAMES:=.o)
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE) android_scsi_sg.h
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE) android_scsi_sg.h
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
