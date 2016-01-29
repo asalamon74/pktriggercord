@@ -100,14 +100,31 @@ void write_socket_answer_bin( uint8_t *answer, uint32_t length ) {
 
 }
 
+char *is_string_prefix(char *str, char *prefix) {
+    if( !strcmp(str, prefix ) ) {
+        return str+strlen(prefix);
+    } else {
+        return NULL;
+    }
+}
+
+bool check_camera(pslr_handle_t camhandle) {
+    if( !camhandle ) {
+        write_socket_answer("1 No camera connected\n");
+        return false;
+    } else {
+        return true;
+    }
+}
+
 void strip(char *s) {
     char *p2 = s;
     while(*s != '\0') {
-            if(*s != '\r' && *s != '\n') {
-            	*p2++ = *s++;
-            } else {
-            	++s;
-            }
+        if(*s != '\r' && *s != '\n') {
+            *p2++ = *s++;
+        } else {
+            ++s;
+        }
     }
     *p2 = '\0';
 }
@@ -202,111 +219,131 @@ int servermode_socket(int servermode_timeout) {
             } else if( !strcmp(client_message, "connect") ) {
                 if( camhandle ) {
                     write_socket_answer("0\n");
-        	} else if( (camhandle = camera_connect( NULL, NULL, -1, buf ))  ) {
+                } else if( (camhandle = camera_connect( NULL, NULL, -1, buf ))  ) {
                     write_socket_answer("0\n");
                 } else {
                     write_socket_answer(buf);
                 }
             } else if( !strcmp(client_message, "update_status") ) {
-                if( !pslr_get_status(camhandle, &status) ) {
-        	    sprintf( buf, "%d\n", 0);
-        	} else {
-        	    sprintf( buf, "%d\n", 1);
-                }
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "get_camera_name") ) {
-                if( camhandle ) {
-                    sprintf(buf, "%d %s\n", 0, pslr_camera_name(camhandle));
-                } else {
-                    sprintf(buf, "%d not connected\n", 1);
-                }
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "get_lens_name") ) {
-                sprintf(buf, "%d %s\n", 0, get_lens_name(status.lens_id1, status.lens_id2));
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "get_current_shutter_speed") ) {
-                  sprintf(buf, "%d %d/%d\n", 0, status.current_shutter_speed.nom, status.current_shutter_speed.denom);
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "get_current_aperture") ) {
-        	sprintf(buf, "%d %s\n", 0, format_rational( status.current_aperture, "%.1f"));
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "get_current_iso") ) {
-        	sprintf(buf, "%d %d\n", 0, status.current_iso);
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "get_bufmask") ) {
-        	sprintf(buf, "%d %d\n", 0, status.bufmask);
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "focus") ) {
-        	pslr_focus(camhandle);
-        	sprintf(buf, "%d\n", 0);
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "shutter") ) {
-        	pslr_shutter(camhandle);
-        	sprintf(buf, "%d\n", 0);
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "delete_buffer") ) {
-        	// TODO: bufferindex
-        	pslr_delete_buffer(camhandle,0);
-        	sprintf(buf, "%d\n", 0);
-                write_socket_answer(buf);
-            } else if( !strcmp(client_message, "get_preview_buffer") ) {
-        	// TODO: bufferindex
-        	uint8_t *pImage;
-        	uint32_t imageSize;
-        	if( pslr_get_buffer(camhandle, 0, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize) ) {
-        	    sprintf(buf, "%d %d\n", 1, imageSize);
-        	    write_socket_answer(buf);
-        	} else {
-        	    sprintf(buf, "%d %d\n", 0, imageSize);
-        	    write_socket_answer(buf);
-        	    write_socket_answer_bin(pImage, imageSize);
-        	}
-            } else if( !strcmp(client_message, "get_buffer") ) {
-        	// TODO: bufferindex
-        	uint32_t imageSize;
-        	if( pslr_buffer_open(camhandle, 0, PSLR_BUF_DNG, 0) ) {
-        	    sprintf(buf, "%d\n", 1);
-        	    write_socket_answer(buf);
-        	} else {
-        	    imageSize = pslr_buffer_get_size(camhandle);
-        	    sprintf(buf, "%d %d\n", 0, imageSize);
-        	    write_socket_answer(buf);
-        	    uint32_t current = 0;
-        	    while (1) {
-        		uint32_t bytes;
-        		uint8_t buf[65536];
-        		bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
-        		if (bytes == 0) {
-        		    break;
-        		}
-        		write_socket_answer_bin( buf, bytes);
-        		current += bytes;
-        	    }
-        	    pslr_buffer_close(camhandle);
-        	}
-            } else if( !strncmp(client_message, "set_shutter_speed ",18 )) {
-                // TODO: merge with pktriggercord-cli shutter speed parse
-                if (sscanf(client_message+18, "1/%d%c", &shutter_speed.denom, &C) == 1) {
-        	    shutter_speed.nom = 1;
-        	    sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
-        	} else if ((sscanf(client_message+18, "%f%c", &F, &C)) == 1) {
-                    if (F < 2) {
-                        F = F * 10;
-                        shutter_speed.denom = 10;
-                        shutter_speed.nom = F;
+                if( check_camera(camhandle) ) {
+                    if( !pslr_get_status(camhandle, &status) ) {
+                        sprintf( buf, "%d\n", 0);
                     } else {
-                        shutter_speed.denom = 1;
-                        shutter_speed.nom = F;
+                        sprintf( buf, "%d\n", 1);
                     }
-        	    sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
-                } else {
-        	  shutter_speed.nom = 0;
-        	  sprintf(buf,"1 Invalid shutter speed value.\n");
+                    write_socket_answer(buf);
                 }
-        	if (shutter_speed.nom) {
-                    pslr_set_shutter(camhandle, shutter_speed);
-        	}
-        	write_socket_answer(buf);
+            } else if( !strcmp(client_message, "get_camera_name") ) {
+                if( check_camera(camhandle) ) {
+                    sprintf(buf, "%d %s\n", 0, pslr_camera_name(camhandle));
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "get_lens_name") ) {
+                if( check_camera(camhandle) ) {
+                    sprintf(buf, "%d %s\n", 0, get_lens_name(status.lens_id1, status.lens_id2));
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "get_current_shutter_speed") ) {
+                if( check_camera(camhandle) ) {
+                    sprintf(buf, "%d %d/%d\n", 0, status.current_shutter_speed.nom, status.current_shutter_speed.denom);
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "get_current_aperture") ) {
+                if( check_camera(camhandle) ) {
+                    sprintf(buf, "%d %s\n", 0, format_rational( status.current_aperture, "%.1f"));
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "get_current_iso") ) {
+                if( check_camera(camhandle) ) {
+                    sprintf(buf, "%d %d\n", 0, status.current_iso);
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "get_bufmask") ) {
+                if( check_camera(camhandle) ) {
+                    sprintf(buf, "%d %d\n", 0, status.bufmask);
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "focus") ) {
+                if( check_camera(camhandle) ) {
+                    pslr_focus(camhandle);
+                    sprintf(buf, "%d\n", 0);
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "shutter") ) {
+                if( check_camera(camhandle) ) {
+                    pslr_shutter(camhandle);
+                    sprintf(buf, "%d\n", 0);
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "delete_buffer") ) {
+                if( check_camera(camhandle) ) {
+                    // TODO: bufferindex
+                    pslr_delete_buffer(camhandle,0);
+                    sprintf(buf, "%d\n", 0);
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "get_preview_buffer") ) {
+                // TODO: bufferindex
+                uint8_t *pImage;
+                uint32_t imageSize;
+                if( pslr_get_buffer(camhandle, 0, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize) ) {
+                    sprintf(buf, "%d %d\n", 1, imageSize);
+                    write_socket_answer(buf);
+                } else {
+                    sprintf(buf, "%d %d\n", 0, imageSize);
+                    write_socket_answer(buf);
+                    write_socket_answer_bin(pImage, imageSize);
+                }
+            } else if( !strcmp(client_message, "get_buffer") ) {
+                if( check_camera(camhandle) ) {
+                    // TODO: bufferindex
+                    uint32_t imageSize;
+                    if( pslr_buffer_open(camhandle, 0, PSLR_BUF_DNG, 0) ) {
+                        sprintf(buf, "%d\n", 1);
+                        write_socket_answer(buf);
+                    } else {
+                        imageSize = pslr_buffer_get_size(camhandle);
+                        sprintf(buf, "%d %d\n", 0, imageSize);
+                        write_socket_answer(buf);
+                        uint32_t current = 0;
+                        while (1) {
+                            uint32_t bytes;
+                            uint8_t buf[65536];
+                            bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
+                            if (bytes == 0) {
+                                break;
+                            }
+                            write_socket_answer_bin( buf, bytes);
+                            current += bytes;
+                        }
+                        pslr_buffer_close(camhandle);
+                    }
+                }
+            } else if( !strncmp(client_message, "set_shutter_speed ",18 )) {
+                if( check_camera(camhandle) ) {
+                    // TODO: merge with pktriggercord-cli shutter speed parse
+                    if (sscanf(client_message+18, "1/%d%c", &shutter_speed.denom, &C) == 1) {
+                        shutter_speed.nom = 1;
+                        sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
+                    } else if ((sscanf(client_message+18, "%f%c", &F, &C)) == 1) {
+                        if (F < 2) {
+                            F = F * 10;
+                            shutter_speed.denom = 10;
+                            shutter_speed.nom = F;
+                        } else {
+                            shutter_speed.denom = 1;
+                            shutter_speed.nom = F;
+                        }
+                         sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
+                    } else {
+                         shutter_speed.nom = 0;
+                         sprintf(buf,"1 Invalid shutter speed value.\n");
+                    }
+                    if (shutter_speed.nom) {
+                        pslr_set_shutter(camhandle, shutter_speed);
+                    }
+                    write_socket_answer(buf);
+                }
             } else {
                 write_socket_answer("1 Invalid servermode command\n");
             }
