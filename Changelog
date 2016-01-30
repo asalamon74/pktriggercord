@@ -1,5 +1,5 @@
 version 0.83.01
-	servermode subcommand: set_shutter_speed
+	servermode subcommand: set_shutter_speed, set_iso
 	servermode: avoid segmentation fault if camera is not connected
 
 version 0.83.00 ( 2016-01-29 )

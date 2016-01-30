@@ -144,6 +144,9 @@ int servermode_socket(int servermode_timeout) {
     char C;
     float F = 0;
     pslr_rational_t shutter_speed = {0, 0};
+    uint32_t iso = 0;
+    uint32_t auto_iso_min = 0;
+    uint32_t auto_iso_max = 0;
 
     //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
@@ -348,6 +351,24 @@ int servermode_socket(int servermode_timeout) {
                     }
                     if (shutter_speed.nom) {
                         pslr_set_shutter(camhandle, shutter_speed);
+                    }
+                    write_socket_answer(buf);
+                }
+            } else if(  (arg = is_string_prefix( client_message, "set_iso")) != NULL ) {
+                if( check_camera(camhandle) ) {
+                    // TODO: merge with pktriggercord-cli shutter iso
+                    if (sscanf(arg, "%d-%d%c", &auto_iso_min, &auto_iso_max, &C) != 2) {
+                        auto_iso_min = 0;
+                        auto_iso_max = 0;
+                        iso = atoi(arg);
+                    } else {
+                        iso = 0;
+                    }
+                    if (iso==0 && auto_iso_min==0) {
+                        sprintf(buf,"1 Invalid iso value.\n");
+                    } else {
+                        pslr_set_iso(camhandle, iso, auto_iso_min, auto_iso_max);
+                        sprintf(buf, "%d %d %d-%d\n", 0, iso, auto_iso_min, auto_iso_max);
                     }
                     write_socket_answer(buf);
                 }
