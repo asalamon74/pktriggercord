@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
 	final Button scriptButton = (Button) findViewById(R.id.script);
         scriptButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
-		    callAsynchronousTask(0, 1, 0, 1000, new CliParam("focus"));
+                    callAsynchronousTask(0, 1, 0, 1000, new CliParam("focus"));
 		}
 	    });
 
@@ -117,7 +117,7 @@ public class MainActivity extends Activity {
 	    Log.e( PkTriggerCord.TAG, "Cannot create output directory" );
 	}
 	
-	updateTimer = callAsynchronousTask(0, 0, 0, 200, null);
+	updateTimer = callAsynchronousTask(0, 0, 0, 200, (CliParam[])null);
 
 	if( savedInstanceState != null ) {
 	    currentRuns = savedInstanceState.getInt("currentRuns");
@@ -159,7 +159,7 @@ public class MainActivity extends Activity {
 	outState.putInt("currentMaxRuns", currentMaxRuns);
     }
 
-    private Timer callAsynchronousTask(final int cRuns, final int maxRuns, long initialDelay, final long period, final CliParam param) {
+    private Timer callAsynchronousTask(final int cRuns, final int maxRuns, long initialDelay, final long period, final CliParam... param) {
        	final Handler handler = new Handler();
 	final Timer timer = new Timer();
 	TimerTask doAsynchronousTask = new TimerTask() {       
@@ -218,12 +218,22 @@ public class MainActivity extends Activity {
 	//	text.append(txt);
     }
 
-    private class CliParam {
+    private static class CliParam {
 	String command;
 	
 	public CliParam(String command) {
             this.command = command;
 	}
+
+        private static CliParam[] parseCommands(String commands) {
+            String[] commandArray = commands.split(";");
+            CliParam []params = new CliParam[commandArray.length];
+            int index = 0;
+            for( String str : commandArray ) {
+                params[index++] = new CliParam(str);
+            }
+            return params;
+        }
 
     }
 
