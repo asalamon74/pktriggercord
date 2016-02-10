@@ -37,6 +37,7 @@ public class MainActivity extends Activity {
     private static final String SERVER_IP = "localhost";
     private static final int SERVER_PORT = 8888;
     private static final String OUTDIR = "/storage/sdcard0/pktriggercord";
+    private static final int MAX_BUFFERS = 16;
     private CliHandler cli;
     private Bitmap previewBitmap;
     private ProgressBar progressBar;
@@ -241,8 +242,10 @@ public class MainActivity extends Activity {
 	//	toneG.release();
     }
 
+    private int shutterCount;
+
     private class CliHandler extends AsyncTask<CliParam,Map<String,Object>,String> {
-	Map<String,Object> map;
+	Map<String,Object> map = new HashMap<String,Object>();
 	DataOutputStream dos;
 	InputStream is;
 
@@ -284,13 +287,7 @@ public class MainActivity extends Activity {
        	
 	protected String doInBackground(CliParam... params) {
 
-	    /*	    if( params.length > 0 ) {
-		beep();
-		return "";
-		}*/
-
 	    long time1 = SystemClock.elapsedRealtime();
-	    map = new HashMap<String,Object>();
 	    Socket socket=null;
 	    SimpleDateFormat logDf = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS");
 	    DownloadProgressCallback pCallback = new DownloadProgressCallback();
@@ -311,25 +308,18 @@ public class MainActivity extends Activity {
 		    for( CliParam param : params ) {
 			Calendar c = Calendar.getInstance();
 			String formattedDate = logDf.format(c.getTime());
-			Log.i( PkTriggerCord.TAG, "send shutter: "+formattedDate);
-			dos.writeBytes(param.command);
-			answer=readLine();
+			Log.i( PkTriggerCord.TAG, "send command: "+formattedDate);
+                        int commandCount=1;
+                        if( "shutter".equals( param.command )) {
+                            commandCount = shutterCount;
+                        }
+                        for( int ci=0; ci<commandCount; ++ci ) {
+                            dos.writeBytes(param.command);
+                            answer=readLine();
+                        }
 			c = Calendar.getInstance();
 			formattedDate = logDf.format(c.getTime());			
 			Log.i( PkTriggerCord.TAG, "read answer: "+formattedDate);
-			/*			if( "shutter".equals(param.command) ) {
-			    Integer frames = (Integer)param.getValue("frames");
-			    int frameNum = frames == null ? 1 : frames.intValue();
-			    Integer delay = (Integer)param.getValue("delay");
-			    int delaySec = delay == null ? 0 : delay.intValue();
-			    if( frameNum > 1 ) {
-				for( int fIndex=2; fIndex <= frameNum; ++fIndex ) {
-				    SystemClock.sleep( delay * 1000 );
-				    dos.writeBytes(param.command);
-				    answer=readLine();
-				}
-			    }
-			    }*/
 		    }
 		    return null;
 		}
@@ -350,11 +340,27 @@ public class MainActivity extends Activity {
 			readStatus("current_shutter_speed");
 			readStatus("current_aperture");
 			readStatus("current_iso");
+                        readStatus("auto_bracket_mode");
+                        readStatus("auto_bracket_picture_count");
+
+                        int autoBracketMode = Integer.parseInt((String)map.get("auto_bracket_mode"));
+                        int autoBracketPictureCount = Integer.parseInt((String)map.get("auto_bracket_picture_count"));
+                        if( autoBracketPictureCount < 1 || autoBracketMode == 0 ) {
+                            shutterCount = 1;
+                        } else {
+                            shutterCount = autoBracketPictureCount;
+                        }
 			readStatus("bufmask");
 			if( !"0".equals(map.get("bufmask")) ) {
-			    // assuming that the first buffer contains the image
-			    // TODO: fix
-			    dos.writeBytes("get_preview_buffer");
+                            int bufMask = Integer.parseInt((String)map.get("bufmask"));
+                            int bufIndex;
+
+                            for (bufIndex=0; bufIndex<MAX_BUFFERS; ++bufIndex) {
+                                if ((bufMask & (1<<bufIndex)) > 0) {
+                                    break;
+                                }
+                            }
+			    dos.writeBytes("get_preview_buffer "+ bufIndex);
 			    answer = readLine();
 			    map.put("answer", answer);
 			    int jpegLength = getIntParam(answer);
@@ -365,7 +371,7 @@ public class MainActivity extends Activity {
 			    map.put("jpegbytes",jpegLength);
 			    map.put("preview",bm);
 			    publishProgress(map);
-			    dos.writeBytes("get_buffer");
+			    dos.writeBytes("get_buffer "+bufIndex);
 			    answer = readLine();
 			    map.put("answer", answer);
 			    jpegLength = getIntParam(answer);
@@ -380,7 +386,7 @@ public class MainActivity extends Activity {
 			    map.put("jpegbytes",jpegLength);
 			    publishProgress(map);
 
-			    dos.writeBytes("delete_buffer");
+			    dos.writeBytes("delete_buffer "+bufIndex);
 			    answer = readLine();
 			}
 			publishProgress(map);
