@@ -214,23 +214,11 @@ public class MainActivity extends Activity {
 
     private class CliParam {
 	String command;
-	Map<String,Object> commandParams;
 	
-	public CliParam(String command, Map<String,Object> commandParams) {
-	    this.command = command;
-	    this.commandParams = commandParams;
-	}
-
 	public CliParam(String command) {
-	    this(command, null);
+            this.command = command;
 	}
 
-	public Object getValue(String id) {
-	    if( commandParams == null ) {
-		return null;
-	    }
-	    return commandParams.get(id);
-	}
     }
 
     private void beep() {
