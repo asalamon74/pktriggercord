@@ -305,10 +305,10 @@ int servermode_socket(int servermode_timeout) {
                     }
                 }
             } else if( !strcmp(client_message, "get_buffer") ) {
+                int bufno = atoi(arg);
                 if( check_camera(camhandle) ) {
-                    // TODO: bufferindex
                     uint32_t imageSize;
-                    if( pslr_buffer_open(camhandle, 0, PSLR_BUF_DNG, 0) ) {
+                    if( pslr_buffer_open(camhandle, bufno, PSLR_BUF_DNG, 0) ) {
                         sprintf(buf, "%d\n", 1);
                         write_socket_answer(buf);
                     } else {
