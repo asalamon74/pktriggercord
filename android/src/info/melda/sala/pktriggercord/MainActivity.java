@@ -104,6 +104,12 @@ public class MainActivity extends Activity {
 		    actionTimer = callAsynchronousTask(0, npf.getValue(), 0, 1000*npd.getValue(), new CliParam("shutter"));
 		}
 	    });
+	final Button scriptButton = (Button) findViewById(R.id.script);
+        scriptButton.setOnClickListener(new View.OnClickListener() {
+		public void onClick(View v) {
+		    callAsynchronousTask(0, 1, 0, 1000, new CliParam("focus"));
+		}
+	    });
 
 
 	File saveDir = new File(OUTDIR);

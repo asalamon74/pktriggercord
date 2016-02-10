@@ -73,6 +73,16 @@
 	android:layout_marginLeft="5sp"
 	android:layout_marginRight="5sp"
 	android:background="#8000ff00" />
+<Button
+        android:id="@+id/script"
+        android:layout_width="fill_parent"
+	android:layout_weight="1.0"
+        android:layout_height="wrap_content"
+	android:typeface="monospace"
+	android:text="Script"
+	android:layout_marginLeft="5sp"
+	android:layout_marginRight="5sp"
+	android:background="#8000ff00" />
 </LinearLayout>
 <LinearLayout
         android:id="@+id/statusinfo"
