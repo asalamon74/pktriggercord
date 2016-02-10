@@ -312,9 +312,9 @@ Focus (half pressing the shutter)\.
 Shutter (full pressing)\.
 .RE
 .PP
-\fBdelete_buffer\fR
+\fBdelete_buffer\fR \fIBUFFER_INDEX\fR
 .RS 4
-Delete the first buffer image\.
+Delete a buffer image\.
 .RE
 .PP
 \fBupdate_status\fR
@@ -352,14 +352,24 @@ Get current ISO\.
 Get buffer mask\.
 .RE
 .PP
+\fBget_auto_bracket_mode\fR
+.RS 4
+Get auto bracket mode\.
+.RE
+.PP
+\fBget_auto_bracket_picture_count\fR
+.RS 4
+Get Auto bracket picture count\.
+.RE
+.PP
 \fBget_preview_buffer\fR \fIBUFFER_INDEX\fR
 .RS 4
 Get the preview buffer\.
 .RE
 .PP
-\fBget_buffer\fR
+\fBget_buffer\fR \fIBUFFER_INDEX\fR
 .RS 4
-Get the first buffer\.
+Get the image buffer\.
 .RE
 .PP
 \fBset_shutter_speed\fR \fISHUTTER_SPEED\fR

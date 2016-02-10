@@ -271,6 +271,16 @@ int servermode_socket(int servermode_timeout) {
                     sprintf(buf, "%d %d\n", 0, status.bufmask);
                     write_socket_answer(buf);
                 }
+            } else if( !strcmp(client_message, "get_auto_bracket_mode") ) {
+                if( check_camera(camhandle) ) {
+                    sprintf(buf, "%d %d\n", 0, status.auto_bracket_mode);
+                    write_socket_answer(buf);
+                }
+            } else if( !strcmp(client_message, "get_auto_bracket_picture_count") ) {
+                if( check_camera(camhandle) ) {
+                    sprintf(buf, "%d %d\n", 0, status.auto_bracket_picture_count);
+                    write_socket_answer(buf);
+                }
             } else if( !strcmp(client_message, "focus") ) {
                 if( check_camera(camhandle) ) {
                     pslr_focus(camhandle);
@@ -283,10 +293,10 @@ int servermode_socket(int servermode_timeout) {
                     sprintf(buf, "%d\n", 0);
                     write_socket_answer(buf);
                 }
-            } else if( !strcmp(client_message, "delete_buffer") ) {
+            } else if(  (arg = is_string_prefix( client_message, "delete_buffer")) != NULL ) {
+                int bufno = atoi(arg);
                 if( check_camera(camhandle) ) {
-                    // TODO: bufferindex
-                    pslr_delete_buffer(camhandle,0);
+                    pslr_delete_buffer(camhandle,bufno);
                     sprintf(buf, "%d\n", 0);
                     write_socket_answer(buf);
                 }
@@ -304,11 +314,11 @@ int servermode_socket(int servermode_timeout) {
                         write_socket_answer_bin(pImage, imageSize);
                     }
                 }
-            } else if( !strcmp(client_message, "get_buffer") ) {
+            } else if(  (arg = is_string_prefix( client_message, "get_buffer")) != NULL ) {
+                int bufno = atoi(arg);
                 if( check_camera(camhandle) ) {
-                    // TODO: bufferindex
                     uint32_t imageSize;
-                    if( pslr_buffer_open(camhandle, 0, PSLR_BUF_DNG, 0) ) {
+                    if( pslr_buffer_open(camhandle, bufno, PSLR_BUF_DNG, 0) ) {
                         sprintf(buf, "%d\n", 1);
                         write_socket_answer(buf);
                     } else {
