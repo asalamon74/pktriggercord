@@ -96,7 +96,7 @@ public class MainActivity extends Activity {
 	final Button focusButton = (Button) findViewById(R.id.focus);
         focusButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
-		    callAsynchronousTask(0, 1, 0, 1000, new CliParam("focus"));
+		    actionTimer = callAsynchronousTask(0, 1, 0, 1000, new CliParam("focus"));
 		}
 	    });
 	final Button shutterButton = (Button) findViewById(R.id.shutter);
@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
 	final Button scriptButton = (Button) findViewById(R.id.script);
         scriptButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
-                    callAsynchronousTask(0, 1, 0, 1000, new CliParam("focus"));
+                    actionTimer = callAsynchronousTask(0, 1, 0, 1000, CliParam.parseCommands("set_shutter_speed 1/20;shutter;set_shutter_speed 1/100;shutter"));
 		}
 	    });
 
