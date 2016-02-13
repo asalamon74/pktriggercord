@@ -224,6 +224,10 @@ int servermode_socket(int servermode_timeout) {
             } else if( (arg = is_string_prefix( client_message, "echo")) != NULL ) {
                 sprintf( buf, "0 %.100s\n", arg);
                 write_socket_answer(buf);
+            } else if(  (arg = is_string_prefix( client_message, "usleep")) != NULL ) {
+                int microseconds = atoi(arg);
+                usleep(microseconds);
+                write_socket_answer("0\n");
             } else if( !strcmp(client_message, "connect") ) {
                 if( camhandle ) {
                     write_socket_answer("0\n");

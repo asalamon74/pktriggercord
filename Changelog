@@ -1,5 +1,5 @@
 version 0.83.01
-	servermode subcommand: set_shutter_speed, set_iso
+	servermode subcommand: set_shutter_speed, set_iso, usleep
 	servermode: avoid segmentation fault if camera is not connected
 	android: bracketing (if set on the camera)
 
