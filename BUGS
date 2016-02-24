@@ -31,3 +31,5 @@ Known bugs of pkTriggerCord:
 
   K-x firmware 1.02 or 1.03: Image artifacts during timelapse
   photos. Workaround: Use firmware 1.01
+
+  K-50: bulb mode is not working
