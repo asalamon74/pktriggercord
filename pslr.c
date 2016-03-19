@@ -275,7 +275,7 @@ int debug_onoff(ipslr_handle_t *p, char debug_mode){
 /* ************* End enabling/disabling debug mode ************ */
 
 user_file_format_t *get_file_format_t( user_file_format uff ) {
-    int i;
+    unsigned int i;
     for (i = 0; i<sizeof(file_formats) / sizeof(file_formats[0]); i++) {
         if (file_formats[i].uff == uff) {
             return &file_formats[i];
@@ -579,7 +579,7 @@ int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resol
 	return PSLR_NO_MEMORY;
     }
 
-    int bytes = pslr_buffer_read(h, buf, size);
+    uint32_t bytes = pslr_buffer_read(h, buf, size);
 
     if( bytes != size ) {
 	return PSLR_READ_ERROR;

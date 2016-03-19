@@ -29,6 +29,7 @@
 #ifndef WIN32
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
 #endif
 
 #include <stdio.h>

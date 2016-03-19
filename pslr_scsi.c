@@ -27,5 +27,10 @@
 #ifdef WIN32
 #include "pslr_scsi_win.c"
 #else
+// Ugly hack. More generic ifs required
+#ifdef __OpenBSD__
+#include "pslr_scsi_openbsd.c"
+#else
 #include "pslr_scsi_linux.c"
+#endif
 #endif
