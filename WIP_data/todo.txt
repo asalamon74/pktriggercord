@@ -1,0 +1,12 @@
+* Make pktriggercord to compile with -Wextra without errors
+
+* Checkout Makefile depedencies. Edit in pslr_scsi_openbsd and 
+  pktriggercord compilation fails.
+
+* Split pktriggercord to -gui, -cli and pslrd.
+  - pslrd handles SCSI commands, and is SUID binary
+  - --servermode could be starting point.
+
+* Fix all the bugs.
+  - better support for K-3 (shutter, aperature and iso aren't always 
+    transfered to camera for example)

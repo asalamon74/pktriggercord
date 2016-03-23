@@ -1,0 +1,52 @@
+test-linux-0000.dng  Tiedostonimi    : test-linux-0000.dng
+test-linux-0000.dng  Tiedoston koko  : 26571616 tavua
+test-linux-0000.dng  Mime-tyyppi     : image/tiff
+test-linux-0000.dng  Kuvan koko      : 6080 x 4032
+test-linux-0000.dng  Kameran merkki  : RICOH IMAGING COMPANY, LTD.  
+test-linux-0000.dng  Kameran malli   : PENTAX K-3         
+test-linux-0000.dng  Kuvan aikaleima : 2016:03:23 17:10:17
+test-linux-0000.dng  Kuvan numero    : 
+test-linux-0000.dng  Valotusaika     : 1/200 s
+test-linux-0000.dng  Aukko           : F13
+test-linux-0000.dng  Valotuksen korjaus: 0 EV
+test-linux-0000.dng  Salama          : No, compulsory
+test-linux-0000.dng  Salamavalotuksen korjaus: 
+test-linux-0000.dng  Polttoväli      : 50.0 mm (35 mm equivalent: 75.0 mm)
+test-linux-0000.dng  Kohteen etäisyys: 
+test-linux-0000.dng  ISO-herkkyys    : 200
+test-linux-0000.dng  Valotustila     : Manuaalinen
+test-linux-0000.dng  Mittaustapa     : Multi-segment
+test-linux-0000.dng  Makrotila       : 
+test-linux-0000.dng  Kuvan laatu     : 
+test-linux-0000.dng  Exif Resolution : 6080 x 4032
+test-linux-0000.dng  Valkotasapaino  : Manuaalinen
+test-linux-0000.dng  Näytekuva       : Ei käytössä
+test-linux-0000.dng  Omistusoikeus   : CC-BY
+test-linux-0000.dng  Exif-kommentti  : 
+
+test-openbsd-0000.dng Tiedostonimi    : test-openbsd-0000.dng
+test-openbsd-0000.dng Tiedoston koko  : 26562803 tavua
+test-openbsd-0000.dng Mime-tyyppi     : image/tiff
+test-openbsd-0000.dng Kuvan koko      : 6080 x 4032
+test-openbsd-0000.dng Kameran merkki  : RICOH IMAGING COMPANY, LTD.  
+test-openbsd-0000.dng Kameran malli   : PENTAX K-3         
+test-openbsd-0000.dng Kuvan aikaleima : 2016:03:23 17:11:32
+test-openbsd-0000.dng Kuvan numero    : 
+test-openbsd-0000.dng Valotusaika     : 1/200 s
+test-openbsd-0000.dng Aukko           : F13
+test-openbsd-0000.dng Valotuksen korjaus: 0 EV
+test-openbsd-0000.dng Salama          : No, compulsory
+test-openbsd-0000.dng Salamavalotuksen korjaus: 
+test-openbsd-0000.dng Polttoväli      : 50.0 mm (35 mm equivalent: 75.0 mm)
+test-openbsd-0000.dng Kohteen etäisyys: 
+test-openbsd-0000.dng ISO-herkkyys    : 200
+test-openbsd-0000.dng Valotustila     : Manuaalinen
+test-openbsd-0000.dng Mittaustapa     : Multi-segment
+test-openbsd-0000.dng Makrotila       : 
+test-openbsd-0000.dng Kuvan laatu     : 
+test-openbsd-0000.dng Exif Resolution : 6080 x 4032
+test-openbsd-0000.dng Valkotasapaino  : Manuaalinen
+test-openbsd-0000.dng Näytekuva       : Ei käytössä
+test-openbsd-0000.dng Omistusoikeus   : CC-BY
+test-openbsd-0000.dng Exif-kommentti  : 
+
