@@ -9,4 +9,5 @@
 
 * Fix all the bugs.
   - better support for K-3 (shutter, aperature and iso aren't always 
-    transfered to camera for example)
+    transfered to camera for example) Images are 1/200 but command line 
+    wanted 1/180.
