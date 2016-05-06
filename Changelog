@@ -3,6 +3,7 @@ version 0.83.01
 	servermode: avoid segmentation fault if camera is not connected
 	android: bracketing (if set on the camera)
 	openbsd port ( thx Hannu Vuolasaho )
+	Testing support for K-500
 
 version 0.83.00 ( 2016-01-29 )
 	Limited K-3 II support (Testing)
