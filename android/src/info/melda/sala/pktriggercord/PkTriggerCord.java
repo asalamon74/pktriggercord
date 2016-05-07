@@ -3,6 +3,8 @@ package info.melda.sala.pktriggercord;
 import android.util.Log;
 import android.app.Application;
 import android.content.res.AssetManager;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +18,21 @@ public class PkTriggerCord extends Application {
     private static final String CLI_DIR = "pktriggercord";
     private static final int MARK_LIMIT = 1000000;
     private Process p;
+    private SharedPreferences prefs;
     
     @Override
     public void onCreate() {
 	super.onCreate();
+        PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	Log.v( TAG, "Before installCli");
 	installCli();
 	Log.v( TAG, "After installCli");
 	startCli();
+    }
+
+    public boolean isShowPreview() {
+        return prefs.getBoolean("showpreview", true);
     }
 
     private void startCli() {

@@ -11,6 +11,10 @@ import android.widget.NumberPicker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.content.Intent;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ToneGenerator;
 import android.media.AudioManager;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private static final int BUFF_LEN = 1024;
@@ -49,7 +54,7 @@ public class MainActivity extends Activity {
     private ToneGenerator toneG;
     private Timer updateTimer = new Timer();
     private Timer actionTimer = new Timer();
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,6 +158,24 @@ public class MainActivity extends Activity {
 	outState.putInt("currentMaxRuns", currentMaxRuns);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.itemPrefs:
+                startActivity(new Intent(this, PrefsActivity.class));
+                break;
+        }
+        return true;
+    }
+
+
     private Timer callAsynchronousTask(final int cRuns, final int maxRuns, long initialDelay, final long period, final CliParam... param) {
        	final Handler handler = new Handler();
 	final Timer timer = new Timer();
@@ -243,6 +266,12 @@ public class MainActivity extends Activity {
     }
 
     private int shutterCount;
+    
+
+    private boolean isShowPreview() {
+        PkTriggerCord application = (PkTriggerCord)getApplicationContext();
+        return application.isShowPreview();
+    }
 
     private class CliHandler extends AsyncTask<CliParam,Map<String,Object>,String> {
 	Map<String,Object> map = new HashMap<String,Object>();
@@ -360,17 +389,20 @@ public class MainActivity extends Activity {
                                     break;
                                 }
                             }
-			    dos.writeBytes("get_preview_buffer "+ bufIndex);
-			    answer = readLine();
-			    map.put("answer", answer);
-			    int jpegLength = getIntParam(answer);
+                            int jpegLength;
+                            if( isShowPreview() ) {
+                                dos.writeBytes("get_preview_buffer "+ bufIndex);
+                                answer = readLine();
+                                map.put("answer", answer);
+                                jpegLength = getIntParam(answer);
 
-			    ByteArrayOutputStream bos = new ByteArrayOutputStream(jpegLength);
-			    PkTriggerCord.copyStream( is, bos, jpegLength );
-			    Bitmap bm = BitmapFactory.decodeByteArray(bos.toByteArray(), 0, jpegLength);
-			    map.put("jpegbytes",jpegLength);
-			    map.put("preview",bm);
-			    publishProgress(map);
+                                ByteArrayOutputStream bos = new ByteArrayOutputStream(jpegLength);
+                                PkTriggerCord.copyStream( is, bos, jpegLength );
+                                Bitmap bm = BitmapFactory.decodeByteArray(bos.toByteArray(), 0, jpegLength);
+                                map.put("jpegbytes",jpegLength);
+                                map.put("preview",bm);
+                                publishProgress(map);
+                            }
 			    dos.writeBytes("get_buffer "+bufIndex);
 			    answer = readLine();
 			    map.put("answer", answer);
