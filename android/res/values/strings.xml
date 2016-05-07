@@ -4,4 +4,7 @@
     <string name="titlePrefs">Preferences</string>
     <string name="titleShowPreview">Show preview</string>
     <string name="summaryShowPreview">Show the preview after taking picture</string>
+    <string name="titleSaveDir">Save directory</string>
+    <string name="summarySaveDir">Images will be saved into this
+    directory under pktriggercord subdirectory</string>
 </resources>

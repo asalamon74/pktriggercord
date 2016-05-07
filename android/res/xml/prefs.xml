@@ -5,4 +5,9 @@
         android:summary="@string/summaryShowPreview"
         android:key="showpreview"
         android:defaultValue="true" />
+    <EditTextPreference
+        android:title="@string/titleSaveDir"
+        android:summary="@string/summarySaveDir"
+        android:key="savedir"
+        android:defaultValue="/storage/sdcard0" />
 </PreferenceScreen>

@@ -35,6 +35,10 @@ public class PkTriggerCord extends Application {
         return prefs.getBoolean("showpreview", true);
     }
 
+    public String getSaveDir() {
+        return prefs.getString("savedir", "/storage/sdcard0");
+    }
+
     private void startCli() {
 	try {
 	    p = new ProcessBuilder()

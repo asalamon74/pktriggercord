@@ -41,7 +41,6 @@ public class MainActivity extends Activity {
     private static final int BUFF_LEN = 1024;
     private static final String SERVER_IP = "localhost";
     private static final int SERVER_PORT = 8888;
-    private static final String OUTDIR = "/storage/sdcard0/pktriggercord";
     private static final int MAX_BUFFERS = 16;
     private CliHandler cli;
     private Bitmap previewBitmap;
@@ -111,8 +110,8 @@ public class MainActivity extends Activity {
 		}
 	    });
 
-	File saveDir = new File(OUTDIR);
-	if( !saveDir.exists() && !saveDir.mkdir() ) {
+	File outputDir = new File(getOutputDir());
+	if( !outputDir.exists() && !outputDir.mkdir() ) {           
 	    Log.e( PkTriggerCord.TAG, "Cannot create output directory" );
 	}
 	
@@ -273,6 +272,15 @@ public class MainActivity extends Activity {
         return application.isShowPreview();
     }
 
+    private String getSaveDir() {
+        PkTriggerCord application = (PkTriggerCord)getApplicationContext();
+        return application.getSaveDir();
+    }
+
+    private String getOutputDir() {
+        return getSaveDir()+"/pktriggercord";
+    }
+
     private class CliHandler extends AsyncTask<CliParam,Map<String,Object>,String> {
 	Map<String,Object> map = new HashMap<String,Object>();
 	DataOutputStream dos;
@@ -411,7 +419,7 @@ public class MainActivity extends Activity {
 			    c = Calendar.getInstance();
 			    SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
 			    formattedDate = df.format(c.getTime());
-			    File outFile = new File(OUTDIR + "/pktriggercord_"+formattedDate+".dng");
+			    File outFile = new File(getOutputDir() + "/pktriggercord_"+formattedDate+".dng");
 			    os = new FileOutputStream(outFile);
 			    PkTriggerCord.copyStream( is, os, jpegLength, pCallback );
 			    os.close();
