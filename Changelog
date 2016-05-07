@@ -4,6 +4,7 @@ version 0.83.01
 	android: bracketing (if set on the camera)
 	openbsd port ( thx Hannu Vuolasaho )
 	Testing support for K-500
+	Android: preferences
 
 version 0.83.00 ( 2016-01-29 )
 	Limited K-3 II support (Testing)
