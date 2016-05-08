@@ -525,7 +525,7 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s mm\n", "zoom", format_rational(status.zoom, "%.2f"));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "focus", status.focus);
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "color space", get_pslr_color_space_str(status.color_space));
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "image format", status.image_format);
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "image format", get_pslr_image_format_str(status.image_format));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "raw format", get_pslr_raw_format_str(status.raw_format));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "light meter flags", status.light_meter_flags);
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "ec", format_rational( status.ec, "%.2f" ) );

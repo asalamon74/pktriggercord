@@ -121,6 +121,13 @@ typedef enum {
 } pslr_custom_ev_steps_t;
 
 typedef enum {
+    PSLR_IMAGE_FORMAT_JPEG,
+    PSLR_IMAGE_FORMAT_RAW,
+    PSLR_IMAGE_FORMAT_RAW_PLUS,
+    PSLR_IMAGE_FORMAT_MAX
+} pslr_image_format_t;
+
+typedef enum {
     PSLR_RAW_FORMAT_PEF,
     PSLR_RAW_FORMAT_DNG,
     PSLR_RAW_FORMAT_MAX
@@ -182,6 +189,8 @@ const char *get_pslr_white_balance_mode_str( pslr_white_balance_mode_t value );
 
 //pslr_custom_ev_steps_t get_pslr_custom_ev_steps( char *str );
 const char *get_pslr_custom_ev_steps_str( pslr_custom_ev_steps_t value );
+
+const char *get_pslr_image_format_str( pslr_image_format_t value );
 
 const char *get_pslr_raw_format_str( pslr_raw_format_t value );
 

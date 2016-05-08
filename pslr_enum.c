@@ -123,6 +123,12 @@ const char* pslr_custom_ev_steps_str[PSLR_CUSTOM_EV_STEPS_MAX] = {
     "1/3"
 };
 
+const char* pslr_image_format_str[PSLR_IMAGE_FORMAT_MAX] = {
+    "JPEG",
+    "RAW",
+    "RAW+"
+};
+
 const char* pslr_raw_format_str[PSLR_RAW_FORMAT_MAX] = {
     "PEF",
     "DNG"
@@ -257,6 +263,10 @@ const char *get_pslr_white_balance_mode_str( pslr_white_balance_mode_t value ) {
 
 const char *get_pslr_custom_ev_steps_str( pslr_custom_ev_steps_t value ) {
     return pslr_custom_ev_steps_str[value];
+}
+
+const char *get_pslr_image_format_str( pslr_image_format_t value ) {
+    return pslr_image_format_str[value];
 }
 
 const char *get_pslr_raw_format_str( pslr_raw_format_t value ) {
