@@ -486,6 +486,23 @@ void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id2 = get_uint32_be( &buf[0x19C]);
 }
 
+void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
+    uint8_t *buf = p->status_buffer;
+    if( debug ) {
+        ipslr_status_diff(buf);
+    }
+
+    memset(status, 0, sizeof (*status));
+    ipslr_status_parse_common( p, status, 0 );
+    status->zoom.nom = get_uint32_be(&buf[0x1A0]);
+    status->zoom.denom = get_uint32_be(&buf[0x1A4]);
+    //    status->focus = get_int32_be(&buf[0x1A8]); // ?
+    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F;
+    status->lens_id2 = get_uint32_be( &buf[0x19C]);
+    // cannot read max_shutter_speed from status buffer, hardwire the values here
+    status->max_shutter_speed.nom = 1;
+    status->max_shutter_speed.denom = 6000;
+}
 
 void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
@@ -593,7 +610,7 @@ ipslr_model_info_t camera_models[] = {
     { 0x12fb6, "K-50",        0, 1, 0, 452,  4, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k50   },
     { 0x12fc0, "K-3"        , 0, 1, 1, 452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k3    },
     { 0x1309c, "K-3II"      , 0, 1, 1, 452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k3    },
-    { 0x12fca, "K-500",       0, 1, 0, 452,  3, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_RADIANT,       1, ipslr_status_parse_k50   },
+    { 0x12fca, "K-500",       0, 1, 0, 452,  3, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_RADIANT,       1, ipslr_status_parse_k500  },
     // only limited support from here
     { 0x12994, "*ist D",      1, 1, 0, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_NONE  , 0, NULL}, // buffersize: 264
     { 0x12b60, "*ist DS2",    1, 1, 0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, 0, NULL},
