@@ -35,7 +35,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ToneGenerator;
 import android.media.AudioManager;
-import android.widget.Toast;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 public class MainActivity extends Activity {
     private static final int BUFF_LEN = 1024;
@@ -53,6 +54,19 @@ public class MainActivity extends Activity {
     private ToneGenerator toneG;
     private Timer updateTimer = new Timer();
     private Timer actionTimer = new Timer();
+
+    private void alert(String str) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(str);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                              new DialogInterface.OnClickListener() {
+                                  public void onClick(DialogInterface dialog, int which) {
+                                      dialog.dismiss();
+                                  }
+                              });
+        alertDialog.show();
+    }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,6 +127,7 @@ public class MainActivity extends Activity {
 	File outputDir = new File(getOutputDir());
 	if( !outputDir.exists() && !outputDir.mkdir() ) {           
 	    Log.e( PkTriggerCord.TAG, "Cannot create output directory" );
+            alert("Cannot create output directory "+getOutputDir()+"\nPlease change the directory in preferences");
 	}
 	
 	updateTimer = callAsynchronousTask(0, 0, 0, 200, (CliParam[])null);
