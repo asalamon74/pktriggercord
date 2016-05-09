@@ -9,5 +9,5 @@
         android:title="@string/titleSaveDir"
         android:summary="@string/summarySaveDir"
         android:key="savedir"
-        android:defaultValue="/storage/sdcard0" />
+        android:defaultValue="/mnt/sdcard" />
 </PreferenceScreen>

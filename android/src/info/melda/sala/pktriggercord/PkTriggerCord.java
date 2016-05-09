@@ -36,7 +36,7 @@ public class PkTriggerCord extends Application {
     }
 
     public String getSaveDir() {
-        return prefs.getString("savedir", "/storage/sdcard0");
+        return prefs.getString("savedir", "/mnt/sdcard");
     }
 
     private void startCli() {
