@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.2 -->
-<!-- CreationDate: Sat Jan  2 09:10:07 2016 -->
+<!-- CreationDate: Mon May  9 08:37:59 2016 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -118,7 +118,7 @@ software connects to the first available Pentax camera.</p>
 Useful if more than one camera is connected. Valid (
 case-insensitive ) values are: K20d, K10d, GX10, GX20, K-x,
 K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01,
-K-5II, K-5IIs, K-3, K-3II.</p>
+K-5II, K-5IIs, K-3, K-3II, K-500.</p>
 
 
 <p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;device</b>
@@ -216,7 +216,7 @@ process.</p>
 <p style="margin-left:17%;">The program waits for commands
 using port number 8888. The program ends if no client
 connects for 30 seconds. Different timeout value can be
-specified by --servermode_timeout.</p>
+specified by &minus;&minus;servermode_timeout.</p>
 
 
 <p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;servermode_timeout</b>
@@ -279,8 +279,8 @@ valus: 2.8, 5.6, 11 (depends on the lens).</p>
 
 <p style="margin-left:17%;">Specify shutter speed. Value
 should be specified in the following format: 1/50, 1/500,
-... Values greater than 30 sec only allowed if Bulb mode is
-already set.</p>
+0.5, 5, ... Values greater than 30 sec only allowed if Bulb
+mode is already set.</p>
 
 
 <p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;af_mode</b>
@@ -456,10 +456,10 @@ shutter).</p>
 <p style="margin-left:17%;">Shutter (full pressing).</p>
 
 
-<p style="margin-left:11%; margin-top: 1em"><b>delete_buffer</b></p>
+<p style="margin-left:11%; margin-top: 1em"><b>delete_buffer</b>
+<i>BUFFER_INDEX</i></p>
 
-<p style="margin-left:17%;">Delete the first buffer
-image.</p>
+<p style="margin-left:17%;">Delete a buffer image.</p>
 
 
 <p style="margin-left:11%; margin-top: 1em"><b>update_status</b></p>
@@ -497,15 +497,38 @@ image.</p>
 <p style="margin-left:17%;">Get buffer mask.</p>
 
 
-<p style="margin-left:11%; margin-top: 1em"><b>get_preview_buffer</b></p>
+<p style="margin-left:11%; margin-top: 1em"><b>get_auto_bracket_mode</b></p>
 
-<p style="margin-left:17%;">Get the first preview
-buffer.</p>
+<p style="margin-left:17%;">Get auto bracket mode.</p>
 
 
-<p style="margin-left:11%; margin-top: 1em"><b>get_buffer</b></p>
+<p style="margin-left:11%; margin-top: 1em"><b>get_auto_bracket_picture_count</b></p>
 
-<p style="margin-left:17%;">Get the first buffer.</p>
+<p style="margin-left:17%;">Get Auto bracket picture
+count.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_preview_buffer</b>
+<i>BUFFER_INDEX</i></p>
+
+<p style="margin-left:17%;">Get the preview buffer.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>get_buffer</b>
+<i>BUFFER_INDEX</i></p>
+
+<p style="margin-left:17%;">Get the image buffer.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>set_shutter_speed</b>
+<i>SHUTTER_SPEED</i></p>
+
+<p style="margin-left:17%;">Set shutter speed.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>set_iso</b>
+<i>ISO</i></p>
+
+<p style="margin-left:17%;">Set ISO.</p>
 
 
 <p style="margin-left:11%; margin-top: 1em"><b>disconnect</b></p>
@@ -523,6 +546,12 @@ client to connect.</p>
 <p style="margin-left:11%; margin-top: 1em"><b>echo</b></p>
 
 <p style="margin-left:17%;">Test command.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>usleep</b>
+<i>MICROSECONDS</i></p>
+
+<p style="margin-left:17%;">Sleep some number of
+microseconds.</p>
 
 <h2>SEE ALSO
 <a name="SEE ALSO"></a>
