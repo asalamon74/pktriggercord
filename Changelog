@@ -3,7 +3,7 @@ version 0.83.01
 	servermode: avoid segmentation fault if camera is not connected
 	android: bracketing (if set on the camera)
 	openbsd port ( thx Hannu Vuolasaho )
-	Testing support for K-500
+	K-500 support
 	Android preferences: showPreview, saveDir
 	Android cheching directory
 	Changing android default directory to /mnt/sdcard

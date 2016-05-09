@@ -208,7 +208,7 @@
 Based on PkRemote (c) 2008 Pontus Lidman</property>
     <property name="comments" translatable="yes">Remote control software for Pentax DSLR cameras.
 Currently supported: K-x, K10D, K20D, *ist DS, K200D, K-7, K-5, K-r,
-    K-30, K-01, K-5 II, K-5 IIs, K-3, K-3II</property>
+    K-30, K-01, K-5 II, K-5 IIs, K-3, K-3II, K-500</property>
     <property name="license" translatable="yes">
 
                    GNU LESSER GENERAL PUBLIC LICENSE
