@@ -33,6 +33,7 @@ the camera.
 - Pentax K-5 II / K-5 IIs
 - Pentax K-50 (bugs)
 - Pentax K-3 / K-3 II
+- Pentax K-500
 
 ###Limited support
 
