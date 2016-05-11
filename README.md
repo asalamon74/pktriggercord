@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/asalamon74/pktriggercord.svg?branch=master)](https://travis-ci.org/asalamon74/pktriggercord)
+
 #PkTriggerCord
 
 Remote control (tethering) for Pentax DSLR cameras.
