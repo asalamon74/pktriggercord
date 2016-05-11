@@ -1,6 +1,6 @@
 version 0.84.01
 	Android code cleanup
-	
+
 version 0.84.00 ( 2016-05-09 )
 	servermode subcommand: set_shutter_speed, set_iso, usleep
 	servermode: avoid segmentation fault if camera is not connected
