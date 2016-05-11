@@ -6,6 +6,7 @@ android:
     - build-tools-23.0.1
     - android-12
 before_install:
+  - make
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
 script: make android
