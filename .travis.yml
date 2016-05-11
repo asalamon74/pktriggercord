@@ -1,2 +1,5 @@
 language: android
+android:
+  components:
+    - build-tools-23.0.1
 script: make android
