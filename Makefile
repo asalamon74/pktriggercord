@@ -9,7 +9,7 @@ MAN1DIR = $(MANDIR)/man1
 LIN_CFLAGS = $(CFLAGS)
 LIN_LDFLAGS = $(LDFLAGS)
 
-VERSION=0.84.00
+VERSION=0.84.01
 VERSIONCODE=$(shell echo $(VERSION) | sed s/\\.//g | sed s/^0// )
 # variables for RPM creation
 TOPDIR=$(HOME)/rpmbuild
@@ -181,7 +181,7 @@ androidcreate:
 	ln -s ../.. $(ANDROID_DIR)/jni/src
 
 $(ANDROID_DIR)/build.xml $(ANDROID_DIR)/local.properties:
-	$(ANDROID) update project --path $(ANDROID_DIR) --target android-12
+	$(ANDROID) update project --path $(ANDROID_DIR)
 
 androidcli: $(ANDROID_DIR)/build.xml $(ANDROID_DIR)/local.properties
 	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD)
