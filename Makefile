@@ -29,7 +29,11 @@ ANDROID_DIR = android
 ANDROID_ANT_FILE = $(ANDROID_DIR)/build.xml
 ANDROID_PROJECT_NAME = PkTriggerCord
 APK_FILE = $(PROJECT_NAME)-debug.apk
-NDK_BUILD = ndk-build
+ifndef ANDROID_NDK_HOME
+NDK_BUILD=ndk-build
+else
+NDK_BUILD = $(ANDROID_NDK_HOME)/ndk-build
+endif
 
 LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
 LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0)
