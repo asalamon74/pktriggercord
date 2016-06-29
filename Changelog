@@ -2,6 +2,7 @@ version 0.84.01
 	Android code cleanup
 	Possibility to read lens database from latest exiftool
 	Updating lens info database ( exiftool 10.160 )
+	Testing support for K-1
 
 version 0.84.00 ( 2016-05-09 )
 	servermode subcommand: set_shutter_speed, set_iso, usleep
