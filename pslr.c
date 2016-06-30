@@ -51,7 +51,7 @@
 #include "pslr_scsi.h"
 #include "pslr_lens.h"
 
-#define POLL_INTERVAL 100000 /* Number of us to wait when polling */
+#define POLL_INTERVAL 50000 /* Number of us to wait when polling */
 #define BLKSZ 65536 /* Block size for downloads; if too big, we get
                      * memory allocation error from sg driver */
 #define BLOCK_RETRY 3 /* Number of retries, since we can occasionally
