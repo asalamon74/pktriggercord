@@ -546,6 +546,13 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     memset(status, 0, sizeof (*status));
     ipslr_status_parse_common( p, status, 0 );
 // jpeg hue is invalid
+
+// parse_common returns invalid values for the following fields. Fixing the fields:
+    status->current_shutter_speed.nom = get_uint16_le(&buf[0x110]);
+    status->current_shutter_speed.denom = get_uint16_le(&buf[0x114]);
+    status->current_aperture.nom = get_uint16_le(&buf[0x118]);
+    status->current_aperture.denom = get_uint16_le(&buf[0x11c]);
+
     status->bufmask = get_uint16_le( &buf[0x1C]);
     status->zoom.nom = get_uint32_le(&buf[0x1A4]);
     status->zoom.denom = get_uint32_le(&buf[0x1A8]);
