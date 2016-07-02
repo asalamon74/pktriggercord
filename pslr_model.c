@@ -547,8 +547,8 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     ipslr_status_parse_common( p, status, 0 );
 // jpeg hue is invalid
     status->bufmask = get_uint16_le( &buf[0x1C]);
-//    status->zoom.nom = get_uint32_le(&buf[0x1A0]);
-//    status->zoom.denom = get_uint32_le(&buf[0x1A4]);
+    status->zoom.nom = get_uint32_le(&buf[0x1A4]);
+    status->zoom.denom = get_uint32_le(&buf[0x1A8]);
 //    status->focus = get_int32_le(&buf[0x1A8]);
     status->lens_id1 = (get_uint32_le( &buf[0x194])) & 0x0F;
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
