@@ -39,7 +39,7 @@
 #include "pslr_scsi.h"
 
 #define MAX_RESOLUTION_SIZE 4
-#define MAX_STATUS_BUF_SIZE 452
+#define MAX_STATUS_BUF_SIZE 456
 #define MAX_SEGMENTS 4
 
 typedef struct ipslr_handle ipslr_handle_t;
