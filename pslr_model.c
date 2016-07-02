@@ -551,6 +551,9 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
 //    status->focus = get_int32_le(&buf[0x1A8]);
 //    status->lens_id1 = (get_uint32_le( &buf[0x190])) & 0x0F;
 //    status->lens_id2 = get_uint32_le( &buf[0x19C]);
+    // cannot read max_shutter_speed from status buffer, hardwire the values here
+    status->max_shutter_speed.nom = 1;
+    status->max_shutter_speed.denom = 8000;
 }
 
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
