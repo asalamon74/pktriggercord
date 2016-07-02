@@ -545,13 +545,24 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
 
     memset(status, 0, sizeof (*status));
     ipslr_status_parse_common( p, status, 0 );
-// jpeg hue is invalid
-
 // parse_common returns invalid values for the following fields. Fixing the fields:
-    status->current_shutter_speed.nom = get_uint16_le(&buf[0x110]);
-    status->current_shutter_speed.denom = get_uint16_le(&buf[0x114]);
-    status->current_aperture.nom = get_uint16_le(&buf[0x118]);
-    status->current_aperture.denom = get_uint16_le(&buf[0x11c]);
+
+    status->jpeg_hue = get_uint32_le(&buf[0x100]);
+    status->current_shutter_speed.nom = get_uint32_le(&buf[0x110]);
+    status->current_shutter_speed.denom = get_uint32_le(&buf[0x114]);
+    status->current_aperture.nom = get_uint32_le(&buf[0x118]);
+    status->current_aperture.denom = get_uint32_le(&buf[0x11c]);
+    status->max_shutter_speed.nom = get_uint32_le(&buf[0x130]);
+    status->max_shutter_speed.denom = get_uint32_le(&buf[0x134]);
+    status->current_iso = get_uint32_le(&buf[0x138]);
+    status->light_meter_flags = get_uint32_le(&buf[0x140]); // ?
+    status->lens_min_aperture.nom = get_uint32_le(&buf[0x148]);
+    status->lens_min_aperture.denom = get_uint32_le(&buf[0x14c]);
+    status->lens_max_aperture.nom = get_uint32_le(&buf[0x150]);
+    status->lens_max_aperture.denom = get_uint32_le(&buf[0x154]);
+    status->manual_mode_ev = get_uint32_le(&buf[0x160]); // ?
+    status->focused_af_point = get_uint32_le(&buf[0x16c]); // ?
+    // battery fields?
 
     status->bufmask = get_uint16_le( &buf[0x1C]);
     status->zoom.nom = get_uint32_le(&buf[0x1A4]);
@@ -559,9 +570,6 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
 //    status->focus = get_int32_le(&buf[0x1A8]);
     status->lens_id1 = (get_uint32_le( &buf[0x194])) & 0x0F;
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
-    // cannot read max_shutter_speed from status buffer, hardwire the values here
-    status->max_shutter_speed.nom = 1;
-    status->max_shutter_speed.denom = 8000;
 }
 
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
