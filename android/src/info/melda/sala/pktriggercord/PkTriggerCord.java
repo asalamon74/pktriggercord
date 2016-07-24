@@ -153,25 +153,28 @@ public class PkTriggerCord extends Application {
 	}
 
 	if( needCliInstall ) {
+            Log.v( TAG, "needCliInstall");
 	    final int myUid = android.os.Process.myUid();
+            Log.v( TAG, "myUid:"+myUid);
 	    simpleSudoWrapper( new ArrayList<String>() {{
 			add("mkdir -p "+CLI_HOME+CLI_DIR);
 			add("chown "+myUid+" "+CLI_HOME+CLI_DIR);
 			add("chmod 777 "+CLI_HOME+CLI_DIR);
 		    }});
-
-
+            Log.v( TAG, "After first simpleSudoWrapper");
 	    simpleSudoWrapper("rm -f "+fullFileName);
+            Log.v( TAG, "After rm -f");
 	    OutputStream out = new FileOutputStream(fullFileName);
 	    copyStream(in, out);
-
 	    in.close();
 	    //        in = null;
 	    out.flush();
 	    out.close();
 	    //        out = null;
 	    //	simpleSudoWrapper("chown root "+fullFileName);
+            Log.v( TAG, "before chmod 4777");
 	    simpleSudoWrapper("chmod 4777 "+fullFileName);
+            Log.v( TAG, "End of needCliInstall");
 	}
     }
 
