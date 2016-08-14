@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.res.AssetManager;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,8 @@ import java.security.MessageDigest;
 
 public class PkTriggerCord extends Application {
     public static final String TAG = "PkTriggerCord";
-    private static final String CLI_HOME = "/data/local/";
-    private static final String CLI_DIR = "pktriggercord";
+    private String cliHome;
+    //    private static final String CLI_DIR = "pktriggercord";
     private static final int MARK_LIMIT = 1000000;
     private Process p;
     private SharedPreferences prefs;
@@ -23,6 +24,9 @@ public class PkTriggerCord extends Application {
     @Override
     public void onCreate() {
 	super.onCreate();
+
+        cliHome = getApplicationContext().getFilesDir().getAbsolutePath();
+
         PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	Log.v( TAG, "Before installCli");
@@ -42,7 +46,7 @@ public class PkTriggerCord extends Application {
     private void startCli() {
 	try {
 	    p = new ProcessBuilder()
-		.command("su", "-c", CLI_HOME+CLI_DIR+"/pktriggercord-cli --servermode")
+		.command("su", "-c", cliHome+"/pktriggercord-cli --servermode")
 		.start();
 	    SystemClock.sleep(1000);
 	} catch( Exception e ) {
@@ -137,7 +141,7 @@ public class PkTriggerCord extends Application {
 	boolean needCliInstall;
         AssetManager assetManager =  getAssets();
 	InputStream in = assetManager.open(fileName);
-	String fullFileName = CLI_HOME + CLI_DIR + "/" + fileName;
+	String fullFileName = cliHome + "/" + fileName;
 
 	try {
 	    FileInputStream fis = new FileInputStream(fullFileName);
@@ -157,9 +161,9 @@ public class PkTriggerCord extends Application {
 	    final int myUid = android.os.Process.myUid();
             Log.v( TAG, "myUid:"+myUid);
 	    simpleSudoWrapper( new ArrayList<String>() {{
-			add("mkdir -p "+CLI_HOME+CLI_DIR);
-			add("chown "+myUid+" "+CLI_HOME+CLI_DIR);
-			add("chmod 777 "+CLI_HOME+CLI_DIR);
+			add("mkdir -p "+cliHome);
+			add("chown "+myUid+" "+cliHome);
+			add("chmod 777 "+cliHome);
 		    }});
             Log.v( TAG, "After first simpleSudoWrapper");
 	    simpleSudoWrapper("rm -f "+fullFileName);

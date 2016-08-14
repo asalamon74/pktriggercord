@@ -11,7 +11,7 @@ LOCAL_SRC_FILES := ../../pslr_enum.c \
 	../../pktriggercord-servermode.c \
 	../../pktriggercord-cli.c
 DEFINES 	:= -DANDROID -DVERSION=\"$(VERSION)\" 
-LOCAL_CFLAGS  	:= $(DEFINES) -frtti -I.. -Istlport -g 
-LOCAL_LDLIBS	:= -llog -lstdc++
+LOCAL_CFLAGS  	:= $(DEFINES) -frtti -I.. -Istlport -g -fPIE
+LOCAL_LDLIBS	:= -llog -lstdc++ -fPIE -pie
 
 include $(BUILD_EXECUTABLE)
