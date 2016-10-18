@@ -1,7 +1,7 @@
 version 0.84.01
 	Android code cleanup
 	Possibility to read lens database from latest exiftool
-	Updating lens info database ( exiftool 10.200 )
+	Updating lens info database ( exiftool 10.300 )
 	Testing support for K-1
 	Small speedup
 	Increase Android 5 compatibility
