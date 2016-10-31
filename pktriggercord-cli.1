@@ -408,17 +408,32 @@ Sleep some number of microseconds\.
 .SH "EXAMPLES"
 .PP
 .CDS
-\fBpktriggercord\-cli\fR \fB\-\-status\fR\fR
+\fBpktriggercord\-cli\fR \fB\-\-status\fR
 .CDE
 .RS 4
-Connects to the camera and prints out status info\.
+\fRConnects to the camera and prints out status info\.
 .RE
 .PP
 .CDS
-\fBpktriggercord\-cli\fR \fB\-\-status_hex\fR\fR
+\fBpktriggercord\-cli\fR \fB\-\-status_hex\fR
 .CDE
 .RS 4
-Connects to the camera and prints out hexadecimal and human-readable status info\.
+\fRConnects to the camera and prints out hexadecimal and human-readable status info\.
+.RE
+.PP
+.CDS
+\fBpktriggercord\-cli\fR \fB\-\-file_format\fR \fBdng\fR \fB-o\fR \fBtest.dng\fR
+.CDE
+.RS 4
+\fRTakes a single image and saves it as test.dng\.
+.RE
+.PP
+.CDS
+\fBpktriggercord\-cli\fR \fB\-\-file_format\fR \fBdng\fR \fB-F\fR \fB5\fR \fB-d\fR \fB20\fR \fB-o\fR \fBtest\fR
+.CDE
+.RS 4
+\fRTakes five images using 20 seconds delay and saves them
+test-0000.dng, test-0001.dng \.\.\. \.
 .RE
 .PP
 To track down errors, you can add the
