@@ -1,4 +1,4 @@
-version 0.84.01
+version 0.84.02 ( 2016-10-31 )
 	Android code cleanup
 	Possibility to read lens database from latest exiftool
 	Updating lens info database ( exiftool 10.300 )
