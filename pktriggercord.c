@@ -524,13 +524,13 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
     /* JPEG hue */
-    DPRINT("init controls hue\n");
+//    DPRINT("init controls hue\n");
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_hue_scale"));
     bool sensitive_hue = st_new;
     if (st_new) {
         gtk_range_set_value(GTK_RANGE(pw), (gdouble)st_new->jpeg_hue - get_jpeg_property_shift());
 	bool has_jpeg_hue = pslr_get_model_has_jpeg_hue( camhandle );
-	DPRINT("has_jpeg_hue %d\n",has_jpeg_hue);
+//	DPRINT("has_jpeg_hue %d\n",has_jpeg_hue);
 	sensitive_hue &= has_jpeg_hue;
     }
     gtk_widget_set_sensitive(pw, sensitive_hue);
@@ -1705,10 +1705,19 @@ G_MODULE_EXPORT gchar* ec_scale_format_value_cb(GtkAction *action, gdouble value
 
 G_MODULE_EXPORT void aperture_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
+//    DPRINT("APERTURE CHANGE\n");  
     gdouble a;
     pslr_rational_t value;
     int idx;
     int ret;
+
+    if( in_initcontrols ) {
+        return;
+    }
+
+    if (!status_new) {
+        return;
+    }
     a = gtk_range_get_value(GTK_RANGE(GW("aperture_scale")));
     idx = rint(a);
     assert(idx >= 0);
