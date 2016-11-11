@@ -9,7 +9,7 @@
 /pkTriggerCord-*.src.tar.gz
 /pktriggercord-*.rpm
 /pktriggercord*.deb
-/PkTriggerCord*.apk
+/*PkTriggerCord*.apk
 /android/bin
 /android/gen
 /android/libs

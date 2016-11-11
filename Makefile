@@ -28,6 +28,7 @@ ANDROID=android
 ANDROID_DIR = android
 ANDROID_ANT_FILE = $(ANDROID_DIR)/build.xml
 ANDROID_PROJECT_NAME = PkTriggerCord
+ANDROID_PACKAGE = info.melda.sala.pktriggercord
 APK_FILE = $(PROJECT_NAME)-debug.apk
 ifndef ANDROID_NDK_HOME
 NDK_BUILD=ndk-build
@@ -179,7 +180,7 @@ androidcreate:
 	--path $(ANDROID_DIR) \
 	--target android-12 \
 	--name $(ANDROID_PROJECT_NAME) \
-	--package info.melda.sala.pktriggercord \
+	--package $(ANDROID_PACKAGE) \
 	--activity MainActivity
 	mkdir $(ANDROID_DIR)/jni
 	ln -s ../.. $(ANDROID_DIR)/jni/src
@@ -200,9 +201,16 @@ androidver:
 	sed -i s/android:versionName=\".*\"/android:versionName=\"$(VERSION)\"/ $(ANDROID_DIR)/AndroidManifest.xml
 	sed -i s/android:versionCode=\".*\"/android:versionCode=\"$(VERSIONCODE)\"/ $(ANDROID_DIR)/AndroidManifest.xml
 
-android: androidcli androidver $(ANDROID_DIR)/build.xml
+androidcommon: androidcli androidver $(ANDROID_DIR)/build.xml
 	mkdir -p $(ANDROID_DIR)/assets
 	cp $(ANDROID_DIR)/libs/armeabi/pktriggercord-cli $(ANDROID_DIR)/assets
+
+android: androidcommon
 	ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -f $(ANDROID_ANT_FILE) debug
 	cp $(ANDROID_DIR)/bin/$(ANDROID_PROJECT_NAME)-debug.apk $(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk
+	echo "android build is EXPERIMENTAL. Use it at your own risk"
+
+androidrelease: androidcommon
+	ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -f $(ANDROID_ANT_FILE) release
+	cp $(ANDROID_DIR)/bin/$(ANDROID_PROJECT_NAME)-release.apk $(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-release.apk
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
