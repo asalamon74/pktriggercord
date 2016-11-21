@@ -1500,6 +1500,16 @@ static int read_result(int fd, uint8_t *buf, uint32_t n) {
     return PSLR_OK;
 }
 
+char *copyright() {
+    char *ret = malloc(sizeof(char)*1024);
+    sprintf(ret, "Copyright (C) 2011-2016 Andras Salamon\n\
+\n\
+Based on:\n\
+pslr-shoot (C) 2009 Ramiro Barreiro\n\
+PK-Remote (C) 2008 Pontus Lidman \n\n");
+    return ret;
+}
+
 /* -----------------------------------------------------------------------
  write_debug
 ----------------------------------------------------------------------- */

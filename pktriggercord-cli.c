@@ -106,7 +106,6 @@ static struct option const longopts[] ={
 int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, int);
 void print_status_info(pslr_handle_t h, pslr_status status);
 void usage(char*);
-void version(char*);
 
 int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
     int ofd = -1;
@@ -148,6 +147,15 @@ void process_wbadj( const char* argv0, const char chr, uint32_t adj, uint32_t *w
     } else {
 	warning_message("%s: Invalid white_balance_adjustment\n", argv0);
     }
+}
+
+char *copyright_version(char *name, char *version) {
+    char *ret = malloc(sizeof(char)*1024);
+    sprintf(ret, "%s %s\n\n\%s\
+License LGPLv3: GNU LGPL version 3 <http://gnu.org/licenses/lgpl.html>\n\
+This is free software: you are free to change and redistribute it.\n\
+There is NO WARRANTY, to the extent permitted by law.\n", name, version, copyright() );
+    return ret;
 }
 
 int main(int argc, char **argv) {
@@ -233,7 +241,7 @@ int main(int argc, char **argv) {
                 exit(-1);
                 /***************************************************************/
             case 'v':
-                version(argv[0]);
+                printf("%s", copyright_version(argv[0], VERSION));
                 exit(0);
             case 6:
 		dust = true;
@@ -889,16 +897,4 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -h, --help                            display this help and exit\n\
       --pentax_debug_mode={0|1}		enable or disable camera debug mode and exit (DANGEROUS). Valid values are: 0, 1\n\
 \n", name);
-}
-
-void version(char *name) {
-    printf("\n%s %s\n\n\
-Copyright (C) 2011-2016 Andras Salamon\n\
-License LGPLv3: GNU LGPL version 3 <http://gnu.org/licenses/lgpl.html>\n\
-This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n\
-\n\
-Based on:\n\
-pslr-shoot (C) 2009 Ramiro Barreiro\n\
-PK-Remote (C) 2008 Pontus Lidman \n\n", name, VERSION);
 }

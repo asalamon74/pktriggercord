@@ -1115,6 +1115,9 @@ G_MODULE_EXPORT void menu_about_activate_cb(GtkAction *action, gpointer user_dat
     DPRINT("menu about.\n");
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "about_dialog"));
     gtk_about_dialog_set_version( GTK_ABOUT_DIALOG(pw), VERSION);
+
+    gtk_about_dialog_set_copyright( GTK_ABOUT_DIALOG(pw), copyright());
+
     gtk_dialog_run(GTK_DIALOG(pw));
     gtk_widget_hide(pw);
 }
