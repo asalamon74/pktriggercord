@@ -574,6 +574,44 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
 }
 
+// copy of parse_k1
+void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
+    uint8_t *buf = p->status_buffer;
+    if( debug ) {
+        ipslr_status_diff(buf);
+    }
+
+    memset(status, 0, sizeof (*status));
+    ipslr_status_parse_common( p, status, 0 );
+// parse_common returns invalid values for the following fields. Fixing the fields:
+
+    status->jpeg_hue = get_uint32_le(&buf[0x100]);
+    status->current_shutter_speed.nom = get_uint32_le(&buf[0x110]);
+    status->current_shutter_speed.denom = get_uint32_le(&buf[0x114]);
+    status->current_aperture.nom = get_uint32_le(&buf[0x118]);
+    status->current_aperture.denom = get_uint32_le(&buf[0x11c]);
+    status->max_shutter_speed.nom = get_uint32_le(&buf[0x130]);
+    status->max_shutter_speed.denom = get_uint32_le(&buf[0x134]);
+    status->current_iso = get_uint32_le(&buf[0x138]);
+    status->light_meter_flags = get_uint32_le(&buf[0x140]); // ?
+    status->lens_min_aperture.nom = get_uint32_le(&buf[0x148]);
+    status->lens_min_aperture.denom = get_uint32_le(&buf[0x14c]);
+    status->lens_max_aperture.nom = get_uint32_le(&buf[0x150]);
+    status->lens_max_aperture.denom = get_uint32_le(&buf[0x154]);
+    status->manual_mode_ev = get_uint32_le(&buf[0x160]); // ?
+    status->focused_af_point = get_uint32_le(&buf[0x16c]); // ?
+    // battery fields?
+
+// selected_af_point is invalid
+
+    status->bufmask = get_uint16_le( &buf[0x1C]);
+    status->zoom.nom = get_uint32_le(&buf[0x1A4]);
+    status->zoom.denom = get_uint32_le(&buf[0x1A8]);
+//    status->focus = get_int32_le(&buf[0x1A8]);
+    status->lens_id1 = (get_uint32_le( &buf[0x194])) & 0x0F;
+    status->lens_id2 = get_uint32_le( &buf[0x1A0]);
+}
+
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if( debug ) {
@@ -659,7 +697,7 @@ ipslr_model_info_t camera_models[] = {
     { 0x1301a, "K-S1",        0, 1, 1, 452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k3    },
     { 0x13024, "K-S2",        0, 1, 1, 452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, ipslr_status_parse_k3    },
     { 0x13092, "K-1",         0, 1, 1, 456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_RADIANT, 1, ipslr_status_parse_k1      },	
-    { 0x13222, "K-70",        0, 1, 1, 0,   3, {24, 14, 6, 2}, 9, 6000, 100, 102400, 100, 102400, PSLR_JPEG_IMAGE_TONE_RADIANT, 1, NULL }
+    { 0x13222, "K-70",        0, 1, 1, 456,  3, {24, 14, 6, 2}, 9, 6000, 100, 102400, 100, 102400, PSLR_JPEG_IMAGE_TONE_RADIANT, 1, ipslr_status_parse_k70 }
 };
 
 ipslr_model_info_t *find_model_by_id( uint32_t id ) {
