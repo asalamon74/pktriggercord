@@ -564,7 +564,8 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     status->focused_af_point = get_uint32_le(&buf[0x16c]); // ?
     // battery fields?
 
-// selected_af_point is invalid
+    // selected_af_point is invalid
+    status->selected_af_point = 0;
 
     status->bufmask = get_uint16_le( &buf[0x1C]);
     status->zoom.nom = get_uint32_le(&buf[0x1A4]);
@@ -602,7 +603,8 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     status->focused_af_point = get_uint32_le(&buf[0x16c]); // ?
     // battery fields?
 
-// selected_af_point is invalid
+    // selected_af_point is invalid
+    status->selected_af_point = 0;
 
     status->bufmask = get_uint16_le( &buf[0x1C]);
     status->zoom.nom = get_uint32_le(&buf[0x1A4]);
