@@ -4,5 +4,9 @@
     android:title="@string/titlePrefs"
     android:icon="@android:drawable/ic_menu_preferences">
     </item>
+  <item android:id="@+id/itemAbout"
+    android:title="@string/titleAbout"
+    android:icon="@android:drawable/ic_menu_info_details">
+    </item>
 </menu>
 

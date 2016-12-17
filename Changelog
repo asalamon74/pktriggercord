@@ -3,6 +3,7 @@ version 0.84.03
 	about/version code cleanup
 	Testing suport for K-70
 	K-70, K-1 selected_af_point hack
+	Android: about window
 
 version 0.84.02 ( 2016-10-31 )
 	Android code cleanup
