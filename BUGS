@@ -46,3 +46,20 @@ K-50
 ----
 
   K-50: bulb mode is not working
+
+  K-50: Shutter speed change sometime changes the shutter speed to
+  9999s
+
+K-30
+----
+
+  K-30: Shutter speed change sometime changes the shutter speed to
+  9999s
+
+  K-30: Incorrect exposure mode reading
+
+  K-30: Program does not work correctly using old firmwares. Firmware
+  1.06 is recommended.
+
+  K-30: Requires turning on the camera first and connect using USB
+  only after that.
