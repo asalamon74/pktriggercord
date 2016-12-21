@@ -1,23 +1,18 @@
-Known bugs of pkTriggerCord:
+Known bugs of pkTriggerCord
+============================
 
-  Sometimes it requires root privileges.
+General
+-------
 
   Setting jpeg sharpness/contrast/saturation has no effect sometimes.
+
+  Downloading jpeg with non-maximal resolution does not work.
 
   Taking picture restores jpeg image tone, so jpeg image tone setting
   is quite useless.
 
-  Downloading jpeg with non-maximal resolution does not work.
-
   Setting exposure mode has no effect ( maybe it's not a bug only it's
   not allowed ).
-
-  K-x: Changing shutter speed to 1/6000 is not working. It changes to 1/8 
-  instead.
-
-  K-x: Cannot change ISO in M mode.
-
-  K-x: Muted jpeg image tone is not working
 
   ISO table of GUI only shows the extended iso range even is base iso
   range is set.
@@ -29,7 +24,25 @@ Known bugs of pkTriggerCord:
 
   Top LCD panel is flashing
 
+Linux
+-----
+
+  Sometimes it requires root privileges.
+
+K-x
+---
+
+  K-x: Changing shutter speed to 1/6000 is not working. It changes to 1/8 
+  instead.
+
+  K-x: Cannot change ISO in M mode.
+
+  K-x: Muted jpeg image tone is not working
+
   K-x firmware 1.02 or 1.03: Image artifacts during timelapse
   photos. Workaround: Use firmware 1.01
+
+K-50
+----
 
   K-50: bulb mode is not working
