@@ -606,7 +606,7 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     // selected_af_point is invalid
     status->selected_af_point = 0;
 
-    status->bufmask = get_uint16_le( &buf[0x1C]);
+    status->bufmask = get_uint16_le( &buf[0x0C]);
     status->zoom.nom = get_uint32_le(&buf[0x1A4]);
     status->zoom.denom = get_uint32_le(&buf[0x1A8]);
 //    status->focus = get_int32_le(&buf[0x1A8]);
