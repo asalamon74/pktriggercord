@@ -100,6 +100,7 @@ static struct option const longopts[] ={
     {"servermode_timeout", required_argument, NULL, 23},
 #endif
     {"pentax_debug_mode", required_argument, NULL,24},
+    {"dangerous", no_argument, NULL, 25},
     { NULL, 0, NULL, 0}
 };
 
@@ -215,6 +216,7 @@ int main(int argc, char **argv) {
 
     int modify_debug_mode=0;
     char debug_mode=0;
+    bool dangerous=0;
 
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
@@ -512,6 +514,10 @@ int main(int argc, char **argv) {
 	    case 24:
 		modify_debug_mode=1;
 		debug_mode=atoi(optarg);
+
+            case 25:
+                dangerous = true;
+                break;
         }
     }
 
@@ -540,6 +546,11 @@ int main(int argc, char **argv) {
     }
 
     camera_name = pslr_camera_name(camhandle);
+    if( strcmp(camera_name, "K-70")==0 && !dangerous ) {
+        printf("Tethering K-70 is dangerous, please check https://github.com/asalamon74/pktriggercord/issues/14\nIf you really want to use it you also need to add --dangerous to the command line.\n");
+	camera_close(camhandle);
+        exit(-1);
+    }
     printf("%s: %s Connected...\n", argv[0], camera_name);
 
 /* if debug mode switch is on, there is a possibility someone just want to alter debug mode */

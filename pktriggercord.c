@@ -197,6 +197,8 @@ bool need_histogram=false;
 static GtkListStore *list_store;
 
 bool debug = false;
+bool dangerous = false;
+bool dangerous_camera_connected = false;
 bool in_initcontrols = false;
 
 static const int THUMBNAIL_WIDTH = 160;
@@ -639,6 +641,11 @@ static gboolean status_poll(gpointer data)
     status_poll_inhibit = true;
 
     if (!camhandle) {
+        if( dangerous_camera_connected ) {
+            DPRINT("dangerous camera connected\n");
+            status_poll_inhibit = false;
+            return TRUE;
+        }
         camhandle = pslr_init( NULL, NULL );
         if (camhandle) {
             /* Try to reconnect */
@@ -669,6 +676,18 @@ static gboolean status_poll(gpointer data)
   	    DPRINT("after camera_specific_init\n");
             const char *name;
             name = pslr_camera_name(camhandle);
+
+            if( strcmp(name, "K-70")==0 && !dangerous ) {
+                DPRINT("Dangerous camera detected\n");
+                gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+                gtk_statusbar_push(statusbar, sbar_connect_ctx, "Tethering K-70 is dangerous. If you really want to use it you also need to add --dangerous to the command line.");
+                pslr_disconnect(camhandle);
+                pslr_shutdown(camhandle);
+                camhandle = NULL;
+                dangerous_camera_connected = true;
+                status_poll_inhibit = false;
+                return TRUE;
+            }
 
             snprintf(buf, sizeof(buf), "Connected: %s", name);
             buf[sizeof(buf)-1] = '\0';
@@ -2205,6 +2224,7 @@ static void which_shutter_table(pslr_status *st, pslr_rational_t **table, int *s
 
 static struct option const longopts[] ={
     {"debug", no_argument, NULL, 4},
+    {"dangerous", no_argument, NULL, 25},
     { NULL, 0, NULL, 0}
 };
 
@@ -2214,6 +2234,10 @@ void gui_getopt(int argc, char **argv) {
         switch (optc) {
             case 4:
                 debug = true;
+                break;
+
+            case 25:
+                dangerous = true;
                 break;
         }
     }
