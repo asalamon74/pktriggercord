@@ -514,6 +514,7 @@ int main(int argc, char **argv) {
 	    case 24:
 		modify_debug_mode=1;
 		debug_mode=atoi(optarg);
+		break;
 
             case 25:
                 dangerous = true;
