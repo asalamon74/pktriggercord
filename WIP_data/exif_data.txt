@@ -1,0 +1,52 @@
+test-linux-0000.dng  File name       : test-linux-0000.dng
+test-linux-0000.dng  File size       : 26571616 Bytes
+test-linux-0000.dng  MIME type       : image/tiff
+test-linux-0000.dng  Image size      : 6080 x 4032
+test-linux-0000.dng  Camera make     : RICOH IMAGING COMPANY, LTD.  
+test-linux-0000.dng  Camera model    : PENTAX K-3         
+test-linux-0000.dng  Image timestamp : 2016:03:23 17:10:17
+test-linux-0000.dng  Image number    : 
+test-linux-0000.dng  Exposure time   : 1/200 s
+test-linux-0000.dng  Aperture        : F13
+test-linux-0000.dng  Exposure bias   : 0 EV
+test-linux-0000.dng  Flash           : No, compulsory
+test-linux-0000.dng  Flash bias      : 
+test-linux-0000.dng  Focal length    : 50.0 mm (35 mm equivalent: 75.0 mm)
+test-linux-0000.dng  Subject distance: 
+test-linux-0000.dng  ISO speed       : 200
+test-linux-0000.dng  Exposure mode   : Manual
+test-linux-0000.dng  Metering mode   : Multi-segment
+test-linux-0000.dng  Macro mode      : 
+test-linux-0000.dng  Image quality   : 
+test-linux-0000.dng  Exif Resolution : 6080 x 4032
+test-linux-0000.dng  White balance   : Manual
+test-linux-0000.dng  Thumbnail       : None
+test-linux-0000.dng  Copyright       : CC-BY
+test-linux-0000.dng  Exif comment    : 
+
+test-openbsd-0000.dng File name       : test-openbsd-0000.dng
+test-openbsd-0000.dng File size       : 26562803 Bytes
+test-openbsd-0000.dng MIME type       : image/tiff
+test-openbsd-0000.dng Image size      : 6080 x 4032
+test-openbsd-0000.dng Camera make     : RICOH IMAGING COMPANY, LTD.  
+test-openbsd-0000.dng Camera model    : PENTAX K-3         
+test-openbsd-0000.dng Image timestamp : 2016:03:23 17:11:32
+test-openbsd-0000.dng Image number    : 
+test-openbsd-0000.dng Exposure time   : 1/200 s
+test-openbsd-0000.dng Aperture        : F13
+test-openbsd-0000.dng Exposure bias   : 0 EV
+test-openbsd-0000.dng Flash           : No, compulsory
+test-openbsd-0000.dng Flash bias      : 
+test-openbsd-0000.dng Focal length    : 50.0 mm (35 mm equivalent: 75.0 mm)
+test-openbsd-0000.dng Subject distance: 
+test-openbsd-0000.dng ISO speed       : 200
+test-openbsd-0000.dng Exposure mode   : Manual
+test-openbsd-0000.dng Metering mode   : Multi-segment
+test-openbsd-0000.dng Macro mode      : 
+test-openbsd-0000.dng Image quality   : 
+test-openbsd-0000.dng Exif Resolution : 6080 x 4032
+test-openbsd-0000.dng White balance   : Manual
+test-openbsd-0000.dng Thumbnail       : None
+test-openbsd-0000.dng Copyright       : CC-BY
+test-openbsd-0000.dng Exif comment    : 
+
