@@ -714,11 +714,13 @@ int main(int argc, char **argv) {
 	    hexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
         }
 	print_status_info( camhandle, status );
+	camera_close(camhandle);
 	exit(0);
     }
 
     if( dust ) {
 	pslr_dust_removal(camhandle);
+	camera_close(camhandle);	
 	exit(0);
     }
 

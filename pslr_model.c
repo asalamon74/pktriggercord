@@ -612,7 +612,7 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
 //    status->focus = get_int32_le(&buf[0x1A8]);
     status->lens_id1 = (get_uint32_le( &buf[0x194])) & 0x0F;
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
-    status->shake_reduction = get_uint32_be(&buf[0xe4]);
+    status->shake_reduction = get_uint32_le(&buf[0xe4]);
 }
 
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
