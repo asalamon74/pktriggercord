@@ -140,13 +140,13 @@ char *shexdump(uint8_t *buf, uint32_t bufLen) {
 
 void hexdump(uint8_t *buf, uint32_t bufLen) {
     char *dmp = shexdump(buf, bufLen);
-    printf(dmp);
+    printf("%s",dmp);
     free(dmp);
 }
 
 void hexdump_debug(uint8_t *buf, uint32_t bufLen) {
     char *dmp = shexdump(buf, bufLen);
-    DPRINT(dmp);
+    DPRINT("%s",dmp);
     free(dmp);
 }
 
