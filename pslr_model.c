@@ -35,6 +35,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
@@ -115,42 +116,38 @@ void set_uint32_be(uint32_t v, uint8_t *buf) {
     buf[3] = v;
 }
 
-void hexdump(uint8_t *buf, uint32_t bufLen) {
+char *shexdump(uint8_t *buf, uint32_t bufLen) {
+    char *ret = malloc(2000);
     uint32_t i;
+    sprintf(ret,"%s","");
     for (i = 0; i < bufLen; i++) {
         if (i % 16 == 0) {
-            printf("0x%04x | ", i);
+            sprintf(ret+strlen(ret),"0x%04x | ", i);
 	}
-        printf("%02x ", buf[i]);
+        sprintf(ret+strlen(ret), "%02x ", buf[i]);
         if (i % 8 == 7) {
-            printf(" ");
+            sprintf(ret+strlen(ret), " ");
 	}
         if (i % 16 == 15) {
-            printf("\n");
+            sprintf(ret+strlen(ret), "\n");
 	}
     }
     if (i % 16 != 15) {
-        printf("\n");
+        sprintf(ret+strlen(ret), "\n");
     }
+    return ret;
+}
+
+void hexdump(uint8_t *buf, uint32_t bufLen) {
+    char *dmp = shexdump(buf, bufLen);
+    printf(dmp);
+    free(dmp);
 }
 
 void hexdump_debug(uint8_t *buf, uint32_t bufLen) {
-    uint32_t i;
-    for (i = 0; i < bufLen; i++) {
-        if (i % 16 == 0) {
-            DPRINT("0x%04x | ", i);
-	}
-        DPRINT("%02x ", buf[i]);
-        if (i % 8 == 7) {
-            DPRINT(" ");
-	}
-        if (i % 16 == 15) {
-            DPRINT("\n");
-	}
-    }
-    if (i % 16 != 15) {
-        DPRINT("\n");
-    }
+    char *dmp = shexdump(buf, bufLen);
+    DPRINT(dmp);
+    free(dmp);
 }
 
 int _get_user_jpeg_stars( ipslr_model_info_t *model, int hwqual ) {
