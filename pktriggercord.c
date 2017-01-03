@@ -605,6 +605,8 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     gtk_widget_set_sensitive(pw, st_new != NULL);
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "status_button"));
     gtk_widget_set_sensitive(pw, st_new != NULL);
+    pw = GTK_WIDGET (gtk_builder_get_object (xml, "status_hex_button"));
+    gtk_widget_set_sensitive(pw, st_new != NULL);
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "green_button"));
     gtk_widget_set_sensitive(pw, st_new != NULL);
 
@@ -1480,8 +1482,31 @@ G_MODULE_EXPORT void status_button_clicked_cb(GtkAction *action)
     free( collected_status );
 
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "statuswindow"));
+    gtk_window_set_title( (GtkWindow *)pw, "Status Info");
     gtk_widget_show(pw);
 }
+
+G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action)
+{
+    DPRINT("Status hex");
+    GtkWidget *pw;
+
+    int bufsize = pslr_get_model_buffer_size( camhandle );
+    uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
+    pslr_get_status_buffer(camhandle, status_buffer);
+    char *collected_status_hex = shexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
+    GtkLabel *label = GTK_LABEL(GTK_WIDGET (gtk_builder_get_object (xml, "status_label")));
+
+    char *markup = g_markup_printf_escaped ("<tt>%s</tt>", collected_status_hex);
+    gtk_label_set_markup ( label, markup);
+    g_free (markup);
+    free( collected_status_hex );
+
+    pw = GTK_WIDGET (gtk_builder_get_object (xml, "statuswindow"));
+    gtk_window_set_title( (GtkWindow *)pw, "Status Hexdump");
+    gtk_widget_show(pw);
+}
+
 
 G_MODULE_EXPORT void green_button_clicked_cb(GtkAction *action)
 {

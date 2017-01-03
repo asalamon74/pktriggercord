@@ -801,6 +801,21 @@ Library.
                 <property name="position">2</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkButton" id="status_hex_button">
+                <property name="label" translatable="yes">Status Hexdump</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <signal handler="status_hex_button_clicked_cb" name="clicked"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -1731,7 +1746,6 @@ Library.
     <property name="width_request">640</property>
     <property name="height_request">480</property>
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Status Info</property>
     <signal handler="statuswindow_delete_event_cb" name="delete_event"/>
     <child>
       <object class="GtkScrolledWindow" id="scrolledwindow1">

@@ -6,6 +6,7 @@ version 0.84.03
 	Android: about window
 	K-1 bufmask testing
 	--dangerous hack
+	GUI: Status hexdump
 
 version 0.84.02 ( 2016-10-31 )
 	Android code cleanup
