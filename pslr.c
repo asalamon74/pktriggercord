@@ -558,7 +558,7 @@ int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     memset( st_buf, 0, MAX_STATUS_BUF_SIZE);
 //    CHECK(ipslr_status_full(p, &p->status));
-    ipslr_status_full(p, &p->status);
+//    ipslr_status_full(p, &p->status);
     memcpy(st_buf, p->status_buffer, MAX_STATUS_BUF_SIZE);
     return PSLR_OK;
 }
