@@ -605,8 +605,6 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     gtk_widget_set_sensitive(pw, st_new != NULL);
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "status_button"));
     gtk_widget_set_sensitive(pw, st_new != NULL);
-    pw = GTK_WIDGET (gtk_builder_get_object (xml, "quick_gimp_button"));
-    gtk_widget_set_sensitive(pw, st_new != NULL);
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "green_button"));
     gtk_widget_set_sensitive(pw, st_new != NULL);
 
@@ -1988,8 +1986,6 @@ G_MODULE_EXPORT void preview_icon_view_selection_changed_cb(GtkAction *action)
 
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "preview_save_as_button"));
     gtk_widget_set_sensitive(pw, en);
-//    pw = GTK_WIDGET (gtk_builder_get_object (xml, "preview_gimp_button"));
-//    gtk_widget_set_sensitive(pw, en);
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "preview_delete_button"));
     gtk_widget_set_sensitive(pw, en);
 }
@@ -2112,9 +2108,6 @@ G_MODULE_EXPORT void preview_save_as_cancel( GtkAction *action ) {
 }
 
 G_MODULE_EXPORT void preview_save_as_save( GtkAction *action ) {
-}
-
-G_MODULE_EXPORT void quick_gimp_button_clicked_cb( GtkAction *action ) {
 }
 
 G_MODULE_EXPORT void preview_delete_button_clicked_cb(GtkAction *action)
