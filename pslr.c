@@ -1,6 +1,6 @@
 /*
     pkTriggerCord
-    Copyright (C) 2011-2016 Andras Salamon <andras.salamon@melda.info>
+    Copyright (C) 2011-2017 Andras Salamon <andras.salamon@melda.info>
     Remote control of Pentax DSLR cameras.
 
     Support for K200D added by Jens Dreyer <jens.dreyer@udo.edu> 04/2011
@@ -1502,7 +1502,7 @@ static int read_result(int fd, uint8_t *buf, uint32_t n) {
 
 char *copyright() {
     char *ret = malloc(sizeof(char)*1024);
-    sprintf(ret, "Copyright (C) 2011-2016 Andras Salamon\n\
+    sprintf(ret, "Copyright (C) 2011-2017 Andras Salamon\n\
 \n\
 Based on:\n\
 pslr-shoot (C) 2009 Ramiro Barreiro\n\

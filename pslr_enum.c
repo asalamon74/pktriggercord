@@ -1,6 +1,6 @@
 /*
     pkTriggerCord
-    Copyright (C) 2011-2016 Andras Salamon <andras.salamon@melda.info>
+    Copyright (C) 2011-2017 Andras Salamon <andras.salamon@melda.info>
     Remote control of Pentax DSLR cameras.
 
     Support for K200D added by Jens Dreyer <jens.dreyer@udo.edu> 04/2011
