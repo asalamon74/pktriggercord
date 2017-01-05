@@ -354,6 +354,7 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift
     status->af_point_select = (*get_uint32_func_ptr)(&buf[0xc4 + shift]);
     status->selected_af_point = (*get_uint32_func_ptr)(&buf[0xc8 + shift]);
     status->shake_reduction = (*get_uint32_func_ptr)(&buf[0xE0 + shift]);
+    status->auto_bracket_picture_counter = (*get_uint32_func_ptr)(&buf[0xE4 + shift]);
     status->jpeg_hue = (*get_uint32_func_ptr)(&buf[0xFC + shift]);
     status->current_shutter_speed.nom = (*get_uint32_func_ptr)(&buf[0x10C + shift]);
     status->current_shutter_speed.denom = (*get_uint32_func_ptr)(&buf[0x110 + shift]);
@@ -572,7 +573,6 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
 }
 
-// copy of parse_k1
 void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if( debug ) {
@@ -583,6 +583,7 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     ipslr_status_parse_common( p, status, 0 );
 // parse_common returns invalid values for the following fields. Fixing the fields:
 
+    status->auto_bracket_picture_counter = get_uint32_le(&buf[0xE8]);
     status->jpeg_hue = get_uint32_le(&buf[0x100]);
     status->current_shutter_speed.nom = get_uint32_le(&buf[0x110]);
     status->current_shutter_speed.denom = get_uint32_le(&buf[0x114]);

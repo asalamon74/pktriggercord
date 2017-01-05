@@ -62,6 +62,7 @@ typedef struct {
     uint32_t auto_bracket_mode; // 1: on, 0: off
     pslr_rational_t auto_bracket_ev;
     uint32_t auto_bracket_picture_count;
+    uint32_t auto_bracket_picture_counter;
     uint32_t fixed_iso;
     uint32_t jpeg_resolution;
     uint32_t jpeg_saturation;
