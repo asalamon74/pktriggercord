@@ -40,10 +40,11 @@ before_script:
 script:
   - make android
   - make WINMINGW=i686-w64-mingw32 win
+  - make clean
   - make
+  - ./pktriggercord-cli --help
   - mkdir -p windows_test
   - cd windows_test
   - ../unzip pktriggercord-*-win.zip
   - wine ./pktriggercord-cli.exe --help
   - cd ..
-  - ./pktriggercord-cli --help
