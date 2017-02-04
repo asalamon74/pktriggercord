@@ -5,8 +5,35 @@ android:
     - platform-tools
     - build-tools-23.0.1
     - android-12
+addons:
+  apt:
+    packages:
+    - binutils-mingw-w64-i686
+    - mingw-w64-dev
+    - g++-mingw-w64-i686
+    - gcc-mingw-w64-i686
+    - wine
 before_install:
   - make
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
+before_script:
+  mkdir -p i686-w64-mingw32
+  wget http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+_2.24.10-1_win32.zip
+  wget http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+-dev_2.24.10-1_win32.zip
+  wget http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.28/glib-dev_2.28.8-1_win32.zip
+  wget http://ftp.gnome.org/pub/gnome/binaries/win32/atk/1.32/atk-dev_1.32.0-2_win32.zip
+  wget http://ftp.gnome.org/pub/gnome/binaries/win32/pango/1.29/pango-dev_1.29.4-1_win32.zip
+  wget http://ftp.gnome.org/pub/gnome/binaries/win32/gdk-pixbuf/2.24/gdk-pixbuf-dev_2.24.0-1_win32.zip
+  wget http://ftp.gnome.org/pub/gnome/binaries/win32/gdk-pixbuf/2.24/gdk-pixbuf_2.24.0-1_win32.zip
+  wget http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo-dev_1.10.2-2_win32.zip
+  cd i686-w64-mingw32
+  unzip ../gtk+_2.24.10-1_win32.zip
+  unzip ../gtk+-dev_2.24.10-1_win32.zip
+  unzip ../glib-dev_2.28.8-1_win32.zip
+  unzip ../atk-dev_1.32.0-2_win32.zip
+  unzip ../pango-dev_1.29.4-1_win32.zip
+  unzip ../gdk-pixbuf-dev_2.24.0-1_win32.zip
+  unzip ../gdk-pixbuf_2.24.0-1_win32.zip
+  unzip ../cairo-dev_1.10.2-2_win32.zip
 script: make android
