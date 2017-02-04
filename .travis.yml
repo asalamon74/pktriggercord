@@ -14,7 +14,6 @@ addons:
     - wine
     - groff
 before_install:
-  - make
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root --depth 1
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
 before_script:
@@ -41,3 +40,10 @@ before_script:
 script:
   - make android
   - make WINMINGW=i686-w64-mingw32 win
+  - make
+  - mkdir -p windows_test
+  - cd windows_test
+  - ../unzip pktriggercord-*-win.zip
+  - wine ./pktriggercord-cli.exe --help
+  - cd ..
+  - ./pktriggercord-cli --help
