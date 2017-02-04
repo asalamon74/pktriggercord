@@ -9,7 +9,6 @@ addons:
   apt:
     packages:
     - binutils-mingw-w64-i686
-    - mingw-w64-dev
     - g++-mingw-w64-i686
     - gcc-mingw-w64-i686
     - wine
@@ -36,7 +35,8 @@ before_script:
   unzip ../gdk-pixbuf-dev_2.24.0-1_win32.zip
   unzip ../gdk-pixbuf_2.24.0-1_win32.zip
   unzip ../cairo-dev_1.10.2-2_win32.zip
+  ls -lR
   cd ..
 script:
-  make android
-  make WINMINGW=i686-w64-mingw32 win
+  - make android
+  - make WINMINGW=i686-w64-mingw32 win
