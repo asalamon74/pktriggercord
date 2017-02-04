@@ -15,7 +15,7 @@ addons:
     - wine
 before_install:
   - make
-  - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
+  - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root --depth 1
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
 before_script:
   mkdir -p i686-w64-mingw32
@@ -36,4 +36,7 @@ before_script:
   unzip ../gdk-pixbuf-dev_2.24.0-1_win32.zip
   unzip ../gdk-pixbuf_2.24.0-1_win32.zip
   unzip ../cairo-dev_1.10.2-2_win32.zip
-script: make android
+  cd ..
+script:
+  make android
+  make WINMINGW=i686-w64-mingw32 win

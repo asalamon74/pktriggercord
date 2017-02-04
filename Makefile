@@ -132,7 +132,7 @@ rpm: srcrpm
 
 WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/
 WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include
-WIN_LDFLAGS=-lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
+WIN_LDFLAGS=-L$(WINMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
 
 deb: srczip
 	rm -f pktriggercord*orig.tar.gz
@@ -164,13 +164,22 @@ pktriggercord_commandline.html: pktriggercord-cli.1
 	groff $< -man -Thtml -mwww -P "-lr" > $@
 
 # Windows cross-compile
-win: clean pktriggercord_commandline.html
+winobjs:$(SRCOBJNAMES:=.c) 
 	$(foreach srcfile, $(SRCOBJNAMES:=.c), $(WINGCC) $(WIN_CFLAGS) -c $(srcfile);)
-	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"'  pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) $(WIN_LDFLAGS) -L.
+
+win-cli:winobjs pktriggercord-cli.c pktriggercord_commandline.html
+	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"'  pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) -L.
+	mkdir -p $(WINDIR)
+	cp pktriggercord-cli.exe Changelog COPYING pktriggercord_commandline.html $(WINDIR)
+	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
+
+win-gui: winobjs
 	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_GUI_CFLAGS) $(WIN_LDFLAGS) -L.
 	mkdir -p $(WINDIR)
-	cp pktriggercord.exe pktriggercord-cli.exe pktriggercord.ui Changelog COPYING pktriggercord_commandline.html $(WINDIR)
+	cp pktriggercord.exe pktriggercord.ui Changelog COPYING $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
+
+win: win-cli win-gui
 	rm -f $(WINDIR).zip
 	zip -rj $(WINDIR).zip $(WINDIR)
 	rm -r $(WINDIR)
