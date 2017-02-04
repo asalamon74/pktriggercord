@@ -45,6 +45,6 @@ script:
   - ./pktriggercord-cli --help
   - mkdir -p windows_test
   - cd windows_test
-  - ../unzip pktriggercord-*-win.zip
+  - unzip ../pktriggercord-*-win.zip
   - wine ./pktriggercord-cli.exe --help
   - cd ..
