@@ -14,8 +14,8 @@ addons:
     - wine
     - groff
 before_install:
-#  - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root --depth 1
-#  - export ANDROID_NDK_HOME=$HOME/android-ndk-root
+  - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root --depth 1
+  - export ANDROID_NDK_HOME=$HOME/android-ndk-root
 before_script:
   - mkdir -p i686-w64-mingw32
   - wget http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+_2.24.10-1_win32.zip
@@ -37,7 +37,7 @@ before_script:
   - unzip ../cairo-dev_1.10.2-2_win32.zip
   - cd ..
 script:
-#  - make android
+  - make android
   - make WINMINGW=i686-w64-mingw32 win
   - make clean
   - make
