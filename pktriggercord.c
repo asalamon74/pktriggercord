@@ -744,6 +744,8 @@ static gboolean status_poll(gpointer data)
         gtk_widget_set_visible(pw, FALSE);
         pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale_label"));
         gtk_widget_set_visible(pw, FALSE);
+        gtk_widget_set_visible ( GTK_WIDGET(gtk_builder_get_object(xml, "bulb_exp_value")), TRUE);
+        gtk_widget_set_visible ( GTK_WIDGET(gtk_builder_get_object(xml, "bulb_exp_value_label")), TRUE);
     } else if (status_new && status_new->current_shutter_speed.denom) {
         if (status_new->current_shutter_speed.denom == 1) {
             sprintf(buf, "%ds", status_new->current_shutter_speed.nom);
@@ -759,6 +761,8 @@ static gboolean status_poll(gpointer data)
 	gtk_widget_set_visible(pw, TRUE);
 	pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale_label"));
 	gtk_widget_set_visible(pw, TRUE);
+        gtk_widget_set_visible ( GTK_WIDGET(gtk_builder_get_object(xml, "bulb_exp_value")), FALSE);
+        gtk_widget_set_visible ( GTK_WIDGET(gtk_builder_get_object(xml, "bulb_exp_value_label")), FALSE);
     }
 
     /* ISO label */
