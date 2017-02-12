@@ -742,7 +742,7 @@ static gboolean status_poll(gpointer data)
       /* inhibit shutter exposure slide */
       pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale"));
       gtk_widget_set_visible(pw, FALSE);
-      pw = GTK_WIDGET (gtk_builder_get_object (xml, "label2"));
+      pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale_label"));
       gtk_widget_set_visible(pw, FALSE);
     } else if (status_new && status_new->current_shutter_speed.denom) {
         if (status_new->current_shutter_speed.nom == 1) {
@@ -757,7 +757,7 @@ static gboolean status_poll(gpointer data)
 
 	pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale"));
 	gtk_widget_set_visible(pw, TRUE);
-	pw = GTK_WIDGET (gtk_builder_get_object (xml, "label2"));
+	pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale_label"));
 	gtk_widget_set_visible(pw, TRUE);
     }
 
