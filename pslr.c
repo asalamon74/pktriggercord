@@ -634,13 +634,13 @@ int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int
 }
 
 int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value) {
-    DPRINT("[C]\tpslr_set_shutter(%x)\n", value);
+    DPRINT("[C]\tpslr_set_shutter(%x %x)\n", value.nom, value.denom);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, true, X18_SHUTTER, 2, value.nom, value.denom, 0);
 }
 
 int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value) {
-    DPRINT("[C]\tpslr_set_aperture(%x)\n", value);
+    DPRINT("[C]\tpslr_set_aperture(%x %x)\n", value.nom, value.denom);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, false, X18_APERTURE, 3, value.nom, value.denom, 0);
 }
@@ -652,7 +652,7 @@ int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint3
 }
 
 int pslr_set_ec(pslr_handle_t h, pslr_rational_t value) {
-    DPRINT("[C]\tpslr_set_ec(0x%X)\n", value);
+    DPRINT("[C]\tpslr_set_ec(0x%X 0x%X)\n", value.nom, value.denom);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, true, X18_EC, 2, value.nom, value.denom, 0);
 }
@@ -677,7 +677,7 @@ int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value) {
 }
 
 int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value) {
-    DPRINT("[C]\tpslr_set_flash_exposure_compensation(%X)\n", value);
+    DPRINT("[C]\tpslr_set_flash_exposure_compensation(%X %X)\n", value.nom, value.denom);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, true, X18_FLASH_EXPOSURE_COMPENSATION, 2, value.nom, value.denom, 0);
 }
@@ -969,7 +969,7 @@ uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size) {
     uint32_t blksz;
     int ret;
 
-    DPRINT("[C]\tpslr_buffer_read(%X, %d)\n", buf, size);
+    DPRINT("[C]\tpslr_buffer_read(%d)\n", size);
 
     /* Find current segment */
     for (i = 0; i < p->segment_count; i++) {
