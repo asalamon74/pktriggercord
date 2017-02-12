@@ -1408,7 +1408,7 @@ G_MODULE_EXPORT void shutter_press(GtkAction *action)
     if (is_bulbing_on == TRUE) {
       is_bulbing_on = FALSE;
       gtk_button_set_label((GtkButton *)widget, "Take picture");
-      /* drop current bulb shooting */
+      /* end current bulb shooting */
       pslr_bulb(camhandle, false);
       if (pslr_get_model_only_limited(camhandle)) {
 	manage_camera_buffers_limited();

@@ -1127,7 +1127,7 @@ Library.
                             <child>
                               <object class="GtkEntry" id="bulb_exp_value">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                                 <property name="width_chars">8</property>
                                 <property name="text" translatable="yes">60</property>
                                 <property name="invisible_char_set">True</property>
