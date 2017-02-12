@@ -736,19 +736,19 @@ static gboolean status_poll(gpointer data)
 
     /* shutter speed label */
     if (status_new && (status_new->exposure_mode == PSLR_GUI_EXPOSURE_MODE_B)) {
-      sprintf(buf, "BULB");
-      pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_shutter"));
-      gtk_label_set_text(GTK_LABEL(pw), buf);
-      /* inhibit shutter exposure slide */
-      pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale"));
-      gtk_widget_set_visible(pw, FALSE);
-      pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale_label"));
-      gtk_widget_set_visible(pw, FALSE);
+        sprintf(buf, "BULB");
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_shutter"));
+        gtk_label_set_text(GTK_LABEL(pw), buf);
+        /* inhibit shutter exposure slide */
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale"));
+        gtk_widget_set_visible(pw, FALSE);
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale_label"));
+        gtk_widget_set_visible(pw, FALSE);
     } else if (status_new && status_new->current_shutter_speed.denom) {
-        if (status_new->current_shutter_speed.nom == 1) {
-            sprintf(buf, "1/%ds", status_new->current_shutter_speed.denom);
-        } else if (status_new->current_shutter_speed.denom == 1) {
+        if (status_new->current_shutter_speed.denom == 1) {
             sprintf(buf, "%ds", status_new->current_shutter_speed.nom);
+        } else if (status_new->current_shutter_speed.nom == 1) {
+            sprintf(buf, "1/%ds", status_new->current_shutter_speed.denom);
         } else {
             sprintf(buf, "%.1fs", (float)status_new->current_shutter_speed.nom / (float) status_new->current_shutter_speed.denom);
         }
