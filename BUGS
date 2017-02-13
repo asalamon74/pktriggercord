@@ -23,6 +23,8 @@ General
   --select_af_point Auto-11 changes to Auto-5 instead
 
   Top LCD panel is flashing
+  
+  Green button does not work for newer cameras. It freezes.
 
 Linux
 -----
