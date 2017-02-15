@@ -189,6 +189,7 @@ static const int ec_tbl_1_2[]= {
 /* ----------------------------------------------------------------------- */
 
 static pslr_handle_t camhandle;
+static bool handle_af_points;
 static GtkBuilder *xml;
 static GtkStatusbar *statusbar;
 static guint sbar_connect_ctx;
@@ -411,6 +412,7 @@ void camera_specific_init() {
     combobox_append( pw, imagetones, max_supported_image_tone );
 
     gtk_widget_set_sensitive( GTK_WIDGET(pw), max_supported_image_tone > -1 );
+    handle_af_points = pslr_get_model_af_point_num(camhandle) == 11;
 }
 
 static void init_controls(pslr_status *st_new, pslr_status *st_old)
@@ -809,29 +811,31 @@ static gboolean status_poll(gpointer data)
     init_controls(status_new, status_old);
 
     /* AF point indicators */
-    pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
-    if (status_new) {
-        if (!status_old || status_old->focused_af_point != status_new->focused_af_point) {
-            /* Change in focused AF points */
-            focus_indicated_af_points |= status_new->focused_af_point;
-            gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
-        } else {
-            /* Same as previous check, stop indicating */
-            focus_indicated_af_points = 0;
-            gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
-        }
+    if (handle_af_points) {
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
+        if (status_new) {
+            if (!status_old || status_old->focused_af_point != status_new->focused_af_point) {
+                /* Change in focused AF points */
+                focus_indicated_af_points |= status_new->focused_af_point;
+                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+            } else {
+                /* Same as previous check, stop indicating */
+                focus_indicated_af_points = 0;
+                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+            }
 
-        if (!status_old || status_old->selected_af_point != status_new->selected_af_point) {
-            /* Change in selected AF points */
-            select_indicated_af_points = status_new->selected_af_point;
-            gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
-        } else {
-            /* Same as previous check, stop indicating */
-            select_indicated_af_points = 0;
-            gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+            if (!status_old || status_old->selected_af_point != status_new->selected_af_point) {
+                /* Change in selected AF points */
+                select_indicated_af_points = status_new->selected_af_point;
+                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+            } else {
+                /* Same as previous check, stop indicating */
+                select_indicated_af_points = 0;
+                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+            }
+            preselect_indicated_af_points = 0;
+            preselect_reselect = false;
         }
-        preselect_indicated_af_points = 0;
-        preselect_reselect = false;
     }
     /* Camera buffer checks */
     manage_camera_buffers(status_new, status_old);
@@ -1213,25 +1217,27 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData)
     gdk_gc_set_rgb_fg_color(gc_sel, &green);
     gdk_gc_set_rgb_fg_color(gc_presel, &yellow);
 
-    for (i=0; i<sizeof(af_points)/sizeof(af_points[0]); i++) {
-        GdkGC *the_gc;
-        the_gc = select_indicated_af_points & (1<<i) ? gc_sel : gc_focus;
-        if (preselect_indicated_af_points & (1<<i)) {
-            /* The user clicked an AF point and this should be
-             * indicated. If it's the same as the current AF point
-             * selected in the camera (indicated bu
-             * preselect_reselect), it should be green. If not, it
-             * means we're waiting for camera confirmation and it
-             * should be yellow. */
-            if (preselect_reselect)
-                the_gc = gc_sel;
-            else
-                the_gc = gc_presel;
+    if (handle_af_points) {
+        for (i=0; i<sizeof(af_points)/sizeof(af_points[0]); i++) {
+            GdkGC *the_gc;
+            the_gc = select_indicated_af_points & (1<<i) ? gc_sel : gc_focus;
+            if (preselect_indicated_af_points & (1<<i)) {
+                /* The user clicked an AF point and this should be
+                 * indicated. If it's the same as the current AF point
+                 * selected in the camera (indicated bu
+                 * preselect_reselect), it should be green. If not, it
+                 * means we're waiting for camera confirmation and it
+                 * should be yellow. */
+                if (preselect_reselect)
+                    the_gc = gc_sel;
+                else
+                    the_gc = gc_presel;
+            }
+            fill = focus_indicated_af_points & (1<<i) ? TRUE : FALSE;
+            gdk_draw_rectangle(pw->window, the_gc, fill,
+                               af_points[i].x, af_points[i].y,
+                               af_points[i].w, af_points[i].h);
         }
-        fill = focus_indicated_af_points & (1<<i) ? TRUE : FALSE;
-        gdk_draw_rectangle(pw->window, the_gc, fill,
-                           af_points[i].x, af_points[i].y,
-                           af_points[i].w, af_points[i].h);
     }
 
     gdk_gc_destroy(gc_focus);
@@ -1254,34 +1260,38 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
     GtkWidget *pw;
 
     /* Don't care about clicks on AF points if no camera is connected. */
-    if (!camhandle)
+    if (!camhandle) {
         return TRUE;
+    }
 
-    /* Click one at a time please */
-    if (preselect_indicated_af_points)
-        return TRUE;
+    if (handle_af_points) {
+        /* Click one at a time please */
+        if (preselect_indicated_af_points) {
+            return TRUE;
+        }
 
-    for (i=0; i<sizeof(af_points)/sizeof(af_points[0]); i++) {
-        if (is_inside(af_points[i].x, af_points[i].y, af_points[i].w, af_points[i].h,
-                      x, y)) {
-            //printf("click: af point %d\n", i);
+        for (i=0; i<sizeof(af_points)/sizeof(af_points[0]); i++) {
+            if (is_inside(af_points[i].x, af_points[i].y, af_points[i].w, af_points[i].h,
+                          x, y)) {
+                //printf("click: af point %d\n", i);
 
-            preselect_indicated_af_points = 1<<i;
-            if (status_new && status_new->selected_af_point == preselect_indicated_af_points) {
-                preselect_reselect = true;
-            } else {
-                preselect_reselect = false;
+                preselect_indicated_af_points = 1<<i;
+                if (status_new && status_new->selected_af_point == preselect_indicated_af_points) {
+                    preselect_reselect = true;
+                } else {
+                    preselect_reselect = false;
+                }
+                pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
+                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+                while (gtk_events_pending())
+                    gtk_main_iteration();
+                if (status_new && status_new->af_point_select == PSLR_AF_POINT_SEL_SELECT) {
+                    ret = pslr_select_af_point(camhandle, 1 << i);
+                    if (ret != PSLR_OK)
+                        DPRINT("Could not select AF point %d\n", i);
+                }
+                break;
             }
-            pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
-            gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
-            while (gtk_events_pending())
-                gtk_main_iteration();
-            if (status_new && status_new->af_point_select == PSLR_AF_POINT_SEL_SELECT) {
-                ret = pslr_select_af_point(camhandle, 1 << i);
-                if (ret != PSLR_OK)
-                    DPRINT("Could not select AF point %d\n", i);
-            }
-            break;
         }
     }
     return TRUE;

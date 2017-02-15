@@ -125,6 +125,7 @@ typedef struct {
     int extended_iso_max;                            // extended iso maximum
     pslr_jpeg_image_tone_t max_supported_image_tone; // last supported jpeg image tone
     bool has_jpeg_hue;                               // camera has jpeg hue setting
+    int af_point_num;                                // number of AF points
     ipslr_status_parse_t parser_function;            // parse function for status buffer
 } ipslr_model_info_t;
 

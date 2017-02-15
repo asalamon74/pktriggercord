@@ -1086,6 +1086,11 @@ pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h) 
     return p->model->max_supported_image_tone;
 }
 
+int pslr_get_model_af_point_num(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->af_point_num;
+}
+
 const char *pslr_camera_name(pslr_handle_t h) {
     DPRINT("[C]\tpslr_camera_name()\n");
     ipslr_handle_t *p = (ipslr_handle_t *) h;

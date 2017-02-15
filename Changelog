@@ -9,6 +9,7 @@ version 0.84.03
 	GUI: Status hexdump
 	New status field: auto_bracket_picture_counter (thx jmozmoz)
 	GUI: Editable bulb exposure time
+	GUI: Hide AF points if camera has more than 11
 
 version 0.84.02 ( 2016-10-31 )
 	Android code cleanup
