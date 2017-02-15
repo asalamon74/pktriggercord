@@ -697,7 +697,7 @@ ipslr_model_info_t camera_models[] = {
     { 0x12ba2, "K100D Super", 1, 1, 0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, 0, 11, NULL},
     { 0x1301a, "K-S1",        0, 1, 1, 452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, 11, ipslr_status_parse_k3    },
     { 0x13024, "K-S2",        0, 1, 1, 452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, 11, ipslr_status_parse_k3    },
-    { 0x13092, "K-1",         0, 1, 1, 456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_RADIANT, 1, 11, ipslr_status_parse_k1      },
+    { 0x13092, "K-1",         0, 1, 1, 456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_RADIANT, 1, 33, ipslr_status_parse_k1      },
     { 0x13222, "K-70",        0, 1, 1, 456,  3, {24, 14, 6, 2}, 9, 6000, 100, 102400, 100, 102400, PSLR_JPEG_IMAGE_TONE_RADIANT, 1, 11, ipslr_status_parse_k70 }
 };
 
