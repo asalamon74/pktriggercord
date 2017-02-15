@@ -58,7 +58,7 @@ bool warnings = false;
 
 const char *shortopts = "m:q:a:r:d:t:o:i:F:fghvsw";
 
-static struct option const longopts[] ={
+static struct option const longopts[] = {
     {"exposure_mode", required_argument, NULL, 'm'},
     {"resolution", required_argument, NULL, 'r'},
     {"quality", required_argument, NULL, 'q'},
@@ -126,27 +126,27 @@ int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
 }
 
 void warning_message( const char* message, ... ) {
-    if( warnings ) {
-	// Write to stderr
-	//
-	va_list argp;
-	va_start(argp, message);
-	vfprintf( stderr, message, argp );
-	va_end(argp);
+    if ( warnings ) {
+        // Write to stderr
+        //
+        va_list argp;
+        va_start(argp, message);
+        vfprintf( stderr, message, argp );
+        va_end(argp);
     }
 }
 
 void process_wbadj( const char* argv0, const char chr, uint32_t adj, uint32_t *wbadj_mg, uint32_t *wbadj_ba ) {
-    if( chr == 'M' ) {
+    if ( chr == 'M' ) {
         *wbadj_mg = 7 - adj;
-    } else if( chr == 'G' )  {
-	*wbadj_mg = 7 + adj;
-    } else if( chr == 'B' ) {
-	*wbadj_ba = 7 - adj;
-    } else if( chr == 'A' ) {
-	*wbadj_ba = 7 + adj;
+    } else if ( chr == 'G' )  {
+        *wbadj_mg = 7 + adj;
+    } else if ( chr == 'B' ) {
+        *wbadj_ba = 7 - adj;
+    } else if ( chr == 'A' ) {
+        *wbadj_ba = 7 + adj;
     } else {
-	warning_message("%s: Invalid white_balance_adjustment\n", argv0);
+        warning_message("%s: Invalid white_balance_adjustment\n", argv0);
     }
 }
 
@@ -222,32 +222,32 @@ int main(int argc, char **argv) {
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
         switch (optc) {
             case 'w':
-		warnings = true;
-	        break;
+                warnings = true;
+                break;
             case 17:
                 warnings = false;
-		break;
+                break;
             case 4:
                 debug = true;
                 DPRINT( "Debug messaging is now enabled.\n" );
                 break;
-	}
+        }
     }
     optind = 1;
     // parse all the other flags
     while ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
         switch (optc) {
-	    case '?':
-	    case 'h':
+            case '?':
+            case 'h':
                 usage(argv[0]);
                 exit(-1);
-                /***************************************************************/
+            /***************************************************************/
             case 'v':
                 printf("%s", copyright_version(argv[0], VERSION));
                 exit(0);
             case 6:
-		dust = true;
-	        break;
+                dust = true;
+                break;
             case 1:
                 for (i = 0; i < strlen(optarg); i++) {
                     optarg[i] = toupper(optarg[i]);
@@ -306,7 +306,7 @@ int main(int argc, char **argv) {
                 else {
                     warning_message("%s: Invalid exposure mode.\n", argv[0]);
                 }
-		break;
+                break;
 
             case 'r':
                 resolution = atoi(optarg);
@@ -314,86 +314,86 @@ int main(int argc, char **argv) {
 
             case 7:
                 color_space = get_pslr_color_space( optarg );
-		if( color_space == -1 ) {
-		    warning_message("%s: Invalid color space\n", argv[0]);
-		}
-		break;
+                if ( color_space == -1 ) {
+                    warning_message("%s: Invalid color space\n", argv[0]);
+                }
+                break;
 
             case 8:
                 af_mode = get_pslr_af_mode( optarg );
-		if( af_mode == -1 || af_mode == 0 ) {
-		    // 0: changing MF does not work
-		    warning_message("%s: Invalid af mode\n", argv[0]);
-		}
-		break;
+                if ( af_mode == -1 || af_mode == 0 ) {
+                    // 0: changing MF does not work
+                    warning_message("%s: Invalid af mode\n", argv[0]);
+                }
+                break;
 
             case 9:
                 ae_metering = get_pslr_ae_metering( optarg );
-		if( ae_metering == -1 ) {
-		    warning_message("%s: Invalid ae metering\n", argv[0]);
-		}
-		break;
+                if ( ae_metering == -1 ) {
+                    warning_message("%s: Invalid ae metering\n", argv[0]);
+                }
+                break;
 
             case 10:
                 flash_mode = get_pslr_flash_mode( optarg );
-		if( flash_mode == -1 ) {
-		    warning_message("%s: Invalid flash_mode\n", argv[0]);
-		}
-		break;
+                if ( flash_mode == -1 ) {
+                    warning_message("%s: Invalid flash_mode\n", argv[0]);
+                }
+                break;
 
             case 11:
                 drive_mode = get_pslr_drive_mode( optarg );
-		if( drive_mode == -1 ) {
-		    warning_message("%s: Invalid drive_mode\n", argv[0]);
-		}
-		break;
+                if ( drive_mode == -1 ) {
+                    warning_message("%s: Invalid drive_mode\n", argv[0]);
+                }
+                break;
 
             case 12:
                 af_point_sel = get_pslr_af_point_sel( optarg );
-		if( af_point_sel == -1 ) {
-		    warning_message("%s: Invalid select af point\n", argv[0]);
-		}
-		break;
+                if ( af_point_sel == -1 ) {
+                    warning_message("%s: Invalid select af point\n", argv[0]);
+                }
+                break;
 
             case 13:
                 jpeg_image_tone = get_pslr_jpeg_image_tone( optarg );
-		if( jpeg_image_tone == -1 ) {
-		    warning_message("%s: Invalid jpeg_image_tone\n", argv[0]);
-		}
-		break;
+                if ( jpeg_image_tone == -1 ) {
+                    warning_message("%s: Invalid jpeg_image_tone\n", argv[0]);
+                }
+                break;
 
             case 14:
                 white_balance_mode = get_pslr_white_balance_mode( optarg );
-		if( white_balance_mode == -1 ) {
-		    warning_message("%s: Invalid white_balance_mode\n", argv[0]);
-		}
-		break;
+                if ( white_balance_mode == -1 ) {
+                    warning_message("%s: Invalid white_balance_mode\n", argv[0]);
+                }
+                break;
 
             case 15:
-		wbadj_ss = sscanf(optarg, "%c%d%c%d%c", &c1, &adj1, &c2, &adj2, &C);
-		if( wbadj_ss == 4 || wbadj_ss == 2 ) {
-		    c1 = toupper(c1);
-		    process_wbadj( argv[0], c1, adj1, &white_balance_adjustment_mg, &white_balance_adjustment_ba );
-		    if( wbadj_ss == 4 ) {
-			c2 = toupper(c2);
-			process_wbadj( argv[0], c2, adj2, &white_balance_adjustment_mg, &white_balance_adjustment_ba );
-		    }
-		} else {
-		    warning_message("%s: Invalid white_balance_adjustment\n", argv[0]);
-		}
-		break;
+                wbadj_ss = sscanf(optarg, "%c%d%c%d%c", &c1, &adj1, &c2, &adj2, &C);
+                if ( wbadj_ss == 4 || wbadj_ss == 2 ) {
+                    c1 = toupper(c1);
+                    process_wbadj( argv[0], c1, adj1, &white_balance_adjustment_mg, &white_balance_adjustment_ba );
+                    if ( wbadj_ss == 4 ) {
+                        c2 = toupper(c2);
+                        process_wbadj( argv[0], c2, adj2, &white_balance_adjustment_mg, &white_balance_adjustment_ba );
+                    }
+                } else {
+                    warning_message("%s: Invalid white_balance_adjustment\n", argv[0]);
+                }
+                break;
 
             case 16:
-                 model = optarg;
-                 break;
+                model = optarg;
+                break;
 
             case 18:
-                 device = optarg;
-                 break;
+                device = optarg;
+                break;
 
-	    case 19:
-		reconnect = true;
-		break;
+            case 19:
+                reconnect = true;
+                break;
 
             case 20:
                 timeout = atoi(optarg);
@@ -429,8 +429,8 @@ int main(int argc, char **argv) {
 
             case 't':
                 if (sscanf(optarg, "1/%d%c", &shutter_speed.denom, &C) == 1) {
-		    shutter_speed.nom = 1;
-		} else if ((sscanf(optarg, "%f%c", &F, &C)) == 1) {
+                    shutter_speed.nom = 1;
+                } else if ((sscanf(optarg, "%f%c", &F, &C)) == 1) {
                     if (F < 2) {
                         F = F * 10;
                         shutter_speed.denom = 10;
@@ -460,7 +460,7 @@ int main(int argc, char **argv) {
                 frames = atoi(optarg);
                 if (frames > 9999) {
                     warning_message("%s: Invalid frame number.\n", argv[0]);
-		    frames = 9999;
+                    frames = 9999;
                 }
                 break;
 
@@ -473,48 +473,48 @@ int main(int argc, char **argv) {
 
             case 'i':
                 if (sscanf(optarg, "%d-%d%c", &auto_iso_min, &auto_iso_max, &C) != 2) {
-		    auto_iso_min = 0;
-		    auto_iso_max = 0;
+                    auto_iso_min = 0;
+                    auto_iso_max = 0;
                     iso = atoi(optarg);
-		}
+                }
                 if (iso==0 && auto_iso_min==0) {
                     warning_message("%s: Invalid iso value\n", argv[0]);
                     exit(-1);
                 }
-		break;
+                break;
 
             case 3:
-		if( sscanf(optarg, "%f%c", &F, &C) == 1 ) {
-		    ec.nom=10*F;
-		    ec.denom=10;
-		}
-		break;
+                if ( sscanf(optarg, "%f%c", &F, &C) == 1 ) {
+                    ec.nom=10*F;
+                    ec.denom=10;
+                }
+                break;
 
             case 5:
-		if( sscanf(optarg, "%f%c", &F, &C) == 1 ) {
-		    fec.nom=10*F;
-		    fec.denom=10;
-		}
-		break;
+                if ( sscanf(optarg, "%f%c", &F, &C) == 1 ) {
+                    fec.nom=10*F;
+                    fec.denom=10;
+                }
+                break;
 
             case 21:
                 noshutter = true;
                 break;
 
 #ifndef WIN32
-	    case 22:
-	        servermode = true;
-	        break;
+            case 22:
+                servermode = true;
+                break;
 
             case 23:
                 servermode_timeout = atoi(optarg);
                 break;
 #endif
 
-	    case 24:
-		modify_debug_mode=1;
-		debug_mode=atoi(optarg);
-		break;
+            case 24:
+                modify_debug_mode=1;
+                debug_mode=atoi(optarg);
+                break;
 
             case 25:
                 dangerous = true;
@@ -523,7 +523,7 @@ int main(int argc, char **argv) {
     }
 
 #ifndef WIN32
-    if( servermode ) {
+    if ( servermode ) {
         // ignore all the other argument and go to server mode
         servermode_socket(servermode_timeout);
         exit(0);
@@ -541,80 +541,80 @@ int main(int argc, char **argv) {
 
     char buf[2100];
 
-    if( !(camhandle = camera_connect( model, device, timeout, buf)) ) {
+    if ( !(camhandle = camera_connect( model, device, timeout, buf)) ) {
         printf("%s", buf);
         exit(-1);
     }
 
     camera_name = pslr_camera_name(camhandle);
-    if( strcmp(camera_name, "K-70")==0 && !dangerous ) {
+    if ( strcmp(camera_name, "K-70")==0 && !dangerous ) {
         printf("Tethering K-70 is dangerous, please check https://github.com/asalamon74/pktriggercord/issues/14\nIf you really want to use it you also need to add --dangerous to the command line.\n");
-	camera_close(camhandle);
+        camera_close(camhandle);
         exit(-1);
     }
     printf("%s: %s Connected...\n", argv[0], camera_name);
 
-/* if debug mode switch is on, there is a possibility someone just want to alter debug mode */
-    if( modify_debug_mode == 1) {
-	debug_onoff(camhandle,debug_mode);
-	camera_close(camhandle);
-	exit(0);
+    /* if debug mode switch is on, there is a possibility someone just want to alter debug mode */
+    if ( modify_debug_mode == 1) {
+        debug_onoff(camhandle,debug_mode);
+        camera_close(camhandle);
+        exit(0);
     }
 
     pslr_get_status(camhandle, &status);
 
-    if( color_space != -1 ) {
-	pslr_set_color_space( camhandle, color_space );
+    if ( color_space != -1 ) {
+        pslr_set_color_space( camhandle, color_space );
     }
 
-    if( af_mode != -1 ) {
-	pslr_set_af_mode( camhandle, af_mode );
+    if ( af_mode != -1 ) {
+        pslr_set_af_mode( camhandle, af_mode );
     }
 
-    if( af_point_sel != -1 ) {
-	pslr_set_af_point_sel( camhandle, af_point_sel );
+    if ( af_point_sel != -1 ) {
+        pslr_set_af_point_sel( camhandle, af_point_sel );
     }
 
-    if( ae_metering != -1 ) {
-	pslr_set_ae_metering_mode( camhandle, ae_metering );
+    if ( ae_metering != -1 ) {
+        pslr_set_ae_metering_mode( camhandle, ae_metering );
     }
 
-    if( flash_mode != -1 ) {
-	pslr_set_flash_mode( camhandle, flash_mode );
+    if ( flash_mode != -1 ) {
+        pslr_set_flash_mode( camhandle, flash_mode );
     }
 
-    if( jpeg_image_tone != -1 ) {
+    if ( jpeg_image_tone != -1 ) {
         if ( jpeg_image_tone > pslr_get_model_max_supported_image_tone(camhandle) ) {
             warning_message("%s: Invalid jpeg image tone setting.\n", argv[0]);
         }
-	pslr_set_jpeg_image_tone( camhandle, jpeg_image_tone );
+        pslr_set_jpeg_image_tone( camhandle, jpeg_image_tone );
     }
 
-    if( white_balance_mode != -1 ) {
-	pslr_set_white_balance( camhandle, white_balance_mode );
-	if( wbadj_ss > 0 ) {
-	    pslr_set_white_balance_adjustment( camhandle, white_balance_mode, white_balance_adjustment_mg, white_balance_adjustment_ba );
-	}
-    } else if( white_balance_mode == -1 && wbadj_ss > 0 ) {
-	pslr_set_white_balance_adjustment( camhandle, status.white_balance_mode, white_balance_adjustment_mg, white_balance_adjustment_ba);
+    if ( white_balance_mode != -1 ) {
+        pslr_set_white_balance( camhandle, white_balance_mode );
+        if ( wbadj_ss > 0 ) {
+            pslr_set_white_balance_adjustment( camhandle, white_balance_mode, white_balance_adjustment_mg, white_balance_adjustment_ba );
+        }
+    } else if ( white_balance_mode == -1 && wbadj_ss > 0 ) {
+        pslr_set_white_balance_adjustment( camhandle, status.white_balance_mode, white_balance_adjustment_mg, white_balance_adjustment_ba);
     }
 
-    if( drive_mode != -1 ) {
-	pslr_set_drive_mode( camhandle, drive_mode );
+    if ( drive_mode != -1 ) {
+        pslr_set_drive_mode( camhandle, drive_mode );
     }
 
-    if( uff == USER_FILE_FORMAT_MAX ) {
-	// not specified
-        if( !pslr_get_model_only_limited( camhandle ) ) {
-	    // use the default of the camera
-	    uff = get_user_file_format( &status );
+    if ( uff == USER_FILE_FORMAT_MAX ) {
+        // not specified
+        if ( !pslr_get_model_only_limited( camhandle ) ) {
+            // use the default of the camera
+            uff = get_user_file_format( &status );
         } else {
-	    // use PEF, since all the camera supports this
-	    uff = USER_FILE_FORMAT_PEF;
+            // use PEF, since all the camera supports this
+            uff = USER_FILE_FORMAT_PEF;
         }
     } else {
-	// set the requested format
-	pslr_set_user_file_format(camhandle, uff);
+        // set the requested format
+        pslr_set_user_file_format(camhandle, uff);
     }
 
     if (resolution) {
@@ -633,24 +633,24 @@ int main(int argc, char **argv) {
 
     if (EM != PSLR_EXPOSURE_MODE_MAX) pslr_set_exposure_mode(camhandle, EM);
 
-    if( ec.denom ) {
-	pslr_set_ec( camhandle, ec );
+    if ( ec.denom ) {
+        pslr_set_ec( camhandle, ec );
     }
 
-    if( fec.denom ) {
-	pslr_set_flash_exposure_compensation( camhandle, fec );
+    if ( fec.denom ) {
+        pslr_set_flash_exposure_compensation( camhandle, fec );
     }
 
     if (iso >0 || auto_iso_min >0) {
-	pslr_set_iso(camhandle, iso, auto_iso_min, auto_iso_max);
+        pslr_set_iso(camhandle, iso, auto_iso_min, auto_iso_max);
     }
 
     /* For some reason, resolution is not set until we read the status: */
     pslr_get_status(camhandle, &status);
 
-    if( quality == -1 ) {
-	// quality is not set we read it from the camera
-	quality = status.jpeg_quality;
+    if ( quality == -1 ) {
+        // quality is not set we read it from the camera
+        quality = status.jpeg_quality;
     }
 
     if (EM != PSLR_EXPOSURE_MODE_MAX && status.exposure_mode != EM) {
@@ -658,18 +658,18 @@ int main(int argc, char **argv) {
     }
 
     if (shutter_speed.nom) {
-	DPRINT("shutter_speed.nom=%d\n", shutter_speed.nom);
-	DPRINT("shutter_speed.denom=%d\n", shutter_speed.denom);
+        DPRINT("shutter_speed.nom=%d\n", shutter_speed.nom);
+        DPRINT("shutter_speed.denom=%d\n", shutter_speed.denom);
 
-	if (shutter_speed.nom <= 0 || (shutter_speed.nom > 30 && status.exposure_mode != PSLR_GUI_EXPOSURE_MODE_B ) || shutter_speed.denom <= 0 || shutter_speed.denom > pslr_get_model_fastest_shutter_speed(camhandle)) {
-	    warning_message("%s: Invalid shutter speed value.\n", argv[0]);
-	}
+        if (shutter_speed.nom <= 0 || (shutter_speed.nom > 30 && status.exposure_mode != PSLR_GUI_EXPOSURE_MODE_B ) || shutter_speed.denom <= 0 || shutter_speed.denom > pslr_get_model_fastest_shutter_speed(camhandle)) {
+            warning_message("%s: Invalid shutter speed value.\n", argv[0]);
+        }
 
         pslr_set_shutter(camhandle, shutter_speed);
-    } else if( status.exposure_mode == PSLR_GUI_EXPOSURE_MODE_B ) {
-	warning_message("%s: Shutter speed not specified in Bulb mode. Using 30s.\n", argv[0]);
-	shutter_speed.nom = 30;
-	shutter_speed.denom = 1;
+    } else if ( status.exposure_mode == PSLR_GUI_EXPOSURE_MODE_B ) {
+        warning_message("%s: Shutter speed not specified in Bulb mode. Using 30s.\n", argv[0]);
+        shutter_speed.nom = 30;
+        shutter_speed.denom = 1;
     }
 
     if (aperture.nom) {
@@ -706,29 +706,29 @@ int main(int argc, char **argv) {
     // read the status after the settings
     pslr_get_status(camhandle, &status);
 
-    if( status_hex_info || status_info ) {
-	if( status_hex_info ) {
+    if ( status_hex_info || status_info ) {
+        if ( status_hex_info ) {
             int bufsize = pslr_get_model_buffer_size( camhandle );
-	    uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
-	    pslr_get_status_buffer(camhandle, status_buffer);
-	    hexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
+            uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
+            pslr_get_status_buffer(camhandle, status_buffer);
+            hexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
         }
-	print_status_info( camhandle, status );
-	camera_close(camhandle);
-	exit(0);
+        print_status_info( camhandle, status );
+        camera_close(camhandle);
+        exit(0);
     }
 
-    if( dust ) {
-	pslr_dust_removal(camhandle);
-	camera_close(camhandle);
-	exit(0);
+    if ( dust ) {
+        pslr_dust_removal(camhandle);
+        camera_close(camhandle);
+        exit(0);
     }
 
     double waitsec=0;
     user_file_format_t ufft = *get_file_format_t(uff);
     int bracket_count = status.auto_bracket_picture_count;
-    if( bracket_count < 1 || status.auto_bracket_mode == 0 ) {
-	bracket_count = 1;
+    if ( bracket_count < 1 || status.auto_bracket_mode == 0 ) {
+        bracket_count = 1;
     }
     gettimeofday(&prev_time, NULL);
 
@@ -736,84 +736,84 @@ int main(int argc, char **argv) {
     int buffer_index;
 
     bool continuous = status.drive_mode == PSLR_DRIVE_MODE_CONTINUOUS_HI ||
-	status.drive_mode == PSLR_DRIVE_MODE_CONTINUOUS_LO;
+                      status.drive_mode == PSLR_DRIVE_MODE_CONTINUOUS_LO;
     DPRINT("cont: %d\n", continuous);
 
     for (frameNo = 0; frameNo < frames; ++frameNo) {
-	gettimeofday(&current_time, NULL);
-	if( bracket_count <= bracket_index ) {
-	    if( reconnect ) {
-		camera_close( camhandle );
-		while (!(camhandle = pslr_init( model, device ))) {
-		    sleep_sec(1);
-		}
-		pslr_connect(camhandle);
-	    }
-	    waitsec = 1.0 * delay - timeval_diff(&current_time, &prev_time) / 1000000.0;
-	    if( waitsec > 0 ) {
-		printf("Waiting for %.2f sec\n", waitsec);
-		sleep_sec( waitsec );
-	    }
-	    bracket_index = 0;
-	    gettimeofday(&prev_time, NULL);
-	}
-	if( noshutter ) {
-	    while (1) {
-	        if( PSLR_OK != pslr_get_status (camhandle, &status) ) {
+        gettimeofday(&current_time, NULL);
+        if ( bracket_count <= bracket_index ) {
+            if ( reconnect ) {
+                camera_close( camhandle );
+                while (!(camhandle = pslr_init( model, device ))) {
+                    sleep_sec(1);
+                }
+                pslr_connect(camhandle);
+            }
+            waitsec = 1.0 * delay - timeval_diff(&current_time, &prev_time) / 1000000.0;
+            if ( waitsec > 0 ) {
+                printf("Waiting for %.2f sec\n", waitsec);
+                sleep_sec( waitsec );
+            }
+            bracket_index = 0;
+            gettimeofday(&prev_time, NULL);
+        }
+        if ( noshutter ) {
+            while (1) {
+                if ( PSLR_OK != pslr_get_status (camhandle, &status) ) {
                     break;
-	        }
+                }
 
-		if( status.bufmask != 0 ) {
-		    break; //new image ?
-		}
+                if ( status.bufmask != 0 ) {
+                    break; //new image ?
+                }
 
-		gettimeofday (&current_time, NULL);
-		if ( timeout != 0 && ( timeval_diff(&current_time, &prev_time) / 1000000.0 >= timeout) ) {
-		    printf("Timeout %d sec passed!\n", timeout);
-		    break;
-		}
+                gettimeofday (&current_time, NULL);
+                if ( timeout != 0 && ( timeval_diff(&current_time, &prev_time) / 1000000.0 >= timeout) ) {
+                    printf("Timeout %d sec passed!\n", timeout);
+                    break;
+                }
 
-		usleep(100000); /* 100 ms */
-	    }
-	} else {
-	    if( frames > 1 ) {
-		printf("Taking picture %d/%d\n", frameNo+1, frames);
-		fflush(stdout);
-	    }
-	    if( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
-		DPRINT("bulb\n");
-		pslr_bulb( camhandle, true );
-		pslr_shutter(camhandle);
-		gettimeofday(&current_time, NULL);
-		waitsec = 1.0 * shutter_speed.nom / shutter_speed.denom - timeval_diff(&current_time, &prev_time) / 1000000.0;
-		if( waitsec < 0 ) {
-		    waitsec = 0;
-		}
-		sleep_sec( waitsec  );
-		pslr_bulb( camhandle, false );
-	    } else {
-		DPRINT("not bulb\n");
-		pslr_shutter(camhandle);
-	    }
-	    pslr_get_status(camhandle, &status);
-	}
-	if( bracket_index+1 >= bracket_count || frameNo+1>=frames ) {
-	    if( bracket_index+1 < bracket_count ) {
-		// partial bracket set
-		bracket_count = bracket_index+1;
-	    }
-	    for( buffer_index = 0; buffer_index < bracket_count; ++buffer_index ) {
-		fd = open_file(output_file, frameNo-bracket_count+buffer_index+1, ufft);
-		while( save_buffer(camhandle, buffer_index, fd, &status, uff, quality) ) {
-		    usleep(10000);
-		}
-		pslr_delete_buffer(camhandle, buffer_index);
-		if (fd != 1) {
-		    close(fd);
-		}
-	    }
-	}
-	++bracket_index;
+                usleep(100000); /* 100 ms */
+            }
+        } else {
+            if ( frames > 1 ) {
+                printf("Taking picture %d/%d\n", frameNo+1, frames);
+                fflush(stdout);
+            }
+            if ( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
+                DPRINT("bulb\n");
+                pslr_bulb( camhandle, true );
+                pslr_shutter(camhandle);
+                gettimeofday(&current_time, NULL);
+                waitsec = 1.0 * shutter_speed.nom / shutter_speed.denom - timeval_diff(&current_time, &prev_time) / 1000000.0;
+                if ( waitsec < 0 ) {
+                    waitsec = 0;
+                }
+                sleep_sec( waitsec  );
+                pslr_bulb( camhandle, false );
+            } else {
+                DPRINT("not bulb\n");
+                pslr_shutter(camhandle);
+            }
+            pslr_get_status(camhandle, &status);
+        }
+        if ( bracket_index+1 >= bracket_count || frameNo+1>=frames ) {
+            if ( bracket_index+1 < bracket_count ) {
+                // partial bracket set
+                bracket_count = bracket_index+1;
+            }
+            for ( buffer_index = 0; buffer_index < bracket_count; ++buffer_index ) {
+                fd = open_file(output_file, frameNo-bracket_count+buffer_index+1, ufft);
+                while ( save_buffer(camhandle, buffer_index, fd, &status, uff, quality) ) {
+                    usleep(10000);
+                }
+                pslr_delete_buffer(camhandle, buffer_index);
+                if (fd != 1) {
+                    close(fd);
+                }
+            }
+        }
+        ++bracket_index;
     }
     camera_close(camhandle);
 
@@ -828,11 +828,11 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
     uint32_t current;
 
     if (filefmt == USER_FILE_FORMAT_PEF) {
-      imagetype = PSLR_BUF_PEF;
+        imagetype = PSLR_BUF_PEF;
     } else if (filefmt == USER_FILE_FORMAT_DNG) {
-      imagetype = PSLR_BUF_DNG;
+        imagetype = PSLR_BUF_DNG;
     } else {
-      imagetype = pslr_get_jpeg_buffer_type( camhandle, jpeg_stars );
+        imagetype = pslr_get_jpeg_buffer_type( camhandle, jpeg_stars );
     }
 
     DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, status->jpeg_resolution);
@@ -848,7 +848,7 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
         bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
         if (bytes == 0) {
             break;
-      	}
+        }
         ssize_t r = write(fd, buf, bytes);
         if (r == 0) {
             DPRINT("write(buf): Nothing has been written to buf.\n");

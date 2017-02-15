@@ -51,7 +51,7 @@ void print_scsi_error(scsireq_t *req) {
         }
         DPRINT("\n");
     }
-    
+
     DPRINT("SCSI status=0x%x\n", req->status);
 }
 
@@ -63,35 +63,35 @@ char **get_drives(int *driveNum) {
     int j,jj;
     d = opendir("/dev");
 
-    
-    if( !d ) {
-	DPRINT("Cannot open /dev\n");
-	*driveNum = 0;
-	return NULL;
+
+    if ( !d ) {
+        DPRINT("Cannot open /dev\n");
+        *driveNum = 0;
+        return NULL;
     }
     j=0;
-    while( (ent = readdir(d)) ) {
-      if (strncmp(ent->d_name, "rsd", 3) == 0 &&
-	  strnlen(ent->d_name, 6) > 4 && ent->d_name[4] == 'c') {
-	    tmp[j] = malloc( strlen(ent->d_name)+1 );
-	    strncpy(tmp[j], ent->d_name, strlen(ent->d_name)+1);
-	    ++j;
-	}
+    while ( (ent = readdir(d)) ) {
+        if (strncmp(ent->d_name, "rsd", 3) == 0 &&
+                strnlen(ent->d_name, 6) > 4 && ent->d_name[4] == 'c') {
+            tmp[j] = malloc( strlen(ent->d_name)+1 );
+            strncpy(tmp[j], ent->d_name, strlen(ent->d_name)+1);
+            ++j;
+        }
     }
     closedir(d);
     ret = malloc( j * sizeof(char*) );
-    for( jj=0; jj<j; ++jj ) {
+    for ( jj=0; jj<j; ++jj ) {
         ret[jj] = malloc( strlen(tmp[jj])+1 );
-	strncpy( ret[jj], tmp[jj], strlen(tmp[jj]) );
-	ret[jj][strlen(tmp[jj])]='\0';
+        strncpy( ret[jj], tmp[jj], strlen(tmp[jj]) );
+        ret[jj][strlen(tmp[jj])]='\0';
     }
     *driveNum = j;
     return ret;
 }
 
 pslr_result get_drive_info(char* driveName, int* hDevice,
-                            char* vendorId, int vendorIdSizeMax,
-			   char* productId, int productIdSizeMax) {
+                           char* vendorId, int vendorIdSizeMax,
+                           char* productId, int productIdSizeMax) {
     int fd;
     char buf[100];
     char deviceName[256];
@@ -100,51 +100,53 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
         /* timeout */ 1000,
         /* cmd */ {0x12, 0, 0, 0, sizeof(buf), 0},
         /* cmdlen */ 6,
-	/* databuf */ (caddr_t)&buf,
-	/* datalen */ sizeof(buf),
-	/* datalen_used */ 0,
-	/* sense */ {},
-	/* senselen */ SENSEBUFLEN,
-	/* senselen_used */ 0,
-	/* status */ 0,
-	/* retsts */ 0,
-	/* error */ 0
+        /* databuf */ (caddr_t)&buf,
+        /* datalen */ sizeof(buf),
+        /* datalen_used */ 0,
+        /* sense */ {},
+        /* senselen */ SENSEBUFLEN,
+        /* senselen_used */ 0,
+        /* status */ 0,
+        /* retsts */ 0,
+        /* error */ 0
     };
     char *p, *q;
-    
+
     vendorId[0] = '\0';
     productId[0] = '\0';
     snprintf(deviceName, 256, "/dev/%s", driveName);
     fd = open(deviceName, O_RDWR);
     if (fd == -1) {
-	perror("Device open while querying:");
+        perror("Device open while querying:");
         return PSLR_DEVICE_ERROR;
     }
     if (ioctl(fd, SCIOCCOMMAND, &screq) < 0 ||
-	screq.status != 0 ||
-	screq.retsts != SCCMD_OK) {
-	vendorId[0] = productId[0] = '\0';
-	close(fd);
-	DPRINT("IOCTL failed in query\n");
-	return PSLR_DEVICE_ERROR;
+            screq.status != 0 ||
+            screq.retsts != SCCMD_OK) {
+        vendorId[0] = productId[0] = '\0';
+        close(fd);
+        DPRINT("IOCTL failed in query\n");
+        return PSLR_DEVICE_ERROR;
     }
     DPRINT("Camera queried.+n");
     /* Vendor */
     p = buf + 8;
     q = buf + ((16 < vendorIdSizeMax)?16:vendorIdSizeMax);
     while (q > p && q[-1] == ' ') q--;
-    memcpy(vendorId, p, q - p); vendorId[q - p] = '\0';
+    memcpy(vendorId, p, q - p);
+    vendorId[q - p] = '\0';
     /* Product */
     p = buf + 16;
     q = p + ((16 < productIdSizeMax)?16:productIdSizeMax);
     while (q > p && q[-1] == ' ') q--;
-    memcpy(productId, p, q - p); productId[q - p] = '\0';
-    
+    memcpy(productId, p, q - p);
+    productId[q - p] = '\0';
+
     close(fd);
 
     *hDevice = open(deviceName, O_RDWR);
-    if( *hDevice == -1) {
-	return PSLR_DEVICE_ERROR;
+    if ( *hDevice == -1) {
+        return PSLR_DEVICE_ERROR;
     }
     return PSLR_OK;
 }
@@ -154,7 +156,7 @@ void close_drive(int *hDevice) {
 }
 
 int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
-        uint8_t *buf, uint32_t bufLen) {
+              uint8_t *buf, uint32_t bufLen) {
 
     int r;
     unsigned int i;
@@ -163,7 +165,7 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     memset(&screq, 0, sizeof(screq));
     screq.flags = SCCMD_READ;
     screq.timeout = 20000;
-    
+
     assert(cmdLen < CMDBUFLEN);
 
     memcpy(screq.cmd, cmd, cmdLen);
@@ -211,25 +213,25 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
 
         /* Older Pentax DSLR will report all bytes remaining, so make
          * a special case for this (treat it as all bytes read). */
-	/* Linux solution: 
-        if (io.resid == bufLen)
+        /* Linux solution:
+            if (io.resid == bufLen)
+                return bufLen;
+            else
+                return bufLen - io.resid;
+        */
+        /* In BSD this could be something like:
+        if (screq.datalen_used == 0)
             return bufLen;
-        else
-            return bufLen - io.resid;
-	*/
-	/* In BSD this could be something like:
-	if (screq.datalen_used == 0)
-	    return bufLen;
-	*/
-	return screq.datalen_used;
+        */
+        return screq.datalen_used;
 
     }
 }
 
 int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
-        uint8_t *buf, uint32_t bufLen) {
+               uint8_t *buf, uint32_t bufLen) {
 
-    
+
     int r;
     unsigned int i;
     scsireq_t screq;
@@ -237,7 +239,7 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     memset(&screq, 0, sizeof(screq));
     screq.flags = SCCMD_WRITE;
     screq.timeout = 20000;
-    
+
     assert(cmdLen < CMDBUFLEN);
 
     memcpy(screq.cmd, cmd, cmdLen);
@@ -246,7 +248,7 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
 
     screq.databuf = buf;
     screq.datalen = bufLen;
-    
+
 
     //  print debug scsi cmd
     DPRINT("[S]\t\t\t\t\t >>> [");

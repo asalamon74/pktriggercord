@@ -125,7 +125,7 @@ static struct {
     { AF_LEFT-(AF_CROSS_W/2), AF_BOTTOM-(AF_CROSS_H/2), AF_CROSS_W, AF_CROSS_H },
     { AF_CENTER-(AF_CROSS_W/2), AF_BOTTOM-(AF_CROSS_H/2), AF_CROSS_W, AF_CROSS_H },
     { AF_RIGHT-(AF_CROSS_W/2), AF_BOTTOM-(AF_CROSS_H/2), AF_CROSS_W, AF_CROSS_H },
- };
+};
 
 static uint32_t focus_indicated_af_points;
 static uint32_t select_indicated_af_points;
@@ -145,23 +145,23 @@ static const int aperture_tbl[] = {
 };
 
 static pslr_rational_t shutter_tbl_1_3[] = {
-{ 30, 1},{ 25, 1},{ 20, 1},{ 15, 1},{ 13, 1},{ 10, 1},{ 8 , 1},{ 6 , 1},
-{ 5 , 1},{ 4 , 1},{ 3 , 1},{ 25, 10},{ 2 , 1},{ 16, 10},{ 13, 10},{ 1 , 1},
-{ 8 , 10},{ 6 , 10},{ 5 , 10},{ 4 , 10},{ 3 , 10},{ 1 , 4},{ 1 , 5},{ 1 , 6},
-{ 1 , 8},{ 1 , 10},{ 1 , 13},{ 1 , 15},{ 1 , 20},{ 1 , 25},{ 1 , 30},{ 1 , 40},
-{ 1 , 50},{ 1 , 60},{ 1 , 80},{ 1 , 100},{ 1 , 125},{ 1 , 160},{ 1 , 200},{ 1 , 250},
-{ 1 , 320},{ 1 , 400},{ 1 , 500},{ 1 , 640},{ 1 , 800},{ 1 , 1000},{ 1 , 1250},{ 1 , 1600},
-{ 1 , 2000},{ 1 , 2500},{ 1 , 3200},{ 1 , 4000},{1 , 5000}, {1, 6400}, {1, 8000}
+    { 30, 1},{ 25, 1},{ 20, 1},{ 15, 1},{ 13, 1},{ 10, 1},{ 8 , 1},{ 6 , 1},
+    { 5 , 1},{ 4 , 1},{ 3 , 1},{ 25, 10},{ 2 , 1},{ 16, 10},{ 13, 10},{ 1 , 1},
+    { 8 , 10},{ 6 , 10},{ 5 , 10},{ 4 , 10},{ 3 , 10},{ 1 , 4},{ 1 , 5},{ 1 , 6},
+    { 1 , 8},{ 1 , 10},{ 1 , 13},{ 1 , 15},{ 1 , 20},{ 1 , 25},{ 1 , 30},{ 1 , 40},
+    { 1 , 50},{ 1 , 60},{ 1 , 80},{ 1 , 100},{ 1 , 125},{ 1 , 160},{ 1 , 200},{ 1 , 250},
+    { 1 , 320},{ 1 , 400},{ 1 , 500},{ 1 , 640},{ 1 , 800},{ 1 , 1000},{ 1 , 1250},{ 1 , 1600},
+    { 1 , 2000},{ 1 , 2500},{ 1 , 3200},{ 1 , 4000},{1 , 5000}, {1, 6400}, {1, 8000}
 };
 
 static pslr_rational_t shutter_tbl_1_2[] = {
-{ 30, 1},{ 20, 1},{ 15, 1},{ 10, 1},{ 8 , 1},{ 6 , 1},
-{ 4 , 1},{ 3 , 1},{ 2 , 1},{ 15, 10},{ 1 , 1},
-{ 7 , 10},{ 5 , 10},{ 3 , 10},{ 1 , 4},{ 1 , 6},
-{ 1 , 8},{ 1 , 10},{ 1 , 15},{ 1 , 20},{ 1 , 30},
-{ 1 , 45},{ 1 , 60},{ 1 , 90},{ 1 , 125},{ 1 , 180},{ 1 , 250},
-{ 1 , 350},{ 1 , 500},{ 1 , 750},{ 1 , 1000},{ 1 , 1500},
-{ 1 , 2000},{ 1 , 3000},{ 1 , 4000}, {1, 6400}, {1, 8000}
+    { 30, 1},{ 20, 1},{ 15, 1},{ 10, 1},{ 8 , 1},{ 6 , 1},
+    { 4 , 1},{ 3 , 1},{ 2 , 1},{ 15, 10},{ 1 , 1},
+    { 7 , 10},{ 5 , 10},{ 3 , 10},{ 1 , 4},{ 1 , 6},
+    { 1 , 8},{ 1 , 10},{ 1 , 15},{ 1 , 20},{ 1 , 30},
+    { 1 , 45},{ 1 , 60},{ 1 , 90},{ 1 , 125},{ 1 , 180},{ 1 , 250},
+    { 1 , 350},{ 1 , 500},{ 1 , 750},{ 1 , 1000},{ 1 , 1500},
+    { 1 , 2000},{ 1 , 3000},{ 1 , 4000}, {1, 6400}, {1, 8000}
 };
 
 
@@ -214,9 +214,9 @@ void combobox_append( GtkComboBox *combobox, char **items, int item_num ) {
     DPRINT("combobox_append\n");
 
     for (i = 0; i<item_num; i++) {
-      DPRINT("adding item %s\n", items[i] );
-      gtk_list_store_append(store, &iter);
-      gtk_list_store_set(store, &iter, 0, items[i], -1);
+        DPRINT("adding item %s\n", items[i] );
+        gtk_list_store_append(store, &iter);
+        gtk_list_store_set(store, &iter, 0, items[i], -1);
     }
 
     gtk_combo_box_set_model( combobox, GTK_TREE_MODEL(store));
@@ -241,25 +241,25 @@ int common_init(void)
 
     GError* error = NULL;
     if (debug) {
-      xml = gtk_builder_new ();
-      if (!gtk_builder_add_from_file (xml, "pktriggercord.ui", &error))  {
-	error = NULL;
-	if( !gtk_builder_add_from_file (xml, DATADIR "/pktriggercord.ui", &error))  {
-	  g_warning ("Couldn't load builder file: %s", error->message);
-	  g_error_free (error);
-	  return -1;
-	}
-      }
+        xml = gtk_builder_new ();
+        if (!gtk_builder_add_from_file (xml, "pktriggercord.ui", &error))  {
+            error = NULL;
+            if ( !gtk_builder_add_from_file (xml, DATADIR "/pktriggercord.ui", &error))  {
+                g_warning ("Couldn't load builder file: %s", error->message);
+                g_error_free (error);
+                return -1;
+            }
+        }
     } else {
-      xml = gtk_builder_new ();
-      if (!gtk_builder_add_from_file (xml, DATADIR "/pktriggercord.ui", &error))  {
-	error = NULL;
-	if( !gtk_builder_add_from_file (xml, "pktriggercord.ui", &error))  {
-	  g_warning ("Couldn't load builder file: %s", error->message);
-	  g_error_free (error);
-	  return -1;
-	}
-      }
+        xml = gtk_builder_new ();
+        if (!gtk_builder_add_from_file (xml, DATADIR "/pktriggercord.ui", &error))  {
+            error = NULL;
+            if ( !gtk_builder_add_from_file (xml, "pktriggercord.ui", &error))  {
+                g_warning ("Couldn't load builder file: %s", error->message);
+                g_error_free (error);
+                return -1;
+            }
+        }
     }
 
     init_preview_area();
@@ -286,9 +286,9 @@ int common_init(void)
     char **fileformatnames = malloc( numfileformats * sizeof(char*) );
     int i;
     for (i = 0; i<numfileformats; i++) {
-      fileformatnames[i] = malloc( strlen(file_formats[i].file_format_name)+1);
-      memset( fileformatnames[i], '\0', strlen(file_formats[i].file_format_name)+1);
-      strncpy( fileformatnames[i], file_formats[i].file_format_name, strlen( file_formats[i].file_format_name ));
+        fileformatnames[i] = malloc( strlen(file_formats[i].file_format_name)+1);
+        memset( fileformatnames[i], '\0', strlen(file_formats[i].file_format_name)+1);
+        strncpy( fileformatnames[i], file_formats[i].file_format_name, strlen( file_formats[i].file_format_name ));
     }
 
     combobox_append( pw, fileformatnames, numfileformats );
@@ -315,13 +315,13 @@ void shutter_speed_table_init(pslr_status *st) {
     int steps;
     which_shutter_table( st, &tbl, &steps);
     int fastest_shutter_speed = pslr_get_model_fastest_shutter_speed(camhandle);
-    for(i=0;  i<steps; i++) {
-	if( tbl[i].nom == 1 &&
-	    tbl[i].denom <= fastest_shutter_speed) {
-	    max_valid_shutter_speed_index = i;
-	}
+    for (i=0;  i<steps; i++) {
+        if ( tbl[i].nom == 1 &&
+                tbl[i].denom <= fastest_shutter_speed) {
+            max_valid_shutter_speed_index = i;
+        }
     }
-    if( tbl[max_valid_shutter_speed_index].denom != fastest_shutter_speed ) {
+    if ( tbl[max_valid_shutter_speed_index].denom != fastest_shutter_speed ) {
         // not an exact match
         ++max_valid_shutter_speed_index;
         tbl[max_valid_shutter_speed_index].denom = fastest_shutter_speed;
@@ -346,14 +346,14 @@ void iso_speed_table_init(pslr_status *st) {
 
     // cannot determine if base or extended iso is set.
     // use extended iso range
-    for(i=0;  i<steps; i++) {
-	if( tbl[i] < pslr_get_model_extended_iso_min(camhandle)) {
-	    min_iso_index = i+1;
-	}
+    for (i=0;  i<steps; i++) {
+        if ( tbl[i] < pslr_get_model_extended_iso_min(camhandle)) {
+            min_iso_index = i+1;
+        }
 
-	if( tbl[i] <= pslr_get_model_extended_iso_max(camhandle)) {
-	    max_iso_index = i;
-	}
+        if ( tbl[i] <= pslr_get_model_extended_iso_max(camhandle)) {
+            max_iso_index = i;
+        }
     }
 
     gtk_range_set_range(GTK_RANGE(pw), (gdouble)(min_iso_index), (gdouble) (max_iso_index));
@@ -362,7 +362,7 @@ void iso_speed_table_init(pslr_status *st) {
 
 void camera_specific_init() {
     bool has_jpeg_hue = pslr_get_model_has_jpeg_hue( camhandle );
-    if( has_jpeg_hue ) {
+    if ( has_jpeg_hue ) {
         gtk_range_set_range( GTK_RANGE(GW("jpeg_hue_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     }
     gtk_range_set_range( GTK_RANGE(GW("jpeg_sharpness_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
@@ -372,10 +372,10 @@ void camera_specific_init() {
     int resindex=0;
     //    gchar buf[256];
     char **str_resolutions = malloc( MAX_RESOLUTION_SIZE * sizeof( char * ));
-    while( resindex < MAX_RESOLUTION_SIZE ) {
+    while ( resindex < MAX_RESOLUTION_SIZE ) {
         str_resolutions[resindex] = malloc( 10 );
         sprintf( str_resolutions[resindex], "%dM", resolutions[resindex]);
-	++resindex;
+        ++resindex;
     }
 
     combobox_append( GTK_COMBO_BOX(GW("jpeg_resolution_combo")), str_resolutions, MAX_RESOLUTION_SIZE );
@@ -385,12 +385,12 @@ void camera_specific_init() {
     char **str_jpegstars = malloc( starindex * sizeof( char * ));
     int num_stars = starindex;
     int index=0;
-    while( starindex > 0 ) {
+    while ( starindex > 0 ) {
         str_jpegstars[index] = malloc(10);
-	sprintf( str_jpegstars[index], "%.*s", starindex,ch);
-	//	gtk_combo_box_insert_text( GTK_COMBO_BOX(GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_quality_combo"))), resindex, buf);
-	--starindex;
-	++index;
+        sprintf( str_jpegstars[index], "%.*s", starindex,ch);
+        //  gtk_combo_box_insert_text( GTK_COMBO_BOX(GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_quality_combo"))), resindex, buf);
+        --starindex;
+        ++index;
     }
 
     combobox_append(  GTK_COMBO_BOX(GW("jpeg_quality_combo")), str_jpegstars, num_stars );
@@ -403,10 +403,10 @@ void camera_specific_init() {
     char **imagetones = malloc( max_supported_image_tone * sizeof(char*) );
     int i;
     for (i = 0; i<max_supported_image_tone; i++) {
-      DPRINT("get tone %s\n", get_pslr_jpeg_image_tone_str( i ) );
-      imagetones[i] = malloc( strlen( get_pslr_jpeg_image_tone_str( i ))+1);
-      memset(imagetones[i], '\0', strlen( get_pslr_jpeg_image_tone_str( i ))+1);
-      strncpy( imagetones[i], get_pslr_jpeg_image_tone_str( i ), strlen( get_pslr_jpeg_image_tone_str( i ) ));
+        DPRINT("get tone %s\n", get_pslr_jpeg_image_tone_str( i ) );
+        imagetones[i] = malloc( strlen( get_pslr_jpeg_image_tone_str( i ))+1);
+        memset(imagetones[i], '\0', strlen( get_pslr_jpeg_image_tone_str( i ))+1);
+        strncpy( imagetones[i], get_pslr_jpeg_image_tone_str( i ), strlen( get_pslr_jpeg_image_tone_str( i ) ));
     }
 
     combobox_append( pw, imagetones, max_supported_image_tone );
@@ -462,14 +462,14 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale"));
     if (st_new) {
         idx = -1;
-	pslr_rational_t *tbl = 0;
+        pslr_rational_t *tbl = 0;
         int steps = 0;
         which_shutter_table( st_new, &tbl, &steps );
         for (i=0; i<steps; i++) {
             if (st_new->set_shutter_speed.nom == tbl[i].nom
-                && st_new->set_shutter_speed.denom == tbl[i].denom) {
+                    && st_new->set_shutter_speed.denom == tbl[i].denom) {
                 idx = i;
-	    }
+            }
         }
         if (idx >= 0) {
             gtk_range_set_value(GTK_RANGE(pw), idx);
@@ -507,7 +507,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     if (st_new) {
         const int *tbl;
         int steps;
-	which_ec_table( st_new, &tbl, &steps);
+        which_ec_table( st_new, &tbl, &steps);
         idx = -1;
         for (i=0; i<steps; i++) {
             if (tbl[i] == st_new->ec.nom)
@@ -516,7 +516,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
         if (!st_old || st_old->custom_ev_steps != st_new->custom_ev_steps)
             gtk_range_set_range(GTK_RANGE(pw), 0.0, steps-1);
         if (!st_old || st_old->ec.nom != st_new->ec.nom
-            || st_old->ec.denom != st_new->ec.denom)
+                || st_old->ec.denom != st_new->ec.denom)
             gtk_range_set_value(GTK_RANGE(pw), idx);
     }
     gtk_widget_set_sensitive(pw, st_new != NULL);
@@ -533,9 +533,9 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     bool sensitive_hue = st_new;
     if (st_new) {
         gtk_range_set_value(GTK_RANGE(pw), (gdouble)st_new->jpeg_hue - get_jpeg_property_shift());
-	bool has_jpeg_hue = pslr_get_model_has_jpeg_hue( camhandle );
-//	DPRINT("has_jpeg_hue %d\n",has_jpeg_hue);
-	sensitive_hue &= has_jpeg_hue;
+        bool has_jpeg_hue = pslr_get_model_has_jpeg_hue( camhandle );
+//  DPRINT("has_jpeg_hue %d\n",has_jpeg_hue);
+        sensitive_hue &= has_jpeg_hue;
     }
     gtk_widget_set_sensitive(pw, sensitive_hue);
 
@@ -559,12 +559,12 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     if (st_new) {
         GtkTreeModel *jpeg_quality_model = gtk_combo_box_get_model(GTK_COMBO_BOX(pw));
         gint jpeg_quality_num = gtk_tree_model_iter_n_children( jpeg_quality_model, NULL );
-	ipslr_handle_t *p = (ipslr_handle_t *)camhandle;
-	int hw_jpeg_quality = get_hw_jpeg_quality(p->model, st_new->jpeg_quality);
-        if( st_new->jpeg_quality >= jpeg_quality_num ) {
-	  hw_jpeg_quality = 0;
-	}
-	gtk_combo_box_set_active(GTK_COMBO_BOX(pw), hw_jpeg_quality);
+        ipslr_handle_t *p = (ipslr_handle_t *)camhandle;
+        int hw_jpeg_quality = get_hw_jpeg_quality(p->model, st_new->jpeg_quality);
+        if ( st_new->jpeg_quality >= jpeg_quality_num ) {
+            hw_jpeg_quality = 0;
+        }
+        gtk_combo_box_set_active(GTK_COMBO_BOX(pw), hw_jpeg_quality);
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
@@ -586,7 +586,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     if (st_new) {
         if (!st_old || st_old->exposure_mode != st_new->exposure_mode) {
             gtk_combo_box_set_active(GTK_COMBO_BOX(pw), st_new->exposure_mode);
-	}
+        }
     }
 
     gtk_widget_set_sensitive(pw, st_new != NULL && st_new->user_mode_flag);
@@ -643,7 +643,7 @@ static gboolean status_poll(gpointer data)
     status_poll_inhibit = true;
 
     if (!camhandle) {
-        if( dangerous_camera_connected ) {
+        if ( dangerous_camera_connected ) {
             DPRINT("dangerous camera connected\n");
             status_poll_inhibit = false;
             return TRUE;
@@ -660,26 +660,26 @@ static gboolean status_poll(gpointer data)
 
             /* Connect */
             ret = pslr_connect(camhandle);
-	    DPRINT("ret: %d\n", ret);
-	    if( ret == -1 ) {
-	      gtk_statusbar_pop(statusbar, sbar_connect_ctx);
-	      gtk_statusbar_push(statusbar, sbar_connect_ctx, "Unknown Pentax camera found.");
-	      camhandle=NULL;
-	    } else if( ret != 0 ) {
-	      gtk_statusbar_pop(statusbar, sbar_connect_ctx);
-	      gtk_statusbar_push(statusbar, sbar_connect_ctx, "Cannot connect to Pentax camera.");
-	      camhandle=NULL;
-	    }
+            DPRINT("ret: %d\n", ret);
+            if ( ret == -1 ) {
+                gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+                gtk_statusbar_push(statusbar, sbar_connect_ctx, "Unknown Pentax camera found.");
+                camhandle=NULL;
+            } else if ( ret != 0 ) {
+                gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+                gtk_statusbar_push(statusbar, sbar_connect_ctx, "Cannot connect to Pentax camera.");
+                camhandle=NULL;
+            }
         }
 
         if (camhandle) {
-  	    DPRINT("before camera_specific_init\n");
+            DPRINT("before camera_specific_init\n");
             camera_specific_init();
-  	    DPRINT("after camera_specific_init\n");
+            DPRINT("after camera_specific_init\n");
             const char *name;
             name = pslr_camera_name(camhandle);
 
-            if( strcmp(name, "K-70")==0 && !dangerous ) {
+            if ( strcmp(name, "K-70")==0 && !dangerous ) {
                 DPRINT("Dangerous camera detected\n");
                 gtk_statusbar_pop(statusbar, sbar_connect_ctx);
                 gtk_statusbar_push(statusbar, sbar_connect_ctx, "Tethering K-70 is dangerous. If you really want to use it you also need to add --dangerous to the command line.");
@@ -693,14 +693,14 @@ static gboolean status_poll(gpointer data)
 
             snprintf(buf, sizeof(buf), "Connected: %s", name);
             buf[sizeof(buf)-1] = '\0';
-	    gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+            gtk_statusbar_pop(statusbar, sbar_connect_ctx);
             gtk_statusbar_push(statusbar, sbar_connect_ctx, buf);
-        } else if( ret == 0 ) {
-	    gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+        } else if ( ret == 0 ) {
+            gtk_statusbar_pop(statusbar, sbar_connect_ctx);
             gtk_statusbar_push(statusbar, sbar_connect_ctx, "No camera connected.");
         }
         status_poll_inhibit = false;
-	DPRINT("end status_poll\n");
+        DPRINT("end status_poll\n");
         return TRUE;
     }
 
@@ -759,10 +759,10 @@ static gboolean status_poll(gpointer data)
         pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_shutter"));
         gtk_label_set_text(GTK_LABEL(pw), buf);
 
-	pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale"));
-	gtk_widget_set_visible(pw, TRUE);
-	pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale_label"));
-	gtk_widget_set_visible(pw, TRUE);
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale"));
+        gtk_widget_set_visible(pw, TRUE);
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "shutter_scale_label"));
+        gtk_widget_set_visible(pw, TRUE);
         gtk_widget_set_visible ( GTK_WIDGET(gtk_builder_get_object(xml, "bulb_exp_value")), FALSE);
         gtk_widget_set_visible ( GTK_WIDGET(gtk_builder_get_object(xml, "bulb_exp_value_label")), FALSE);
     }
@@ -776,7 +776,7 @@ static gboolean status_poll(gpointer data)
 
     /* EV label */
     if (status_new && status_new->current_aperture.denom
-        && status_new->current_shutter_speed.denom) {
+            && status_new->current_shutter_speed.denom) {
         float ev, a, s;
         a = (float)status_new->current_aperture.nom/(float)status_new->current_aperture.denom;
         s = (float)status_new->current_shutter_speed.nom/(float)status_new->current_shutter_speed.denom;
@@ -789,20 +789,20 @@ static gboolean status_poll(gpointer data)
     }
     /* Zoom label */
     if (status_new && status_new->zoom.denom) {
-      pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_zoom"));
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_zoom"));
         sprintf(buf, "%d mm", status_new->zoom.nom / status_new->zoom.denom);
         gtk_label_set_text(GTK_LABEL(pw), buf);
     }
     /* Focus label */
     if (status_new) {
-      pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_focus"));
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_focus"));
         sprintf(buf, "focus: %d", status_new->focus);
         gtk_label_set_text(GTK_LABEL(pw), buf);
     }
 
     /* Lens label */
     if (status_new) {
-      pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_lens"));
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "label_lens"));
         sprintf(buf, "%s", get_lens_name(status_new->lens_id1, status_new->lens_id2));
         gtk_label_set_text(GTK_LABEL(pw), buf);
     }
@@ -877,7 +877,7 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old)
     for (new_picture=MAX_BUFFERS; new_picture>=0; --new_picture) {
         if (new_pictures & (1<<new_picture)) {
             break;
-	}
+        }
     }
     if (new_picture >= 0) {
         update_main_area(new_picture);
@@ -891,7 +891,7 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old)
             deleted = auto_save_check(format, i);
             if (deleted) {
                 new_pictures &= ~(1<<i);
-	    }
+            }
         }
     }
 
@@ -900,7 +900,7 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old)
     for (i=0; i<MAX_BUFFERS; i++) {
         if (new_pictures & (1<<i)) {
             update_preview_area(i);
-	}
+        }
     }
     /* Select the new picture in the buffer window */
     GtkWidget *pw;
@@ -1040,7 +1040,7 @@ static bool auto_save_check(int format, int buffer)
     if (old_path) {
         ssize_t r = chdir(old_path);
         if (r != 0) {
-          fprintf(stderr, "chdir(old_path) failed");
+            fprintf(stderr, "chdir(old_path) failed");
         }
 
         free(old_path);
@@ -1086,7 +1086,7 @@ static void update_main_area(int buffer)
     pError = NULL;
     pMainPixbuf = pixBuf;
 
-  the_end:
+the_end:
     gtk_statusbar_pop(statusbar, sbar_download_ctx);
 
 }
@@ -1126,7 +1126,7 @@ static void update_preview_area(int buffer)
     g_object_ref(pixBuf);
     set_preview_icon(buffer, pixBuf);
     pError = NULL;
-  the_end:
+the_end:
     gtk_statusbar_pop(statusbar, sbar_download_ctx);
 }
 
@@ -1162,12 +1162,12 @@ static void resize_preview_icons() {
     gtk_widget_set_size_request(pw, chk_preview ? (chk_histogram ? 400 : 200) : 0 , 10 );
 
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "preview_icon_scrollwindow"));
-    if( chk_preview ) {
-      gtk_widget_set_size_request(pw, chk_histogram ? 440 : 220, 10 );
-      gtk_widget_show( pw );
+    if ( chk_preview ) {
+        gtk_widget_set_size_request(pw, chk_histogram ? 440 : 220, 10 );
+        gtk_widget_show( pw );
     } else {
-      gtk_widget_set_size_request(pw, 0, 10 );
-      gtk_widget_hide( pw );
+        gtk_widget_set_size_request(pw, 0, 10 );
+        gtk_widget_hide( pw );
     }
 }
 
@@ -1248,7 +1248,7 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData)
 }
 
 G_MODULE_EXPORT int main_drawing_area_expose_event_cb(GtkAction *action, gpointer userData) {
-  return mainwindow_expose( action, userData );
+    return mainwindow_expose( action, userData );
 }
 
 G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *action, GdkEventButton *event, gpointer user_data)
@@ -1343,8 +1343,8 @@ GdkPixmap *calculate_histogram( GdkPixbuf *input, int hist_w, int hist_h ) {
     int input_width, input_height;
     GdkColor cWhite = { 0, 65535, 65535, 65535 };
 
-    if( !input ) {
-	return NULL;
+    if ( !input ) {
+        return NULL;
     }
 
     const GdkColor hist_colors[] = {
@@ -1416,56 +1416,56 @@ G_MODULE_EXPORT void shutter_press(GtkAction *action)
 
     GtkWidget *widget = GW("shutter_button");
     if (is_bulbing_on == TRUE) {
-      is_bulbing_on = FALSE;
-      gtk_button_set_label((GtkButton *)widget, "Take picture");
-      /* end current bulb shooting */
-      pslr_bulb(camhandle, false);
-      if (pslr_get_model_only_limited(camhandle)) {
-	manage_camera_buffers_limited();
-      }
-      return;
+        is_bulbing_on = FALSE;
+        gtk_button_set_label((GtkButton *)widget, "Take picture");
+        /* end current bulb shooting */
+        pslr_bulb(camhandle, false);
+        if (pslr_get_model_only_limited(camhandle)) {
+            manage_camera_buffers_limited();
+        }
+        return;
     }
     DPRINT("Shutter press.\n");
     pslr_get_status(camhandle, &status);
     if (status.exposure_mode == PSLR_GUI_EXPOSURE_MODE_B) {
-      GtkWidget * pw;
-      pw = GTK_WIDGET (gtk_builder_get_object (xml, "bulb_exp_value"));
-      bulb_exp_str = gtk_entry_get_text(GTK_ENTRY(pw));
-      if (bulb_exp_str == NULL) {
-	return;
-      }
-      shutter_speed = atoi(bulb_exp_str);
-      if (shutter_speed <= 0) {
-	return;
-      }
-      is_bulbing_on = TRUE;
-      pslr_bulb(camhandle, true);
-      pslr_shutter(camhandle);
-      while(shutter_speed > 0 && is_bulbing_on == TRUE) {
-	static gchar bulb_message[100];
-	sprintf (bulb_message, "BULB -> wait : %d seconds", shutter_speed);
-	gtk_button_set_label((GtkButton *)widget, bulb_message);
-	sleep_sec(1);
-	shutter_speed--;
-	while (gtk_events_pending ()) {
-	  gtk_main_iteration ();
-	}
-      }
-      if (is_bulbing_on == TRUE) {
-	pslr_bulb(camhandle, false);
-	is_bulbing_on = FALSE;
-	gtk_button_set_label((GtkButton *)widget, "Take picture");
-      }
+        GtkWidget * pw;
+        pw = GTK_WIDGET (gtk_builder_get_object (xml, "bulb_exp_value"));
+        bulb_exp_str = gtk_entry_get_text(GTK_ENTRY(pw));
+        if (bulb_exp_str == NULL) {
+            return;
+        }
+        shutter_speed = atoi(bulb_exp_str);
+        if (shutter_speed <= 0) {
+            return;
+        }
+        is_bulbing_on = TRUE;
+        pslr_bulb(camhandle, true);
+        pslr_shutter(camhandle);
+        while (shutter_speed > 0 && is_bulbing_on == TRUE) {
+            static gchar bulb_message[100];
+            sprintf (bulb_message, "BULB -> wait : %d seconds", shutter_speed);
+            gtk_button_set_label((GtkButton *)widget, bulb_message);
+            sleep_sec(1);
+            shutter_speed--;
+            while (gtk_events_pending ()) {
+                gtk_main_iteration ();
+            }
+        }
+        if (is_bulbing_on == TRUE) {
+            pslr_bulb(camhandle, false);
+            is_bulbing_on = FALSE;
+            gtk_button_set_label((GtkButton *)widget, "Take picture");
+        }
     } else {
-      r = pslr_shutter(camhandle);
-      if (r != PSLR_OK) {
-        DPRINT("shutter error\n");
-        return;
-      }
+        r = pslr_shutter(camhandle);
+        if (r != PSLR_OK) {
+            DPRINT("shutter error\n");
+            return;
+        }
     }
 
     if (pslr_get_model_only_limited(camhandle)) {
-      manage_camera_buffers_limited();
+        manage_camera_buffers_limited();
     }
 }
 
@@ -1623,9 +1623,9 @@ void init_preview_area(void)
 
     list_store = gtk_list_store_new (3,
                                      GDK_TYPE_PIXBUF, // thumbnail
-				     GDK_TYPE_PIXMAP, // histogram
-				     GDK_TYPE_PIXBUF  // visible icon
-	);
+                                     GDK_TYPE_PIXMAP, // histogram
+                                     GDK_TYPE_PIXBUF  // visible icon
+                                    );
 
     for (i = 0; i < MAX_BUFFERS; i++) {
         /* Add a new row to the model */
@@ -1640,16 +1640,16 @@ void init_preview_area(void)
 
 GdkPixbuf *merge_preview_icons( GdkPixbuf *thumb, GdkPixmap *histogram ) {
     GdkPixbuf *output;
-    if( need_histogram ) {
-	GdkPixmap *mMerged = gdk_pixmap_new(NULL, 2*HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, 24);
-	GdkGC *gc = gdk_gc_new( mMerged );
-	GdkPixbuf *scaledThumb = gdk_pixbuf_scale_simple( thumb, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, GDK_INTERP_BILINEAR);
-	gdk_draw_pixbuf( mMerged, gc, scaledThumb, 0, 0, 0, 0, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, GDK_RGB_DITHER_NONE, 0, 0);
-	gdk_draw_drawable( mMerged, gc, histogram, 0, 0, HISTOGRAM_WIDTH, 0, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT);
-	GdkPixbuf *pMerged = gdk_pixbuf_get_from_drawable( NULL, mMerged, GDK_COLORSPACE_RGB, 0, 0, 0, 0, 2*HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT );
-	output = gdk_pixbuf_scale_simple( pMerged, 2*THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, GDK_INTERP_BILINEAR);
+    if ( need_histogram ) {
+        GdkPixmap *mMerged = gdk_pixmap_new(NULL, 2*HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, 24);
+        GdkGC *gc = gdk_gc_new( mMerged );
+        GdkPixbuf *scaledThumb = gdk_pixbuf_scale_simple( thumb, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, GDK_INTERP_BILINEAR);
+        gdk_draw_pixbuf( mMerged, gc, scaledThumb, 0, 0, 0, 0, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT, GDK_RGB_DITHER_NONE, 0, 0);
+        gdk_draw_drawable( mMerged, gc, histogram, 0, 0, HISTOGRAM_WIDTH, 0, HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT);
+        GdkPixbuf *pMerged = gdk_pixbuf_get_from_drawable( NULL, mMerged, GDK_COLORSPACE_RGB, 0, 0, 0, 0, 2*HISTOGRAM_WIDTH, HISTOGRAM_HEIGHT );
+        output = gdk_pixbuf_scale_simple( pMerged, 2*THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, GDK_INTERP_BILINEAR);
     } else {
-	output = thumb;
+        output = thumb;
     }
     return output;
 }
@@ -1669,14 +1669,14 @@ G_MODULE_EXPORT void menu_histogram_window_toggled_cb(GtkAction *action, gpointe
     DPRINT("after need_histogram %d\n", need_histogram);
 
     for (i = 0; i < MAX_BUFFERS; i++) {
-	path = gtk_tree_path_new_from_indices (i, -1);
-	gtk_tree_model_get_iter (GTK_TREE_MODEL (list_store), &iter, path);
-	gtk_tree_path_free (path);
-	gtk_tree_model_get( GTK_TREE_MODEL (list_store), &iter, 0, &thumb, 1, &hist, -1 );
-	if( thumb ) {
-	    GdkPixbuf *pMerged = merge_preview_icons( thumb, hist );
-	    gtk_list_store_set (list_store, &iter, 0, thumb, 1, hist, 2, pMerged, -1);
-	}
+        path = gtk_tree_path_new_from_indices (i, -1);
+        gtk_tree_model_get_iter (GTK_TREE_MODEL (list_store), &iter, path);
+        gtk_tree_path_free (path);
+        gtk_tree_model_get( GTK_TREE_MODEL (list_store), &iter, 0, &thumb, 1, &hist, -1 );
+        if ( thumb ) {
+            GdkPixbuf *pMerged = merge_preview_icons( thumb, hist );
+            gtk_list_store_set (list_store, &iter, 0, thumb, 1, hist, 2, pMerged, -1);
+        }
     }
 }
 
@@ -1704,11 +1704,11 @@ G_MODULE_EXPORT gchar* shutter_scale_format_value_cb(GtkAction *action, gdouble 
     pslr_rational_t *tbl = 0;
     int steps = 0;
     if (!status_new) {
-	return g_strdup_printf("(%f)", value);
+        return g_strdup_printf("(%f)", value);
     }
     which_shutter_table(status_new, &tbl, &steps);
 
-    if(idx >= 0 && idx < steps) {
+    if (idx >= 0 && idx < steps) {
         int n = tbl[idx].nom;
         int d = tbl[idx].denom;
         if (n == 1) {
@@ -1717,7 +1717,7 @@ G_MODULE_EXPORT gchar* shutter_scale_format_value_cb(GtkAction *action, gdouble 
             return g_strdup_printf("%d\"", n);
         } else {
             return g_strdup_printf("%.1f\"", (float)n/(float)d);
-	}
+        }
     } else {
         return g_strdup_printf("(%f)", value);
     }
@@ -1727,7 +1727,7 @@ G_MODULE_EXPORT gchar* aperture_scale_format_value_cb(GtkAction *action, gdouble
 {
     int idx = rint(value);
     //printf("aperture value: %f\n", value);
-    if(idx < sizeof(aperture_tbl)/sizeof(aperture_tbl[0])) {
+    if (idx < sizeof(aperture_tbl)/sizeof(aperture_tbl[0])) {
         return g_strdup_printf("f/%.1f", aperture_tbl[idx]/10.0);
     } else {
         return g_strdup_printf("(%f)", value);
@@ -1764,13 +1764,13 @@ G_MODULE_EXPORT gchar* ec_scale_format_value_cb(GtkAction *action, gdouble value
 
 G_MODULE_EXPORT void aperture_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
-//    DPRINT("APERTURE CHANGE\n");  
+//    DPRINT("APERTURE CHANGE\n");
     gdouble a;
     pslr_rational_t value;
     int idx;
     int ret;
 
-    if( in_initcontrols ) {
+    if ( in_initcontrols ) {
         return;
     }
 
@@ -1880,8 +1880,8 @@ G_MODULE_EXPORT void ec_scale_value_changed_cb(GtkAction *action, gpointer user_
 G_MODULE_EXPORT void jpeg_resolution_combo_changed_cb(GtkAction *action, gpointer user_data)
 {
     DPRINT("jpeg res active start\n");
-    if( !status_new ) {
-	DPRINT("jpeg res active !status_new\n");
+    if ( !status_new ) {
+        DPRINT("jpeg res active !status_new\n");
         return;
     }
 
@@ -1925,7 +1925,7 @@ G_MODULE_EXPORT void jpeg_image_tone_combo_changed_cb(GtkAction *action, gpointe
     assert( (int)val >= -1);
     assert( (int)val < PSLR_JPEG_IMAGE_TONE_MAX);
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
-    if( val != -1 && (status_new == NULL || status_new->jpeg_image_tone != val) ) {
+    if ( val != -1 && (status_new == NULL || status_new->jpeg_image_tone != val) ) {
         ret = pslr_set_jpeg_image_tone(camhandle, val);
         if (ret != PSLR_OK) {
             DPRINT("Set JPEG image tone failed.\n");
@@ -1935,7 +1935,7 @@ G_MODULE_EXPORT void jpeg_image_tone_combo_changed_cb(GtkAction *action, gpointe
 
 G_MODULE_EXPORT void jpeg_sharpness_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
-    if( in_initcontrols ) {
+    if ( in_initcontrols ) {
         return;
     }
     DPRINT("before get sharpness\n");
@@ -1952,7 +1952,7 @@ G_MODULE_EXPORT void jpeg_sharpness_scale_value_changed_cb(GtkAction *action, gp
 
 G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
-    if( in_initcontrols ) {
+    if ( in_initcontrols ) {
         return;
     }
     DPRINT("before get contrast\n");
@@ -1969,7 +1969,7 @@ G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpo
 
 G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
-    if( in_initcontrols ) {
+    if ( in_initcontrols ) {
         return;
     }
     DPRINT("before get hue %f\n", gtk_range_get_value(GTK_RANGE(GW("jpeg_hue_scale"))));
@@ -1991,7 +1991,7 @@ G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer
 
 G_MODULE_EXPORT void jpeg_saturation_scale_value_changed_cb(GtkAction *action, gpointer user_data)
 {
-    if( in_initcontrols ) {
+    if ( in_initcontrols ) {
         return;
     }
     DPRINT("before get saturation\n");
@@ -2055,11 +2055,11 @@ static void save_buffer(int bufno, const char *filename)
     filefmt = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
 
     if (filefmt == USER_FILE_FORMAT_PEF) {
-      imagetype = PSLR_BUF_PEF;
+        imagetype = PSLR_BUF_PEF;
     } else if (filefmt == USER_FILE_FORMAT_DNG) {
-      imagetype = PSLR_BUF_DNG;
+        imagetype = PSLR_BUF_DNG;
     } else {
-      imagetype = pslr_get_jpeg_buffer_type( camhandle, quality );
+        imagetype = pslr_get_jpeg_buffer_type( camhandle, quality );
     }
     DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, resolution);
 
@@ -2094,7 +2094,7 @@ static void save_buffer(int bufno, const char *filename)
         } else if (r < bytes) {
             DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
         }
-        
+
         current += bytes;
         gtk_progress_bar_update(GTK_PROGRESS_BAR(pw), (gdouble) current / (gdouble) length);
         /* process pending events */
@@ -2217,7 +2217,7 @@ static void which_iso_table(pslr_status *st, const int **table, int *steps)
     if (st->custom_sensitivity_steps == PSLR_CUSTOM_SENSITIVITY_STEPS_1EV) {
         *table = iso_tbl_1;
         *steps = sizeof(iso_tbl_1)/sizeof(iso_tbl_1[0]);
-    }else if (st->custom_ev_steps == PSLR_CUSTOM_EV_STEPS_1_2) {
+    } else if (st->custom_ev_steps == PSLR_CUSTOM_EV_STEPS_1_2) {
         *table = iso_tbl_1_2;
         *steps = sizeof(iso_tbl_1_2)/sizeof(iso_tbl_1_2[0]);
     } else {
@@ -2254,7 +2254,7 @@ static void which_shutter_table(pslr_status *st, pslr_rational_t **table, int *s
     assert(*steps);
 }
 
-static struct option const longopts[] ={
+static struct option const longopts[] = {
     {"debug", no_argument, NULL, 4},
     {"dangerous", no_argument, NULL, 25},
     { NULL, 0, NULL, 0}

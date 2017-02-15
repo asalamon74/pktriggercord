@@ -13,7 +13,7 @@
     Copyright (C) 2010 Tomasz Kos
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by 
+    it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -83,7 +83,7 @@ typedef enum {
 } pslr_af_point_sel_t;
 
 typedef enum {
-    PSLR_JPEG_IMAGE_TONE_NONE = -1,  
+    PSLR_JPEG_IMAGE_TONE_NONE = -1,
     PSLR_JPEG_IMAGE_TONE_NATURAL,
     PSLR_JPEG_IMAGE_TONE_BRIGHT,
     PSLR_JPEG_IMAGE_TONE_PORTRAIT,

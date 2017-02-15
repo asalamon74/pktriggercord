@@ -17,3 +17,4 @@
 /android/obj
 /android/local.properties
 .#*
+*.orig

@@ -90,6 +90,7 @@ install: pktriggercord-cli pktriggercord
 clean:
 	rm -f pktriggercord pktriggercord-cli *.o
 	rm -f pktriggercord.exe pktriggercord-cli.exe
+	rm -f *.orig
 
 uninstall:
 	rm -f $(PREFIX)/bin/pktriggercord $(PREFIX)/bin/pktriggercord-cli
@@ -223,3 +224,6 @@ androidrelease: androidcommon
 	ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -f $(ANDROID_ANT_FILE) release
 	cp $(ANDROID_DIR)/bin/$(ANDROID_PROJECT_NAME)-release.apk $(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-release.apk
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
+
+astyle:
+	astyle --options=astylerc *.h *.c

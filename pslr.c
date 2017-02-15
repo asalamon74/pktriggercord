@@ -68,8 +68,8 @@
 
 void sleep_sec(double sec) {
     int i;
-    for(i=0; i<floor(sec); ++i) {
-	usleep(999999); // 1000000 is not working for Windows
+    for (i=0; i<floor(sec); ++i) {
+        usleep(999999); // 1000000 is not working for Windows
     }
     usleep(1000000*(sec-floor(sec)));
 }
@@ -193,11 +193,11 @@ typedef enum {
     int args[n];
     int i;
     for( i = 0; i < 4; ++i ) {
-	args[i] = 0;
+    args[i] = 0;
     }
     va_start(ap, n);
     for (i = 0; i < n; i++) {
-	args[i] = va_arg(ap, int);
+    args[i] = va_arg(ap, int);
     }
     va_end(ap);
     return _ipslr_write_args(4, p, n, args);
@@ -218,7 +218,7 @@ static int ipslr_cmd_23_XX(ipslr_handle_t *p, char XX, char YY, uint32_t mode) {
 static int ipslr_cmd_23_06(ipslr_handle_t *p, char debug_on_off) {
     DPRINT("[C]\t\tipslr_cmd_23_06(debug=%d)\n", debug_on_off);
     CHECK(ipslr_write_args(p, 1, 3));
-    if(debug_on_off==0){
+    if (debug_on_off==0) {
         CHECK(ipslr_write_args_special(p, 4,0,0,0,0));
     } else {
         CHECK(ipslr_write_args_special(p, 4,1,1,0,0));
@@ -241,7 +241,7 @@ static int ipslr_cmd_23_04(ipslr_handle_t *p) {
 
 /* Function called to enable/disable debug mode. If debug_mode argument is 0 */
 /* function disables debug mode, else debug mode is enabled                  */
-int debug_onoff(ipslr_handle_t *p, char debug_mode){
+int debug_onoff(ipslr_handle_t *p, char debug_mode) {
     DPRINT("[C]\tdebug_onoff(%d)\n", debug_mode);
     uint8_t buf[16]; /* buffer for storing statuses and read_results */
 
@@ -254,11 +254,11 @@ int debug_onoff(ipslr_handle_t *p, char debug_mode){
     read_result(p->fd,buf,0x04);
     ipslr_status(p,buf);
 
-	if(debug_mode==0){
-    		ipslr_cmd_23_06(p,DEBUG_OFF);
-	} else {
-    		ipslr_cmd_23_06(p,DEBUG_ON);
-	}
+    if (debug_mode==0) {
+        ipslr_cmd_23_06(p,DEBUG_OFF);
+    } else {
+        ipslr_cmd_23_06(p,DEBUG_ON);
+    }
     ipslr_status(p,buf);
 
 
@@ -285,20 +285,20 @@ user_file_format_t *get_file_format_t( user_file_format uff ) {
 }
 
 int pslr_set_user_file_format(pslr_handle_t h, user_file_format uff) {
-    switch( uff ) {
-    case USER_FILE_FORMAT_PEF:
-	pslr_set_image_format(h, PSLR_IMAGE_FORMAT_RAW);
-	pslr_set_raw_format(h, PSLR_RAW_FORMAT_PEF);
-	break;
-    case USER_FILE_FORMAT_DNG:
-	pslr_set_image_format(h, PSLR_IMAGE_FORMAT_RAW);
-	pslr_set_raw_format(h, PSLR_RAW_FORMAT_DNG);
-	break;
-    case USER_FILE_FORMAT_JPEG:
-	pslr_set_image_format(h, PSLR_IMAGE_FORMAT_JPEG);
-	break;
-    case USER_FILE_FORMAT_MAX:
-	return PSLR_PARAM;
+    switch ( uff ) {
+        case USER_FILE_FORMAT_PEF:
+            pslr_set_image_format(h, PSLR_IMAGE_FORMAT_RAW);
+            pslr_set_raw_format(h, PSLR_RAW_FORMAT_PEF);
+            break;
+        case USER_FILE_FORMAT_DNG:
+            pslr_set_image_format(h, PSLR_IMAGE_FORMAT_RAW);
+            pslr_set_raw_format(h, PSLR_RAW_FORMAT_DNG);
+            break;
+        case USER_FILE_FORMAT_JPEG:
+            pslr_set_image_format(h, PSLR_IMAGE_FORMAT_JPEG);
+            break;
+        case USER_FILE_FORMAT_MAX:
+            return PSLR_PARAM;
     }
     return PSLR_OK;
 }
@@ -313,37 +313,37 @@ user_file_format get_user_file_format( pslr_status *st ) {
             return USER_FILE_FORMAT_PEF;
         } else {
             return USER_FILE_FORMAT_DNG;
-	}
+        }
     }
 }
 
 // most of the cameras require this exposure mode conversion step
 pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
-    switch( exp ) {
+    switch ( exp ) {
 
-    case PSLR_EXPOSURE_MODE_GREEN:
-	return PSLR_GUI_EXPOSURE_MODE_GREEN;
-    case PSLR_EXPOSURE_MODE_P:
-	return PSLR_GUI_EXPOSURE_MODE_P;
-    case PSLR_EXPOSURE_MODE_SV:
-	return PSLR_GUI_EXPOSURE_MODE_SV;
-    case PSLR_EXPOSURE_MODE_TV:
-	return PSLR_GUI_EXPOSURE_MODE_TV;
-    case PSLR_EXPOSURE_MODE_AV:
-    case PSLR_EXPOSURE_MODE_AV_OFFAUTO:
-	return PSLR_GUI_EXPOSURE_MODE_AV;
-    case PSLR_EXPOSURE_MODE_TAV:
-	return PSLR_GUI_EXPOSURE_MODE_TAV;
-    case PSLR_EXPOSURE_MODE_M:
-    case PSLR_EXPOSURE_MODE_M_OFFAUTO:
-	return PSLR_GUI_EXPOSURE_MODE_M;
-    case PSLR_EXPOSURE_MODE_B:
-    case PSLR_EXPOSURE_MODE_B_OFFAUTO:
-	return PSLR_GUI_EXPOSURE_MODE_B;
-    case PSLR_EXPOSURE_MODE_X:
-	return PSLR_GUI_EXPOSURE_MODE_X;
-    case PSLR_EXPOSURE_MODE_MAX:
-	return PSLR_GUI_EXPOSURE_MODE_MAX;
+        case PSLR_EXPOSURE_MODE_GREEN:
+            return PSLR_GUI_EXPOSURE_MODE_GREEN;
+        case PSLR_EXPOSURE_MODE_P:
+            return PSLR_GUI_EXPOSURE_MODE_P;
+        case PSLR_EXPOSURE_MODE_SV:
+            return PSLR_GUI_EXPOSURE_MODE_SV;
+        case PSLR_EXPOSURE_MODE_TV:
+            return PSLR_GUI_EXPOSURE_MODE_TV;
+        case PSLR_EXPOSURE_MODE_AV:
+        case PSLR_EXPOSURE_MODE_AV_OFFAUTO:
+            return PSLR_GUI_EXPOSURE_MODE_AV;
+        case PSLR_EXPOSURE_MODE_TAV:
+            return PSLR_GUI_EXPOSURE_MODE_TAV;
+        case PSLR_EXPOSURE_MODE_M:
+        case PSLR_EXPOSURE_MODE_M_OFFAUTO:
+            return PSLR_GUI_EXPOSURE_MODE_M;
+        case PSLR_EXPOSURE_MODE_B:
+        case PSLR_EXPOSURE_MODE_B_OFFAUTO:
+            return PSLR_GUI_EXPOSURE_MODE_B;
+        case PSLR_EXPOSURE_MODE_X:
+            return PSLR_GUI_EXPOSURE_MODE_X;
+        case PSLR_EXPOSURE_MODE_MAX:
+            return PSLR_GUI_EXPOSURE_MODE_MAX;
     }
     return 0;
 }
@@ -358,51 +358,51 @@ pslr_handle_t pslr_init( char *model, char *device ) {
 
     DPRINT("[C]\tplsr_init()\n");
 
-    if( device == NULL ) {
-	drives = get_drives(&driveNum);
+    if ( device == NULL ) {
+        drives = get_drives(&driveNum);
     } else {
-	driveNum = 1;
-	drives = malloc( driveNum * sizeof(char*) );
+        driveNum = 1;
+        drives = malloc( driveNum * sizeof(char*) );
         drives[0] = malloc( strlen( device )+1 );
-	strncpy( drives[0], device, strlen( device ) );
-	drives[0][strlen(device)]='\0';
+        strncpy( drives[0], device, strlen( device ) );
+        drives[0][strlen(device)]='\0';
     }
     DPRINT("driveNum:%d\n",driveNum);
     int i;
-    for( i=0; i<driveNum; ++i ) {
-	pslr_result result = get_drive_info( drives[i], &fd, vendorId, sizeof(vendorId), productId, sizeof(productId));
+    for ( i=0; i<driveNum; ++i ) {
+        pslr_result result = get_drive_info( drives[i], &fd, vendorId, sizeof(vendorId), productId, sizeof(productId));
 
-	DPRINT("\tChecking drive:  %s %s %s\n", drives[i], vendorId, productId);
-	if( find_in_array( valid_vendors, sizeof(valid_vendors)/sizeof(valid_vendors[0]),vendorId) != -1
-	    && find_in_array( valid_models, sizeof(valid_models)/sizeof(valid_models[0]), productId) != -1 ) {
-	    if( result == PSLR_OK ) {
-		DPRINT("\tFound camera %s %s\n", vendorId, productId);
-		pslr.fd = fd;
-		if( model != NULL ) {
-		    // user specified the camera model
-		    camera_name = pslr_camera_name( &pslr );
-		    DPRINT("\tName of the camera: %s\n", camera_name);
-		    if( str_comparison_i( camera_name, model, strlen( camera_name) ) == 0 ) {
-			return &pslr;
-		    } else {
-			DPRINT("\tIgnoring camera %s %s\n", vendorId, productId);
-			pslr_shutdown ( &pslr );
-			pslr.id = 0;
-			pslr.model = NULL;
-		    }
-		} else {
-		    return &pslr;
-		}
-	    } else {
-		DPRINT("\tCannot get drive info of Pentax camera. Please do not forget to install the program using 'make install'\n");
-		// found the camera but communication is not possible
-		close( fd );
-		continue;
-	    }
-	} else {
-	    close_drive( &fd );
-	    continue;
-	}
+        DPRINT("\tChecking drive:  %s %s %s\n", drives[i], vendorId, productId);
+        if ( find_in_array( valid_vendors, sizeof(valid_vendors)/sizeof(valid_vendors[0]),vendorId) != -1
+                && find_in_array( valid_models, sizeof(valid_models)/sizeof(valid_models[0]), productId) != -1 ) {
+            if ( result == PSLR_OK ) {
+                DPRINT("\tFound camera %s %s\n", vendorId, productId);
+                pslr.fd = fd;
+                if ( model != NULL ) {
+                    // user specified the camera model
+                    camera_name = pslr_camera_name( &pslr );
+                    DPRINT("\tName of the camera: %s\n", camera_name);
+                    if ( str_comparison_i( camera_name, model, strlen( camera_name) ) == 0 ) {
+                        return &pslr;
+                    } else {
+                        DPRINT("\tIgnoring camera %s %s\n", vendorId, productId);
+                        pslr_shutdown ( &pslr );
+                        pslr.id = 0;
+                        pslr.model = NULL;
+                    }
+                } else {
+                    return &pslr;
+                }
+            } else {
+                DPRINT("\tCannot get drive info of Pentax camera. Please do not forget to install the program using 'make install'\n");
+                // found the camera but communication is not possible
+                close( fd );
+                continue;
+            }
+        } else {
+            close_drive( &fd );
+            continue;
+        }
     }
     DPRINT("\tcamera not found\n");
     return NULL;
@@ -416,18 +416,18 @@ int pslr_connect(pslr_handle_t h) {
     CHECK(ipslr_set_mode(p, 1));
     CHECK(ipslr_status(p, statusbuf));
     CHECK(ipslr_identify(p));
-    if( !p->model ) {
-      DPRINT("\nUnknown Pentax camera.\n");
-      return -1;
+    if ( !p->model ) {
+        DPRINT("\nUnknown Pentax camera.\n");
+        return -1;
     }
     CHECK(ipslr_status_full(p, &p->status));
     DPRINT("\tinit bufmask=0x%x\n", p->status.bufmask);
-    if( !p->model->old_scsi_command ) {
+    if ( !p->model->old_scsi_command ) {
         CHECK(ipslr_cmd_00_09(p, 2));
     }
     CHECK(ipslr_status_full(p, &p->status));
     CHECK(ipslr_cmd_10_0a(p, 1));
-    if( p->model->old_scsi_command ) {
+    if ( p->model->old_scsi_command ) {
         CHECK(ipslr_cmd_00_05(p));
     }
     CHECK(ipslr_status_full(p, &p->status));
@@ -474,31 +474,33 @@ int pslr_get_status(pslr_handle_t h, pslr_status *ps) {
 
 char *format_rational( pslr_rational_t rational, char * fmt ) {
     char *ret = malloc(32);
-    if( rational.denom == 0 ) {
-	snprintf( ret, 32, "unknown" );
+    if ( rational.denom == 0 ) {
+        snprintf( ret, 32, "unknown" );
     } else {
-	snprintf( ret, 32, fmt, 1.0 * rational.nom / rational.denom );
+        snprintf( ret, 32, fmt, 1.0 * rational.nom / rational.denom );
     }
     return ret;
 }
 
 char *get_white_balance_single_adjust_str( uint32_t adjust, char negativeChar, char positiveChar ) {
     char *ret = malloc(4);
-    if( adjust < 7 ) {
-	snprintf( ret, 4, "%c%d", negativeChar, 7-adjust);
-    } else if( adjust > 7 ) {
-	snprintf( ret, 4, "%c%d", positiveChar, adjust-7);
+    if ( adjust < 7 ) {
+        snprintf( ret, 4, "%c%d", negativeChar, 7-adjust);
+    } else if ( adjust > 7 ) {
+        snprintf( ret, 4, "%c%d", positiveChar, adjust-7);
     } else {
-	ret = "";
+        ret = "";
     }
     return ret;
 }
 
 char *get_white_balance_adjust_str( uint32_t adjust_mg, uint32_t adjust_ba ) {
     char *ret = malloc(8);
-    if( adjust_mg != 7 || adjust_ba != 7 ) {
-	snprintf(ret, 8, "%s%s", get_white_balance_single_adjust_str(adjust_mg, 'M', 'G'),get_white_balance_single_adjust_str(adjust_ba, 'B', 'A')); } else {
-	ret = "0";
+    if ( adjust_mg != 7 || adjust_ba != 7 ) {
+        snprintf(ret, 8, "%s%s", get_white_balance_single_adjust_str(adjust_mg, 'M', 'G'),get_white_balance_single_adjust_str(adjust_ba, 'B', 'A'));
+    }
+    else {
+        ret = "0";
     }
     return ret;
 }
@@ -565,32 +567,32 @@ int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf) {
 }
 
 int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution,
-        uint8_t **ppData, uint32_t *pLen) {
+                    uint8_t **ppData, uint32_t *pLen) {
     DPRINT("[C]\tpslr_get_buffer()\n");
     uint8_t *buf = 0;
     int ret;
     ret = pslr_buffer_open(h, bufno, type, resolution);
-    if( ret != PSLR_OK ) {
-	return ret;
+    if ( ret != PSLR_OK ) {
+        return ret;
     }
 
     uint32_t size = pslr_buffer_get_size(h);
     buf = malloc(size);
     if (!buf) {
-	return PSLR_NO_MEMORY;
+        return PSLR_NO_MEMORY;
     }
 
     uint32_t bytes = pslr_buffer_read(h, buf, size);
 
-    if( bytes != size ) {
-	return PSLR_READ_ERROR;
+    if ( bytes != size ) {
+        return PSLR_READ_ERROR;
     }
     pslr_buffer_close(h);
     if (ppData) {
-	*ppData = buf;
+        *ppData = buf;
     }
     if (pLen) {
-	*pLen = size;
+        *pLen = size;
     }
 
     return PSLR_OK;
@@ -603,32 +605,32 @@ int pslr_set_progress_callback(pslr_handle_t h, pslr_progress_callback_t cb, uin
 
 int ipslr_handle_command_x18( ipslr_handle_t *p, bool cmd9_wrap, int subcommand, int argnum,  ...) {
     DPRINT("[C]\t\tipslr_handle_command_x18(0x%x, %d)\n", subcommand, argnum);
-    if( cmd9_wrap ) {
+    if ( cmd9_wrap ) {
         CHECK(ipslr_cmd_00_09(p, 1));
     }
     // max 4 args
     va_list ap;
     int args[4];
     int i;
-    for( i = 0; i < 4; ++i ) {
-	args[i] = 0;
+    for ( i = 0; i < 4; ++i ) {
+        args[i] = 0;
     }
     va_start(ap, argnum);
     for (i = 0; i < argnum; i++) {
-	args[i] = va_arg(ap, int);
+        args[i] = va_arg(ap, int);
     }
     va_end(ap);
     CHECK(ipslr_write_args(p, argnum, args[0], args[1], args[2], args[3]));
     CHECK(command(p->fd, 0x18, subcommand, 4 * argnum));
     CHECK(get_status(p->fd));
-    if( cmd9_wrap ) {
+    if ( cmd9_wrap ) {
         CHECK(ipslr_cmd_00_09(p, 2));
     }
     return PSLR_OK;
 }
 
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4) {
-  DPRINT("[C]\tpslr_test(wrap=%d, subcommand=0x%x, %x, %x, %x, %x)\n", cmd9_wrap, subcommand, arg1, arg2, arg3, arg4);
+    DPRINT("[C]\tpslr_test(wrap=%d, subcommand=0x%x, %x, %x, %x, %x)\n", cmd9_wrap, subcommand, arg1, arg2, arg3, arg4);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, cmd9_wrap, subcommand, argnum, arg1, arg2, arg3, arg4);
 }
@@ -710,7 +712,7 @@ int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars ) {
     DPRINT("[C]\tpslr_set_jpeg_stars(%X)\n", jpeg_stars);
     int hwqual;
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if( jpeg_stars > p->model->max_jpeg_stars ) {
+    if ( jpeg_stars > p->model->max_jpeg_stars ) {
         return PSLR_PARAM;
     }
     hwqual = get_hw_jpeg_quality( p->model, jpeg_stars );
@@ -728,8 +730,8 @@ int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres) {
 
 int _get_hw_jpeg_resolution( ipslr_model_info_t *model, int megapixel) {
     int resindex = 0;
-    while( resindex < MAX_RESOLUTION_SIZE && model->jpeg_resolutions[resindex] > megapixel ) {
-	++resindex;
+    while ( resindex < MAX_RESOLUTION_SIZE && model->jpeg_resolutions[resindex] > megapixel ) {
+        ++resindex;
     }
     return resindex < MAX_RESOLUTION_SIZE ? resindex : MAX_RESOLUTION_SIZE-1;
 }
@@ -907,8 +909,8 @@ int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int b
     bufs = p->status.bufmask;
     DPRINT("\tp->status.bufmask = %x\n", p->status.bufmask);
 
-    if( p->model->parser_function && (bufs & (1 << bufno)) == 0) {
-	// do not check this for limited support cameras
+    if ( p->model->parser_function && (bufs & (1 << bufno)) == 0) {
+        // do not check this for limited support cameras
         DPRINT("\tNo buffer data (%d)\n", bufno);
         return PSLR_READ_ERROR;
     }
@@ -1174,25 +1176,25 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     n = get_result(p->fd);
     DPRINT("\tread %d bytes\n", n);
     int expected_bufsize = p->model != NULL ? p->model->buffer_size : 0;
-    if( p->model == NULL ) {
-      DPRINT("\tp model null\n");
+    if ( p->model == NULL ) {
+        DPRINT("\tp model null\n");
     }
     DPRINT("\texpected_bufsize: %d\n",expected_bufsize);
 
     CHECK(read_result(p->fd, p->status_buffer, n > MAX_STATUS_BUF_SIZE ? MAX_STATUS_BUF_SIZE: n));
 
-    if( expected_bufsize == 0 || !p->model->parser_function ) {
+    if ( expected_bufsize == 0 || !p->model->parser_function ) {
         // limited support only
         return PSLR_OK;
-    } else if( expected_bufsize > 0 && expected_bufsize != n ) {
+    } else if ( expected_bufsize > 0 && expected_bufsize != n ) {
         DPRINT("\tWaiting for %d bytes but got %d\n", expected_bufsize, n);
         return PSLR_READ_ERROR;
     } else {
         // everything OK
         (*p->model->parser_function)(p, status);
-	if( p->model->need_exposure_mode_conversion ) {
+        if ( p->model->need_exposure_mode_conversion ) {
             status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
-	}
+        }
         return PSLR_OK;
     }
 }
@@ -1214,7 +1216,7 @@ static int ipslr_press_shutter(ipslr_handle_t *p, bool fullpress) {
 static int ipslr_select_buffer(ipslr_handle_t *p, int bufno, pslr_buffer_type buftype, int bufres) {
     int r;
     DPRINT("\t\tSelect buffer %d,%d,%d,0\n", bufno, buftype, bufres);
-    if( !p->model->old_scsi_command ) {
+    if ( !p->model->old_scsi_command ) {
         CHECK(ipslr_write_args(p, 4, bufno, buftype, bufres, 0));
         CHECK(command(p->fd, 0x02, 0x01, 0x10));
     } else {
@@ -1248,7 +1250,7 @@ static int ipslr_buffer_segment_info(ipslr_handle_t *p, pslr_buffer_segment_info
     int num_try = 20;
 
     pInfo->b = 0;
-    while( pInfo->b == 0 && --num_try > 0 ) {
+    while ( pInfo->b == 0 && --num_try > 0 ) {
         CHECK(command(p->fd, 0x04, 0x00, 0x00));
         n = get_result(p->fd);
         if (n != 16) {
@@ -1268,10 +1270,10 @@ static int ipslr_buffer_segment_info(ipslr_handle_t *p, pslr_buffer_segment_info
         pInfo->b = (*get_uint32_func_ptr)(&buf[4]);
         pInfo->addr = (*get_uint32_func_ptr)(&buf[8]);
         pInfo->length = (*get_uint32_func_ptr)(&buf[12]);
-	if( pInfo-> b == 0 ) {
-	  DPRINT("\tWaiting for segment info addr: 0x%x len: %d B=%d\n", pInfo->addr, pInfo->length, pInfo->b);
-	  sleep_sec( 0.1 );
-	}
+        if ( pInfo-> b == 0 ) {
+            DPRINT("\tWaiting for segment info addr: 0x%x len: %d B=%d\n", pInfo->addr, pInfo->length, pInfo->b);
+            sleep_sec( 0.1 );
+        }
     }
     return PSLR_OK;
 }
@@ -1290,7 +1292,7 @@ static int ipslr_download(ipslr_handle_t *p, uint32_t addr, uint32_t length, uin
             block = BLKSZ;
         } else {
             block = length;
-	}
+        }
 
         //DPRINT("Get 0x%x bytes from 0x%x\n", block, addr);
         CHECK(ipslr_write_args(p, 2, addr, block));
@@ -1361,7 +1363,7 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
     va_end(ap);
 
     va_start(ap, n);
-    if( p->model && !p->model->old_scsi_command ) {
+    if ( p->model && !p->model->old_scsi_command ) {
         /* All at once */
         for (i = 0; i < n; i++) {
             data = va_arg(ap, uint32_t);
@@ -1378,7 +1380,7 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
         res = scsi_write(fd, cmd, sizeof (cmd), buf, 4 * n);
         if (res != PSLR_OK) {
             return res;
-	    }
+        }
     } else {
         /* Arguments one by one */
         for (i = 0; i < n; i++) {
@@ -1395,7 +1397,7 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
             res = scsi_write(fd, cmd, sizeof (cmd), buf, 4);
             if (res != PSLR_OK) {
                 return res;
-	    }
+            }
         }
     }
     va_end(ap);
@@ -1470,7 +1472,7 @@ static int get_result(int fd) {
         return -1;
     } else {
         DPRINT("[R]\t\t\t\t => [%02X %02X %02X %02X]\n",
-            statusbuf[0], statusbuf[1], statusbuf[2], statusbuf[3]);
+               statusbuf[0], statusbuf[1], statusbuf[2], statusbuf[3]);
     }
     return statusbuf[0] | statusbuf[1] << 8 | statusbuf[2] << 16 | statusbuf[3] << 24;
 }
@@ -1519,11 +1521,11 @@ PK-Remote (C) 2008 Pontus Lidman \n\n");
 /* -----------------------------------------------------------------------
  write_debug
 ----------------------------------------------------------------------- */
-void write_debug( const char* message, ... ){
+void write_debug( const char* message, ... ) {
 
     // Be sure debug is really on as DPRINT doesn't know
     //
-    if( !debug ) return;
+    if ( !debug ) return;
 
     // Write to stderr
     //

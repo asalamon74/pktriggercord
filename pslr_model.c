@@ -123,14 +123,14 @@ char *shexdump(uint8_t *buf, uint32_t bufLen) {
     for (i = 0; i < bufLen; i++) {
         if (i % 16 == 0) {
             sprintf(ret+strlen(ret),"0x%04x | ", i);
-	}
+        }
         sprintf(ret+strlen(ret), "%02x ", buf[i]);
         if (i % 8 == 7) {
             sprintf(ret+strlen(ret), " ");
-	}
+        }
         if (i % 16 == 15) {
             sprintf(ret+strlen(ret), "\n");
-	}
+        }
     }
     if (i % 16 != 15) {
         sprintf(ret+strlen(ret), "\n");
@@ -151,28 +151,28 @@ void hexdump_debug(uint8_t *buf, uint32_t bufLen) {
 }
 
 int _get_user_jpeg_stars( ipslr_model_info_t *model, int hwqual ) {
-    if( model->id == 0x12f71 ) {
+    if ( model->id == 0x12f71 ) {
         // K5IIs hack
         // TODO: test it
-        if( hwqual == model->max_jpeg_stars -1 ) {
+        if ( hwqual == model->max_jpeg_stars -1 ) {
             return model->max_jpeg_stars;
         } else {
             return model->max_jpeg_stars - 1 - hwqual;
-	}
+        }
     } else {
         return model->max_jpeg_stars - hwqual;
     }
 }
 
 int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars) {
-    if( model->id == 0x12f71 ) {
+    if ( model->id == 0x12f71 ) {
         // K5IIs hack
         // TODO: test it
-        if( user_jpeg_stars == model->max_jpeg_stars ) {
+        if ( user_jpeg_stars == model->max_jpeg_stars ) {
             return model->max_jpeg_stars-1;
         } else {
             return model->max_jpeg_stars - 1 - user_jpeg_stars;
-	}
+        }
     } else {
         return model->max_jpeg_stars - user_jpeg_stars;
     }
@@ -181,7 +181,7 @@ int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars) {
 
 void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
     memset(status, 0, sizeof (*status));
@@ -226,7 +226,7 @@ void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
 void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
     memset(status, 0, sizeof (*status));
@@ -382,7 +382,7 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift
 void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -399,7 +399,7 @@ void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 //
 void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -414,7 +414,7 @@ void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
 
 void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -432,7 +432,7 @@ void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
 
 void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -452,7 +452,7 @@ void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
 // status check seems to be the same as K30
 void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -471,7 +471,7 @@ void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
 
 void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -486,7 +486,7 @@ void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
 
 void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -504,7 +504,7 @@ void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
 
 void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -521,7 +521,7 @@ void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
 // K-3 returns data in little-endian
 void ipslr_status_parse_k3(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -537,7 +537,7 @@ void ipslr_status_parse_k3(ipslr_handle_t *p, pslr_status *status) {
 
 void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -575,7 +575,7 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
 
 void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -615,7 +615,7 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
 
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if( debug ) {
+    if ( debug ) {
         ipslr_status_diff(buf);
     }
 
@@ -697,15 +697,15 @@ ipslr_model_info_t camera_models[] = {
     { 0x12ba2, "K100D Super", 1, 1, 0, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, 0, 11, NULL},
     { 0x1301a, "K-S1",        0, 1, 1, 452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, 11, ipslr_status_parse_k3    },
     { 0x13024, "K-S2",        0, 1, 1, 452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS, 1, 11, ipslr_status_parse_k3    },
-    { 0x13092, "K-1",         0, 1, 1, 456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_RADIANT, 1, 11, ipslr_status_parse_k1      },	
+    { 0x13092, "K-1",         0, 1, 1, 456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_RADIANT, 1, 11, ipslr_status_parse_k1      },
     { 0x13222, "K-70",        0, 1, 1, 456,  3, {24, 14, 6, 2}, 9, 6000, 100, 102400, 100, 102400, PSLR_JPEG_IMAGE_TONE_RADIANT, 1, 11, ipslr_status_parse_k70 }
 };
 
 ipslr_model_info_t *find_model_by_id( uint32_t id ) {
     int i;
-    for( i = 0; i<sizeof (camera_models) / sizeof (camera_models[0]); i++) {
-      if( camera_models[i].id == id ) {
-	//	  DPRINT("found %d\n",i);
+    for ( i = 0; i<sizeof (camera_models) / sizeof (camera_models[0]); i++) {
+        if ( camera_models[i].id == id ) {
+            //    DPRINT("found %d\n",i);
             return &camera_models[i];
         }
     }

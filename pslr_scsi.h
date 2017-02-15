@@ -10,7 +10,7 @@
     Copyright (C) 2008 Pontus Lidman <pontus@lysator.liu.se>
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by 
+    it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -36,10 +36,10 @@ extern bool debug;
 extern void write_debug( const char* message, ... );
 
 #ifdef ANDROID
-    #include <android/log.h>
-    #define DPRINT(...) __android_log_print(ANDROID_LOG_DEBUG, "PkTriggerCord", __VA_ARGS__)
+#include <android/log.h>
+#define DPRINT(...) __android_log_print(ANDROID_LOG_DEBUG, "PkTriggerCord", __VA_ARGS__)
 #else
-    #define DPRINT(x...) write_debug(x)
+#define DPRINT(x...) write_debug(x)
 #endif
 
 typedef enum {
@@ -54,16 +54,16 @@ typedef enum {
 } pslr_result;
 
 int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
-		     uint8_t *buf, uint32_t bufLen);
+              uint8_t *buf, uint32_t bufLen);
 
 int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
                uint8_t *buf, uint32_t bufLen);
 
 char **get_drives(int *driveNum);
 
-pslr_result get_drive_info(char* driveName, int* hDevice, 
-                            char* vendorId, int vendorIdSizeMax,
-                            char* productId, int productIdSizeMax);
+pslr_result get_drive_info(char* driveName, int* hDevice,
+                           char* vendorId, int vendorIdSizeMax,
+                           char* productId, int productIdSizeMax);
 
 void close_drive(int *hDevice);
 #endif
