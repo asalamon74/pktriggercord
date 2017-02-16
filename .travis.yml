@@ -36,10 +36,12 @@ before_script:
   - unzip ../gdk-pixbuf_2.24.0-1_win32.zip
   - unzip ../cairo-dev_1.10.2-2_win32.zip
   - cd ..
-  - wget -O astyle_2.04_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz/download;
-  - tar -xf astyle_2.04_linux.tar.gz -C $HOME;
-  - make -C $HOME/astyle/build/gcc;
+  - wget -O astyle_2.04_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz/download
+  - tar -xf astyle_2.04_linux.tar.gz -C $HOME
+  - make -C $HOME/astyle/build/gcc
+  - make -C $HOME/astyle/build/gcc prefix=$HOME install
 script:
+  - if [[ -n $(make astyle | grep Formatted) ]]; then echo "Code formatting error. Please check astyle"; exit -1; fi
   - make android
   - make WINMINGW=i686-w64-mingw32 win
   - make clean
