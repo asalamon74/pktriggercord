@@ -426,20 +426,24 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
 
     in_initcontrols = true;
     DPRINT("start initcontrols\n");
-    if (st_new == NULL)
+    if (st_new == NULL) {
         disable = true;
+    }
 
     /* Aperture scale */
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "aperture_scale"));
 
     if (st_new) {
         for (i=0; i<sizeof(aperture_tbl)/sizeof(aperture_tbl[0]); i++) {
-            if (st_new->lens_min_aperture.nom == aperture_tbl[i])
+            if (st_new->lens_min_aperture.nom == aperture_tbl[i]) {
                 min_ap = i;
-            if (st_new->lens_max_aperture.nom == aperture_tbl[i])
+            }
+            if (st_new->lens_max_aperture.nom == aperture_tbl[i]) {
                 max_ap = i;
-            if (st_new->set_aperture.nom == aperture_tbl[i])
+            }
+            if (st_new->set_aperture.nom == aperture_tbl[i]) {
                 current_ap = i;
+            }
         }
 
         gtk_range_set_increments(GTK_RANGE(pw), 1.0, 1.0);
@@ -510,14 +514,17 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
         which_ec_table( st_new, &tbl, &steps);
         idx = -1;
         for (i=0; i<steps; i++) {
-            if (tbl[i] == st_new->ec.nom)
+            if (tbl[i] == st_new->ec.nom) {
                 idx = i;
+            }
         }
-        if (!st_old || st_old->custom_ev_steps != st_new->custom_ev_steps)
+        if (!st_old || st_old->custom_ev_steps != st_new->custom_ev_steps) {
             gtk_range_set_range(GTK_RANGE(pw), 0.0, steps-1);
+        }
         if (!st_old || st_old->ec.nom != st_new->ec.nom
-                || st_old->ec.denom != st_new->ec.denom)
+                || st_old->ec.denom != st_new->ec.denom) {
             gtk_range_set_value(GTK_RANGE(pw), idx);
+        }
     }
     gtk_widget_set_sensitive(pw, st_new != NULL);
     /* JPEG contrast */
@@ -570,8 +577,9 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old)
     gtk_widget_set_sensitive(pw, st_new != NULL);
     /* JPEG resolution */
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "jpeg_resolution_combo"));
-    if (st_new)
+    if (st_new) {
         gtk_combo_box_set_active(GTK_COMBO_BOX(pw), st_new->jpeg_resolution);
+    }
 
     gtk_widget_set_sensitive(pw, st_new != NULL);
     /* Image tone */
@@ -636,8 +644,9 @@ static gboolean status_poll(gpointer data)
     static bool status_poll_inhibit = false;
 
     DPRINT("start status_poll\n");
-    if (status_poll_inhibit)
+    if (status_poll_inhibit) {
         return TRUE;
+    }
 
     /* Do not recursively status poll */
     status_poll_inhibit = true;
@@ -655,8 +664,9 @@ static gboolean status_poll(gpointer data)
             gtk_statusbar_push(statusbar, sbar_connect_ctx, "Connecting...");
 
             /* Allow the message to be seen */
-            while (gtk_events_pending())
+            while (gtk_events_pending()) {
                 gtk_main_iteration();
+            }
 
             /* Connect */
             ret = pslr_connect(camhandle);
@@ -709,10 +719,12 @@ static gboolean status_poll(gpointer data)
     status_old = tmp;
 
     if (status_new == NULL) {
-        if (status_old == NULL)
+        if (status_old == NULL) {
             status_new = &cam_status[0];
-        else
+        }
+        else {
             status_new = &cam_status[1];
+        }
     }
 
     ret = pslr_get_status(camhandle, status_new);
@@ -934,8 +946,9 @@ G_MODULE_EXPORT void auto_save_folder_button_clicked_cb(GtkAction *action)
     if (res == 1) {
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (pw));
         DPRINT("Selected path: %s\n", filename);
-        if (plugin_config.autosave_path)
+        if (plugin_config.autosave_path) {
             g_free(plugin_config.autosave_path);
+        }
         plugin_config.autosave_path = g_strdup(filename);
         pw = GTK_WIDGET (gtk_builder_get_object (xml, "auto_folder_entry"));
         gtk_entry_set_text(GTK_ENTRY(pw), plugin_config.autosave_path);
@@ -948,8 +961,9 @@ G_MODULE_EXPORT void auto_folder_entry_changed_cb(GtkAction *action)
 {
     GtkEntry *widget = GTK_ENTRY(GW("auto_folder_entry"));
     DPRINT("Auto folder changed to %s\n", gtk_entry_get_text(widget));
-    if (plugin_config.autosave_path)
+    if (plugin_config.autosave_path) {
         g_free(plugin_config.autosave_path);
+    }
     plugin_config.autosave_path = g_strdup(gtk_entry_get_text(widget));
 }
 
@@ -970,8 +984,9 @@ static bool auto_save_check(int format, int buffer)
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "auto_save_check"));
     autosave = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pw));
 
-    if (!autosave)
+    if (!autosave) {
         return false;
+    }
 
     pbar = GTK_PROGRESS_BAR(GTK_WIDGET (gtk_builder_get_object (xml, "download_progress")));
 
@@ -999,8 +1014,9 @@ static bool auto_save_check(int format, int buffer)
     }
 
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Auto-saving");
-    while (gtk_events_pending())
+    while (gtk_events_pending()) {
         gtk_main_iteration();
+    }
 
     snprintf(filename, sizeof(filename), "%s%04d.%s", filebase, counter, file_formats[format].extension);
     DPRINT("Save buffer %d\n", buffer);
@@ -1017,15 +1033,17 @@ static bool auto_save_check(int format, int buffer)
         DPRINT("Delete buffer %d\n", buffer);
         for (retry = 0; retry < 5; retry++)  {
             ret = pslr_delete_buffer(camhandle, buffer);
-            if (ret == PSLR_OK)
+            if (ret == PSLR_OK) {
                 break;
+            }
             DPRINT("Could not delete buffer %d: %d\n", buffer, ret);
             usleep(100000);
         }
         for (retry=0; retry<5; retry++) {
             pslr_get_status(camhandle, &st);
-            if ((st.bufmask & (1<<buffer))==0)
+            if ((st.bufmask & (1<<buffer))==0) {
                 break;
+            }
             DPRINT("Buffer not gone - wait\n");
         }
         set_preview_icon(buffer, NULL);
@@ -1065,8 +1083,9 @@ static void update_main_area(int buffer)
     GdkPixbuf *pixBuf;
 
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Getting preview");
-    while (gtk_events_pending())
+    while (gtk_events_pending()) {
         gtk_main_iteration();
+    }
 
     pError = NULL;
     DPRINT("Trying to read buffer %d\n", buffer);
@@ -1103,8 +1122,9 @@ static void update_preview_area(int buffer)
     //    pw = GTK_WIDGET (gtk_builder_get_object (xml, "test_draw_area"));
 
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Getting thumbnails");
-    while (gtk_events_pending())
+    while (gtk_events_pending()) {
         gtk_main_iteration();
+    }
 
     DPRINT("buffer %d has new contents\n", buffer);
     pError = NULL;
@@ -1203,8 +1223,9 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData)
     //printf("Expose event for widget %p\n", widget);
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
 
-    if (pMainPixbuf)
+    if (pMainPixbuf) {
         gdk_pixbuf_render_to_drawable(pMainPixbuf, pw->window, pw->style->fg_gc[GTK_WIDGET_STATE (pw)], 0, 0, 0, 0, 640, 480, GDK_RGB_DITHER_NONE, 0, 0);
+    }
 
     gc_focus = gdk_gc_new(pw->window);
     gc_sel = gdk_gc_new(pw->window);
@@ -1228,10 +1249,12 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData)
                  * preselect_reselect), it should be green. If not, it
                  * means we're waiting for camera confirmation and it
                  * should be yellow. */
-                if (preselect_reselect)
+                if (preselect_reselect) {
                     the_gc = gc_sel;
-                else
+                }
+                else {
                     the_gc = gc_presel;
+                }
             }
             fill = focus_indicated_af_points & (1<<i) ? TRUE : FALSE;
             gdk_draw_rectangle(pw->window, the_gc, fill,
@@ -1283,12 +1306,14 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
                 }
                 pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
                 gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
-                while (gtk_events_pending())
+                while (gtk_events_pending()) {
                     gtk_main_iteration();
+                }
                 if (status_new && status_new->af_point_select == PSLR_AF_POINT_SEL_SELECT) {
                     ret = pslr_select_af_point(camhandle, 1 << i);
-                    if (ret != PSLR_OK)
+                    if (ret != PSLR_OK) {
                         DPRINT("Could not select AF point %d\n", i);
+                    }
                 }
                 break;
             }
@@ -1299,14 +1324,18 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
 
 static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, int py)
 {
-    if (px < rect_x)
+    if (px < rect_x) {
         return false;
-    if (py < rect_y)
+    }
+    if (py < rect_y) {
         return false;
-    if (px >= rect_x + rect_w)
+    }
+    if (px >= rect_x + rect_w) {
         return false;
-    if (py >= rect_y + rect_h)
+    }
+    if (py >= rect_y + rect_h) {
         return false;
+    }
     return true;
 }
 
@@ -1381,8 +1410,9 @@ GdkPixmap *calculate_histogram( GdkPixbuf *input, int hist_w, int hist_h ) {
     scale = 0;
     for (y=0; y<3; y++) {
         for (x=0; x<256; x++) {
-            if (histogram[x][y] > scale)
+            if (histogram[x][y] > scale) {
                 scale = histogram[x][y];
+            }
         }
     }
     // draw onto
@@ -1539,8 +1569,9 @@ G_MODULE_EXPORT void ae_lock_button_toggled_cb(GtkAction *action)
     DPRINT("ACTIVE: %d\n", active);
     int ret;
     gboolean locked;
-    if (status_new == NULL)
+    if (status_new == NULL) {
         return;
+    }
     locked = (status_new->light_meter_flags & PSLR_LIGHT_METER_AE_LOCK) != 0;
     if (locked != active) {
         ret = pslr_ae_lock(camhandle, active);
@@ -1854,8 +1885,9 @@ G_MODULE_EXPORT void ec_scale_value_changed_cb(GtkAction *action, gpointer user_
     int idx;
     const int *tbl;
     int steps;
-    if (!status_new)
+    if (!status_new) {
         return;
+    }
 
     a = gtk_range_get_value(GTK_RANGE(GW("ec_scale")));
     which_ec_table(status_new, &tbl, &steps);
@@ -1866,8 +1898,9 @@ G_MODULE_EXPORT void ec_scale_value_changed_cb(GtkAction *action, gpointer user_
     new_ec.nom = tbl[idx];
     new_ec.denom = 10;
     DPRINT("new_ec: %d / %d\n", new_ec.nom, new_ec.denom);
-    if (status_new == NULL)
+    if (status_new == NULL) {
         return;
+    }
     if (status_new->ec.nom != new_ec.nom || status_new->ec.denom != new_ec.denom) {
         ret = pslr_set_ec(camhandle, new_ec);
         if (ret != PSLR_OK) {
@@ -2084,8 +2117,9 @@ static void save_buffer(int bufno, const char *filename)
         uint32_t bytes;
         bytes = pslr_buffer_read(camhandle, buf, sizeof(buf));
         //printf("Read %d bytes\n", bytes);
-        if (bytes == 0)
+        if (bytes == 0) {
             break;
+        }
         ssize_t r = write(fd, buf, bytes);
         if (r == 0) {
             DPRINT("write(buf): Nothing has been written to buf.\n");
@@ -2098,8 +2132,9 @@ static void save_buffer(int bufno, const char *filename)
         current += bytes;
         gtk_progress_bar_update(GTK_PROGRESS_BAR(pw), (gdouble) current / (gdouble) length);
         /* process pending events */
-        while (gtk_events_pending())
+        while (gtk_events_pending()) {
             gtk_main_iteration();
+        }
     }
     close(fd);
     pslr_buffer_close(camhandle);
@@ -2174,12 +2209,14 @@ G_MODULE_EXPORT void preview_delete_button_clicked_cb(GtkAction *action)
         set_preview_icon(*pi, NULL);
 
         ret = pslr_delete_buffer(camhandle, *pi);
-        if (ret != PSLR_OK)
+        if (ret != PSLR_OK) {
             DPRINT("Could not delete buffer %d: %d\n", *pi, ret);
+        }
         for (retry=0; retry<5; retry++) {
             pslr_get_status(camhandle, &st);
-            if ((st.bufmask & (1<<*pi))==0)
+            if ((st.bufmask & (1<<*pi))==0) {
                 break;
+            }
             DPRINT("Buffer not gone - retry\n");
         }
     }

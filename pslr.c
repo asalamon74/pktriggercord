@@ -825,8 +825,9 @@ int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space) {
 int pslr_delete_buffer(pslr_handle_t h, int bufno) {
     DPRINT("[C]\tpslr_delete_buffer(%X)\n", bufno);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (bufno < 0 || bufno > 9)
+    if (bufno < 0 || bufno > 9) {
         return PSLR_PARAM;
+    }
     CHECK(ipslr_write_args(p, 1, bufno));
     CHECK(command(p->fd, 0x02, 0x03, 0x04));
     CHECK(get_status(p->fd));
@@ -873,10 +874,12 @@ int pslr_button_test(pslr_handle_t h, int bno, int arg) {
 int pslr_ae_lock(pslr_handle_t h, bool lock) {
     DPRINT("[C]\tpslr_ae_lock(%X)\n", lock);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (lock)
+    if (lock) {
         CHECK(command(p->fd, 0x10, X10_AE_LOCK, 0x00));
-    else
+    }
+    else {
         CHECK(command(p->fd, 0x10, X10_AE_UNLOCK, 0x00));
+    }
     CHECK(get_status(p->fd));
     return PSLR_OK;
 }
@@ -920,8 +923,9 @@ int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int b
          * desynch. We can recover by stepping through segment infos
          * until we get the last one (b = 2). Retry up to 3 times. */
         ret = ipslr_select_buffer(p, bufno, buftype, bufres);
-        if (ret == PSLR_OK)
+        if (ret == PSLR_OK) {
             break;
+        }
 
         retry++;
         retry2 = 0;
@@ -934,16 +938,18 @@ int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int b
         } while (++retry2 < 10 && info.b != 2);
     }
 
-    if (retry == 3)
+    if (retry == 3) {
         return ret;
+    }
 
     i = 0;
     j = 0;
     do {
         CHECK(ipslr_buffer_segment_info(p, &info));
         DPRINT("\t%d: Addr: 0x%X Len: %d(0x%08X) B=%d\n", i, info.addr, info.length, info.length, info.b);
-        if (info.b == 4)
+        if (info.b == 4) {
             p->segments[j].offset = info.length;
+        }
         else if (info.b == 3) {
             if (j == MAX_SEGMENTS) {
                 DPRINT("\tToo many segments.\n");
@@ -975,8 +981,9 @@ uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size) {
 
     /* Find current segment */
     for (i = 0; i < p->segment_count; i++) {
-        if (p->offset < pos + p->segments[i].length)
+        if (p->offset < pos + p->segments[i].length) {
             break;
+        }
         pos += p->segments[i].length;
     }
 
@@ -985,17 +992,20 @@ uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size) {
 
     /* Compute block size */
     blksz = size;
-    if (blksz > p->segments[i].length - seg_offs)
+    if (blksz > p->segments[i].length - seg_offs) {
         blksz = p->segments[i].length - seg_offs;
-    if (blksz > BLKSZ)
+    }
+    if (blksz > BLKSZ) {
         blksz = BLKSZ;
+    }
 
 //    DPRINT("File offset %d segment: %d offset %d address 0x%x read size %d\n", p->offset,
 //           i, seg_offs, addr, blksz);
 
     ret = ipslr_download(p, addr, blksz, buf);
-    if (ret != PSLR_OK)
+    if (ret != PSLR_OK) {
         return 0;
+    }
     p->offset += blksz;
     return blksz;
 }
@@ -1099,11 +1109,13 @@ const char *pslr_camera_name(pslr_handle_t h) {
     int ret;
     if (p->id == 0) {
         ret = ipslr_identify(p);
-        if (ret != PSLR_OK)
+        if (ret != PSLR_OK) {
             return NULL;
+        }
     }
-    if (p->model)
+    if (p->model) {
         return p->model->name;
+    }
     else {
         static char unk_name[256];
         snprintf(unk_name, sizeof (unk_name), "ID#%x", p->id);
@@ -1238,8 +1250,9 @@ static int ipslr_next_segment(ipslr_handle_t *p) {
     CHECK(command(p->fd, 0x04, 0x01, 0x04));
     usleep(100000); // needed !! 100 too short, 1000 not short enough for PEF
     r = get_status(p->fd);
-    if (r == 0)
+    if (r == 0) {
         return PSLR_OK;
+    }
     return PSLR_COMMAND_ERROR;
 }
 
@@ -1327,8 +1340,9 @@ static int ipslr_identify(ipslr_handle_t *p) {
 
     CHECK(command(p->fd, 0, 4, 0));
     n = get_result(p->fd);
-    if (n != 8)
+    if (n != 8) {
         return PSLR_READ_ERROR;
+    }
     CHECK(read_result(p->fd, idbuf, 8));
     //  Check the camera endian, which affect ID
     if (idbuf[0] == 0) {
@@ -1442,8 +1456,9 @@ static int get_status(int fd) {
     while (1) {
         //usleep(POLL_INTERVAL);
         CHECK(read_status(fd, statusbuf));
-        if ((statusbuf[7] & 0x01) == 0)
+        if ((statusbuf[7] & 0x01) == 0) {
             break;
+        }
         //DPRINT("Waiting for ready - ");
         DPRINT("[R]\t\t\t\t => ERROR: 0x%02X\n", statusbuf[7]);
         usleep(POLL_INTERVAL);
@@ -1461,8 +1476,9 @@ static int get_result(int fd) {
         //DPRINT("read out status\n");
         CHECK(read_status(fd, statusbuf));
         //hexdump_debug(statusbuf, 8);
-        if (statusbuf[6] == 0x01)
+        if (statusbuf[6] == 0x01) {
             break;
+        }
         //DPRINT("Waiting for result\n");
         //hexdump_debug(statusbuf, 8);
         usleep(POLL_INTERVAL);
@@ -1525,7 +1541,9 @@ void write_debug( const char* message, ... ) {
 
     // Be sure debug is really on as DPRINT doesn't know
     //
-    if ( !debug ) return;
+    if ( !debug ) {
+        return;
+    }
 
     // Write to stderr
     //

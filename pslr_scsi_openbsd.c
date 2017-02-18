@@ -45,8 +45,9 @@ void print_scsi_error(scsireq_t *req) {
     if (req->senselen_used > 0) {
         DPRINT("SCSI error: sense data: ");
         for (k = 0; k < req->senselen_used; ++k) {
-            if ((k > 0) && (0 == (k % 10)))
+            if ((k > 0) && (0 == (k % 10))) {
                 DPRINT("\n  ");
+            }
             DPRINT("0x%02x ", req->sense[k]);
         }
         DPRINT("\n");
@@ -132,13 +133,17 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     /* Vendor */
     p = buf + 8;
     q = buf + ((16 < vendorIdSizeMax)?16:vendorIdSizeMax);
-    while (q > p && q[-1] == ' ') q--;
+    while (q > p && q[-1] == ' ') {
+        q--;
+    }
     memcpy(vendorId, p, q - p);
     vendorId[q - p] = '\0';
     /* Product */
     p = buf + 16;
     q = p + ((16 < productIdSizeMax)?16:productIdSizeMax);
-    while (q > p && q[-1] == ' ') q--;
+    while (q > p && q[-1] == ' ') {
+        q--;
+    }
     memcpy(productId, p, q - p);
     productId[q - p] = '\0';
 

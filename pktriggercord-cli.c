@@ -274,7 +274,9 @@ int main(int argc, char **argv) {
             case 'm':
 
                 MODESTRING = optarg;
-                for (i = 0; i < strlen(optarg); i++) optarg[i] = toupper(optarg[i]);
+                for (i = 0; i < strlen(optarg); i++) {
+                    optarg[i] = toupper(optarg[i]);
+                }
 
                 if (!strcmp(optarg, "GREEN")) {
                     EM = PSLR_EXPOSURE_MODE_GREEN;
@@ -407,7 +409,9 @@ int main(int argc, char **argv) {
                 break;
 
             case 'a':
-                if (sscanf(optarg, "%f%c", &F, &C) != 1) F = 0;
+                if (sscanf(optarg, "%f%c", &F, &C) != 1) {
+                    F = 0;
+                }
 
                 /*It's unlikely that you want an f-number > 100, even for a pinhole.
                  On the other hand, the fastest lens I know of is a f:0.8 Zeiss*/
@@ -631,7 +635,9 @@ int main(int argc, char **argv) {
     // We do not check iso settings
     // The camera can handle invalid iso settings (it will use ISO 800 instead of ISO 795)
 
-    if (EM != PSLR_EXPOSURE_MODE_MAX) pslr_set_exposure_mode(camhandle, EM);
+    if (EM != PSLR_EXPOSURE_MODE_MAX) {
+        pslr_set_exposure_mode(camhandle, EM);
+    }
 
     if ( ec.denom ) {
         pslr_set_ec( camhandle, ec );
@@ -837,7 +843,9 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
 
     DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, status->jpeg_resolution);
 
-    if (pslr_buffer_open(camhandle, bufno, imagetype, status->jpeg_resolution) != PSLR_OK) return (1);
+    if (pslr_buffer_open(camhandle, bufno, imagetype, status->jpeg_resolution) != PSLR_OK) {
+        return (1);
+    }
 
     length = pslr_buffer_get_size(camhandle);
     DPRINT("Buffer length: %d\n", length);

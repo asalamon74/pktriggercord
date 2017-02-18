@@ -45,18 +45,22 @@ void print_scsi_error(sg_io_hdr_t *pIo, uint8_t *sense_buffer) {
     if (pIo->sb_len_wr > 0) {
         DPRINT("SCSI error: sense data: ");
         for (k = 0; k < pIo->sb_len_wr; ++k) {
-            if ((k > 0) && (0 == (k % 10)))
+            if ((k > 0) && (0 == (k % 10))) {
                 DPRINT("\n  ");
+            }
             DPRINT("0x%02x ", sense_buffer[k]);
         }
         DPRINT("\n");
     }
-    if (pIo->masked_status)
+    if (pIo->masked_status) {
         DPRINT("SCSI status=0x%x\n", pIo->status);
-    if (pIo->host_status)
+    }
+    if (pIo->host_status) {
         DPRINT("host_status=0x%x\n", pIo->host_status);
-    if (pIo->driver_status)
+    }
+    if (pIo->driver_status) {
         DPRINT("driver_status=0x%x\n", pIo->driver_status);
+    }
 }
 
 char **get_drives(int *driveNum) {
@@ -206,10 +210,12 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
 
         /* Older Pentax DSLR will report all bytes remaining, so make
          * a special case for this (treat it as all bytes read). */
-        if (io.resid == bufLen)
+        if (io.resid == bufLen) {
             return bufLen;
-        else
+        }
+        else {
             return bufLen - io.resid;
+        }
     }
 }
 
