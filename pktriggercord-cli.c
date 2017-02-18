@@ -280,32 +280,23 @@ int main(int argc, char **argv) {
 
                 if (!strcmp(optarg, "GREEN")) {
                     EM = PSLR_EXPOSURE_MODE_GREEN;
-                }
-                else if (!strcmp(optarg, "P")) {
+                } else if (!strcmp(optarg, "P")) {
                     EM = PSLR_EXPOSURE_MODE_P;
-                }
-                else if (!strcmp(optarg, "SV")) {
+                } else if (!strcmp(optarg, "SV")) {
                     EM = PSLR_EXPOSURE_MODE_SV;
-                }
-                else if (!strcmp(optarg, "TV")) {
+                } else if (!strcmp(optarg, "TV")) {
                     EM = PSLR_EXPOSURE_MODE_TV;
-                }
-                else if (!strcmp(optarg, "AV")) {
+                } else if (!strcmp(optarg, "AV")) {
                     EM = PSLR_EXPOSURE_MODE_AV;
-                }
-                else if (!strcmp(optarg, "TAV")) {
+                } else if (!strcmp(optarg, "TAV")) {
                     EM = PSLR_EXPOSURE_MODE_TAV;
-                }
-                else if (!strcmp(optarg, "M")) {
+                } else if (!strcmp(optarg, "M")) {
                     EM = PSLR_EXPOSURE_MODE_M;
-                }
-                else if (!strcmp(optarg, "B")) {
+                } else if (!strcmp(optarg, "B")) {
                     EM = PSLR_EXPOSURE_MODE_B;
-                }
-                else if (!strcmp(optarg, "X")) {
+                } else if (!strcmp(optarg, "X")) {
                     EM = PSLR_EXPOSURE_MODE_X;
-                }
-                else {
+                } else {
                     warning_message("%s: Invalid exposure mode.\n", argv[0]);
                 }
                 break;

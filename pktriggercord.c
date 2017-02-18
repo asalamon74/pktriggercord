@@ -227,8 +227,7 @@ void combobox_append( GtkComboBox *combobox, char **items, int item_num ) {
 }
 
 
-int common_init(void)
-{
+int common_init(void) {
     GtkWidget *widget;
 
     atexit(my_atexit);
@@ -415,8 +414,7 @@ void camera_specific_init() {
     handle_af_points = pslr_get_model_af_point_num(camhandle) == 11;
 }
 
-static void init_controls(pslr_status *st_new, pslr_status *st_old)
-{
+static void init_controls(pslr_status *st_new, pslr_status *st_old) {
     GtkWidget *pw;
     int min_ap=-1, max_ap=-1, current_ap = -1;
     int current_iso = -1;
@@ -635,8 +633,7 @@ static pslr_status cam_status[2];
 static pslr_status *status_new = NULL;
 static pslr_status *status_old = NULL;
 
-static gboolean status_poll(gpointer data)
-{
+static gboolean status_poll(gpointer data) {
     GtkWidget *pw;
     gchar buf[256];
     pslr_status *tmp;
@@ -721,8 +718,7 @@ static gboolean status_poll(gpointer data)
     if (status_new == NULL) {
         if (status_old == NULL) {
             status_new = &cam_status[0];
-        }
-        else {
+        } else {
             status_new = &cam_status[1];
         }
     }
@@ -857,8 +853,7 @@ static gboolean status_poll(gpointer data)
     return TRUE;
 }
 
-static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old)
-{
+static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old) {
     uint32_t new_pictures;
     bool deleted;
     int new_picture;
@@ -932,8 +927,7 @@ static void manage_camera_buffers_limited() {
 }
 
 
-G_MODULE_EXPORT void auto_save_folder_button_clicked_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void auto_save_folder_button_clicked_cb(GtkAction *action) {
     GtkWidget *pw;
     char *filename;
     int res;
@@ -957,8 +951,7 @@ G_MODULE_EXPORT void auto_save_folder_button_clicked_cb(GtkAction *action)
     }
 }
 
-G_MODULE_EXPORT void auto_folder_entry_changed_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void auto_folder_entry_changed_cb(GtkAction *action) {
     GtkEntry *widget = GTK_ENTRY(GW("auto_folder_entry"));
     DPRINT("Auto folder changed to %s\n", gtk_entry_get_text(widget));
     if (plugin_config.autosave_path) {
@@ -967,8 +960,7 @@ G_MODULE_EXPORT void auto_folder_entry_changed_cb(GtkAction *action)
     plugin_config.autosave_path = g_strdup(gtk_entry_get_text(widget));
 }
 
-static bool auto_save_check(int format, int buffer)
-{
+static bool auto_save_check(int format, int buffer) {
     GtkWidget *pw;
     gboolean autosave;
     gboolean autodelete;
@@ -1074,8 +1066,7 @@ bool buf_updated = false;
 GdkPixbuf *pMainPixbuf = NULL;
 //static GdkPixbuf *pThumbPixbuf[MAX_BUFFERS];
 
-static void update_main_area(int buffer)
-{
+static void update_main_area(int buffer) {
     GError *pError;
     uint8_t *pImage;
     uint32_t imageSize;
@@ -1110,8 +1101,7 @@ the_end:
 
 }
 
-static void update_preview_area(int buffer)
-{
+static void update_preview_area(int buffer) {
     GError *pError;
     uint8_t *pImage;
     uint32_t imageSize;
@@ -1150,14 +1140,12 @@ the_end:
     gtk_statusbar_pop(statusbar, sbar_download_ctx);
 }
 
-G_MODULE_EXPORT void menu_quit_activate_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void menu_quit_activate_cb(GtkAction *action, gpointer user_data) {
     DPRINT("menu quit.\n");
     gtk_main_quit();
 }
 
-G_MODULE_EXPORT void menu_about_activate_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void menu_about_activate_cb(GtkAction *action, gpointer user_data) {
     GtkWidget *pw;
     DPRINT("menu about.\n");
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "about_dialog"));
@@ -1191,13 +1179,11 @@ static void resize_preview_icons() {
     }
 }
 
-G_MODULE_EXPORT void menu_buffer_window_toggled_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void menu_buffer_window_toggled_cb(GtkAction *action, gpointer user_data) {
     resize_preview_icons();
 }
 
-G_MODULE_EXPORT void menu_settings_window_toggled_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void menu_settings_window_toggled_cb(GtkAction *action, gpointer user_data) {
     guint checked;
     GtkWidget *pw;
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "settings_window"));
@@ -1210,8 +1196,7 @@ G_MODULE_EXPORT void menu_settings_window_toggled_cb(GtkAction *action, gpointer
     }
 }
 
-G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData)
-{
+G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
     GtkWidget *pw;
     GdkGC *gc_focus, *gc_sel, *gc_presel;
     GdkColor red = { 0, 65535, 0, 0 };
@@ -1251,8 +1236,7 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData)
                  * should be yellow. */
                 if (preselect_reselect) {
                     the_gc = gc_sel;
-                }
-                else {
+                } else {
                     the_gc = gc_presel;
                 }
             }
@@ -1274,8 +1258,7 @@ G_MODULE_EXPORT int main_drawing_area_expose_event_cb(GtkAction *action, gpointe
     return mainwindow_expose( action, userData );
 }
 
-G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *action, GdkEventButton *event, gpointer user_data)
-{
+G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *action, GdkEventButton *event, gpointer user_data) {
     int x = rint(event->x);
     int y = rint(event->y);
     int i;
@@ -1322,8 +1305,7 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
     return TRUE;
 }
 
-static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, int py)
-{
+static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, int py) {
     if (px < rect_x) {
         return false;
     }
@@ -1355,8 +1337,7 @@ gboolean da_buttonpress(GtkWidget *widget)
     return FALSE;
     }*/
 
-gboolean bufferwindow_expose_event_cb(GtkWidget *widget, GdkEventExpose *pEvent, gpointer userData)
-{
+gboolean bufferwindow_expose_event_cb(GtkWidget *widget, GdkEventExpose *pEvent, gpointer userData) {
     DPRINT("bufferwindow expose\n");
     return FALSE;
 }
@@ -1436,8 +1417,7 @@ GdkPixmap *calculate_histogram( GdkPixbuf *input, int hist_w, int hist_h ) {
     return output;
 }
 
-G_MODULE_EXPORT void shutter_press(GtkAction *action)
-{
+G_MODULE_EXPORT void shutter_press(GtkAction *action) {
     int r;
     static gboolean is_bulbing_on = FALSE;
     int shutter_speed;
@@ -1499,8 +1479,7 @@ G_MODULE_EXPORT void shutter_press(GtkAction *action)
     }
 }
 
-G_MODULE_EXPORT void focus_button_clicked_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void focus_button_clicked_cb(GtkAction *action) {
     DPRINT("Focus");
     int ret;
     ret = pslr_focus(camhandle);
@@ -1509,8 +1488,7 @@ G_MODULE_EXPORT void focus_button_clicked_cb(GtkAction *action)
     }
 }
 
-G_MODULE_EXPORT void status_button_clicked_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void status_button_clicked_cb(GtkAction *action) {
     DPRINT("Status");
     GtkWidget *pw;
     pslr_status st;
@@ -1530,8 +1508,7 @@ G_MODULE_EXPORT void status_button_clicked_cb(GtkAction *action)
     gtk_widget_show(pw);
 }
 
-G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action) {
     DPRINT("Status hex");
     GtkWidget *pw;
 
@@ -1552,8 +1529,7 @@ G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action)
 }
 
 
-G_MODULE_EXPORT void green_button_clicked_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void green_button_clicked_cb(GtkAction *action) {
     DPRINT("Green btn");
     int ret;
     ret = pslr_green_button( camhandle );
@@ -1562,8 +1538,7 @@ G_MODULE_EXPORT void green_button_clicked_cb(GtkAction *action)
     }
 }
 
-G_MODULE_EXPORT void ae_lock_button_toggled_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void ae_lock_button_toggled_cb(GtkAction *action) {
     DPRINT("AE Lock");
     gboolean active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GW("ae_lock_button")));
     DPRINT("ACTIVE: %d\n", active);
@@ -1581,13 +1556,11 @@ G_MODULE_EXPORT void ae_lock_button_toggled_cb(GtkAction *action)
     }
 }
 
-static void my_atexit(void)
-{
+static void my_atexit(void) {
     DPRINT("atexit\n");
 }
 
-static gboolean added_quit(gpointer data)
-{
+static gboolean added_quit(gpointer data) {
     DPRINT("added_quit\n");
     if (camhandle) {
         pslr_disconnect(camhandle);
@@ -1597,14 +1570,12 @@ static gboolean added_quit(gpointer data)
     return FALSE;
 }
 
-G_MODULE_EXPORT void plugin_quit(GtkAction *action)
-{
+G_MODULE_EXPORT void plugin_quit(GtkAction *action) {
     DPRINT("Quit plugin.\n");
     gtk_main_quit();
 }
 
-G_MODULE_EXPORT gboolean settings_window_delete_event_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT gboolean settings_window_delete_event_cb(GtkAction *action, gpointer user_data) {
     GtkToggleAction *pw;
     DPRINT("Hide settings window.\n");
     pw = GTK_TOGGLE_ACTION (gtk_builder_get_object (xml, "menu_settings_window"));
@@ -1613,16 +1584,14 @@ G_MODULE_EXPORT gboolean settings_window_delete_event_cb(GtkAction *action, gpoi
     return TRUE;
 }
 
-G_MODULE_EXPORT gboolean statuswindow_delete_event_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT gboolean statuswindow_delete_event_cb(GtkAction *action, gpointer user_data) {
     DPRINT("Hide statuswindow.\n");
     gtk_widget_hide(GW("statuswindow"));
     return TRUE;
 }
 
 
-void error_message(const gchar *message)
-{
+void error_message(const gchar *message) {
     GtkWidget *pw;
 
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "error_message"));
@@ -1633,8 +1602,7 @@ void error_message(const gchar *message)
 }
 
 
-G_MODULE_EXPORT gboolean error_dialog_close(GtkAction *action)
-{
+G_MODULE_EXPORT gboolean error_dialog_close(GtkAction *action) {
     GtkWidget *pw;
     DPRINT("close event.\n");
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "errordialog"));
@@ -1642,8 +1610,7 @@ G_MODULE_EXPORT gboolean error_dialog_close(GtkAction *action)
     return FALSE;
 }
 
-void init_preview_area(void)
-{
+void init_preview_area(void) {
     GtkWidget *pw;
     GtkTreeIter iter;
     gint i;
@@ -1685,8 +1652,7 @@ GdkPixbuf *merge_preview_icons( GdkPixbuf *thumb, GdkPixmap *histogram ) {
     return output;
 }
 
-G_MODULE_EXPORT void menu_histogram_window_toggled_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void menu_histogram_window_toggled_cb(GtkAction *action, gpointer user_data) {
     GtkTreePath *path;
     GtkTreeIter iter;
     GdkPixbuf *thumb;
@@ -1711,8 +1677,7 @@ G_MODULE_EXPORT void menu_histogram_window_toggled_cb(GtkAction *action, gpointe
     }
 }
 
-void set_preview_icon(int n, GdkPixbuf *pBuf)
-{
+void set_preview_icon(int n, GdkPixbuf *pBuf) {
     GtkTreePath *path;
     GtkTreeIter iter;
     DPRINT("set_preview_icon\n");
@@ -1727,8 +1692,7 @@ void set_preview_icon(int n, GdkPixbuf *pBuf)
     gtk_list_store_set (list_store, &iter, 0, pBuf, 1, gpm, 2, pMerged, -1);
 }
 
-G_MODULE_EXPORT gchar* shutter_scale_format_value_cb(GtkAction *action, gdouble value)
-{
+G_MODULE_EXPORT gchar* shutter_scale_format_value_cb(GtkAction *action, gdouble value) {
     int idx = rint(value);
     //printf("shutter value: %f\n", value);
 
@@ -1754,8 +1718,7 @@ G_MODULE_EXPORT gchar* shutter_scale_format_value_cb(GtkAction *action, gdouble 
     }
 }
 
-G_MODULE_EXPORT gchar* aperture_scale_format_value_cb(GtkAction *action, gdouble value)
-{
+G_MODULE_EXPORT gchar* aperture_scale_format_value_cb(GtkAction *action, gdouble value) {
     int idx = rint(value);
     //printf("aperture value: %f\n", value);
     if (idx < sizeof(aperture_tbl)/sizeof(aperture_tbl[0])) {
@@ -1765,8 +1728,7 @@ G_MODULE_EXPORT gchar* aperture_scale_format_value_cb(GtkAction *action, gdouble
     }
 }
 
-G_MODULE_EXPORT gchar* iso_scale_format_value_cb(GtkAction *action, gdouble value)
-{
+G_MODULE_EXPORT gchar* iso_scale_format_value_cb(GtkAction *action, gdouble value) {
     int i = rint(value);
     const int *tbl = 0;
     int steps = 0;
@@ -1779,8 +1741,7 @@ G_MODULE_EXPORT gchar* iso_scale_format_value_cb(GtkAction *action, gdouble valu
     return g_strdup_printf("(%d)", i);
 }
 
-G_MODULE_EXPORT gchar* ec_scale_format_value_cb(GtkAction *action, gdouble value)
-{
+G_MODULE_EXPORT gchar* ec_scale_format_value_cb(GtkAction *action, gdouble value) {
     int i = rint(value);
     const int *tbl;
     int steps;
@@ -1793,8 +1754,7 @@ G_MODULE_EXPORT gchar* ec_scale_format_value_cb(GtkAction *action, gdouble value
     return g_strdup_printf("(%f)", value);
 }
 
-G_MODULE_EXPORT void aperture_scale_value_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void aperture_scale_value_changed_cb(GtkAction *action, gpointer user_data) {
 //    DPRINT("APERTURE CHANGE\n");
     gdouble a;
     pslr_rational_t value;
@@ -1821,8 +1781,7 @@ G_MODULE_EXPORT void aperture_scale_value_changed_cb(GtkAction *action, gpointer
     }
 }
 
-G_MODULE_EXPORT void shutter_scale_value_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void shutter_scale_value_changed_cb(GtkAction *action, gpointer user_data) {
     gdouble a;
     pslr_rational_t value;
     int ret;
@@ -1846,8 +1805,7 @@ G_MODULE_EXPORT void shutter_scale_value_changed_cb(GtkAction *action, gpointer 
     }
 }
 
-G_MODULE_EXPORT void iso_scale_value_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void iso_scale_value_changed_cb(GtkAction *action, gpointer user_data) {
     gdouble a;
     int idx;
     int ret;
@@ -1877,8 +1835,7 @@ G_MODULE_EXPORT void iso_scale_value_changed_cb(GtkAction *action, gpointer user
     }
 }
 
-G_MODULE_EXPORT void ec_scale_value_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void ec_scale_value_changed_cb(GtkAction *action, gpointer user_data) {
     gdouble a;
     pslr_rational_t new_ec;
     int ret;
@@ -1910,8 +1867,7 @@ G_MODULE_EXPORT void ec_scale_value_changed_cb(GtkAction *action, gpointer user_
     DPRINT("End of Set EC\n");
 }
 
-G_MODULE_EXPORT void jpeg_resolution_combo_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void jpeg_resolution_combo_changed_cb(GtkAction *action, gpointer user_data) {
     DPRINT("jpeg res active start\n");
     if ( !status_new ) {
         DPRINT("jpeg res active !status_new\n");
@@ -1932,8 +1888,7 @@ G_MODULE_EXPORT void jpeg_resolution_combo_changed_cb(GtkAction *action, gpointe
     }
 }
 
-G_MODULE_EXPORT void jpeg_quality_combo_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void jpeg_quality_combo_changed_cb(GtkAction *action, gpointer user_data) {
     DPRINT("start jpeg_quality_combo_changed_cb\n");
     gchar *stars = gtk_combo_box_get_active_text(GTK_COMBO_BOX(GW("jpeg_quality_combo")));
     int val = strlen(stars);
@@ -1950,8 +1905,7 @@ G_MODULE_EXPORT void jpeg_quality_combo_changed_cb(GtkAction *action, gpointer u
     }
 }
 
-G_MODULE_EXPORT void jpeg_image_tone_combo_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void jpeg_image_tone_combo_changed_cb(GtkAction *action, gpointer user_data) {
     pslr_jpeg_image_tone_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("jpeg_image_tone_combo")));
     int ret;
     DPRINT("jpeg image_tone active->%d %d\n", val, PSLR_JPEG_IMAGE_TONE_MAX);
@@ -1966,8 +1920,7 @@ G_MODULE_EXPORT void jpeg_image_tone_combo_changed_cb(GtkAction *action, gpointe
     }
 }
 
-G_MODULE_EXPORT void jpeg_sharpness_scale_value_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void jpeg_sharpness_scale_value_changed_cb(GtkAction *action, gpointer user_data) {
     if ( in_initcontrols ) {
         return;
     }
@@ -1983,8 +1936,7 @@ G_MODULE_EXPORT void jpeg_sharpness_scale_value_changed_cb(GtkAction *action, gp
     }
 }
 
-G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpointer user_data) {
     if ( in_initcontrols ) {
         return;
     }
@@ -2000,8 +1952,7 @@ G_MODULE_EXPORT void jpeg_contrast_scale_value_changed_cb(GtkAction *action, gpo
     }
 }
 
-G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer user_data) {
     if ( in_initcontrols ) {
         return;
     }
@@ -2022,8 +1973,7 @@ G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer
 }
 
 
-G_MODULE_EXPORT void jpeg_saturation_scale_value_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void jpeg_saturation_scale_value_changed_cb(GtkAction *action, gpointer user_data) {
     if ( in_initcontrols ) {
         return;
     }
@@ -2039,8 +1989,7 @@ G_MODULE_EXPORT void jpeg_saturation_scale_value_changed_cb(GtkAction *action, g
     }
 }
 
-G_MODULE_EXPORT void preview_icon_view_selection_changed_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void preview_icon_view_selection_changed_cb(GtkAction *action) {
     GList *l;
     guint len;
     GtkWidget *pw;
@@ -2067,8 +2016,7 @@ G_MODULE_EXPORT void preview_icon_view_selection_changed_cb(GtkAction *action)
  * settings.  Updates the progress bar periodically & runs the GTK
  * main loop to show it.
  */
-static void save_buffer(int bufno, const char *filename)
-{
+static void save_buffer(int bufno, const char *filename) {
     int r;
     int fd;
     GtkWidget *pw;
@@ -2140,8 +2088,7 @@ static void save_buffer(int bufno, const char *filename)
     pslr_buffer_close(camhandle);
 }
 
-G_MODULE_EXPORT void preview_save_as_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void preview_save_as_cb(GtkAction *action) {
     GtkWidget *pw, *icon_view;
     GList *l, *i;
     GtkProgressBar *pbar;
@@ -2184,8 +2131,7 @@ G_MODULE_EXPORT void preview_save_as_cancel( GtkAction *action ) {
 G_MODULE_EXPORT void preview_save_as_save( GtkAction *action ) {
 }
 
-G_MODULE_EXPORT void preview_delete_button_clicked_cb(GtkAction *action)
-{
+G_MODULE_EXPORT void preview_delete_button_clicked_cb(GtkAction *action) {
     GtkWidget *icon_view;
     GList *l, *i;
     int ret;
@@ -2225,15 +2171,13 @@ G_MODULE_EXPORT void preview_delete_button_clicked_cb(GtkAction *action)
     g_list_free (l);
 }
 
-G_MODULE_EXPORT void file_format_combo_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void file_format_combo_changed_cb(GtkAction *action, gpointer user_data) {
     DPRINT("file_format_combo_changed_cb\n");
     int val = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("file_format_combo")));
     pslr_set_user_file_format( camhandle, val );
 }
 
-G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user_data)
-{
+G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user_data) {
     DPRINT("user_mode_combo_changed_cb\n");
     pslr_gui_exposure_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("user_mode_combo")));
     if (!status_new) {
@@ -2249,8 +2193,7 @@ G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user
 
 /* ----------------------------------------------------------------------- */
 
-static void which_iso_table(pslr_status *st, const int **table, int *steps)
-{
+static void which_iso_table(pslr_status *st, const int **table, int *steps) {
     if (st->custom_sensitivity_steps == PSLR_CUSTOM_SENSITIVITY_STEPS_1EV) {
         *table = iso_tbl_1;
         *steps = sizeof(iso_tbl_1)/sizeof(iso_tbl_1[0]);
@@ -2265,8 +2208,7 @@ static void which_iso_table(pslr_status *st, const int **table, int *steps)
     assert(*steps);
 }
 
-static void which_ec_table(pslr_status *st, const int **table, int *steps)
-{
+static void which_ec_table(pslr_status *st, const int **table, int *steps) {
     if (st->custom_ev_steps == PSLR_CUSTOM_EV_STEPS_1_2) {
         *table = ec_tbl_1_2;
         *steps = sizeof(ec_tbl_1_2)/sizeof(ec_tbl_1_2[0]);
@@ -2278,8 +2220,7 @@ static void which_ec_table(pslr_status *st, const int **table, int *steps)
     assert(*steps);
 }
 
-static void which_shutter_table(pslr_status *st, pslr_rational_t **table, int *steps)
-{
+static void which_shutter_table(pslr_status *st, pslr_rational_t **table, int *steps) {
     if (st->custom_ev_steps == PSLR_CUSTOM_EV_STEPS_1_2) {
         *table = shutter_tbl_1_2;
         *steps = sizeof(shutter_tbl_1_2)/sizeof(shutter_tbl_1_2[0]);
@@ -2315,8 +2256,7 @@ void gui_getopt(int argc, char **argv) {
 
 
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     gui_getopt(argc, argv);
     DPRINT("%s %s \n", argv[0], VERSION);
     int r;

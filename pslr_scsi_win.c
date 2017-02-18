@@ -112,8 +112,7 @@ typedef struct _STORAGE_DEVICE_DESCRIPTOR
 } STORAGE_DEVICE_DESCRIPTOR;
 */
 
-typedef struct _SCSI_PASS_THROUGH_DIRECT
-{
+typedef struct _SCSI_PASS_THROUGH_DIRECT {
     USHORT Length;
     UCHAR  ScsiStatus;
     UCHAR  PathId;
@@ -130,8 +129,7 @@ typedef struct _SCSI_PASS_THROUGH_DIRECT
 } SCSI_PASS_THROUGH_DIRECT;
 
 
-typedef struct _SCSI_PASS_THROUGH_WITH_BUFFER
-{
+typedef struct _SCSI_PASS_THROUGH_WITH_BUFFER {
     SCSI_PASS_THROUGH_DIRECT sptd;
     ULONG             Filler;      // realign buffers to double word boundary
     UCHAR             ucSenseBuf[32];
@@ -154,8 +152,7 @@ char **get_drives(int *driveNum) {
 pslr_result get_drive_info(char* driveName, int* hDevice,
                            char* vendorId, int vendorIdSizeMax,
                            char* productId, int productIdSizeMax
-                          )
-{
+                          ) {
     bool Status;
     STORAGE_PROPERTY_QUERY query;
     STORAGE_DEVICE_DESCRIPTOR* pdescriptor;
@@ -180,8 +177,7 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
                         0,
                         NULL);
 
-    if (hDrive != INVALID_HANDLE_VALUE)
-    {
+    if (hDrive != INVALID_HANDLE_VALUE) {
         Status = DeviceIoControl(hDrive,
                                  IOCTL_STORAGE_QUERY_PROPERTY,
                                  &query,
@@ -190,16 +186,12 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
                                  sizeof(descriptorBuf),
                                  &bytesRead,
                                  (LPOVERLAPPED)0);
-        if (Status==FALSE)
-        {
+        if (Status==FALSE) {
             int LastError = GetLastError(); //lastError alwasy return 1450
-            if (LastError != 0)
-            {
+            if (LastError != 0) {
                 CancelIo(hDrive);
             }
-        }
-        else
-        {
+        } else {
             *hDevice = (int)hDrive;
             drive_status = PSLR_OK;
 
@@ -230,14 +222,12 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     return drive_status;
 }
 
-void close_drive(int *hDevice)
-{
+void close_drive(int *hDevice) {
     CloseHandle((HANDLE)*hDevice);
 }
 
 int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
-              uint8_t *buf, uint32_t bufLen)
-{
+              uint8_t *buf, uint32_t bufLen) {
     SCSI_PASS_THROUGH_WITH_BUFFER sptdwb;
     DWORD outByte=0;
     int Status;
@@ -268,37 +258,28 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
                            sizeof(sptdwb),
                            &outByte ,
                            NULL);
-    if (Status==0)
-    {
+    if (Status==0) {
         LastError = GetLastError();
-        if (LastError != 0)
-        {
+        if (LastError != 0) {
             CancelIo((HANDLE)sg_fd);
         }
     }
 
     memcpy(buf,sptdwb.sptd.DataBuffer,bufLen);
 
-    if (LastError != 0)
-    {
+    if (LastError != 0) {
         return -PSLR_SCSI_ERROR;
-    }
-    else
-    {
-        if (sptdwb.sptd.DataTransferLength == bufLen)
-        {
+    } else {
+        if (sptdwb.sptd.DataTransferLength == bufLen) {
             return bufLen;
-        }
-        else
-        {
+        } else {
             return bufLen - sptdwb.sptd.DataTransferLength;
         }
     }
 }
 
 int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
-               uint8_t *buf, uint32_t bufLen)
-{
+               uint8_t *buf, uint32_t bufLen) {
     SCSI_PASS_THROUGH_WITH_BUFFER sptdwb;
     DWORD outByte=0;
     int Status;
@@ -328,20 +309,15 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
                            sizeof(sptdwb),
                            &outByte ,
                            NULL);
-    if (Status==0)
-    {
+    if (Status==0) {
         LastError = GetLastError();
-        if (LastError != 0)
-        {
+        if (LastError != 0) {
             CancelIo((HANDLE)sg_fd);
         }
     }
-    if (LastError != 0)
-    {
+    if (LastError != 0) {
         return PSLR_SCSI_ERROR;
-    }
-    else
-    {
+    } else {
         return PSLR_OK;
     }
 }

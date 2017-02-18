@@ -23,8 +23,7 @@
     and GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-typedef struct sg_io_hdr
-{
+typedef struct sg_io_hdr {
     int interface_id;           /* [i] 'S' for SCSI generic (required) */
     int dxfer_direction;        /* [i] data transfer direction  */
     unsigned char cmd_len;      /* [i] SCSI command length ( <= 16 bytes) */

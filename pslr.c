@@ -498,8 +498,7 @@ char *get_white_balance_adjust_str( uint32_t adjust_mg, uint32_t adjust_ba ) {
     char *ret = malloc(8);
     if ( adjust_mg != 7 || adjust_ba != 7 ) {
         snprintf(ret, 8, "%s%s", get_white_balance_single_adjust_str(adjust_mg, 'M', 'G'),get_white_balance_single_adjust_str(adjust_ba, 'B', 'A'));
-    }
-    else {
+    } else {
         ret = "0";
     }
     return ret;
@@ -876,8 +875,7 @@ int pslr_ae_lock(pslr_handle_t h, bool lock) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     if (lock) {
         CHECK(command(p->fd, 0x10, X10_AE_LOCK, 0x00));
-    }
-    else {
+    } else {
         CHECK(command(p->fd, 0x10, X10_AE_UNLOCK, 0x00));
     }
     CHECK(get_status(p->fd));
@@ -949,8 +947,7 @@ int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int b
         DPRINT("\t%d: Addr: 0x%X Len: %d(0x%08X) B=%d\n", i, info.addr, info.length, info.length, info.b);
         if (info.b == 4) {
             p->segments[j].offset = info.length;
-        }
-        else if (info.b == 3) {
+        } else if (info.b == 3) {
             if (j == MAX_SEGMENTS) {
                 DPRINT("\tToo many segments.\n");
                 return PSLR_NO_MEMORY;
@@ -1115,8 +1112,7 @@ const char *pslr_camera_name(pslr_handle_t h) {
     }
     if (p->model) {
         return p->model->name;
-    }
-    else {
+    } else {
         static char unk_name[256];
         snprintf(unk_name, sizeof (unk_name), "ID#%x", p->id);
         unk_name[sizeof (unk_name) - 1] = '\0';

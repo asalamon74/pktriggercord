@@ -212,8 +212,7 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
          * a special case for this (treat it as all bytes read). */
         if (io.resid == bufLen) {
             return bufLen;
-        }
-        else {
+        } else {
             return bufLen - io.resid;
         }
     }

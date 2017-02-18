@@ -3,3 +3,4 @@ indent=spaces=4
 convert-tabs
 pad-header
 add-brackets
+style=java
