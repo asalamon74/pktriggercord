@@ -17,6 +17,7 @@ before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - cd $HOME/android-ndk-root
   - git checkout 9afc86eae45a544562bc7052ca6f529772754f16 .
+  - cd ..
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
 before_script:
   - mkdir -p i686-w64-mingw32
