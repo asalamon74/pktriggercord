@@ -136,7 +136,7 @@ typedef struct {
 } ipslr_segment_t;
 
 struct ipslr_handle {
-    int fd;
+    FDTYPE fd;
     pslr_status status;
     uint32_t id;
     ipslr_model_info_t *model;

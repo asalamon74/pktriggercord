@@ -92,10 +92,10 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...);
 #define ipslr_write_args(p,n,...) _ipslr_write_args(0,(p),(n),__VA_ARGS__)
 #define ipslr_write_args_special(p,n,...) _ipslr_write_args(4,(p),(n),__VA_ARGS__)
 
-static int command(int fd, int a, int b, int c);
-static int get_status(int fd);
-static int get_result(int fd);
-static int read_result(int fd, uint8_t *buf, uint32_t n);
+static int command(FDTYPE fd, int a, int b, int c);
+static int get_status(FDTYPE fd);
+static int get_result(FDTYPE fd);
+static int read_result(FDTYPE fd, uint8_t *buf, uint32_t n);
 
 void hexdump(uint8_t *buf, uint32_t bufLen);
 
@@ -349,7 +349,7 @@ pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
 }
 
 pslr_handle_t pslr_init( char *model, char *device ) {
-    int fd;
+    FDTYPE fd;
     char vendorId[20];
     char productId[20];
     int driveNum;
@@ -396,7 +396,7 @@ pslr_handle_t pslr_init( char *model, char *device ) {
             } else {
                 DPRINT("\tCannot get drive info of Pentax camera. Please do not forget to install the program using 'make install'\n");
                 // found the camera but communication is not possible
-                close( fd );
+                close_drive( &fd );
                 continue;
             }
         } else {
@@ -1355,7 +1355,7 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
     va_list ap;
     uint8_t cmd[8] = {0xf0, 0x4f, cmd_2, 0x00, 0x00, 0x00, 0x00, 0x00};
     uint8_t buf[4 * n];
-    int fd = p->fd;
+    FDTYPE fd = p->fd;
     int res;
     int i;
     uint32_t data;
@@ -1416,7 +1416,7 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
 
 /* ----------------------------------------------------------------------- */
 
-static int command(int fd, int a, int b, int c) {
+static int command(FDTYPE fd, int a, int b, int c) {
     DPRINT("[C]\t\t\tcommand(fd=%x, %x, %x, %x)\n", fd, a, b, c);
     uint8_t cmd[8] = {0xf0, 0x24, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
@@ -1428,7 +1428,7 @@ static int command(int fd, int a, int b, int c) {
     return PSLR_OK;
 }
 
-static int read_status(int fd, uint8_t *buf) {
+static int read_status(FDTYPE fd, uint8_t *buf) {
     uint8_t cmd[8] = {0xf0, 0x26, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     int n;
 
@@ -1443,7 +1443,7 @@ static int read_status(int fd, uint8_t *buf) {
     return PSLR_OK;
 }
 
-static int get_status(int fd) {
+static int get_status(FDTYPE fd) {
     DPRINT("[C]\t\t\tget_status(0x%x)\n", fd);
 
     uint8_t statusbuf[8];
@@ -1465,7 +1465,7 @@ static int get_status(int fd) {
     return statusbuf[7];
 }
 
-static int get_result(int fd) {
+static int get_result(FDTYPE fd) {
     DPRINT("[C]\t\t\tget_result(0x%x)\n", fd);
     uint8_t statusbuf[8];
     while (1) {
@@ -1489,7 +1489,7 @@ static int get_result(int fd) {
     return statusbuf[0] | statusbuf[1] << 8 | statusbuf[2] << 16 | statusbuf[3] << 24;
 }
 
-static int read_result(int fd, uint8_t *buf, uint32_t n) {
+static int read_result(FDTYPE fd, uint8_t *buf, uint32_t n) {
     DPRINT("[C]\t\t\tread_result(0x%x, size=%d)\n", fd, n);
     uint8_t cmd[8] = {0xf0, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     int r;

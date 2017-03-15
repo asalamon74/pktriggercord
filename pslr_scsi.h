@@ -39,7 +39,12 @@ extern void write_debug( const char* message, ... );
 #include <android/log.h>
 #define DPRINT(...) __android_log_print(ANDROID_LOG_DEBUG, "PkTriggerCord", __VA_ARGS__)
 #else
+#ifdef LIBGPHOTO
+#include <gphoto2/gphoto2-log.h>
+#define DPRINT(x...) gp_log (GP_LOG_DEBUG, "pentax", x)
+#else
 #define DPRINT(x...) write_debug(x)
+#endif
 #endif
 
 typedef enum {
@@ -53,17 +58,26 @@ typedef enum {
     PSLR_ERROR_MAX
 } pslr_result;
 
-int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
+/* This also could be used to specify FDTYPE HANDLE for Win32, but this seems tricky with includes */
+#ifdef LIBGPHOTO2
+typedef struct _GPPort GPPort;
+#define FDTYPE GPPort*
+#else
+/* classic UNIX style handle */
+#define FDTYPE int
+#endif
+
+int scsi_read(FDTYPE sg_fd, uint8_t *cmd, uint32_t cmdLen,
               uint8_t *buf, uint32_t bufLen);
 
-int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
+int scsi_write(FDTYPE sg_fd, uint8_t *cmd, uint32_t cmdLen,
                uint8_t *buf, uint32_t bufLen);
 
 char **get_drives(int *driveNum);
 
-pslr_result get_drive_info(char* driveName, int* hDevice,
+pslr_result get_drive_info(char* driveName, FDTYPE* hDevice,
                            char* vendorId, int vendorIdSizeMax,
                            char* productId, int productIdSizeMax);
 
-void close_drive(int *hDevice);
+void close_drive(FDTYPE *hDevice);
 #endif
