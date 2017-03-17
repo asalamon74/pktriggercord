@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/asalamon74/pktriggercord.svg?branch=master)](https://travis-ci.org/asalamon74/pktriggercord)
 
-#PkTriggerCord
+# PkTriggerCord
 
 Remote control (tethering) for Pentax DSLR cameras.
 
@@ -11,7 +11,7 @@ pictures. The pictures are stored in the camera's buffer and can be
 downloaded to the PC. Pictures are not written on the SD card of
 the camera.
 
-##Supported systems
+## Supported systems
 
 - Linux x86
 - Linux arm (Raspberry PI)
@@ -19,7 +19,7 @@ the camera.
 - Windows
 - [Android](http://pktriggercord.melda.info/pktriggercord_android.html)
 
-##Cameras
+## Cameras
 
 - Pentax K-x
 - Pentax K10D (Samsung GX-10)
@@ -37,7 +37,7 @@ the camera.
 - Pentax K-3 / K-3 II
 - Pentax K-500
 
-###Limited support
+### Limited support
 
 - Pentax istD (Not working)
 - Pentax istDS2
@@ -46,14 +46,14 @@ the camera.
 - Pentax K100D (Not working)
 - Pentax K100D Super
 
-###Testing
+### Testing
 
 *The following cameras are not yet tested, please contact us if you can help.*
 
 - Pentax K-S1
 - Pentax K-S2
 
-##More info
+## More info
 
 You can find more info about the project at http://pktriggercord.melda.info
 
