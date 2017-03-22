@@ -96,7 +96,9 @@ const char* pslr_jpeg_image_tone_str[PSLR_JPEG_IMAGE_TONE_MAX] = {
     "Muted",
     "ReversalFilm",
     "BleachBypass",
-    "Radiant"
+    "Radiant",
+    "CrossProcessing",
+    "Flat"
 };
 
 const char* pslr_white_balance_mode_str[PSLR_WHITE_BALANCE_MODE_MAX] = {
