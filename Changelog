@@ -11,6 +11,7 @@ version 0.84.03
 	GUI: Editable bulb exposure time
 	GUI: Hide AF points if camera has more than 11
 	K-S1 bugfix
+	K-70 battery field reading bugfix
 
 version 0.84.02 ( 2016-10-31 )
 	Android code cleanup
