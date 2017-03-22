@@ -201,7 +201,7 @@ int find_in_array( const char** array, int length, char* str ) {
 }
 
 const char *get_pslr_str( const char** array, int length, int value ) {
-    if (value >=0 && value <= length) {
+    if (value >=0 && value < length) {
         return array[value];
     } else {
         char *ret = malloc(128);
