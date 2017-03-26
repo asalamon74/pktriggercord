@@ -118,7 +118,8 @@ const char* pslr_white_balance_mode_str[PSLR_WHITE_BALANCE_MODE_MAX] = {
     "0x0D", // ?? exif: set color temp2
     "0xOE", // ?? exif: set color temp3
     "Fluorescent_L",
-    "CTE"
+    "CTE",
+    "MultiAuto"
 };
 
 const char* pslr_custom_ev_steps_str[PSLR_CUSTOM_EV_STEPS_MAX] = {
