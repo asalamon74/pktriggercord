@@ -163,7 +163,7 @@ exiftool_pentax:
 	rm Pentax.pm
 
 pktriggercord_commandline.html: pktriggercord-cli.1
-	groff $< -man -Thtml -mwww -P "-lr" > $@
+	cat $< | sed s/\\\\-/-/g | groff -man -Thtml -mwww -P "-lr" > $@
 
 # Windows cross-compile
 windownload:
