@@ -13,7 +13,7 @@ version 0.84.03
 	K-S1 bugfix
 	K-70 battery field reading bugfix
 	Handling two new jpeg image tones: CrossProcessing, Flat
-	Handling new white balance mode: MultiAuto
+	Handling new white balance modes: MultiAuto, Manual2, Manual3, Kelvin1, Kelvin2, Kelvin3
 
 version 0.84.02 ( 2016-10-31 )
 	Android code cleanup

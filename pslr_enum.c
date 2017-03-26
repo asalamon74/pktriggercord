@@ -111,12 +111,12 @@ const char* pslr_white_balance_mode_str[PSLR_WHITE_BALANCE_MODE_MAX] = {
     "Fluorescent_W",
     "Tungsten",
     "Flash",
-    "Manual",
-    "0x0A", // ??
-    "0x0B", // ??
-    "0x0C", // ?? exif: set color temp1
-    "0x0D", // ?? exif: set color temp2
-    "0xOE", // ?? exif: set color temp3
+    "Manual", // sometimes called Manual1
+    "Manual2",
+    "Manual3",
+    "Kelvin1",
+    "Kelvin2",
+    "Kelvin3",
     "Fluorescent_L",
     "CTE",
     "MultiAuto"
