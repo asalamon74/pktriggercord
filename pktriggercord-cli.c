@@ -890,7 +890,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90) or decimal form (eg. 0.8)\n\
   -r, --resolution=RESOLUTION           resolution in megapixels\n\
   -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4\n\
-      --jpeg_image_tone=IMAGE_TONE      valid values are: Auto, Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm\n\
+      --jpeg_image_tone=IMAGE_TONE      valid values are: Auto, Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm, BleachBypass, Radiant, CrossProcessing, Flat\n\
       --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, Manual2, Manual3, Kelvin1, Kelvin2, Kelvin3, CTE, MultiAuto\n\
       --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...\n\
   -f, --auto_focus                      autofocus\n\
