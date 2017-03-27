@@ -100,6 +100,7 @@ static struct option const longopts[] = {
 #endif
     {"pentax_debug_mode", required_argument, NULL,24},
     {"dangerous", no_argument, NULL, 25},
+    {"read_datetime", no_argument, NULL, 26},
     { NULL, 0, NULL, 0}
 };
 
@@ -216,6 +217,7 @@ int main(int argc, char **argv) {
     int modify_debug_mode=0;
     char debug_mode=0;
     bool dangerous=0;
+    bool read_datetime=false;
 
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
@@ -513,6 +515,11 @@ int main(int argc, char **argv) {
             case 25:
                 dangerous = true;
                 break;
+
+            case 26:
+                read_datetime=true;
+                break;
+
         }
     }
 
@@ -699,6 +706,14 @@ int main(int argc, char **argv) {
 //    sleep_sec(3);
 //    pslr_button_test( camhandle, 0x0c, 0 );
 
+    if (read_datetime) {
+        int year=0, month=0, day=0, hour=0, min=0, sec=0;
+        pslr_read_datetime(camhandle, &year, &month, &day, &hour, &min, &sec);
+        printf("%04d/%02d/%02d %02d:%02d:%02d\n", year, month, day, hour, min, sec);
+        camera_close(camhandle);
+        exit(0);
+    }
+
     // read the status after the settings
     pslr_get_status(camhandle, &status);
 
@@ -713,6 +728,7 @@ int main(int argc, char **argv) {
         camera_close(camhandle);
         exit(0);
     }
+
 
     if ( dust ) {
         pslr_dust_removal(camhandle);
@@ -899,6 +915,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\
       --status_hex                      print status hex info\n\
+      --read_datetime                   print the camera date and time\n\
       --dust_removal                    dust removal\n\
   -F, --frames=NUMBER                   number of frames\n\
   -d, --delay=SECONDS                   delay between the frames (seconds)\n\

@@ -1351,6 +1351,37 @@ static int ipslr_identify(ipslr_handle_t *p) {
     return PSLR_OK;
 }
 
+int pslr_read_datetime(pslr_handle_t *h, int *year, int *month, int *day, int *hour, int *min, int *sec) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    DPRINT("[C]\t\tipslr_read_datetime()\n");
+    uint8_t idbuf[800];
+    int n;
+
+    CHECK(command(p->fd, 0x20, 0x06, 0));
+    n = get_result(p->fd);
+    DPRINT("[C]\t\tipslr_read_datetime() bytes: %d\n",n);
+    if (n!= 24) {
+        return PSLR_READ_ERROR;
+    }
+    CHECK(read_result(p->fd, idbuf, n));
+    get_uint32_func get_uint32_func_ptr;
+
+    if (p->model->is_little_endian) {
+        get_uint32_func_ptr = get_uint32_le;
+    } else {
+        get_uint32_func_ptr = get_uint32_be;
+    }
+    *year = (*get_uint32_func_ptr)(idbuf);
+    *month = (*get_uint32_func_ptr)(idbuf+4);
+    *day = (*get_uint32_func_ptr)(idbuf+8);
+    *hour = (*get_uint32_func_ptr)(idbuf+12);
+    *min = (*get_uint32_func_ptr)(idbuf+16);
+    *sec = (*get_uint32_func_ptr)(idbuf+20);
+    return PSLR_OK;
+
+}
+
+
 static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
     va_list ap;
     uint8_t cmd[8] = {0xf0, 0x4f, cmd_2, 0x00, 0x00, 0x00, 0x00, 0x00};
