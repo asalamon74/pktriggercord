@@ -1378,7 +1378,6 @@ int pslr_read_datetime(pslr_handle_t *h, int *year, int *month, int *day, int *h
     *min = (*get_uint32_func_ptr)(idbuf+16);
     *sec = (*get_uint32_func_ptr)(idbuf+20);
     return PSLR_OK;
-
 }
 
 
