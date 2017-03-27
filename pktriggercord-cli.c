@@ -42,7 +42,6 @@
 #include <sys/time.h>
 
 #include "pslr.h"
-//#include "pslr_lens.h"
 #include "pktriggercord-servermode.h"
 
 #ifdef WIN32
