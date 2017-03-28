@@ -91,8 +91,7 @@
 Pentax USB SCSI Communication Protocol
 ===============================
 
-1. General
------------
+## 1 General
 
 This is the documentation of the USB SCSI communication between computer and Pentax camera. Although several requests had been made, there is no official documents from Pentax. This is a summary from understanding of current implementations and analysis of Pentax camera/firmware.
 
@@ -141,8 +140,7 @@ The high level `Command` is more like a function, which has function name, argum
 
 The individual commands will be discussed later.
 
-2. SCSI Commands Types
--------------------------
+## 2 SCSI Commands Types
 
 ### 2.1 Send Arguments
 
@@ -229,8 +227,7 @@ Normally, we'll just leave `X0 X1` to zero, and `L0 L1` to the length of the who
 
 When parsing the result data buffer, it's very important to check the byte-order of the camera, the returned result should be as same as camera's internal byte-order. Older Pentax cameras have Big-Endian system, K-3 or later Pentax cameras have a Little-Endian system, we need to parse the data in the same way of the camera.
 
-3. Definition of Each Command
--------------------------------
+## 3 Definition of Each Command
 
 This is the list of `Commands` have been discovered by now. The `Command` will be defined as:
 
