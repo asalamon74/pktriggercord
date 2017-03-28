@@ -278,6 +278,16 @@ The status data is actually a memory dump of the camera, so it's very important 
 
 #### [01 00] GetDSPInfo ()
 
+#### [01 01] Get Firmware Version ()
+
+This command returns 4 bytes in following format:
+
+```
+[X0 X1 X2 X3]
+```
+
+For Big-Endian cameras the firmware version is X0.X1.X2.X3 for Little-Endian cameras it is X3.X2.X1.X0
+
 ### 3.2 Command Group 0x02/0x03 - Image Buffer Related
 
 #### [02 00] Get Buffer Status ()
