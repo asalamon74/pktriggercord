@@ -576,6 +576,9 @@ typedef enum {
 ### 3.14 Command Group 0x20/0x21 - Settings
 
 #### [20 06] Read DateTime ()
+
+This command returns 24 bytes representing 6 32-bit numbers. The numbers represents year, month, day, hour, minute, and sec.
+
 #### [20 08] Write Setting (offset, value)
 #### [20 09] Read Setting (offset)
 
