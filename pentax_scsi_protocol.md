@@ -20,6 +20,7 @@
       - [[00 08] Get Full Status ()](#00-08-get-full-status-)
       - [[00 09] DSPTaskWUReq (mode)](#00-09-dsptaskwureq-mode)
       - [[01 00] GetDSPInfo ()](#01-00-getdspinfo-)
+      - [[01 01] GetFirmwareVersion ()](#01-01-get-firmware-version-)
     - [3.2 Command Group 0x02/0x03 - Image Buffer Related](#32-command-group-0x020x03---image-buffer-related)
       - [[02 00] Get Buffer Status ()](#02-00-get-buffer-status-)
       - [[02 01] Select Buffer (buffer_number, buffer_type, buffer_resolution, 0)](#02-01-select-buffer-buffer_number-buffer_type-buffer_resolution-0)
