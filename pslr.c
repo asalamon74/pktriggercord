@@ -1380,6 +1380,26 @@ int pslr_read_datetime(pslr_handle_t *h, int *year, int *month, int *day, int *h
     return PSLR_OK;
 }
 
+int pslr_read_dspinfo(pslr_handle_t *h, char* firmware) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    DPRINT("[C]\t\tipslr_read_dspinfo()\n");
+    uint8_t buf[4];
+    int n;
+
+    CHECK(command(p->fd, 0x01, 0x01, 0));
+    n = get_result(p->fd);
+    DPRINT("[C]\t\tipslr_read_dspinfo() bytes: %d\n",n);
+    if (n!= 4) {
+        return PSLR_READ_ERROR;
+    }
+    CHECK(read_result(p->fd, buf, n));
+    if (p->model->is_little_endian) {
+        snprintf( firmware, 16, "%d.%02d.%02d.%02d", buf[3], buf[2], buf[1], buf[0]);
+    } else {
+        snprintf( firmware, 16, "%d.%02d.%02d.%02d", buf[0], buf[1], buf[2], buf[3]);
+    }
+    return PSLR_OK;
+}
 
 static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
     va_list ap;

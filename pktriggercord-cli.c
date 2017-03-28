@@ -101,6 +101,7 @@ static struct option const longopts[] = {
     {"pentax_debug_mode", required_argument, NULL,24},
     {"dangerous", no_argument, NULL, 25},
     {"read_datetime", no_argument, NULL, 26},
+    {"read_firmware_version", no_argument, NULL, 27},
     { NULL, 0, NULL, 0}
 };
 
@@ -218,6 +219,7 @@ int main(int argc, char **argv) {
     char debug_mode=0;
     bool dangerous=0;
     bool read_datetime=false;
+    bool read_firmware_version=false;
 
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
@@ -520,6 +522,9 @@ int main(int argc, char **argv) {
                 read_datetime=true;
                 break;
 
+            case 27:
+                read_firmware_version=true;
+                break;
         }
     }
 
@@ -712,6 +717,18 @@ int main(int argc, char **argv) {
         printf("%04d/%02d/%02d %02d:%02d:%02d\n", year, month, day, hour, min, sec);
         camera_close(camhandle);
         exit(0);
+    }
+
+    if (read_firmware_version || debug) {
+        char firmware[16];
+        pslr_read_dspinfo( camhandle, firmware );
+        if (!read_firmware_version) {
+            DPRINT("Firmware version: %s\n", firmware);
+        } else {
+            printf("Firmware version: %s\n", firmware);
+            camera_close(camhandle);
+            exit(0);
+        }
     }
 
     // read the status after the settings
@@ -916,6 +933,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -s, --status                          print status info\n\
       --status_hex                      print status hex info\n\
       --read_datetime                   print the camera date and time\n\
+      --read_firmware_version           print the firmware version of the camera\n\
       --dust_removal                    dust removal\n\
   -F, --frames=NUMBER                   number of frames\n\
   -d, --delay=SECONDS                   delay between the frames (seconds)\n\

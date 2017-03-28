@@ -32,7 +32,8 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-green
 [\fB\-\-warnings\fR | \fB\-\-nowarnings\fR ]
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-dust_removal\fR | \fB\-\-status\fR |
-\fB\-\-status_hex\fR | \fB\-\-read_datetime\fR | \fB\-\-frames \fINUMBER\fR [ \fB\-\-delay
+\fB\-\-status_hex\fR | \fB\-\-read_datetime\fR |
+\fB\-\-read_firmware_version\fR | \fB\-\-frames \fINUMBER\fR [ \fB\-\-delay
 \fISECONDS\fR ] 
 | \fB\-\-noshutter\fR | \fB\-\-servermode\fR
 [ \fB\-\-servermode_timeout \fISECONDS\fR]  |
@@ -124,6 +125,11 @@ Print raw (hexadecimal) and human readable status info and do not take pictures\
 \fB\-\-read_datetime\fR
 .RS 4
 Print the date and time set in the camera and do not take pictures\.
+.RE
+.PP
+\fB\-\-read_firmware_version\fR
+.RS 4
+Print the firmware version of the camera and do not take pictures\.
 .RE
 .PP
 \fB\-\-noshutter\fR

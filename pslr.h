@@ -227,6 +227,8 @@ int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
 
 int pslr_read_datetime(pslr_handle_t *h, int *year, int *month, int *day, int *hour, int *min, int *sec);
 
+int pslr_read_dspinfo(pslr_handle_t *h, char *firmware);
+
 pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp );
 char *format_rational( pslr_rational_t rational, char * fmt );
 
