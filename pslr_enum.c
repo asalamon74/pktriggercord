@@ -161,8 +161,8 @@ const char* pslr_exposure_submode_str[PSLR_EXPOSURE_SUBMODE_MAX] = {
     "MUSEUM",
     "FOOD",
     "STAGE",
-    "NIGHTSNAP",
-    "SWALLOWDOF"
+    "SWALLOWDOF",
+    "NIGHTSNAP"
 };
 
 
