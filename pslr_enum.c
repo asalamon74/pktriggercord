@@ -150,7 +150,7 @@ const char* pslr_exposure_submode_str[PSLR_EXPOSURE_SUBMODE_MAX] = {
     "MACRO",
     "SPORT",
     "NIGHTSCENEPORTRAIT",
-    "NOFLASH",
+    "NOFLASH",//10
     "NIGHTSCENE",
     "SURFANDSNOW",
     "TEXT",
@@ -159,10 +159,17 @@ const char* pslr_exposure_submode_str[PSLR_EXPOSURE_SUBMODE_MAX] = {
     "PET",
     "CANDLELIGHT",
     "MUSEUM",
+    "19", // ?
     "FOOD",
     "STAGE",
+    "NIGHTSNAP",
     "SWALLOWDOF",
-    "NIGHTSNAP"
+    "24", // ?
+    "NIGHTSCENEHDR",
+    "BLUESKY",
+    "FOREST",
+    "28", // ?
+    "BLACKLIGHTSILHOUETTE"
 };
 
 

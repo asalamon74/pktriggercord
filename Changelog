@@ -16,6 +16,8 @@ version 0.84.03
 	Handling new white balance modes: MultiAuto, Manual2, Manual3, Kelvin1, Kelvin2, Kelvin3
 	--read_datetime
 	--read_firmware_version
+	Fixing incorrectly recognized exposure submodes
+	Handling new exposure submodes: Forest, NightSceneHDR, BacklightSilhouette, BlueSky
 
 version 0.84.02 ( 2016-10-31 )
 	Android code cleanup
