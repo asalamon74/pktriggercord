@@ -348,7 +348,7 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift
     status->custom_ev_steps = (*get_uint32_func_ptr)(&buf[0xA4 + shift]);
     status->custom_sensitivity_steps = (*get_uint32_func_ptr)(&buf[0xa8 + shift]);
     status->exposure_mode = (*get_uint32_func_ptr)(&buf[0xb4 + shift]);
-    status->exposure_submode = (*get_uint32_func_ptr)(&buf[0xb8 + shift]);
+    status->scene_mode = (*get_uint32_func_ptr)(&buf[0xb8 + shift]);
     status->ae_metering_mode = (*get_uint32_func_ptr)(&buf[0xbc + shift]); // same as cc
     status->af_mode = (*get_uint32_func_ptr)(&buf[0xC0 + shift]);
     status->af_point_select = (*get_uint32_func_ptr)(&buf[0xc4 + shift]);

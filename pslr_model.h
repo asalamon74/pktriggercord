@@ -80,7 +80,7 @@ typedef struct {
     uint32_t custom_ev_steps;
     uint32_t custom_sensitivity_steps;
     uint32_t exposure_mode;
-    uint32_t exposure_submode;
+    uint32_t scene_mode;
     uint32_t user_mode_flag;
     uint32_t ae_metering_mode;
     uint32_t af_mode;

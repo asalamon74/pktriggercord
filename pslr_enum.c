@@ -139,7 +139,7 @@ const char* pslr_raw_format_str[PSLR_RAW_FORMAT_MAX] = {
     "DNG"
 };
 
-const char* pslr_exposure_submode_str[PSLR_EXPOSURE_SUBMODE_MAX] = {
+const char* pslr_scene_mode_str[PSLR_SCENE_MODE_MAX] = {
     "NONE",
     "HISPEED",
     "DOF",
@@ -298,6 +298,6 @@ const char *get_pslr_raw_format_str( pslr_raw_format_t value ) {
     return get_pslr_str( pslr_raw_format_str, sizeof(pslr_raw_format_str)/sizeof(pslr_raw_format_str[0]),value);
 }
 
-const char *get_pslr_exposure_submode_str( pslr_exposure_submode_t value ) {
-    return get_pslr_str( pslr_exposure_submode_str, sizeof(pslr_exposure_submode_str)/sizeof(pslr_exposure_submode_str[0]),value);
+const char *get_pslr_scene_mode_str( pslr_scene_mode_t value ) {
+    return get_pslr_str( pslr_scene_mode_str, sizeof(pslr_scene_mode_str)/sizeof(pslr_scene_mode_str[0]),value);
 }
