@@ -203,6 +203,26 @@ typedef enum {
     return _ipslr_write_args(4, p, n, args);
     }*/
 
+int pslr_get_buffer_status(pslr_handle_t *h, uint32_t *x, uint32_t *y) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    DPRINT("[C]\t\tipslr_get_buffer_status()\n");
+    uint8_t buf[800];
+    int n;
+
+    CHECK(command(p->fd, 0x02, 0x00, 0));
+    n = get_result(p->fd);
+    DPRINT("[C]\t\tipslr_get_buffer_status() bytes: %d\n",n);
+    if (n!= 8) {
+        return PSLR_READ_ERROR;
+    }
+    CHECK(read_result(p->fd, buf, n));
+    int i;
+    for (i=0; i<n; ++i) {
+        DPRINT("[C]\t\tbuf[%d]=%02x\n",i,buf[i]);
+    }
+    return PSLR_OK;
+}
+
 /* Commands in form 23 XX YY. I know it si stupid, but ipslr_cmd functions  */
 /* are sooooo handy.                                                        */
 static int ipslr_cmd_23_XX(ipslr_handle_t *p, char XX, char YY, uint32_t mode) {
@@ -469,6 +489,10 @@ int pslr_get_status(pslr_handle_t h, pslr_status *ps) {
     memset( ps, 0, sizeof( pslr_status ));
     CHECK(ipslr_status_full(p, &p->status));
     memcpy(ps, &p->status, sizeof (pslr_status));
+
+//    uint32_t x, y;
+//    pslr_get_buffer_status(h, &x, &y);
+
     return PSLR_OK;
 }
 
