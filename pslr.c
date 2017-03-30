@@ -188,20 +188,6 @@ typedef enum {
 
 /* a different write_args function needs to be done with slightly changed */
 /* command sequence. Original function was ipslr_write_args(). */
-/*static int ipslr_write_args_special(ipslr_handle_t *p, int n, ...) {
-    va_list ap;
-    int args[n];
-    int i;
-    for( i = 0; i < 4; ++i ) {
-    args[i] = 0;
-    }
-    va_start(ap, n);
-    for (i = 0; i < n; i++) {
-    args[i] = va_arg(ap, int);
-    }
-    va_end(ap);
-    return _ipslr_write_args(4, p, n, args);
-    }*/
 
 int pslr_get_buffer_status(pslr_handle_t *h, uint32_t *x, uint32_t *y) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
@@ -223,7 +209,7 @@ int pslr_get_buffer_status(pslr_handle_t *h, uint32_t *x, uint32_t *y) {
     return PSLR_OK;
 }
 
-/* Commands in form 23 XX YY. I know it si stupid, but ipslr_cmd functions  */
+/* Commands in form 23 XX YY. I know it is stupid, but ipslr_cmd functions  */
 /* are sooooo handy.                                                        */
 static int ipslr_cmd_23_XX(ipslr_handle_t *p, char XX, char YY, uint32_t mode) {
     DPRINT("[C]\t\tipslr_cmd_23_XX(%x, %x, mode=%x)\n", XX, YY, mode);
