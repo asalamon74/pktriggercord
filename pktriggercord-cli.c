@@ -102,6 +102,7 @@ static struct option const longopts[] = {
     {"dangerous", no_argument, NULL, 25},
     {"read_datetime", no_argument, NULL, 26},
     {"read_firmware_version", no_argument, NULL, 27},
+    {"settings_hex", no_argument, NULL, 28},
     { NULL, 0, NULL, 0}
 };
 
@@ -220,6 +221,7 @@ int main(int argc, char **argv) {
     bool dangerous=0;
     bool read_datetime=false;
     bool read_firmware_version=false;
+    bool settings_hex=false;
 
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
@@ -525,6 +527,10 @@ int main(int argc, char **argv) {
             case 27:
                 read_firmware_version=true;
                 break;
+
+            case 28:
+                settings_hex=true;
+                break;
         }
     }
 
@@ -710,6 +716,23 @@ int main(int argc, char **argv) {
 //    pslr_button_test( camhandle, 0x05, 2 );
 //    sleep_sec(3);
 //    pslr_button_test( camhandle, 0x0c, 0 );
+//    int index;
+//    for (index=0; index<1000; ++index) {
+//        uint32_t value;
+//        pslr_read_setting(camhandle, index, &value);
+//        if (value!=0 || (index%1000==0)) {
+//            printf("setting[%d]=%d\n", index, value);
+//        }
+//    }
+//    pslr_write_setting(camhandle, 139, 17);
+
+    if (settings_hex) {
+        uint8_t settings_buf[1024];
+        pslr_read_settings(camhandle, 0, 1024, settings_buf);
+        hexdump(settings_buf, 1024);
+        camera_close(camhandle);
+        exit(0);
+    }
 
     if (read_datetime) {
         int year=0, month=0, day=0, hour=0, min=0, sec=0;
@@ -932,6 +955,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\
       --status_hex                      print status hex info\n\
+      --settings_hex                    print settings hex info\n\
       --read_datetime                   print the camera date and time\n\
       --read_firmware_version           print the firmware version of the camera\n\
       --dust_removal                    dust removal\n\

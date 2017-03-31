@@ -229,6 +229,10 @@ int pslr_read_datetime(pslr_handle_t *h, int *year, int *month, int *day, int *h
 
 int pslr_read_dspinfo(pslr_handle_t *h, char *firmware);
 
+int pslr_read_setting(pslr_handle_t *h, int offset, uint32_t *value);
+int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value);
+int pslr_read_settings(pslr_handle_t *h, int offset, int length, uint8_t *buf);
+
 pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp );
 char *format_rational( pslr_rational_t rational, char * fmt );
 

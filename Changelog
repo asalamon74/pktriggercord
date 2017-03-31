@@ -19,6 +19,7 @@ version 0.84.03
 	Fixing incorrectly recognized exposure submodes
 	Handling new exposure submodes: Forest, NightSceneHDR, BacklightSilhouette, BlueSky
 	Renaming exposure submode to scene mode
+	--settings_hex
 
 version 0.84.02 ( 2016-10-31 )
 	Android code cleanup

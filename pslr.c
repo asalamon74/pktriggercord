@@ -1412,6 +1412,54 @@ int pslr_read_dspinfo(pslr_handle_t *h, char* firmware) {
     return PSLR_OK;
 }
 
+int pslr_read_setting(pslr_handle_t *h, int offset, uint32_t *value) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    DPRINT("[C]\t\tipslr_read_setting(%d)\n", offset);
+    uint8_t buf[4];
+    int n;
+
+    CHECK(ipslr_write_args(p, 1, offset));
+    CHECK(command(p->fd, 0x20, 0x09, 4));
+    n = get_result(p->fd);
+    DPRINT("[C]\t\tipslr_read_setting() bytes: %d\n",n);
+    if (n!= 4) {
+        return PSLR_READ_ERROR;
+    }
+    CHECK(read_result(p->fd, buf, n));
+    get_uint32_func get_uint32_func_ptr;
+    if (p->model->is_little_endian) {
+        get_uint32_func_ptr = get_uint32_le;
+    } else {
+        get_uint32_func_ptr = get_uint32_be;
+    }
+    *value = (*get_uint32_func_ptr)(buf);
+    return PSLR_OK;
+}
+
+int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    DPRINT("[C]\t\tipslr_write_setting(%d)=%d\n", offset, value);
+    CHECK(ipslr_cmd_00_09(p, 1));
+    CHECK(ipslr_write_args(p, 2, offset, value));
+    CHECK(command(p->fd, 0x20, 0x08, 8));
+    CHECK(ipslr_cmd_00_09(p, 2));
+    return PSLR_OK;
+}
+
+int pslr_read_settings(pslr_handle_t *h, int offset, int length, uint8_t *buf) {
+    int index=offset;
+    uint32_t value;
+    int ret;
+    while (index<offset+length) {
+        if ( (ret = pslr_read_setting(h, index, &value)) != PSLR_OK ) {
+            return ret;
+        }
+        buf[index] = value;
+        ++index;
+    }
+    return PSLR_OK;
+}
+
 static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
     va_list ap;
     uint8_t cmd[8] = {0xf0, 0x4f, cmd_2, 0x00, 0x00, 0x00, 0x00, 0x00};

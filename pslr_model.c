@@ -117,7 +117,7 @@ void set_uint32_be(uint32_t v, uint8_t *buf) {
 }
 
 char *shexdump(uint8_t *buf, uint32_t bufLen) {
-    char *ret = malloc(2000);
+    char *ret = malloc(4*bufLen);
     uint32_t i;
     sprintf(ret,"%s","");
     for (i = 0; i < bufLen; i++) {
