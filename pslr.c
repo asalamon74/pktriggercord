@@ -563,6 +563,7 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %.2f\n", "manual mode ev", (1.0 * status.manual_mode_ev / 10));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "lens", get_lens_name(status.lens_id1, status.lens_id2));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %.2fV %.2fV %.2fV %.2fV\n", "battery", 0.01 * status.battery_1, 0.01 * status.battery_2, 0.01 * status.battery_3, 0.01 * status.battery_4);
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "buffer mask", int_to_binary(status.bufmask));
     return strbuffer;
 }
 

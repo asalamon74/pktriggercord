@@ -150,6 +150,21 @@ void hexdump_debug(uint8_t *buf, uint32_t bufLen) {
     free(dmp);
 }
 
+
+// based on http://stackoverflow.com/a/657202/21348
+
+const char* int_to_binary( uint16_t x ) {
+    static char b[sizeof(uint16_t)*8+1] = {0};
+    int y;
+    long long z;
+    for (z=(1LL<<sizeof(uint16_t)*8)-1,y=0; z>0; z>>=1,y++) {
+        b[y] = ( ((x & z) == z) ? '1' : '0');
+    }
+    b[y] = 0;
+    return b;
+}
+
+
 int _get_user_jpeg_stars( ipslr_model_info_t *model, int hwqual ) {
     if ( model->id == 0x12f71 ) {
         // K5IIs hack
