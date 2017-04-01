@@ -1559,16 +1559,14 @@ static int get_status(FDTYPE fd) {
     memset(statusbuf,0,8);
 
     while (1) {
-        //usleep(POLL_INTERVAL);
         CHECK(read_status(fd, statusbuf));
-        if ((statusbuf[7] & 0x01) == 0) {
+        DPRINT("[R]\t\t\t\t => ERROR: 0x%02X\n", statusbuf[7]);
+        if (statusbuf[7] != 0x01) {
             break;
         }
-        //DPRINT("Waiting for ready - ");
-        DPRINT("[R]\t\t\t\t => ERROR: 0x%02X\n", statusbuf[7]);
         usleep(POLL_INTERVAL);
     }
-    if ((statusbuf[7] & 0xff) != 0) {
+    if (statusbuf[7] != 0) {
         DPRINT("\tERROR: 0x%x\n", statusbuf[7]);
     }
     return statusbuf[7];

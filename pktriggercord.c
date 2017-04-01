@@ -1535,6 +1535,7 @@ G_MODULE_EXPORT void green_button_clicked_cb(GtkAction *action) {
     ret = pslr_green_button( camhandle );
     if (ret != PSLR_OK) {
         DPRINT("Green button failed: %d\n", ret);
+        gtk_statusbar_push(statusbar, sbar_connect_ctx, "Error: green button failed.");
     }
 }
 
