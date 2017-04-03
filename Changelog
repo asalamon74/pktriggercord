@@ -22,6 +22,7 @@ version 0.84.03
 	--settings_hex
 	Avoid infinite loop if green button fails
 	Adding bufmask field to --status printing
+	Handling higher ISO values in the GUI
 
 version 0.84.02 ( 2016-10-31 )
 	Android code cleanup

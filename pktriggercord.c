@@ -167,11 +167,12 @@ static pslr_rational_t shutter_tbl_1_2[] = {
 
 static const int iso_tbl_1_3[] = {
     80, 100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1250, 1600, 2000, 2500,
-    3200, 4000, 5000, 6400, 8000, 10000, 12800, 16000, 20000, 25600, 32000, 40000, 51200
+    3200, 4000, 5000, 6400, 8000, 10000, 12800, 16000, 20000, 25600, 32000, 40000, 51200, 64000,
+    80000, 102400
 };
 
 static const int iso_tbl_1_2[] = {
-    100, 140, 200, 280, 400, 560, 800, 1100, 1600, 2200, 3200, 4500, 6400, 12800, 25600, 51200
+    100, 140, 200, 280, 400, 560, 800, 1100, 1600, 2200, 3200, 4500, 6400, 12800, 25600, 51200, 102400
 };
 
 static const int iso_tbl_1[] = {
@@ -1135,6 +1136,7 @@ static void update_preview_area(int buffer) {
     }
     g_object_ref(pixBuf);
     set_preview_icon(buffer, pixBuf);
+
     pError = NULL;
 the_end:
     gtk_statusbar_pop(statusbar, sbar_download_ctx);
