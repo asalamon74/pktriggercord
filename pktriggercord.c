@@ -62,7 +62,6 @@ static struct {
 static gboolean added_quit(gpointer data);
 static void my_atexit(void);
 
-//gboolean da_buttonpress(GtkWidget *widget);
 int common_init(void);
 void init_preview_area(void);
 void set_preview_icon(int n, GdkPixbuf *pBuf);
@@ -1108,9 +1107,6 @@ static void update_preview_area(int buffer) {
     uint32_t imageSize;
     int r;
     GdkPixbuf *pixBuf;
-    //    GtkWidget *pw;
-
-    //    pw = GTK_WIDGET (gtk_builder_get_object (xml, "test_draw_area"));
 
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Getting thumbnails");
     while (gtk_events_pending()) {
@@ -1322,22 +1318,6 @@ static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, in
     }
     return true;
 }
-
-/*
-gboolean da_buttonpress(GtkWidget *widget)
-{
-    GtkWidget *pw;
-    DPRINT("Button event for widget %p\n", widget);
-    pw = GTK_WIDGET (gtk_builder_get_object (xml, "test_draw_area"));
-    if (pw != widget)
-        DPRINT("pw != widget\n");
-    gdk_draw_arc (pw->window,
-                  pw->style->fg_gc[GTK_WIDGET_STATE (pw)],
-                  TRUE,
-                  0, 0, pw->allocation.width, pw->allocation.height,
-                  0, 64 * 360);
-    return FALSE;
-    }*/
 
 gboolean bufferwindow_expose_event_cb(GtkWidget *widget, GdkEventExpose *pEvent, gpointer userData) {
     DPRINT("bufferwindow expose\n");
