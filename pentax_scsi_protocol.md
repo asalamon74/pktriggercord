@@ -591,7 +591,12 @@ typedef enum {
 This command returns 24 bytes representing 6 32-bit numbers. The numbers represents year, month, day, hour, minute, and sec.
 
 #### [20 08] Write Setting (offset, value)
+
+This command modifies one setting at the selected offset. Value is a four-byte number (Big-Endian for older, Little-Endian for newer cameras) between 0 and 255.
+
 #### [20 09] Read Setting (offset)
+
+This command returns a 4-byte number (Big-Endian for older, Little-Endian for newer cameras). The represented value is between 0 and 255.
 
 ### 3.15 Command Group 0x23 - Adjustment
 
