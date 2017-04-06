@@ -25,7 +25,7 @@
       - [[02 00] Get Buffer Status ()](#02-00-get-buffer-status-)
       - [[02 01] Select Buffer (buffer_number, buffer_type, buffer_resolution, 0)](#02-01-select-buffer-buffer_number-buffer_type-buffer_resolution-0)
       - [[02 03] Delete Buffer (buffer_number)](#02-03-delete-buffer-buffer_number)
-    - [3.3 Command Group 0x04/0x05 - Image Buffer Related](#33-command-group-0x040x05---image-buffer-related)
+    - [3.3 Command Group 0x04/0x05 - Segment Info Related](#33-command-group-0x040x05---segment-info-related)
       - [[04 00] Get Buffer Segment Information ()](#04-00-get-buffer-segment-information-)
       - [[04 01] Next Buffer Segment (0)](#04-01-next-buffer-segment-0)
     - [3.4 Command Group 0x06 - Image Download/Upload](#34-command-group-0x06---image-downloadupload)
@@ -326,10 +326,24 @@ typedef enum {
 
 #### [02 03] Delete Buffer (buffer_number)
 
-### 3.3 Command Group 0x04/0x05 - Image Buffer Related
+### 3.3 Command Group 0x04/0x05 - Segment Info Related
+
+The downloadable content of the selected image buffer are stored in chunks. The maximum number of chucks is four. Information about the chucks are stored in segments information blocks. The maximum number of blocks is ten.
 
 #### [04 00] Get Buffer Segment Information ()
+
+This command reads information about the currently selected segment information block. This command returns 16 bytes representing 4 32-bit integers: `a`, `b`, `addr`, `length`. `b` is the type of the block.
+
+* `b==1` is the first information block. In this case `addr`, and `length` are 0.
+* `b==4` defines the position in out output file where we should write the next chunk. `length` stores this byte position, `addr` is always 0 in this case.
+* `b==3` gives us the position of the next chuck of the image in the internal buffer of the camera. `addr` defines the position, `length` is the number of bytes we can read.
+* `b==2` is the last information block. In this case `addr`, and `length` are 0.
+
+For instance a buffer stored in four chunks are represented the following segment information blocks: `b1, b4, b3, b4, b3, b4, b3, b4, b3, b2`. The `length` field of the `b4` blocks are always equals to the sum of the `length` fields of the `b3` blocks before.
+
 #### [04 01] Next Buffer Segment (0)
+
+This command changes to the next segment information block. It is possible to cycle through the blocks.
 
 ### 3.4 Command Group 0x06 - Image Download/Upload
 
