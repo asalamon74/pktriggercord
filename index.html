@@ -13,6 +13,9 @@
 footer {
     background-color: #aaaaaa;
 }
+body { 
+   padding-bottom: 50px;
+}
 </style>
 
 </head>
@@ -22,23 +25,84 @@ footer {
     <div class="navbar-header">
       <a class="navbar-brand" href="#">pkTriggercord</a>
     </div>
-<!--    <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Home</a></li>
-      <li><a href="#">Page 1</a></li>
-      <li><a href="#">Page 2</a></li>
-      <li><a href="#">Page 3</a></li>
-    </ul>-->
+    <ul class="nav navbar-nav">
+      <li><a href="#download">Download</a></li>
+    </ul>
   </div>
 </nav>
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
       <h3>Description</h3>
-      <p>Remote control (tethering) Linux (x86, arm), Windows, Android software for Pentax DSLR cameras.</p>
+      <p>Remote control (tethering) Linux (x86, arm), Windows, Android
+      software for Pentax DSLR cameras.</p>
     </div>
   </div>
 </div>
 
+<div class="container" id="download">
+  <div class="row">
+    <div class="col-xs-12">
+      <h2>Download</h2>
+    </div>
+  </div>
+  <div class="row">
+
+<div class="col-sm-6">
+<h3>Binary</h3>
+
+<ul>
+<li>Rpm file for Mageia 5 (64 bit): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord-0.84.02-1.x86_64.rpm">pktriggercord-0.84.02-1.x86_64.rpm</a></li>
+<li>Deb file for Raspbian ( Raspberry PI ):
+<a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord_0.84.02-1_armhf.deb">pktriggercord_0.84.02-1_armhf.deb</a>
+
+</li>
+<li>Windows (requires <a href="http://gtk-win.sourceforge.net">GTK2</a>
+  ): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord-0.84.02-win.zip">pktriggercord-0.84.02-win.zip</a></li>
+<li>Android: <a href="pktriggercord_android.html">Please read this</a>.</li>
+<li>Linux repositories
+<ul>
+<li><a href="http://sisyphus.ru/en/srpm/Sisyphus/pktriggercord">ALT
+  Linux Sisyphus repository rpms (obsoleted)</a>.</li>
+<li><a href="https://software.opensuse.org/package/pkTriggerCord">openSUSE
+    packages</a></li>
+<li><a href="https://aur.archlinux.org/packages/pktriggercord/">archLinux</a></li>
+<li>Ubuntu users can install the program using the following commands:
+<pre><code>sudo add-apt-repository ppa:dhor/myway
+sudo apt-get update
+sudo apt-get install pktriggercord
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+
+<p><em>You can also download previous releases from <a href="https://github.com/asalamon74/pktriggercord/releases">here</a>.</em></p> 
+
+</div>
+
+  <div class="col-sm-6">
+<h3>Source code</h3>
+
+<ul>
+<li>Source: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pkTriggerCord-0.84.02.src.tar.gz">pkTriggerCord-0.84.02.src.tar.gz</a></li>
+<li>Source
+  rpm: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord-0.84.02-1.src.rpm">pktriggercord-0.84.02-1.src.rpm</a></li>
+<li>It is also possible to checkout the latest version from git repository:
+<code><pre>git clone https://github.com/asalamon74/pktriggercord.git</pre></code>
+</li>
+</ul>
+
+<p><em>Please note: This software is crosscompiled under Linux for
+  Windows. If you want to compile it, you need Linux.</em></p>
+</div>
+  </div>
+</div>
+
 <footer class="footer navbar navbar-fixed-bottom text-right">
+<div class="container">
 <p><span class="fa fa-envelope"><a href="mailto:andras.salamon@melda.info">E-mail</a></span></p>
+</div>
 </footer>
+</body>
+</html>
