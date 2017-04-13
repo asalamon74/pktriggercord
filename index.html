@@ -19,170 +19,178 @@ body {
 code {
    padding: 0px;
 }
+div[class="roww"] {
+    border: 1px dotted rgba(0, 0, 0, 0.5);
+}
+
+div[class^="coll-"] {
+    background-color: rgba(255, 0, 0, 0.2);
+}
 </style>
 
 </head>
 <body>
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">pkTriggercord</a>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+	<a class="navbar-brand" href="#">pkTriggercord</a>
+      </div>
+      <div class="collapse navbar-collapse">
+	<ul class="nav navbar-nav">
+	  <li><a href="#cameras">Cameras</a></li>
+	  <li><a href="#download">Download</a></li>
+	</ul>
+      </div>
     </div>
-    <div class="collapse navbar-collapse">
-    <ul class="nav navbar-nav">
-      <li><a href="#cameras">Cameras</a></li>
-      <li><a href="#download">Download</a></li>
-    </ul>
-    </div>
-  </div>
-</nav>
-<div class="container" id="description">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="row">
-	<h2>Description</h2>
-	<p>Remote control (tethering) Linux (x86, arm), Windows, Android
-	  software for Pentax DSLR cameras.</p>
+  </nav>
+  <div class="container" id="description">
+    <div class="row">
+      <div class="col-xs-12">
+	<div class="row">
+	  <h2>Description</h2>
+	  <p>Remote control (tethering) Linux (x86, arm), Windows, Android
+	    software for Pentax DSLR cameras.</p>
+	</div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="container" id="cameras">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="row">
-	<h2>Cameras</h2>      
-        <div class="col-sm-6">
-          <h3>Full</h3>
-          <ul>
-            <li>Pentax K-x</li>
-            <li>Pentax K10D (Samsung GX-10) <small><i>Requires firmware 1.20 or later</i></small></li>
-            <li>Pentax K20D (Samsung GX-20)</li>
-            <li>Pentax K200D</li>
-            <li>Pentax K-7</li>
-            <li>Pentax K-r</li>
-            <li>Pentax K-5</li>
-            <li>Pentax K-m / K2000</li>
-            <li>Pentax K-30</li>
-            <li>Pentax K-01 <span style="color: orange; font-style: italic;
-                                         font-weight:bold;">bugs</span></li>
-            <li>Pentax K-5 II / K-5 IIs</li>
-            <li>Pentax K-50 <span style="color: orange; font-style: italic;
-                                         font-weight:bold;">bugs</span></li>
-            <li>Pentax K-3 / K-3 II</li>
-            <li>Pentax K-500</li>
+  <div class="container" id="cameras">
+    <div class="row">
+      <div class="col-xs-12">
+	<div class="row">
+	  <h2>Cameras</h2>      
+          <div class="col-sm-6">
+            <h3>Full</h3>
+            <ul>
+              <li>Pentax K-x</li>
+              <li>Pentax K10D (Samsung GX-10) <small><i>Requires firmware 1.20 or later</i></small></li>
+              <li>Pentax K20D (Samsung GX-20)</li>
+              <li>Pentax K200D</li>
+              <li>Pentax K-7</li>
+              <li>Pentax K-r</li>
+              <li>Pentax K-5</li>
+              <li>Pentax K-m / K2000</li>
+              <li>Pentax K-30</li>
+              <li>Pentax K-01 <span style="color: orange; font-style: italic;
+                                           font-weight:bold;">bugs</span></li>
+              <li>Pentax K-5 II / K-5 IIs</li>
+              <li>Pentax K-50 <span style="color: orange; font-style: italic;
+                                           font-weight:bold;">bugs</span></li>
+              <li>Pentax K-3 / K-3 II</li>
+              <li>Pentax K-500</li>
 
-          </ul>
+            </ul>
 
-        </div>
-        <div class="col-sm-6">
-          <h3>Limited support</h3>
+          </div>
+          <div class="col-sm-6">
+            <h3>Limited support</h3>
 
-          <p><em>You can take pictures, change settings using the
-	      command line version, but you cannot read the status
-	      fields. Limited version of GUI allows taking a picture
-	      (only one, you need to save (only PEF) or delete it
-	      before taking the next one), but camera settings cannot
-	      be read or modified.</em></p>
-          <p>Limited support available for the following cameras:</p>
+            <p><em>You can take pictures, change settings using the
+		command line version, but you cannot read the status
+		fields. Limited version of GUI allows taking a picture
+		(only one, you need to save (only PEF) or delete it
+		before taking the next one), but camera settings cannot
+		be read or modified.</em></p>
+            <p>Limited support available for the following cameras:</p>
 
-          <ul>
-            <li>Pentax istDS2</li>
-            <li>Pentax istDL</li>
-            <li>Pentax K100D Super</li>
-          </ul>
+            <ul>
+              <li>Pentax istDS2</li>
+              <li>Pentax istDL</li>
+              <li>Pentax K100D Super</li>
+            </ul>
 
-          <h3>Not working</h3>
+            <h3>Not working</h3>
 
-          <p>The following cameras has been tested and reported not to
-          work</p>
+            <p>The following cameras has been tested and reported not to
+              work</p>
 
-	  <ul>
-            <li>Pentax istDS</li>
-            <li>Pentax istD</li>
-            <li>Pentax K110D</li>
-            <li>Pentax K100D</li>
-            <li>Pentax K-S2 <span style="color: orange; font-style: italic;font-weight:bold;">Not working: downloaded image has artifacts</span></li>
-	  </ul>
+	    <ul>
+              <li>Pentax istDS</li>
+              <li>Pentax istD</li>
+              <li>Pentax K110D</li>
+              <li>Pentax K100D</li>
+              <li>Pentax K-S2 <span style="color: orange; font-style: italic;font-weight:bold;">Not working: downloaded image has artifacts</span></li>
+	    </ul>
 
-          <h3>Testing</h3>
+            <h3>Testing</h3>
 
-          <p><i>The following cameras are not yet tested, please contact us if
-              you can help.</i></p>
+            <p><i>The following cameras are not yet tested, please contact us if
+		you can help.</i></p>
 
-          <ul>
-            <li>Pentax K-S1</li>
-          </ul>
-        </div>
+            <ul>
+              <li>Pentax K-S1</li>
+            </ul>
+          </div>
+	</div>
+      </div>
     </div>
   </div>
-</div>
 
+  <div class="container" id="download">
+    <div class="row">
+      <div class="col-xs-12">
+	<div class="row">
+	  <h2>Download</h2>
+	  <div class="col-sm-6">
+	    <h3>Binary</h3>
 
-<div class="container" id="download">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="row">
-	<h2>Download</h2>
-<div class="col-sm-6">
-<h3>Binary</h3>
+	    <ul>
+	      <li>Rpm file for Mageia 5 (64 bit): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord-0.84.02-1.x86_64.rpm">pktriggercord-0.84.02-1.x86_64.rpm</a></li>
+	      <li>Deb file for Raspbian ( Raspberry PI ):
+		<a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord_0.84.02-1_armhf.deb">pktriggercord_0.84.02-1_armhf.deb</a>
 
-<ul>
-<li>Rpm file for Mageia 5 (64 bit): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord-0.84.02-1.x86_64.rpm">pktriggercord-0.84.02-1.x86_64.rpm</a></li>
-<li>Deb file for Raspbian ( Raspberry PI ):
-<a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord_0.84.02-1_armhf.deb">pktriggercord_0.84.02-1_armhf.deb</a>
+	      </li>
+	      <li>Windows (requires <a href="http://gtk-win.sourceforge.net">GTK2</a>
+		): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord-0.84.02-win.zip">pktriggercord-0.84.02-win.zip</a></li>
+	      <li>Android: <a href="pktriggercord_android.html">Please read this</a>.</li>
+	      <li>Linux repositories
+		<ul>
+		  <li><a href="http://sisyphus.ru/en/srpm/Sisyphus/pktriggercord">ALT
+		      Linux Sisyphus repository rpms (obsoleted)</a>.</li>
+		  <li><a href="https://software.opensuse.org/package/pkTriggerCord">openSUSE
+		      packages</a></li>
+		  <li><a href="https://aur.archlinux.org/packages/pktriggercord/">archLinux</a></li>
+		  <li>Ubuntu users can install the program using the following commands:
+		    <pre><code>sudo add-apt-repository ppa:dhor/myway
+			sudo apt-get update
+			sudo apt-get install pktriggercord
+		    </code></pre>
+		  </li>
+		</ul>
+	      </li>
+	    </ul>
 
-</li>
-<li>Windows (requires <a href="http://gtk-win.sourceforge.net">GTK2</a>
-  ): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord-0.84.02-win.zip">pktriggercord-0.84.02-win.zip</a></li>
-<li>Android: <a href="pktriggercord_android.html">Please read this</a>.</li>
-<li>Linux repositories
-<ul>
-<li><a href="http://sisyphus.ru/en/srpm/Sisyphus/pktriggercord">ALT
-  Linux Sisyphus repository rpms (obsoleted)</a>.</li>
-<li><a href="https://software.opensuse.org/package/pkTriggerCord">openSUSE
-    packages</a></li>
-<li><a href="https://aur.archlinux.org/packages/pktriggercord/">archLinux</a></li>
-<li>Ubuntu users can install the program using the following commands:
-<pre><code>sudo add-apt-repository ppa:dhor/myway
-sudo apt-get update
-sudo apt-get install pktriggercord
-</code></pre>
-</li>
-</ul>
-</li>
-</ul>
+	    <p><em>You can also download previous releases from <a href="https://github.com/asalamon74/pktriggercord/releases">here</a>.</em></p> 
 
-<p><em>You can also download previous releases from <a href="https://github.com/asalamon74/pktriggercord/releases">here</a>.</em></p> 
+	  </div>
 
-</div>
+	  <div class="col-sm-6">
+	    <h3>Source code</h3>
 
-  <div class="col-sm-6">
-<h3>Source code</h3>
+	    <ul>
+	      <li>Source: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pkTriggerCord-0.84.02.src.tar.gz">pkTriggerCord-0.84.02.src.tar.gz</a></li>
+	      <li>Source
+		rpm: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord-0.84.02-1.src.rpm">pktriggercord-0.84.02-1.src.rpm</a></li>
+	      <li>It is also possible to checkout the latest version from git repository:
+		<code><pre>git clone https://github.com/asalamon74/pktriggercord.git</pre></code>
+	      </li>
+	    </ul>
 
-<ul>
-<li>Source: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pkTriggerCord-0.84.02.src.tar.gz">pkTriggerCord-0.84.02.src.tar.gz</a></li>
-<li>Source
-  rpm: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.84.02/pktriggercord-0.84.02-1.src.rpm">pktriggercord-0.84.02-1.src.rpm</a></li>
-<li>It is also possible to checkout the latest version from git repository:
-<code><pre>git clone https://github.com/asalamon74/pktriggercord.git</pre></code>
-</li>
-</ul>
-
-<p><em>Please note: This software is crosscompiled under Linux for
-  Windows. If you want to compile it, you need Linux.</em></p>
-</div>
+	    <p><em>Please note: This software is crosscompiled under Linux for
+		Windows. If you want to compile it, you need Linux.</em></p>
+	  </div>
+	</div>
+      </div>
+    </div>
   </div>
-</div>
-
-<footer class="footer navbar navbar-fixed-bottom text-left">
-<div class="container">
-<p><span class="fa fa-envelope"><a href="mailto:andras.salamon@melda.info">E-mail</a></span><br />
-<a href="https://github.com/asalamon74/pktriggercord/">
-<img height="16px" src="GitHub-Mark-32px.png" /> github project page</a><br />
-<img height="16px" src="lgplv3-88x31.png" /> License: <a href="https://www.gnu.org/licenses/lgpl-3.0.en.html">LGPL</a></p>
-</div>
-</footer>
+  <footer class="footer navbar navbar-fixed-bottom text-left">
+    <div class="container">
+      <p><span class="fa fa-envelope"><a href="mailto:andras.salamon@melda.info">E-mail</a></span><br />
+	<a href="https://github.com/asalamon74/pktriggercord/">
+	  <img height="16px" src="GitHub-Mark-32px.png" /> github project page</a><br />
+	<img height="16px" src="lgplv3-88x31.png" /> License: <a href="https://www.gnu.org/licenses/lgpl-3.0.en.html">LGPL</a></p>
+    </div>
+  </footer>
 </body>
 </html>
