@@ -14,7 +14,7 @@ footer {
     background-color: #aaaaaa;
 }
 body { 
-   padding-bottom: 50px;
+   padding-bottom: 80px;
 }
 code {
    padding: 0px;
@@ -39,6 +39,7 @@ div[class^="coll-"] {
 	<ul class="nav navbar-nav">
 	  <li><a href="#cameras">Cameras</a></li>
 	  <li><a href="#download">Download</a></li>
+	  <li><a href="#development">Development</a></li>
 	</ul>
       </div>
     </div>
@@ -184,6 +185,30 @@ sudo apt-get install pktriggercord
       </div>
     </div>
   </div>
+  <div class="container" id="development">
+    <div class="row">
+      <div class="col-xs-12">
+	<div class="row">
+	  <h2>Development</h2>
+	  <p>You can find more information at
+	  the <a href="https://github.com/asalamon74/pktriggercord/">GitHub
+	  project page.</a> Feel free to send pull requests if you
+	  enhance the program. If you want to add a new camera model
+	  or fix a model specific bug, it is very likely that you only
+	  need to modify the <a href="https://github.com/asalamon74/pktriggercord/blob/master/pslr_model.c">pslr_model.c</a>
+	  file.</p>
+
+          <p>There is no official documentation of the Pentax
+          tethering protocol, but you can check our <a href="https://github.com/asalamon74/pktriggercord/blob/master/pentax_scsi_protocol.md">Pentax SCSI protocol documentation</a>.
+
+          <p>This program is based on <a href="http://pkremote.sourceforge.net/">PKRemote for Linux</a>
+and <a href="https://sites.google.com/a/pentax.org.pl/tomaszkos/en/pkremote-for-windows">PKRemote
+  for Windows</a> programs.</p>
+	</div>
+      </div>
+    </div>
+  </div>
+
   <footer class="footer navbar navbar-fixed-bottom text-left">
     <div class="container">
       <p><span class="fa fa-envelope"><a href="mailto:andras.salamon@melda.info">E-mail</a></span><br />
