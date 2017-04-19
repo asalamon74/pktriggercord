@@ -1,16 +1,19 @@
-code.block {
-background-color: #cccccc;
-padding: 5px;
-display: block;
+footer {
+    background-color: #aaaaaa;
+}
+body { 
+   padding-bottom: 80px;
+}
+code {
+   padding: 0px;
+}
+div[class="roww"] {
+    border: 1px dotted rgba(0, 0, 0, 0.5);
 }
 
-p.arg {
-display: block;
-padding: 2px;
-background-color: #dddddd;
-font-family: monospace;
+div[class^="coll-"] {
+    background-color: rgba(255, 0, 0, 0.2);
 }
-
-body {
-margin-left: 5%;
+iframe {
+    border: 0;
 }
