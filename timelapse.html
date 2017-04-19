@@ -10,7 +10,12 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://use.fontawesome.com/999c1ebb04.js"></script>
-
+  <script> 
+    $(function(){
+    $("#header").load("header.html"); 
+    $("#footer").load("footer.html"); 
+    });
+  </script> 
 </head>
   <body>
     <nav class="navbar navbar-default">
@@ -93,13 +98,6 @@
 	</div>
       </div>
     </div>
-    <footer class="footer navbar navbar-fixed-bottom text-left">
-      <div class="container">
-	<p><span class="fa fa-envelope"><a href="mailto:andras.salamon@melda.info">E-mail</a></span><br />
-	  <a href="https://github.com/asalamon74/pktriggercord/">
-	    <img height="16" src="GitHub-Mark-32px.png" alt="github" /> github project page</a><br />
-	  <img height="16" src="lgplv3-88x31.png" alt="lgpl" /> License: <a href="https://www.gnu.org/licenses/lgpl-3.0.en.html">LGPL</a></p>
-      </div>
-    </footer>
+    <div id="footer"></div>
   </body>
 </html>
