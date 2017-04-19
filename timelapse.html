@@ -38,62 +38,69 @@
     <div class="jumbotron">
       <h2>Creating HD timelapse videos with pkTriggerCord</h2>
       <p>This page shows a simple way to create HD timelapse videos with <a href='index.html'>pkTriggerCord</a> using a Pentax DSLR camera.</p>
+      <iframe title="YouTube video player" width="640" height="390" src="http://www.youtube.com/embed/XvaEtq1g6Gg"></iframe>	    
     </div>
   </div>
 
-    <div class="container">
-      <div class="row">
-	<div class="col-xs-12">
-	  <ul>
-	    <li><b>Step 1</b><br />
-	      <p>Take pictures:</p>
-	      <p>
-		<code>pktriggercord-cli --frames 150 --delay 8
-		  --aperture=5.6 --shutter=1/4 --iso=800 -o timelapse</code></p>
-	      <p>This command will take 150 pictures. The delay is 8
-		seconds (it will take approx. 20 minutes). More information about
-		the command line parameters can be
-		found <a href="pktriggercord_commandline.html">here</a>. The process will
-		create 150 files: <code>timelapse-0000.dng</code>, <code>timelapse-0001.dng</code>,...</p>
-	    </li>
-	    <li><b>Step 2</b><br />
-	      <p>Convert the raw dng images to png using yous favourite
-		raw-converter (It is possible to skip this step if you create jpeg
-		files in step 1).</p>
-	      <p>I'll use <a href="http://ufraw.sourceforge.net/">ufraw</a> in this step:</p>
-	      <p><code>ufraw-batch --temperature=5500 --exposure=0
-		  --out-type=png timelapse*.dng</code></p>
-	      <p>This process will create 150 files:
-		<code>timelapse-0000.png</code>, <code>timelapse-0001.png</code>,...</p>
-	    </li>
-	    <li><b>Step 3</b><br />
-	      <p>Change the aspect ratio and reduce the size of the images.</p>
-	      <p>The aspect ratio of the still images is usually 3:2. The typical aspect
-		ratio for videos is 16:9 (or maybe 4:3) so we change the aspect
-		ratio by cropping the top and the bottom part of the images:</p>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+	<ul class="list-group" id="timelapse_steps">
+	  <li class="list-group-item">
+            <span class="badge">1</span>
+	    <p class="list-group-item-heading">Take pictures</p>
+	    <p class="list-group-item-text">
+	      <pre><code>pktriggercord-cli --frames 150 --delay 8 --aperture=5.6 --shutter=1/4 --iso=800 -o timelapse</code></pre></p>
+	    <p class="list-group-item-text">This command takes 150 pictures. The delay is 8
+	      seconds (it will take approx. 20 minutes). More information about
+	      the command line parameters can be
+	      found <a href="pktriggercord_commandline.html">here</a>. The process will
+	      create 150 files: <code>timelapse-0000.dng</code>, <code>timelapse-0001.dng</code>,...</p>
+	  </li>
+	  <li class="list-group-item">
+            <span class="badge">2</span>
+	    <p class="list-group-item-heading">Convert to png</p>
+	    <p class="list-group-item-text"><pre><code>ufraw-batch --temperature=5500 --exposure=0 --out-type=png timelapse*.dng</code></pre></p>
+	    <p class="list-group-item-text">Converting the raw dng images
+	      to png using a raw-converter (It is possible to skip this step if you create jpeg
+	      files in step 1). I
+	      use <a href="http://ufraw.sourceforge.net/">ufraw</a> in
+	      this step.</p>
+	    <p>This process will create 150 files:
+	      <code>timelapse-0000.png</code>, <code>timelapse-0001.png</code>,...</p>
 
-	      <img src="timelapse-box.jpg" width="400" alt="timelapse box" />
-	      <p>We also reduce the size of the images in this
-		step. For a <a href="http://en.wikipedia.org/wiki/1080p">1080p</a>
-		video 1920x1080 size will be enough.</p>
-	      <p>For the resize/crop I'll use <a href="http://www.imagemagick.org/">imagemagick:</a></p>
-	      <p>
-		<code>for i in `seq -w 0 149`; do convert timelapse-0${i}.png -gravity
-		  Center -crop 4272x2403+0+0 +repage -resize 1920x1080 -quality 90
-		  timelapse-0${i}_small.jpg; done</code></p>
-	      <p>Arguments in this step differ based on your camera model and your
-		raw-converter. Since the size of my original image was 4272x2848, I
-		cropped it to 4272x2403 and resized it to 1920x1080.</p>
-	      <p>This process will create 150 files:
-		<code>timelapse-0000_small.jpg</code>, <code>timelapse-0001_small.jpg</code>,...</p>
-	    </li>
-	    <li><b>Step 4</b><br />
-	      <p>Create the video using <a href="http://www.ffmpeg.org/">ffmpeg</a>:</p>
-	      <p><code>ffmpeg -r 25 -i timelapse-%04d_small.jpg -vcodec
-		  libx264 -vpre normal -b 1800k -aspect 16:9
-		  timelapse.mkv</code></p><br />
-	      <iframe title="YouTube video player" width="640" height="390" src="http://www.youtube.com/embed/XvaEtq1g6Gg"></iframe>
-	    </li>
+	  </li>
+	  <li class="list-group-item">
+            <span class="badge">3</span>
+	    <p class="list-group-item-heading">Resize images</p>
+	    <p class="list-group-item-text">
+	      <pre><code>for i in `seq -w 0 149`; do 
+  convert timelapse-0${i}.png -gravity Center -crop 4272x2403+0+0 +repage -resize 1920x1080 -quality 90 timelapse-0${i}_small.jpg; 
+done</code></pre>
+	    </p>
+	    <p class="list-group-item-text">Changing the aspect ratio and reducing the size of the images.</p>
+	    <p class="list-group-item-text">The aspect ratio of the still images is usually 3:2. The typical aspect
+	      ratio for videos is 16:9 (or maybe 4:3) so I change the aspect
+	      ratio by cropping the top and the bottom part of the images:</p>
+
+	    <img src="timelapse-box.jpg" width="400" alt="timelapse box" />
+	    <p class="list-group-item-text">I also reduce the size of the images in this
+	      step. For a <a href="http://en.wikipedia.org/wiki/1080p">1080p</a>
+	      video 1920x1080 size will be enough. For the resize/crop I'm using <a href="http://www.imagemagick.org/">imagemagick</a>.</p>
+	    <p class="list-group-item-text">Arguments in this step differ based on your camera model and your
+	      raw-converter. Since the size of my original image was 4272x2848, I
+	      cropped it to 4272x2403 and resized it to 1920x1080.</p>
+	    <p class="list-group-item-text">This process will create 150 files:
+	      <code>timelapse-0000_small.jpg</code>, <code>timelapse-0001_small.jpg</code>,...</p>
+	  </li>
+	  <li class="list-group-item">
+            <span class="badge">4</span>
+	    <p class="list-group-item-heading">Create video</p>
+	    <p class="list-group-item-text"><pre><code>ffmpeg -r 25 -i timelapse-%04d_small.jpg -vcodec libx264 -vpre normal -b 1800k -aspect 16:9 timelapse.mkv</code></pre></p><br />
+	    <p class="list-group-item-text">I'm using
+	    using <a href="http://www.ffmpeg.org/">ffmpeg</a> to
+	    create a video from the still images.</p>
+	  </li>
 	  </ul>
 	</div>
       </div>

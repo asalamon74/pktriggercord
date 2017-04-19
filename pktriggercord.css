@@ -17,3 +17,7 @@ div[class^="coll-"] {
 iframe {
     border: 0;
 }
+#timelapse_steps li .list-group-item-heading {
+    font-weight: bold;
+    font-size: 110%;
+}
