@@ -2,6 +2,7 @@ footer {
     background-color: #aaaaaa;
 }
 body { 
+   padding-top: 60px;
    padding-bottom: 80px;
 }
 code {
