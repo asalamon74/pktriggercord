@@ -21,3 +21,7 @@ iframe {
     font-weight: bold;
     font-size: 110%;
 }
+
+img.img-thumbnail {
+    height: 250px;
+}
