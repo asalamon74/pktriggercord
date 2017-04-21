@@ -206,6 +206,57 @@ and <a href="https://sites.google.com/a/pentax.org.pl/tomaszkos/en/pkremote-for-
       <div class="col-xs-12">
 	<div class="row">
 	  <h2>Documentation</h2>
+          <p>The program has a command line interface, a GUI, and an
+          Android port</p>
+	  <h3>Commandline interface</h3>
+	  <p>The program has a rich command line interface. Some of
+	  the functions are only available here</p>
+<pre class="small">
+<code>
+pktriggercord-cli
+
+      --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-X, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01, K-500
+      --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...
+      --timeout=SECONDS                 timeout for camera connection ( 0 means forever )
+  -w, --warnings                        warning mode on
+      --nowarnings                      warning mode off
+  -m, --exposure_mode=MODE		valid values are GREEN, P, SV, TV, AV, TAV, M and X
+      --exposure_compensation=VALUE     exposure compensation value
+      --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO
+  -i, --iso=ISO                         single value (400) or interval (200-800)
+      --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB
+      --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A
+      --select_af_point=AF_SELECT_MODE  valid values are: Auto-5, Auto-11, Spot, Select
+      --ae_metering=AE_METERING         valid values are: Multi, Center, Spot
+      --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless
+      --flash_exposure_compensation=VAL flash exposure compensation value
+  -a, --aperture=APERTURE
+  -t, --shutter_speed=SHUTTER SPEED	values can be given in rational form (eg. 1/90)
+					or decimal form (eg. 0.8)
+  -r, --resolution=RESOLUTION		resolution in megapixels
+  -q, --quality=QUALITY			valid values are 1, 2, 3 and 4
+      --jpeg_image_tone=IMAGE_TONE      valid values are: Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm
+      --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, CTE
+      --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...
+  -f, --auto_focus			autofocus
+      --reconnect                       reconnect between shots
+      --servermode                      start in server mode and wait for commands
+  -g, --green                           green button
+  -s, --status			        print status info
+      --status_hex			print status hex info
+      --dust_removal                    dust removal
+  -F, --frames=NUMBER			number of frames
+  -d, --delay=SECONDS			delay between the frames (seconds)
+      --file_format=FORMAT		valid values: PEF, DNG, JPEG
+  -o, --output_file=FILE		send output to FILE instead of stdout
+      --debug	                        turn on debug messages
+  -v, --version				display version information and exit
+  -h, --help				display this help and exit
+      --pentax_debug_mode={0|1}		enable or disable camera debug mode and exit (DANGEROUS). Valid values are: 0, 1
+</code>
+</pre>
+	  <p>Detailed description can be found <a href="pktriggercord_commandline.html">here</a>.</p>
+
 	  <p>You can also use the command line interface to create a
 	  timelapse if your camera does not support interval
 	  shooting. You can find a tutorial <a href="timelapse.html">here</a>.</p>
