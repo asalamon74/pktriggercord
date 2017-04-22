@@ -69,8 +69,7 @@ void set_preview_icon(int n, GdkPixbuf *pBuf);
 void error_message(const gchar *message);
 
 static gboolean status_poll(gpointer data);
-static void update_preview_area(int buffer);
-static void update_main_area(int buffer);
+static void update_image_areas(int buffer, bool main);
 
 static void init_controls(pslr_status *st_new, pslr_status *st_old);
 static bool auto_save_check(int format, int buffer);
@@ -887,7 +886,7 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old) {
         }
     }
     if (new_picture >= 0) {
-        update_main_area(new_picture);
+        update_image_areas(new_picture, true);
     }
 
     format = get_user_file_format(st_new);
@@ -905,8 +904,8 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old) {
     /* Update buffer window for buffers that were not deleted by
      * auto_save_check */
     for (i=0; i<MAX_BUFFERS; i++) {
-        if (new_pictures & (1<<i)) {
-            update_preview_area(i);
+        if (i!=new_picture && new_pictures & (1<<i)) {
+            update_image_areas(i, false);
         }
     }
     /* Select the new picture in the buffer window */
@@ -922,8 +921,7 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old) {
 }
 
 static void manage_camera_buffers_limited() {
-    update_main_area(0);
-    update_preview_area(0);
+    update_image_areas(0, true);
 }
 
 
@@ -1066,7 +1064,8 @@ bool buf_updated = false;
 GdkPixbuf *pMainPixbuf = NULL;
 //static GdkPixbuf *pThumbPixbuf[MAX_BUFFERS];
 
-static void update_main_area(int buffer) {
+// updates the thumbnails and optionally the main preview
+static void update_image_areas(int buffer, bool main) {
     GError *pError;
     uint8_t *pImage;
     uint32_t imageSize;
@@ -1079,7 +1078,7 @@ static void update_main_area(int buffer) {
     }
 
     pError = NULL;
-    DPRINT("Trying to read buffer %d\n", buffer);
+    DPRINT("Trying to read buffer %d %d\n", buffer, main);
     r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize);
     if (r != PSLR_OK) {
         printf("Could not get buffer data\n");
@@ -1094,46 +1093,13 @@ static void update_main_area(int buffer) {
     }
     g_object_ref(pixBuf);
     pError = NULL;
-    pMainPixbuf = pixBuf;
-
-the_end:
-    gtk_statusbar_pop(statusbar, sbar_download_ctx);
-
-}
-
-static void update_preview_area(int buffer) {
-    GError *pError;
-    uint8_t *pImage;
-    uint32_t imageSize;
-    int r;
-    GdkPixbuf *pixBuf;
-
-    gtk_statusbar_push(statusbar, sbar_download_ctx, "Getting thumbnails");
-    while (gtk_events_pending()) {
-        gtk_main_iteration();
+    if (main) {
+        pMainPixbuf = pixBuf;
     }
 
-    DPRINT("buffer %d has new contents\n", buffer);
-    pError = NULL;
+    GdkPixbuf *scaledThumb = gdk_pixbuf_scale_simple( pixBuf, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, GDK_INTERP_BILINEAR);
+    set_preview_icon(buffer, scaledThumb);
 
-    DPRINT("Trying to get thumbnail\n");
-    r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_THUMBNAIL, 4, &pImage, &imageSize);
-    if (r != PSLR_OK) {
-        printf("Could not get buffer data\n");
-        goto the_end;
-    }
-    DPRINT("got %d bytes at %p\n", imageSize, pImage);
-    GInputStream *ginput = g_memory_input_stream_new_from_data (pImage, imageSize, NULL);
-
-    pixBuf = gdk_pixbuf_new_from_stream( ginput, NULL, &pError);
-    if (!pixBuf) {
-        printf("No pixbuf from loader.\n");
-        goto the_end;
-    }
-    g_object_ref(pixBuf);
-    set_preview_icon(buffer, pixBuf);
-
-    pError = NULL;
 the_end:
     gtk_statusbar_pop(statusbar, sbar_download_ctx);
 }

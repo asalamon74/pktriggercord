@@ -23,6 +23,7 @@ version 0.84.03
 	Avoid infinite loop if green button fails
 	Adding bufmask field to --status printing
 	Handling higher ISO values in the GUI
+	GUI: Avoid thumbnail reading, downscale preview instead
 
 version 0.84.02 ( 2016-10-31 )
 	Android code cleanup
