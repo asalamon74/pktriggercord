@@ -103,10 +103,12 @@ static struct option const longopts[] = {
     {"read_datetime", no_argument, NULL, 26},
     {"read_firmware_version", no_argument, NULL, 27},
     {"settings_hex", no_argument, NULL, 28},
+    {"dump_memory", required_argument, NULL, 29},
     { NULL, 0, NULL, 0}
 };
 
 int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, int);
+int save_memory(pslr_handle_t camhandle, int fd, uint32_t length);
 void print_status_info(pslr_handle_t h, pslr_status status);
 void usage(char*);
 
@@ -222,6 +224,10 @@ int main(int argc, char **argv) {
     bool read_datetime=false;
     bool read_firmware_version=false;
     bool settings_hex=false;
+    char multc;
+    int mult=1;
+    uint32_t dump_memory_size=0;
+    static const char DUMP_FILE_NAME[] = "pentax_dump.dat";
 
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
@@ -531,6 +537,29 @@ int main(int argc, char **argv) {
             case 28:
                 settings_hex=true;
                 break;
+
+            case 29:
+                if ( sscanf(optarg, "%d%c", &dump_memory_size, &multc) == 2 ) {
+                    switch (multc) {
+                        case 'G':
+                        case 'g':
+                            mult = 1024*1024*1024;
+                            break;
+                        case 'M':
+                        case 'm':
+                            mult = 1024*1024;
+                            break;
+                        case 'K':
+                        case 'k':
+                            mult = 1024;
+                            break;
+                    }
+                    dump_memory_size *= mult;
+                } else {
+                    dump_memory_size=atoi(optarg);
+                }
+                DPRINT("DUMP_MEMORY_SIZE: %u\n",dump_memory_size);
+                break;
         }
     }
 
@@ -565,6 +594,20 @@ int main(int argc, char **argv) {
         exit(-1);
     }
     printf("%s: %s Connected...\n", argv[0], camera_name);
+
+    if ( dump_memory_size > 0 ) {
+        int dfd = open(DUMP_FILE_NAME, FILE_ACCESS, 0664);
+        if (dfd == -1) {
+            fprintf(stderr, "Could not open %s\n", DUMP_FILE_NAME);
+            return -1;
+        } else {
+            printf("Dumping system memory to %s\n", DUMP_FILE_NAME);
+            save_memory(camhandle, dfd, dump_memory_size);
+            close(dfd);
+            camera_close(camhandle);
+            exit(0);
+        }
+    }
 
     /* if debug mode switch is on, there is a possibility someone just want to alter debug mode */
     if ( modify_debug_mode == 1) {
@@ -917,6 +960,35 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
     return (0);
 }
 
+int save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
+    uint8_t buf[65536];
+    uint32_t current;
+
+    DPRINT("save memory %d\n", length);
+
+    current = 0;
+
+    while (current<length) {
+        uint32_t bytes;
+        int readsize=length-current>65536 ? 65536 : length-current;
+        bytes = pslr_fullmemory_read(camhandle, buf, current, readsize);
+        if (bytes == 0) {
+            break;
+        }
+        ssize_t r = write(fd, buf, bytes);
+        if (r == 0) {
+            DPRINT("write(buf): Nothing has been written to buf.\n");
+        } else if (r == -1) {
+            perror("write(buf)");
+        } else if (r < bytes) {
+            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
+        }
+        current += bytes;
+    }
+    return (0);
+}
+
+
 void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("\n");
     printf( "%s", collect_status_info( h, status ) );
@@ -958,6 +1030,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
       --settings_hex                    print settings hex info\n\
       --read_datetime                   print the camera date and time\n\
       --read_firmware_version           print the firmware version of the camera\n\
+      --dump_memory SIZE                dumps the internal memory of the camera to pentax_dump.dat file. Size is in bytes, but can be specified using K, M, and G modifiers.\n\
       --dust_removal                    dust removal\n\
   -F, --frames=NUMBER                   number of frames\n\
   -d, --delay=SECONDS                   delay between the frames (seconds)\n\

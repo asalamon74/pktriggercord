@@ -33,7 +33,9 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 [\fB\-\-warnings\fR | \fB\-\-nowarnings\fR ]
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-dust_removal\fR | \fB\-\-status\fR |
 \fB\-\-status_hex\fR | \fB\-\-settings_hex\fR | \fB\-\-read_datetime\fR |
-\fB\-\-read_firmware_version\fR | \fB\-\-frames \fINUMBER\fR [ \fB\-\-delay
+\fB\-\-read_firmware_version\fR 
+| \fB\-\-dump_memory \fISIZE\fR 
+| \fB\-\-frames \fINUMBER\fR [ \fB\-\-delay
 \fISECONDS\fR ] 
 | \fB\-\-noshutter\fR | \fB\-\-servermode\fR
 [ \fB\-\-servermode_timeout \fISECONDS\fR]  |
@@ -137,6 +139,13 @@ Print the date and time set in the camera and do not take pictures\.
 \fB\-\-read_firmware_version\fR
 .RS 4
 Print the firmware version of the camera and do not take pictures\.
+.RE
+.PP
+\fB\-\-dump_memory SIZE\fR
+.RS 4
+Dump the memory of the camera to pentax_dump.dat file. Size should be
+specified by bytes, but K, M, and G modifiers can be used. For
+instance: 2K, 10M, 3G. Maximum size of the dump memory is 4GB\.
 .RE
 .PP
 \fB\-\-noshutter\fR

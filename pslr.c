@@ -1019,6 +1019,19 @@ uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size) {
     return blksz;
 }
 
+uint32_t pslr_fullmemory_read(pslr_handle_t h, uint8_t *buf, uint32_t offset, uint32_t size) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    int ret;
+
+    DPRINT("[C]\tpslr_fullmemory_read(%d)\n", size);
+
+    ret = ipslr_download(p, offset, size, buf);
+    if (ret != PSLR_OK) {
+        return 0;
+    }
+    return size;
+}
+
 uint32_t pslr_buffer_get_size(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     int i;
