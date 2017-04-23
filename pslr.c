@@ -192,7 +192,7 @@ typedef enum {
 int pslr_get_buffer_status(pslr_handle_t *h, uint32_t *x, uint32_t *y) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     DPRINT("[C]\t\tipslr_get_buffer_status()\n");
-    uint8_t buf[800];
+    uint8_t buf[8];
     int n;
 
     CHECK(command(p->fd, 0x02, 0x00, 0));
@@ -206,6 +206,14 @@ int pslr_get_buffer_status(pslr_handle_t *h, uint32_t *x, uint32_t *y) {
     for (i=0; i<n; ++i) {
         DPRINT("[C]\t\tbuf[%d]=%02x\n",i,buf[i]);
     }
+    get_uint32_func get_uint32_func_ptr;
+    if (p->model->is_little_endian) {
+        get_uint32_func_ptr = get_uint32_le;
+    } else {
+        get_uint32_func_ptr = get_uint32_be;
+    }
+    *x = (*get_uint32_func_ptr)(buf);
+    *y = (*get_uint32_func_ptr)(buf+4);
     return PSLR_OK;
 }
 
