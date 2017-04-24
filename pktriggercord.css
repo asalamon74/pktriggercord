@@ -26,3 +26,8 @@ iframe {
 img.img-thumbnail {
     height: 250px;
 }
+
+footer div.text-center a {
+    padding-left: 1em;
+    padding-right: 1em;
+}
