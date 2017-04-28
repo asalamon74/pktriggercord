@@ -10,10 +10,10 @@ body, #doc_gui, #doc_cli {
     margin-top: -60px;
 }
 
-body {
+html body {
    padding-bottom: 100px;
+   margin-bottom: 0px;
 }
-
 
 code {
    padding: 0px;
@@ -40,4 +40,20 @@ img.img-thumbnail {
 footer div.text-center a {
     padding-left: 1em;
     padding-right: 1em;
+}
+
+div.bootmark nav.navbar-fixed-side {
+    height: calc( 100vh - 160px );
+}
+
+div.bootmark div.navbar-header {
+    display: none;
+}
+
+li.bootmark-h1 {
+    font-size: 110%;
+}
+
+li.bootmark-h1, li.bootmark-h2 {
+    font-weight: bold;
 }

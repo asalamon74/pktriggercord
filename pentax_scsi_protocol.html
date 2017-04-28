@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>pkTriggerCord</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css">-->
+  <link rel="stylesheet" href="pktriggercord.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://use.fontawesome.com/999c1ebb04.js"></script>
+  <script src="https://unpkg.com/bootmark@latest/dist/bootmark.bundle.min.js"></script>
+  <script> 
+    $(function(){
+    $("#header").load("header.html"); 
+    $("#footer").load("footer.html"); 
+    });
+  </script> 
+</head>
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+	<a class="navbar-brand" href="index.html">pkTriggercord</a>
+      </div>
+      <div class="collapse navbar-collapse">
+	<ul class="nav navbar-nav">
+	    <li><a href="index.html#cameras"><span class="fa fa-camera" />&nbsp;Cameras</a></li>
+	    <li><a href="index.html#download"><span class="fa fa-download" />&nbsp;Download</a></li>
+	    <li><a href="pktriggercord_android.html"><span class="fa fa-camera" />&nbsp;Android</a></li>
+	    <li><a href="index.html#documentation"><span class="fa fa-camera" />&nbsp;Documentation</a></li>
+	    <li><a href="index.html#development"><span class="fa fa-code-fork" />&nbsp;Development</a></li>
+	</ul>
+      </div>
+    </div>
+  </nav>
+    <div class="bootmark"
+     data-src="https://raw.githubusercontent.com/asalamon74/pktriggercord/master/pentax_scsi_protocol.md"
+     data-html="{
+		theme:'none',
+		indent:true,
+		credit:false,
+		prettify:false,
+		tocTitle:'TOC'
+		}">
+    </div>
+    <div id="footer"></div>
+</body>
+</html>
