@@ -1,4 +1,4 @@
-#PkTriggerCord
+# PkTriggerCord
 
 Remote control (tethering) for Pentax DSLR cameras.
 
