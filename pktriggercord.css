@@ -2,11 +2,11 @@ footer {
     background-color: #aaaaaa;
 }
 
-body, #doc_gui, #doc_cli { 
+body, .header_shift { 
    padding-top: 60px;
 }
 
-#doc_gui, #doc_cli {
+.header_shift {
     margin-top: -60px;
 }
 

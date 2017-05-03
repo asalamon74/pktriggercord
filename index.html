@@ -17,7 +17,7 @@
     });
   </script> 
 </head>
-<body>
+<body data-spy="scroll" data-target=".navbar" data-offset="60">
   <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -25,11 +25,11 @@
       </div>
       <div class="collapse navbar-collapse">
 	<ul class="nav navbar-nav">
-	    <li><a href="index.html#cameras"><span class="fa fa-camera" />&nbsp;Cameras</a></li>
-	    <li><a href="index.html#download"><span class="fa fa-download" />&nbsp;Download</a></li>
+	    <li><a href="#cameras"><span class="fa fa-camera" />&nbsp;Cameras</a></li>
+	    <li><a href="#download"><span class="fa fa-download" />&nbsp;Download</a></li>
 	    <li><a href="pktriggercord_android.html"><span class="fa fa-camera" />&nbsp;Android</a></li>
-	    <li><a href="index.html#documentation"><span class="fa fa-camera" />&nbsp;Documentation</a></li>
-	    <li><a href="index.html#development"><span class="fa fa-code-fork" />&nbsp;Development</a></li>
+	    <li><a href="#documentation"><span class="fa fa-camera" />&nbsp;Documentation</a></li>
+	    <li><a href="#development"><span class="fa fa-code-fork" />&nbsp;Development</a></li>
 	</ul>
       </div>
     </div>
@@ -51,7 +51,7 @@
     </div>
   </div>
 
-  <div class="container" id="cameras">
+  <div class="container header_shift" id="cameras">
     <div class="row">
       <div class="col-xs-12">
 	<div class="row">
@@ -142,7 +142,7 @@
     </div>
   </div>
 
-  <div class="container" id="download">
+  <div class="container header_shift" id="download">
     <div class="row">
       <div class="col-xs-12">
 	<div class="row">
@@ -200,14 +200,14 @@ sudo apt-get install pktriggercord
     </div>
   </div>
 
-  <div class="container" id="documentation">
+  <div class="container header_shift" id="documentation">
     <div class="row">
       <div class="col-xs-12">
 	<div class="row">
 	  <h2>Documentation</h2>
           <p>The program has a <a href="#doc_cli">command line interface</a>, a <a href="#doc_gui">GUI</a>, and an
           <a href="pktriggercord_android.html">Android port</a></p>        
-	  <h3 id="doc_cli">Commandline interface</h3>
+	  <h3 id="doc_cli" class="header_shift">Commandline interface</h3>
 	  <p>The program has a rich command line interface. Some of
 	  the functions are only available here</p>
 <pre class="small">
@@ -259,7 +259,7 @@ pktriggercord-cli
 	  <p>You can also use the command line interface to create a
 	  timelapse if your camera does not support interval
 	  shooting. You can find a tutorial <a href="timelapse.html">here</a>.</p>	  
-	  <h3 id="doc_gui">GUI</h3>
+	  <h3 id="doc_gui" class="header_shift">GUI</h3>
 	  </a>
 	  <p>The GUI requires GTK2. It does not support all the
 	  features of the command line interface.</p>
@@ -282,7 +282,7 @@ pktriggercord-cli
     </div>
   </div>
 
-  <div class="container" id="development">
+  <div class="container header_shift" id="development">
     <div class="row">
       <div class="col-xs-12">
 	<div class="row">
