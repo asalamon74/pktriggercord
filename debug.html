@@ -25,11 +25,11 @@
 	</div>
 	<div class="collapse navbar-collapse">
 	  <ul class="nav navbar-nav">
-	    <li><a href="index.html#cameras"><span class="fa fa-camera" />&nbsp;Cameras</a></li>
-	    <li><a href="index.html#download"><span class="fa fa-download" />&nbsp;Download</a></li>
-	    <li><a href="pktriggercord_android.html"><span class="fa fa-camera" />&nbsp;Android</a></li>
-	    <li><a href="index.html#documentation"><span class="fa fa-camera" />&nbsp;Documentation</a></li>
-	    <li><a href="index.html#development"><span class="fa fa-code-fork" />&nbsp;Development</a></li>
+	    <li><a href="index.html#cameras"><span class="fa fa-camera" >&nbsp;Cameras</span></a></li>
+	    <li><a href="index.html#download"><span class="fa fa-download" >&nbsp;Download</span></a></li>
+	    <li><a href="pktriggercord_android.html"><span class="fa fa-camera" >&nbsp;Android</span></a></li>
+	    <li><a href="index.html#documentation"><span class="fa fa-camera" >&nbsp;Documentation</span></a></li>
+	    <li><a href="index.html#development"><span class="fa fa-code-fork" >&nbsp;Development</span></a></li>
 	  </ul>
 	</div>
       </div>
@@ -45,8 +45,37 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-12">
+	<p>It is always best to start the debugging using the command
+	  line interface and only test the GUI
+	  later. The <code>--debug</code> switch help to collect lots
+	  of debug info. It is possible that the command does not end
+	  and it has to be stopped using <kbd>CTRL-C</kbd>. On most
+	  Linux systems root privileges are also required.</p>
+	<p> The following commands are useful for debugging the
+	  software:</p>
+	<dl>
+	  <dt>Reading status info</dt>
+	  <dd><pre><code>pktriggercord-cli --statux_hex --debug</code></pre></dd>
+	  <dt>Taking a single picture</dt>
+	  <dd><pre><code>pktriggercord-cli -o test.dng --file_format=dng --debug</code></pre></dd>
+	  <dt>GUI in debug mode</dt>
+	  <dd><pre><code>pktriggercord --debug</code></pre></dd>
+	</dl>
+	<p>It is possible to redirect the output of the command
+	  by adding <code> > debug.log 2>&1</code> to the commands. For
+	  instance the following command will send all the output
+	  messages to the debug.log file:</p>
+	<pre><code>pktriggercord-cli --statux_hex --debug > debug.log 2>&1</code></pre>	
+
+	<div class="alert alert-warning">
+	  <p>If you want to test a camera model not yet listed
+	  <a href="index.html#cameras">here</a> then please first
+	  contact <a href="mailto:andras.salamon@melda.info">me</a>
+	  and I'll add it to the list.</p>
+	</div>
       </div>
     </div>
-    <div id="footer"></div>
+  </div> 
+  <div id="footer"></div>
   </body>
 </html>
