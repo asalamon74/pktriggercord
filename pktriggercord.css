@@ -57,3 +57,7 @@ li.bootmark-h1 {
 li.bootmark-h1, li.bootmark-h2 {
     font-weight: bold;
 }
+
+ul.nav li.dropdown:hover ul.dropdown-menu {
+    display: block;
+}
