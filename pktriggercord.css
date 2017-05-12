@@ -15,6 +15,14 @@ html body {
    margin-bottom: 0px;
 }
 
+@media (max-width: 767px) {
+    html body {
+	padding-bottom: 150px;
+	margin-bottom: 0px;
+    }
+
+}
+
 code {
    padding: 0px;
 }
