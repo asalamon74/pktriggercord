@@ -20,6 +20,9 @@ html body {
 	padding-bottom: 150px;
 	margin-bottom: 0px;
     }
+    div.bootmark nav.navbar-fixed-side {
+	display:none;
+    }
 
 }
 
