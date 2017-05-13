@@ -203,12 +203,12 @@ sudo apt-get install pktriggercord</code></pre>
 <code>
 pktriggercord-cli
 
-      --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-X, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01, K-500
+      --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-x, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01, K-3, K-3II, K-500
       --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...
       --timeout=SECONDS                 timeout for camera connection ( 0 means forever )
   -w, --warnings                        warning mode on
       --nowarnings                      warning mode off
-  -m, --exposure_mode=MODE		valid values are GREEN, P, SV, TV, AV, TAV, M and X
+  -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X
       --exposure_compensation=VALUE     exposure compensation value
       --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO
   -i, --iso=ISO                         single value (400) or interval (200-800)
@@ -219,27 +219,32 @@ pktriggercord-cli
       --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless
       --flash_exposure_compensation=VAL flash exposure compensation value
   -a, --aperture=APERTURE
-  -t, --shutter_speed=SHUTTER SPEED	values can be given in rational form (eg. 1/90)
-					or decimal form (eg. 0.8)
-  -r, --resolution=RESOLUTION		resolution in megapixels
-  -q, --quality=QUALITY			valid values are 1, 2, 3 and 4
-      --jpeg_image_tone=IMAGE_TONE      valid values are: Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm
-      --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, CTE
+  -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90) or decimal form (eg. 0.8)
+  -r, --resolution=RESOLUTION           resolution in megapixels
+  -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4
+      --jpeg_image_tone=IMAGE_TONE      valid values are: Auto, Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm, BleachBypass, Radiant, CrossProcessing, Flat
+      --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, Manual2, Manual3, Kelvin1, Kelvin2, Kelvin3, CTE, MultiAuto
       --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...
-  -f, --auto_focus			autofocus
+  -f, --auto_focus                      autofocus
       --reconnect                       reconnect between shots
       --servermode                      start in server mode and wait for commands
+      --servermode_timeout=SECONDS      servermode timeout
   -g, --green                           green button
-  -s, --status			        print status info
-      --status_hex			print status hex info
+  -s, --status                          print status info
+      --status_hex                      print status hex info
+      --settings_hex                    print settings hex info
+      --read_datetime                   print the camera date and time
+      --read_firmware_version           print the firmware version of the camera
+      --dump_memory SIZE                dumps the internal memory of the camera to pentax_dump.dat file. Size is in bytes, but can be specified using K, M, and G modifiers.
       --dust_removal                    dust removal
-  -F, --frames=NUMBER			number of frames
-  -d, --delay=SECONDS			delay between the frames (seconds)
-      --file_format=FORMAT		valid values: PEF, DNG, JPEG
-  -o, --output_file=FILE		send output to FILE instead of stdout
-      --debug	                        turn on debug messages
-  -v, --version				display version information and exit
-  -h, --help				display this help and exit
+  -F, --frames=NUMBER                   number of frames
+  -d, --delay=SECONDS                   delay between the frames (seconds)
+      --file_format=FORMAT              valid values: PEF, DNG, JPEG
+  -o, --output_file=FILE                send output to FILE instead of stdout
+      --debug                           turn on debug messages
+      --noshutter                       do not send shutter command, just wait for new photo, download and delete from camera
+  -v, --version                         display version information and exit
+  -h, --help                            display this help and exit
       --pentax_debug_mode={0|1}		enable or disable camera debug mode and exit (DANGEROUS). Valid values are: 0, 1
 </code>
 </pre>
