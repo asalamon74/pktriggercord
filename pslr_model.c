@@ -648,6 +648,10 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id1 = (get_uint32_le( &buf[0x194])) & 0x0F;
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
     status->shake_reduction = get_uint32_le(&buf[0xe4]);
+
+    // settings parse
+    status->one_push_bracketing = (p->settings_buffer[0x17e] == 1);
+
 }
 
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {

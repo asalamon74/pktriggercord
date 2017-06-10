@@ -572,6 +572,7 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "lens", get_lens_name(status.lens_id1, status.lens_id2));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %.2fV %.2fV %.2fV %.2fV\n", "battery", 0.01 * status.battery_1, 0.01 * status.battery_2, 0.01 * status.battery_3, 0.01 * status.battery_4);
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "buffer mask", int_to_binary(status.bufmask));
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "one push bracketing", status.one_push_bracketing ? "on" : "off");
     return strbuffer;
 }
 
@@ -582,6 +583,14 @@ int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf) {
 //    CHECK(ipslr_status_full(p, &p->status));
 //    ipslr_status_full(p, &p->status);
     memcpy(st_buf, p->status_buffer, MAX_STATUS_BUF_SIZE);
+    return PSLR_OK;
+}
+
+int pslr_get_settings_buffer(pslr_handle_t h, uint8_t *st_buf) {
+    DPRINT("[C]\tpslr_get_settings_buffer()\n");
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    memset( st_buf, 0, SETTINGS_BUFFER_SIZE);
+    memcpy(st_buf, p->settings_buffer, SETTINGS_BUFFER_SIZE);
     return PSLR_OK;
 }
 
@@ -1468,15 +1477,16 @@ int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value) {
     return PSLR_OK;
 }
 
-int pslr_read_settings(pslr_handle_t *h, int offset, int length, uint8_t *buf) {
-    int index=offset;
+int pslr_read_settings(pslr_handle_t *h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    int index=0;
     uint32_t value;
     int ret;
-    while (index<offset+length) {
+    while (index<SETTINGS_BUFFER_SIZE) {
         if ( (ret = pslr_read_setting(h, index, &value)) != PSLR_OK ) {
             return ret;
         }
-        buf[index] = value;
+        p->settings_buffer[index] = value;
         ++index;
     }
     return PSLR_OK;

@@ -770,9 +770,10 @@ int main(int argc, char **argv) {
 //    pslr_write_setting(camhandle, 139, 17);
 
     if (settings_hex) {
-        uint8_t settings_buf[1024];
-        pslr_read_settings(camhandle, 0, 1024, settings_buf);
-        hexdump(settings_buf, 1024);
+        uint8_t settings_buf[SETTINGS_BUFFER_SIZE];
+        pslr_read_settings(camhandle);
+        pslr_get_settings_buffer(camhandle, settings_buf);
+        hexdump(settings_buf, SETTINGS_BUFFER_SIZE);
         camera_close(camhandle);
         exit(0);
     }
@@ -797,7 +798,8 @@ int main(int argc, char **argv) {
         }
     }
 
-    // read the status after the settings
+    // read the status after setting the values
+    pslr_read_settings(camhandle);
     pslr_get_status(camhandle, &status);
 
     if ( status_hex_info || status_info ) {

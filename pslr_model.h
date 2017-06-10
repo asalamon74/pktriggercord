@@ -40,6 +40,7 @@
 
 #define MAX_RESOLUTION_SIZE 4
 #define MAX_STATUS_BUF_SIZE 456
+#define SETTINGS_BUFFER_SIZE 1024
 #define MAX_SEGMENTS 4
 
 typedef struct ipslr_handle ipslr_handle_t;
@@ -104,6 +105,7 @@ typedef struct {
     uint32_t battery_2;
     uint32_t battery_3;
     uint32_t battery_4;
+    bool one_push_bracketing;
 } pslr_status;
 
 typedef void (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);
@@ -144,6 +146,7 @@ struct ipslr_handle {
     uint32_t segment_count;
     uint32_t offset;
     uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
+    uint8_t settings_buffer[SETTINGS_BUFFER_SIZE];
 };
 
 ipslr_model_info_t *find_model_by_id( uint32_t id );

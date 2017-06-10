@@ -147,6 +147,7 @@ int pslr_focus(pslr_handle_t h);
 
 int pslr_get_status(pslr_handle_t h, pslr_status *sbuf);
 int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf);
+int pslr_get_settings_buffer(pslr_handle_t h, uint8_t *st_buf);
 
 char *collect_status_info( pslr_handle_t h, pslr_status status );
 
@@ -232,7 +233,7 @@ int pslr_read_dspinfo(pslr_handle_t *h, char *firmware);
 
 int pslr_read_setting(pslr_handle_t *h, int offset, uint32_t *value);
 int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value);
-int pslr_read_settings(pslr_handle_t *h, int offset, int length, uint8_t *buf);
+int pslr_read_settings(pslr_handle_t *h);
 
 pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp );
 char *format_rational( pslr_rational_t rational, char * fmt );
