@@ -890,7 +890,12 @@ int main(int argc, char **argv) {
                 pslr_bulb( camhandle, false );
             } else {
                 DPRINT("not bulb\n");
-                pslr_shutter(camhandle);
+                if (!status.one_push_bracketing || bracket_index == 0) {
+                    pslr_shutter(camhandle);
+                } else {
+                    // TODO: fix waiting time
+                    sleep_sec(1);
+                }
             }
             pslr_get_status(camhandle, &status);
         }
