@@ -163,6 +163,21 @@ There is NO WARRANTY, to the extent permitted by law.\n", name, version, copyrig
     return ret;
 }
 
+char *command_line(int argc, char **argv) {
+    int len = 0;
+    int i;
+    for (i=0; i<argc; ++i) {
+        len += strlen(argv[i])+4;
+    }
+    char *ret = malloc(sizeof(char)*len);
+    memset(ret, 0, sizeof(char)*len);
+    for (i=0; i<argc; ++i) {
+        strcat(ret, argv[i]);
+        strcat(ret, " ");
+    }
+    return ret;
+}
+
 int main(int argc, char **argv) {
     float F = 0;
     char C;
@@ -244,6 +259,11 @@ int main(int argc, char **argv) {
                 break;
         }
     }
+
+    if (debug) {
+        DPRINT("command line:\n%s\n", command_line(argc, argv));
+    }
+
     optind = 1;
     // parse all the other flags
     while ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
