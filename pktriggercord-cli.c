@@ -178,6 +178,20 @@ char *command_line(int argc, char **argv) {
     return ret;
 }
 
+void bulb_old(pslr_handle_t camhandle, pslr_rational_t shutter_speed, struct timeval prev_time) {
+    DPRINT("bulb\n");
+    struct timeval current_time;
+    pslr_bulb( camhandle, true );
+    pslr_shutter(camhandle);
+    gettimeofday(&current_time, NULL);
+    double waitsec = 1.0 * shutter_speed.nom / shutter_speed.denom - timeval_diff(&current_time, &prev_time) / 1000000.0;
+    if ( waitsec < 0 ) {
+        waitsec = 0;
+    }
+    sleep_sec( waitsec  );
+    pslr_bulb( camhandle, false );
+}
+
 int main(int argc, char **argv) {
     float F = 0;
     char C;
@@ -898,16 +912,7 @@ int main(int argc, char **argv) {
                 fflush(stdout);
             }
             if ( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
-                DPRINT("bulb\n");
-                pslr_bulb( camhandle, true );
-                pslr_shutter(camhandle);
-                gettimeofday(&current_time, NULL);
-                waitsec = 1.0 * shutter_speed.nom / shutter_speed.denom - timeval_diff(&current_time, &prev_time) / 1000000.0;
-                if ( waitsec < 0 ) {
-                    waitsec = 0;
-                }
-                sleep_sec( waitsec  );
-                pslr_bulb( camhandle, false );
+                bulb_old(camhandle, shutter_speed, prev_time);
             } else {
                 DPRINT("not bulb\n");
                 if (!status.one_push_bracketing || bracket_index == 0) {
