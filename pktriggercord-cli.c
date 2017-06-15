@@ -179,7 +179,7 @@ char *command_line(int argc, char **argv) {
 }
 
 void bulb_old(pslr_handle_t camhandle, pslr_rational_t shutter_speed, struct timeval prev_time) {
-    DPRINT("bulb\n");
+    DPRINT("bulb oldstyle\n");
     struct timeval current_time;
     pslr_bulb( camhandle, true );
     pslr_shutter(camhandle);
@@ -190,6 +190,14 @@ void bulb_old(pslr_handle_t camhandle, pslr_rational_t shutter_speed, struct tim
     }
     sleep_sec( waitsec  );
     pslr_bulb( camhandle, false );
+}
+
+void bulb_new(pslr_handle_t camhandle, pslr_rational_t shutter_speed) {
+    // addresses work only for K-70
+    pslr_write_setting(camhandle, 0x133, 1);
+    pslr_write_setting(camhandle, 0x134, 0);
+    pslr_write_setting(camhandle, 0x135, (int)(shutter_speed.nom / shutter_speed.denom));
+    pslr_shutter(camhandle);
 }
 
 int main(int argc, char **argv) {
@@ -912,7 +920,8 @@ int main(int argc, char **argv) {
                 fflush(stdout);
             }
             if ( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
-                bulb_old(camhandle, shutter_speed, prev_time);
+//                bulb_old(camhandle, shutter_speed, prev_time);
+                bulb_new(camhandle, shutter_speed);
             } else {
                 DPRINT("not bulb\n");
                 if (!status.one_push_bracketing || bracket_index == 0) {
