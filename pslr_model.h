@@ -114,6 +114,7 @@ typedef struct {
     uint32_t id;                                     // Pentax model ID
     const char *name;                                // name
     bool old_scsi_command;                           // true for *ist cameras, false for the newer cameras
+    bool old_bulb_mode;                              // true for older cameras
     bool need_exposure_mode_conversion;              // is exposure_mode_conversion required
     bool is_little_endian;                           // whether the return value should be parsed as little-endian
     int buffer_size;                                 // buffer size in bytes

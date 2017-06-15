@@ -920,8 +920,11 @@ int main(int argc, char **argv) {
                 fflush(stdout);
             }
             if ( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
-//                bulb_old(camhandle, shutter_speed, prev_time);
-                bulb_new(camhandle, shutter_speed);
+                if (pslr_get_model_old_bulb_mode(camhandle)) {
+                    bulb_old(camhandle, shutter_speed, prev_time);
+                } else {
+                    bulb_new(camhandle, shutter_speed);
+                }
             } else {
                 DPRINT("not bulb\n");
                 if (!status.one_push_bracketing || bracket_index == 0) {

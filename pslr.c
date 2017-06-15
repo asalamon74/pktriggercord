@@ -1142,6 +1142,11 @@ int pslr_get_model_af_point_num(pslr_handle_t h) {
     return p->model->af_point_num;
 }
 
+bool pslr_get_model_old_bulb_mode(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->old_bulb_mode;
+}
+
 const char *pslr_camera_name(pslr_handle_t h) {
     DPRINT("[C]\tpslr_camera_name()\n");
     ipslr_handle_t *p = (ipslr_handle_t *) h;
