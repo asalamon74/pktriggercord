@@ -1671,9 +1671,6 @@ PK-Remote (C) 2008 Pontus Lidman \n\n");
     return ret;
 }
 
-/* -----------------------------------------------------------------------
- write_debug
------------------------------------------------------------------------ */
 void write_debug( const char* message, ... ) {
 
     // Be sure debug is really on as DPRINT doesn't know

@@ -319,7 +319,6 @@ int main(int argc, char **argv) {
     pslr_status status;
     user_file_format uff = USER_FILE_FORMAT_MAX;
     pslr_exposure_mode_t EM = PSLR_EXPOSURE_MODE_MAX;
-//    pslr_jpeg_resolution_t R = PSLR_JPEG_RESOLUTION_MAX;
     pslr_rational_t aperture = {0, 0};
     pslr_rational_t shutter_speed = {0, 0};
     uint32_t iso = 0;
