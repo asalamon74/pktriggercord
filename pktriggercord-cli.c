@@ -107,9 +107,83 @@ static struct option const longopts[] = {
     { NULL, 0, NULL, 0}
 };
 
-int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, int);
-int save_memory(pslr_handle_t camhandle, int fd, uint32_t length);
-void print_status_info(pslr_handle_t h, pslr_status status);
+int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status, user_file_format filefmt, int jpeg_stars) {
+    pslr_buffer_type imagetype;
+    uint8_t buf[65536];
+    uint32_t length;
+    uint32_t current;
+
+    if (filefmt == USER_FILE_FORMAT_PEF) {
+        imagetype = PSLR_BUF_PEF;
+    } else if (filefmt == USER_FILE_FORMAT_DNG) {
+        imagetype = PSLR_BUF_DNG;
+    } else {
+        imagetype = pslr_get_jpeg_buffer_type( camhandle, jpeg_stars );
+    }
+
+    DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, status->jpeg_resolution);
+
+    if (pslr_buffer_open(camhandle, bufno, imagetype, status->jpeg_resolution) != PSLR_OK) {
+        return 1;
+    }
+
+    length = pslr_buffer_get_size(camhandle);
+    DPRINT("Buffer length: %d\n", length);
+    current = 0;
+
+    while (true) {
+        uint32_t bytes;
+        bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
+        if (bytes == 0) {
+            break;
+        }
+        ssize_t r = write(fd, buf, bytes);
+        if (r == 0) {
+            DPRINT("write(buf): Nothing has been written to buf.\n");
+        } else if (r == -1) {
+            perror("write(buf)");
+        } else if (r < bytes) {
+            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
+        }
+        current += bytes;
+    }
+    pslr_buffer_close(camhandle);
+    return 0;
+}
+
+void save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
+    uint8_t buf[65536];
+    uint32_t current;
+
+    DPRINT("save memory %d\n", length);
+
+    current = 0;
+
+    while (current<length) {
+        uint32_t bytes;
+        int readsize=length-current>65536 ? 65536 : length-current;
+        bytes = pslr_fullmemory_read(camhandle, buf, current, readsize);
+        if (bytes == 0) {
+            break;
+        }
+        ssize_t r = write(fd, buf, bytes);
+        if (r == 0) {
+            DPRINT("write(buf): Nothing has been written to buf.\n");
+        } else if (r == -1) {
+            perror("write(buf)");
+        } else if (r < bytes) {
+            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
+        }
+        current += bytes;
+    }
+    return;
+}
+
+
+void print_status_info( pslr_handle_t h, pslr_status status ) {
+    printf("\n");
+    printf( "%s", collect_status_info( h, status ) );
+}
 
 void usage(char *name) {
     printf("\nUsage: %s [OPTIONS]\n\n\
@@ -267,7 +341,6 @@ int main(int argc, char **argv) {
     pslr_status status;
     user_file_format uff = USER_FILE_FORMAT_MAX;
     pslr_exposure_mode_t EM = PSLR_EXPOSURE_MODE_MAX;
-//    pslr_jpeg_resolution_t R = PSLR_JPEG_RESOLUTION_MAX;
     pslr_rational_t aperture = {0, 0};
     pslr_rational_t shutter_speed = {0, 0};
     uint32_t iso = 0;
@@ -1006,83 +1079,4 @@ int main(int argc, char **argv) {
     camera_close(camhandle);
 
     exit(0);
-}
-
-int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status, user_file_format filefmt, int jpeg_stars) {
-
-    pslr_buffer_type imagetype;
-    uint8_t buf[65536];
-    uint32_t length;
-    uint32_t current;
-
-    if (filefmt == USER_FILE_FORMAT_PEF) {
-        imagetype = PSLR_BUF_PEF;
-    } else if (filefmt == USER_FILE_FORMAT_DNG) {
-        imagetype = PSLR_BUF_DNG;
-    } else {
-        imagetype = pslr_get_jpeg_buffer_type( camhandle, jpeg_stars );
-    }
-
-    DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, status->jpeg_resolution);
-
-    if (pslr_buffer_open(camhandle, bufno, imagetype, status->jpeg_resolution) != PSLR_OK) {
-        return (1);
-    }
-
-    length = pslr_buffer_get_size(camhandle);
-    DPRINT("Buffer length: %d\n", length);
-    current = 0;
-
-    while (1) {
-        uint32_t bytes;
-        bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
-        if (bytes == 0) {
-            break;
-        }
-        ssize_t r = write(fd, buf, bytes);
-        if (r == 0) {
-            DPRINT("write(buf): Nothing has been written to buf.\n");
-        } else if (r == -1) {
-            perror("write(buf)");
-        } else if (r < bytes) {
-            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
-        }
-        current += bytes;
-    }
-    pslr_buffer_close(camhandle);
-    return (0);
-}
-
-int save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
-    uint8_t buf[65536];
-    uint32_t current;
-
-    DPRINT("save memory %d\n", length);
-
-    current = 0;
-
-    while (current<length) {
-        uint32_t bytes;
-        int readsize=length-current>65536 ? 65536 : length-current;
-        bytes = pslr_fullmemory_read(camhandle, buf, current, readsize);
-        if (bytes == 0) {
-            break;
-        }
-        ssize_t r = write(fd, buf, bytes);
-        if (r == 0) {
-            DPRINT("write(buf): Nothing has been written to buf.\n");
-        } else if (r == -1) {
-            perror("write(buf)");
-        } else if (r < bytes) {
-            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
-        }
-        current += bytes;
-    }
-    return (0);
-}
-
-
-void print_status_info( pslr_handle_t h, pslr_status status ) {
-    printf("\n");
-    printf( "%s", collect_status_info( h, status ) );
 }
