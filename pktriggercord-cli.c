@@ -109,7 +109,11 @@ static struct option const longopts[] = {
 
 int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, int);
 int save_memory(pslr_handle_t camhandle, int fd, uint32_t length);
-void print_status_info(pslr_handle_t h, pslr_status status);
+
+void print_status_info( pslr_handle_t h, pslr_status status ) {
+    printf("\n");
+    printf( "%s", collect_status_info( h, status ) );
+}
 
 void usage(char *name) {
     printf("\nUsage: %s [OPTIONS]\n\n\
@@ -1062,10 +1066,4 @@ int save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
         current += bytes;
     }
     return (0);
-}
-
-
-void print_status_info( pslr_handle_t h, pslr_status status ) {
-    printf("\n");
-    printf( "%s", collect_status_info( h, status ) );
 }
