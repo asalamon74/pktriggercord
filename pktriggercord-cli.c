@@ -124,14 +124,14 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
     DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, status->jpeg_resolution);
 
     if (pslr_buffer_open(camhandle, bufno, imagetype, status->jpeg_resolution) != PSLR_OK) {
-        return (1);
+        return 1;
     }
 
     length = pslr_buffer_get_size(camhandle);
     DPRINT("Buffer length: %d\n", length);
     current = 0;
 
-    while (1) {
+    while (true) {
         uint32_t bytes;
         bytes = pslr_buffer_read(camhandle, buf, sizeof (buf));
         if (bytes == 0) {
@@ -148,10 +148,10 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
         current += bytes;
     }
     pslr_buffer_close(camhandle);
-    return (0);
+    return 0;
 }
 
-int save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
+void save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
     uint8_t buf[65536];
     uint32_t current;
 
@@ -176,7 +176,7 @@ int save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
         }
         current += bytes;
     }
-    return (0);
+    return;
 }
 
 
