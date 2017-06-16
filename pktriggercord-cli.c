@@ -110,7 +110,56 @@ static struct option const longopts[] = {
 int save_buffer(pslr_handle_t, int, int, pslr_status*, user_file_format, int);
 int save_memory(pslr_handle_t camhandle, int fd, uint32_t length);
 void print_status_info(pslr_handle_t h, pslr_status status);
-void usage(char*);
+
+void usage(char *name) {
+    printf("\nUsage: %s [OPTIONS]\n\n\
+Shoot a Pentax DSLR and send the picture to standard output.\n\
+\n\
+      --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-x, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01, K-3, K-3II, K-500\n\
+      --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...\n\
+      --timeout=SECONDS                 timeout for camera connection ( 0 means forever )\n\
+  -w, --warnings                        warning mode on\n\
+      --nowarnings                      warning mode off\n\
+  -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
+      --exposure_compensation=VALUE     exposure compensation value\n\
+      --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO\n\
+  -i, --iso=ISO                         single value (400) or interval (200-800)\n\
+      --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB\n\
+      --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A\n\
+      --select_af_point=AF_SELECT_MODE  valid values are: Auto-5, Auto-11, Spot, Select\n\
+      --ae_metering=AE_METERING         valid values are: Multi, Center, Spot\n\
+      --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless\n\
+      --flash_exposure_compensation=VAL flash exposure compensation value\n\
+  -a, --aperture=APERTURE\n\
+  -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90) or decimal form (eg. 0.8)\n\
+  -r, --resolution=RESOLUTION           resolution in megapixels\n\
+  -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4\n\
+      --jpeg_image_tone=IMAGE_TONE      valid values are: Auto, Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm, BleachBypass, Radiant, CrossProcessing, Flat\n\
+      --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, Manual2, Manual3, Kelvin1, Kelvin2, Kelvin3, CTE, MultiAuto\n\
+      --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...\n\
+  -f, --auto_focus                      autofocus\n\
+      --reconnect                       reconnect between shots\n\
+      --servermode                      start in server mode and wait for commands\n\
+      --servermode_timeout=SECONDS      servermode timeout\n\
+  -g, --green                           green button\n\
+  -s, --status                          print status info\n\
+      --status_hex                      print status hex info\n\
+      --settings_hex                    print settings hex info\n\
+      --read_datetime                   print the camera date and time\n\
+      --read_firmware_version           print the firmware version of the camera\n\
+      --dump_memory SIZE                dumps the internal memory of the camera to pentax_dump.dat file. Size is in bytes, but can be specified using K, M, and G modifiers.\n\
+      --dust_removal                    dust removal\n\
+  -F, --frames=NUMBER                   number of frames\n\
+  -d, --delay=SECONDS                   delay between the frames (seconds)\n\
+      --file_format=FORMAT              valid values: PEF, DNG, JPEG\n\
+  -o, --output_file=FILE                send output to FILE instead of stdout\n\
+      --debug                           turn on debug messages\n\
+      --noshutter                       do not send shutter command, just wait for new photo, download and delete from camera\n\
+  -v, --version                         display version information and exit\n\
+  -h, --help                            display this help and exit\n\
+      --pentax_debug_mode={0|1}		enable or disable camera debug mode and exit (DANGEROUS). Valid values are: 0, 1\n\
+\n", name);
+}
 
 int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
     int ofd = -1;
@@ -1019,54 +1068,4 @@ int save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
 void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf("\n");
     printf( "%s", collect_status_info( h, status ) );
-}
-
-void usage(char *name) {
-    printf("\nUsage: %s [OPTIONS]\n\n\
-Shoot a Pentax DSLR and send the picture to standard output.\n\
-\n\
-      --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-x, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01, K-3, K-3II, K-500\n\
-      --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...\n\
-      --timeout=SECONDS                 timeout for camera connection ( 0 means forever )\n\
-  -w, --warnings                        warning mode on\n\
-      --nowarnings                      warning mode off\n\
-  -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X\n\
-      --exposure_compensation=VALUE     exposure compensation value\n\
-      --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO\n\
-  -i, --iso=ISO                         single value (400) or interval (200-800)\n\
-      --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB\n\
-      --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A\n\
-      --select_af_point=AF_SELECT_MODE  valid values are: Auto-5, Auto-11, Spot, Select\n\
-      --ae_metering=AE_METERING         valid values are: Multi, Center, Spot\n\
-      --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless\n\
-      --flash_exposure_compensation=VAL flash exposure compensation value\n\
-  -a, --aperture=APERTURE\n\
-  -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90) or decimal form (eg. 0.8)\n\
-  -r, --resolution=RESOLUTION           resolution in megapixels\n\
-  -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4\n\
-      --jpeg_image_tone=IMAGE_TONE      valid values are: Auto, Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm, BleachBypass, Radiant, CrossProcessing, Flat\n\
-      --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, Manual2, Manual3, Kelvin1, Kelvin2, Kelvin3, CTE, MultiAuto\n\
-      --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...\n\
-  -f, --auto_focus                      autofocus\n\
-      --reconnect                       reconnect between shots\n\
-      --servermode                      start in server mode and wait for commands\n\
-      --servermode_timeout=SECONDS      servermode timeout\n\
-  -g, --green                           green button\n\
-  -s, --status                          print status info\n\
-      --status_hex                      print status hex info\n\
-      --settings_hex                    print settings hex info\n\
-      --read_datetime                   print the camera date and time\n\
-      --read_firmware_version           print the firmware version of the camera\n\
-      --dump_memory SIZE                dumps the internal memory of the camera to pentax_dump.dat file. Size is in bytes, but can be specified using K, M, and G modifiers.\n\
-      --dust_removal                    dust removal\n\
-  -F, --frames=NUMBER                   number of frames\n\
-  -d, --delay=SECONDS                   delay between the frames (seconds)\n\
-      --file_format=FORMAT              valid values: PEF, DNG, JPEG\n\
-  -o, --output_file=FILE                send output to FILE instead of stdout\n\
-      --debug                           turn on debug messages\n\
-      --noshutter                       do not send shutter command, just wait for new photo, download and delete from camera\n\
-  -v, --version                         display version information and exit\n\
-  -h, --help                            display this help and exit\n\
-      --pentax_debug_mode={0|1}		enable or disable camera debug mode and exit (DANGEROUS). Valid values are: 0, 1\n\
-\n", name);
 }
