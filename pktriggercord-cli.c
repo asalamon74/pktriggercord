@@ -318,8 +318,9 @@ void bulb_old(pslr_handle_t camhandle, pslr_rational_t shutter_speed, struct tim
 void bulb_new(pslr_handle_t camhandle, pslr_rational_t shutter_speed) {
     // addresses work only for K-70
     pslr_write_setting(camhandle, 0x133, 1);
-    pslr_write_setting(camhandle, 0x134, 0);
-    pslr_write_setting(camhandle, 0x135, (int)(shutter_speed.nom / shutter_speed.denom));
+    int bulb_sec = (int)(shutter_speed.nom / shutter_speed.denom);
+    pslr_write_setting(camhandle, 0x134, bulb_sec >> 8);
+    pslr_write_setting(camhandle, 0x135, bulb_sec & 0xff );
     pslr_shutter(camhandle);
 }
 
