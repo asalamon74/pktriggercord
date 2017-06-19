@@ -572,9 +572,15 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "lens", get_lens_name(status.lens_id1, status.lens_id2));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %.2fV %.2fV %.2fV %.2fV\n", "battery", 0.01 * status.battery_1, 0.01 * status.battery_2, 0.01 * status.battery_3, 0.01 * status.battery_4);
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "buffer mask", int_to_binary(status.bufmask));
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "one push bracketing", status.one_push_bracketing ? "on" : "off");
     return strbuffer;
 }
+
+char *collect_settings_info( pslr_handle_t h, pslr_settings settings ) {
+    char *strbuffer = malloc(8192);
+    sprintf(strbuffer,"%-32s: %s\n", "one push bracketing", settings.one_push_bracketing ? "on" : "off");
+    return strbuffer;
+}
+
 
 int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf) {
     DPRINT("[C]\tpslr_get_status_buffer()\n");
@@ -939,7 +945,7 @@ int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int b
     bufs = p->status.bufmask;
     DPRINT("\tp->status.bufmask = %x\n", p->status.bufmask);
 
-    if ( p->model->parser_function && (bufs & (1 << bufno)) == 0) {
+    if ( p->model->status_parser_function && (bufs & (1 << bufno)) == 0) {
         // do not check this for limited support cameras
         DPRINT("\tNo buffer data (%d)\n", bufno);
         return PSLR_READ_ERROR;
@@ -1094,7 +1100,7 @@ int *pslr_get_model_jpeg_resolutions(pslr_handle_t h) {
 
 bool pslr_get_model_only_limited(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return p->model->buffer_size == 0 && !p->model->parser_function;
+    return p->model->buffer_size == 0 && !p->model->status_parser_function;
 }
 
 bool pslr_get_model_has_jpeg_hue(pslr_handle_t h) {
@@ -1233,7 +1239,7 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
 
     CHECK(read_result(p->fd, p->status_buffer, n > MAX_STATUS_BUF_SIZE ? MAX_STATUS_BUF_SIZE: n));
 
-    if ( expected_bufsize == 0 || !p->model->parser_function ) {
+    if ( expected_bufsize == 0 || !p->model->status_parser_function ) {
         // limited support only
         return PSLR_OK;
     } else if ( expected_bufsize > 0 && expected_bufsize != n ) {
@@ -1241,7 +1247,7 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
         return PSLR_READ_ERROR;
     } else {
         // everything OK
-        (*p->model->parser_function)(p, status);
+        (*p->model->status_parser_function)(p, status);
         if ( p->model->need_exposure_mode_conversion ) {
             status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
         }
@@ -1491,6 +1497,23 @@ int pslr_read_settings(pslr_handle_t *h) {
     }
     return PSLR_OK;
 }
+
+int pslr_get_settings(pslr_handle_t h, pslr_settings *ps) {
+    DPRINT("[C]\tpslr_get_settings()\n");
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    memset( ps, 0, sizeof( pslr_settings ));
+    CHECK(pslr_read_settings(h));
+    if ( !p->model->settings_parser_function ) {
+        // no settings parser
+        return PSLR_OK;
+    } else {
+        (*p->model->settings_parser_function)(p, &p->settings);
+    }
+
+    memcpy(ps, &p->settings, sizeof (pslr_settings));
+    return PSLR_OK;
+}
+
 
 static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
     va_list ap;

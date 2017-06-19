@@ -317,6 +317,7 @@ int main(int argc, char **argv) {
     int wbadj_ss=0;
     pslr_handle_t camhandle;
     pslr_status status;
+    pslr_settings settings;
     user_file_format uff = USER_FILE_FORMAT_MAX;
     pslr_exposure_mode_t EM = PSLR_EXPOSURE_MODE_MAX;
     pslr_rational_t aperture = {0, 0};
@@ -1032,7 +1033,7 @@ int main(int argc, char **argv) {
                 pslr_bulb( camhandle, false );
             } else {
                 DPRINT("not bulb\n");
-                if (!status.one_push_bracketing || bracket_index == 0) {
+                if (!settings.one_push_bracketing || bracket_index == 0) {
                     pslr_shutter(camhandle);
                 } else {
                     // TODO: fix waiting time
