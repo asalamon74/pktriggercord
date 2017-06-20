@@ -109,6 +109,8 @@ typedef struct {
 
 typedef struct {
     bool one_push_bracketing;
+    bool bulb_timer;
+    uint16_t bulb_timer_sec;
 } pslr_settings;
 
 typedef void (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);

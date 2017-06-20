@@ -654,6 +654,8 @@ void ipslr_settings_parse_k70(ipslr_handle_t *p, pslr_settings *settings) {
     uint8_t *buf = p->settings_buffer;
     memset(settings, 0, sizeof (*settings));
     settings->one_push_bracketing = (buf[0x17e] == 1);
+    settings->bulb_timer = (buf[0x133] == 1);
+    settings->bulb_timer_sec = get_uint16_be(&buf[0x134]);
 }
 
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
