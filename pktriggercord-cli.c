@@ -949,28 +949,27 @@ int main(int argc, char **argv) {
     pslr_get_settings(camhandle, &settings);
     pslr_get_status(camhandle, &status);
 
-    if ( status_hex_info || status_info ) {
-        if ( status_hex_info ) {
-            int bufsize = pslr_get_model_buffer_size( camhandle );
-            uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
-            pslr_get_status_buffer(camhandle, status_buffer);
-            hexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
+    if ( status_hex_info || status_info || settings_info || settings_hex ) {
+        if ( status_hex_info || status_info ) {
+            if ( status_hex_info ) {
+                int bufsize = pslr_get_model_buffer_size( camhandle );
+                uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
+                pslr_get_status_buffer(camhandle, status_buffer);
+                hexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
+            }
+            print_status_info( camhandle, status );
         }
-        print_status_info( camhandle, status );
-        camera_close(camhandle);
-        exit(0);
-    }
-
-    if ( settings_info || settings_hex ) {
-        if (settings_hex) {
-            uint8_t settings_buf[SETTINGS_BUFFER_SIZE];
-            pslr_get_settings_buffer(camhandle, settings_buf);
-            hexdump(settings_buf, SETTINGS_BUFFER_SIZE);
-        }
-        if (pslr_get_model_has_settings_parser(camhandle)) {
-            print_settings_info(camhandle, settings);
-        } else {
-            printf("--settings is not supported for this camera model\n");
+        if ( settings_info || settings_hex ) {
+            if (settings_hex) {
+                uint8_t settings_buf[SETTINGS_BUFFER_SIZE];
+                pslr_get_settings_buffer(camhandle, settings_buf);
+                hexdump(settings_buf, SETTINGS_BUFFER_SIZE);
+            }
+            if (pslr_get_model_has_settings_parser(camhandle)) {
+                print_settings_info(camhandle, settings);
+            } else {
+                printf("--settings is not supported for this camera model\n");
+            }
         }
         camera_close(camhandle);
         exit(0);
