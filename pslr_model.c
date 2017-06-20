@@ -658,6 +658,13 @@ void ipslr_settings_parse_k70(ipslr_handle_t *p, pslr_settings *settings) {
     settings->bulb_timer_sec = get_uint16_be(&buf[0x134]);
 }
 
+void ipslr_settings_parse_k1(ipslr_handle_t *p, pslr_settings *settings) {
+    uint8_t *buf = p->settings_buffer;
+    memset(settings, 0, sizeof (*settings));
+    settings->bulb_timer = (buf[0x131] == 1);
+    settings->bulb_timer_sec = get_uint16_be(&buf[0x132]);
+}
+
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -742,7 +749,7 @@ ipslr_model_info_t camera_models[] = {
     { 0x12ba2, "K100D Super", true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL, NULL},
     { 0x1301a, "K-S1",        false, true,  true,  452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_ks1, NULL },
     { 0x13024, "K-S2",        false, true,  true,  452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_k3,  NULL },
-    { 0x13092, "K-1",         false, true,  true,  456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_FLAT, true,  33, ipslr_status_parse_k1, NULL },
+    { 0x13092, "K-1",         false, true,  true,  456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_FLAT, true,  33, ipslr_status_parse_k1, ipslr_settings_parse_k1 },
     { 0x13222, "K-70",        false, true,  true,  456,  3, {24, 14, 6, 2}, 9, 6000, 100, 102400, 100, 102400, PSLR_JPEG_IMAGE_TONE_AUTO, true,  11, ipslr_status_parse_k70, ipslr_settings_parse_k70 }
 };
 
