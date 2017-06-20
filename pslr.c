@@ -1150,6 +1150,11 @@ int pslr_get_model_af_point_num(pslr_handle_t h) {
     return p->model->af_point_num;
 }
 
+bool pslr_get_model_has_settings_parser(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->settings_parser_function != NULL;
+}
+
 const char *pslr_camera_name(pslr_handle_t h) {
     DPRINT("[C]\tpslr_camera_name()\n");
     ipslr_handle_t *p = (ipslr_handle_t *) h;

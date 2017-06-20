@@ -32,7 +32,7 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 .OP \-\-green
 [\fB\-\-warnings\fR | \fB\-\-nowarnings\fR ]
 [\fB\-\-version\fR | \fB\-\-help\fR | \fB\-\-dust_removal\fR | \fB\-\-status\fR |
-\fB\-\-status_hex\fR | \fB\-\-settings_hex\fR | \fB\-\-read_datetime\fR |
+\fB\-\-status_hex\fR | \fB\-\-settings\fR | \fB\-\-settings_hex\fR | \fB\-\-read_datetime\fR |
 \fB\-\-read_firmware_version\fR 
 | \fB\-\-dump_memory \fISIZE\fR 
 | \fB\-\-frames \fINUMBER\fR [ \fB\-\-delay
@@ -124,7 +124,12 @@ Print human readable status info and do not take pictures.
 Print raw (hexadecimal) and human readable status info and do not take pictures\.
 .RE
 .PP
-\fB\-\-status_hex\fR
+\fB\-S\fR, \fB\-\-settings\fR
+.RS 4
+Print human readable settings info and do not take pictures.
+.RE
+.PP
+\fB\-\-settings_hex\fR
 .RS 4
 Print raw (hexadecimal) settings info and do not take pictures\. Since
 the size of the settings buffers is unknown it prints out only the

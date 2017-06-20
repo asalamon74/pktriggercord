@@ -147,9 +147,11 @@ int pslr_focus(pslr_handle_t h);
 
 int pslr_get_status(pslr_handle_t h, pslr_status *sbuf);
 int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf);
+int pslr_get_settings(pslr_handle_t h, pslr_settings *ps);
 int pslr_get_settings_buffer(pslr_handle_t h, uint8_t *st_buf);
 
 char *collect_status_info( pslr_handle_t h, pslr_status status );
+char *collect_settings_info( pslr_handle_t h, pslr_settings settings );
 
 int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution,
                     uint8_t **pdata, uint32_t *pdatalen);
@@ -221,6 +223,7 @@ bool pslr_get_model_only_limited(pslr_handle_t h);
 bool pslr_get_model_has_jpeg_hue(pslr_handle_t h);
 bool pslr_get_model_need_exposure_conversion(pslr_handle_t h);
 pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h);
+bool pslr_get_model_has_settings_parser(pslr_handle_t h);
 
 int pslr_get_model_af_point_num(pslr_handle_t h);
 
