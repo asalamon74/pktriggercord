@@ -55,7 +55,7 @@ extern int optind, opterr, optopt;
 bool debug = false;
 bool warnings = false;
 
-const char *shortopts = "m:q:a:r:d:t:o:i:F:fghvsw";
+const char *shortopts = "m:q:a:r:d:t:o:i:F:fghvsSw";
 
 static struct option const longopts[] = {
     {"exposure_mode", required_argument, NULL, 'm'},
@@ -104,6 +104,7 @@ static struct option const longopts[] = {
     {"read_firmware_version", no_argument, NULL, 27},
     {"settings_hex", no_argument, NULL, 28},
     {"dump_memory", required_argument, NULL, 29},
+    {"settings", no_argument, NULL, 'S'},
     { NULL, 0, NULL, 0}
 };
 
@@ -185,6 +186,11 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
     printf( "%s", collect_status_info( h, status ) );
 }
 
+void print_settings_info( pslr_handle_t h, pslr_settings settings ) {
+    printf("\n");
+    printf( "%s", collect_settings_info( h, settings ) );
+}
+
 void usage(char *name) {
     printf("\nUsage: %s [OPTIONS]\n\n\
 Shoot a Pentax DSLR and send the picture to standard output.\n\
@@ -218,6 +224,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -g, --green                           green button\n\
   -s, --status                          print status info\n\
       --status_hex                      print status hex info\n\
+  -S, --settings                        print settings info\n\
       --settings_hex                    print settings hex info\n\
       --read_datetime                   print the camera date and time\n\
       --read_firmware_version           print the firmware version of the camera\n\
@@ -340,6 +347,7 @@ int main(int argc, char **argv) {
     int wbadj_ss=0;
     pslr_handle_t camhandle;
     pslr_status status;
+    pslr_settings settings;
     user_file_format uff = USER_FILE_FORMAT_MAX;
     pslr_exposure_mode_t EM = PSLR_EXPOSURE_MODE_MAX;
     pslr_rational_t aperture = {0, 0};
@@ -383,6 +391,7 @@ int main(int argc, char **argv) {
     bool dangerous=0;
     bool read_datetime=false;
     bool read_firmware_version=false;
+    bool settings_info = false;
     bool settings_hex=false;
     char multc;
     int mult=1;
@@ -441,6 +450,10 @@ int main(int argc, char **argv) {
 
             case 's':
                 status_info = true;
+                break;
+
+            case 'S':
+                settings_info = true;
                 break;
 
             case 2:
@@ -934,15 +947,6 @@ int main(int argc, char **argv) {
 //    }
 //    pslr_write_setting(camhandle, 139, 17);
 
-    if (settings_hex) {
-        uint8_t settings_buf[SETTINGS_BUFFER_SIZE];
-        pslr_read_settings(camhandle);
-        pslr_get_settings_buffer(camhandle, settings_buf);
-        hexdump(settings_buf, SETTINGS_BUFFER_SIZE);
-        camera_close(camhandle);
-        exit(0);
-    }
-
     if (read_datetime) {
         int year=0, month=0, day=0, hour=0, min=0, sec=0;
         pslr_read_datetime(camhandle, &year, &month, &day, &hour, &min, &sec);
@@ -965,20 +969,34 @@ int main(int argc, char **argv) {
 
     // read the status after setting the values
     pslr_read_settings(camhandle);
+    pslr_get_settings(camhandle, &settings);
     pslr_get_status(camhandle, &status);
 
-    if ( status_hex_info || status_info ) {
-        if ( status_hex_info ) {
-            int bufsize = pslr_get_model_buffer_size( camhandle );
-            uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
-            pslr_get_status_buffer(camhandle, status_buffer);
-            hexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
+    if ( status_hex_info || status_info || settings_info || settings_hex ) {
+        if ( status_hex_info || status_info ) {
+            if ( status_hex_info ) {
+                int bufsize = pslr_get_model_buffer_size( camhandle );
+                uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
+                pslr_get_status_buffer(camhandle, status_buffer);
+                hexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
+            }
+            print_status_info( camhandle, status );
         }
-        print_status_info( camhandle, status );
+        if ( settings_info || settings_hex ) {
+            if (settings_hex) {
+                uint8_t settings_buf[SETTINGS_BUFFER_SIZE];
+                pslr_get_settings_buffer(camhandle, settings_buf);
+                hexdump(settings_buf, SETTINGS_BUFFER_SIZE);
+            }
+            if (pslr_get_model_has_settings_parser(camhandle)) {
+                print_settings_info(camhandle, settings);
+            } else {
+                printf("--settings is not supported for this camera model\n");
+            }
+        }
         camera_close(camhandle);
         exit(0);
     }
-
 
     if ( dust ) {
         pslr_dust_removal(camhandle);
@@ -1050,7 +1068,7 @@ int main(int argc, char **argv) {
                 }
             } else {
                 DPRINT("not bulb\n");
-                if (!status.one_push_bracketing || bracket_index == 0) {
+                if (!settings.one_push_bracketing || bracket_index == 0) {
                     pslr_shutter(camhandle);
                 } else {
                     // TODO: fix waiting time

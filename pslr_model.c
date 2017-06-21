@@ -648,10 +648,21 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id1 = (get_uint32_le( &buf[0x194])) & 0x0F;
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
     status->shake_reduction = get_uint32_le(&buf[0xe4]);
+}
 
-    // settings parse
-    status->one_push_bracketing = (p->settings_buffer[0x17e] == 1);
+void ipslr_settings_parse_k70(ipslr_handle_t *p, pslr_settings *settings) {
+    uint8_t *buf = p->settings_buffer;
+    memset(settings, 0, sizeof (*settings));
+    settings->one_push_bracketing = (buf[0x17e] == 1);
+    settings->bulb_timer = (buf[0x133] == 1);
+    settings->bulb_timer_sec = get_uint16_be(&buf[0x134]);
+}
 
+void ipslr_settings_parse_k1(ipslr_handle_t *p, pslr_settings *settings) {
+    uint8_t *buf = p->settings_buffer;
+    memset(settings, 0, sizeof (*settings));
+    settings->bulb_timer = (buf[0x131] == 1);
+    settings->bulb_timer_sec = get_uint16_be(&buf[0x132]);
 }
 
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
@@ -708,38 +719,38 @@ void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
 }
 
 ipslr_model_info_t camera_models[] = {
-    { 0x12aa2, "*ist DS",     true,  true,  true,  false, 264, 3, {6, 4, 2},       5, 4000, 200, 3200, 200,  3200,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_istds },
-    { 0x12cd2, "K20D",        false, true,  true,  false, 412, 4, {14, 10, 6, 2},  7, 4000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k20d  },
-    { 0x12c1e, "K10D",        false, true,  true,  false, 392, 3, {10, 6, 2},      7, 4000, 100, 1600, 100,  1600,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_k10d  },
-    { 0x12c20, "GX10",        false, true,  true,  false, 392, 3, {10, 6, 2},      7, 4000, 100, 1600, 100,  1600,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_k10d  },
-    { 0x12cd4, "GX20",        false, true,  true,  false, 412, 4, {14, 10, 6, 2},  7, 4000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k20d  },
-    { 0x12dfe, "K-x",         false, true,  true,  false, 436, 3, {12, 10, 6, 2},  9, 6000, 200, 6400, 100, 12800,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_kx    }, //muted: bug
-    { 0x12cfa, "K200D",       false, true,  true,  false, 408, 3, {10, 6, 2},      9, 4000, 100, 1600, 100,  1600,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k200d },
-    { 0x12db8, "K-7",         false, true,  true,  false, 436, 4, {14, 10, 6, 2},  9, 8000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MUTED,            true,  11, ipslr_status_parse_kx    },
-    { 0x12e6c, "K-r",         false, true,  true,  false, 440, 3, {12, 10, 6, 2},  9, 6000, 200,12800, 100, 25600,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_kr    },
-    { 0x12e76, "K-5",         false, true,  true,  false, 444, 4, {16, 10, 6, 2},  9, 8000, 100,12800,  80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k5    },
-    { 0x12d72, "K-2000",      false, true,  true,  false, 412, 3, {10, 6, 2},      9, 4000, 100, 3200, 100,  3200,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_km    },
-    { 0x12d73, "K-m",         false, true,  true,  false, 412, 3, {10, 6, 2},      9, 4000, 100, 3200, 100,  3200,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_km    },
-    { 0x12f52, "K-30",        false, true,  false, false, 452, 3, {16, 12, 8, 5},  9, 6000, 100,12800, 100, 25600,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k30   },
-    { 0x12ef8, "K-01",        false, true,  true,  false, 452, 3, {16, 12, 8, 5},  9, 4000, 100,12800, 100, 25600,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k01   },
-    { 0x12f70, "K-5II",       false, true,  true,  false, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k5    },
-    { 0x12f71, "K-5IIs",      false, true,  true,  false, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k5    },
-    { 0x12fb6, "K-50",        false, true,  true,  false, 452,  4, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k50   },
-    { 0x12fc0, "K-3",         false, true,  true,  true,  452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  27, ipslr_status_parse_k3    },
-    { 0x1309c, "K-3II",       false, true,  true,  true,  452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  27, ipslr_status_parse_k3    },
-    { 0x12fca, "K-500",       false, true,  true,  false, 452,  3, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_k500  },
+    { 0x12aa2, "*ist DS",     true,  true,  false, 264, 3, {6, 4, 2},       5, 4000, 200, 3200, 200,  3200,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_istds,NULL },
+    { 0x12cd2, "K20D",        false, true,  false, 412, 4, {14, 10, 6, 2},  7, 4000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k20d, NULL  },
+    { 0x12c1e, "K10D",        false, true,  false, 392, 3, {10, 6, 2},      7, 4000, 100, 1600, 100,  1600,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_k10d, NULL  },
+    { 0x12c20, "GX10",        false, true,  false, 392, 3, {10, 6, 2},      7, 4000, 100, 1600, 100,  1600,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_k10d, NULL  },
+    { 0x12cd4, "GX20",        false, true,  false, 412, 4, {14, 10, 6, 2},  7, 4000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k20d, NULL  },
+    { 0x12dfe, "K-x",         false, true,  false, 436, 3, {12, 10, 6, 2},  9, 6000, 200, 6400, 100, 12800,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_kx,   NULL  }, //muted: bug
+    { 0x12cfa, "K200D",       false, true,  false, 408, 3, {10, 6, 2},      9, 4000, 100, 1600, 100,  1600,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k200d,NULL  },
+    { 0x12db8, "K-7",         false, true,  false, 436, 4, {14, 10, 6, 2},  9, 8000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MUTED,            true,  11, ipslr_status_parse_kx,   NULL  },
+    { 0x12e6c, "K-r",         false, true,  false, 440, 3, {12, 10, 6, 2},  9, 6000, 200,12800, 100, 25600,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_kr,   NULL  },
+    { 0x12e76, "K-5",         false, true,  false, 444, 4, {16, 10, 6, 2},  9, 8000, 100,12800,  80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k5,   NULL  },
+    { 0x12d72, "K-2000",      false, true,  false, 412, 3, {10, 6, 2},      9, 4000, 100, 3200, 100,  3200,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_km,   NULL  },
+    { 0x12d73, "K-m",         false, true,  false, 412, 3, {10, 6, 2},      9, 4000, 100, 3200, 100,  3200,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_km,   NULL  },
+    { 0x12f52, "K-30",        false, false, false, 452, 3, {16, 12, 8, 5},  9, 6000, 100,12800, 100, 25600,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k30,  NULL  },
+    { 0x12ef8, "K-01",        false, true,  false, 452, 3, {16, 12, 8, 5},  9, 4000, 100,12800, 100, 25600,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k01,  NULL  },
+    { 0x12f70, "K-5II",       false, true,  false, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k5,   NULL  },
+    { 0x12f71, "K-5IIs",      false, true,  false, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k5,   NULL  },
+    { 0x12fb6, "K-50",        false, true,  false, 452,  4, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k50,  NULL  },
+    { 0x12fc0, "K-3",         false, true,  true,  452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  27, ipslr_status_parse_k3,   NULL  },
+    { 0x1309c, "K-3II",       false, true,  true,  452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  27, ipslr_status_parse_k3,   NULL  },
+    { 0x12fca, "K-500",       false, true,  false, 452,  3, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_k500, NULL  },
     // only limited support from here
-    { 0x12994, "*ist D",      true,  true,  true,  false, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_NONE  , false, 11, NULL}, // buffersize: 264
-    { 0x12b60, "*ist DS2",    true,  true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL},
-    { 0x12b1a, "*ist DL",     true,  true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL},
-    { 0x12b80, "GX-1L",       true,  true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL},
-    { 0x12b9d, "K110D",       false, true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL},
-    { 0x12b9c, "K100D",       true,  true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL},
-    { 0x12ba2, "K100D Super", true,  true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL},
-    { 0x1301a, "K-S1",        false, true,  true,  true,  452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_ks1   },
-    { 0x13024, "K-S2",        false, true,  true,  true,  452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_k3    },
-    { 0x13092, "K-1",         false, true,  true,  true,  456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_FLAT, true,  33, ipslr_status_parse_k1      },
-    { 0x13222, "K-70",        false, false, true,  true,  456,  3, {24, 14, 6, 2}, 9, 6000, 100, 102400, 100, 102400, PSLR_JPEG_IMAGE_TONE_AUTO, true,  11, ipslr_status_parse_k70 }
+    { 0x12994, "*ist D",      true,  true,  false, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_NONE  , false, 11, NULL, NULL}, // buffersize: 264
+    { 0x12b60, "*ist DS2",    true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL, NULL},
+    { 0x12b1a, "*ist DL",     true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL, NULL},
+    { 0x12b80, "GX-1L",       true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL, NULL},
+    { 0x12b9d, "K110D",       false, true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL, NULL},
+    { 0x12b9c, "K100D",       true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL, NULL},
+    { 0x12ba2, "K100D Super", true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL, NULL},
+    { 0x1301a, "K-S1",        false, true,  true,  452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_ks1, NULL },
+    { 0x13024, "K-S2",        false, true,  true,  452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_k3,  NULL },
+    { 0x13092, "K-1",         false, true,  true,  456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_FLAT, true,  33, ipslr_status_parse_k1, ipslr_settings_parse_k1 },
+    { 0x13222, "K-70",        false, true,  true,  456,  3, {24, 14, 6, 2}, 9, 6000, 100, 102400, 100, 102400, PSLR_JPEG_IMAGE_TONE_AUTO, true,  11, ipslr_status_parse_k70, ipslr_settings_parse_k70 }
 };
 
 ipslr_model_info_t *find_model_by_id( uint32_t id ) {

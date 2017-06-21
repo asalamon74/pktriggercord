@@ -105,10 +105,16 @@ typedef struct {
     uint32_t battery_2;
     uint32_t battery_3;
     uint32_t battery_4;
-    bool one_push_bracketing;
 } pslr_status;
 
+typedef struct {
+    bool one_push_bracketing;
+    bool bulb_timer;
+    uint16_t bulb_timer_sec;
+} pslr_settings;
+
 typedef void (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);
+typedef void (*ipslr_settings_parse_t)(ipslr_handle_t *p, pslr_settings *settings);
 
 typedef struct {
     uint32_t id;                                     // Pentax model ID
@@ -129,7 +135,8 @@ typedef struct {
     pslr_jpeg_image_tone_t max_supported_image_tone; // last supported jpeg image tone
     bool has_jpeg_hue;                               // camera has jpeg hue setting
     int af_point_num;                                // number of AF points
-    ipslr_status_parse_t parser_function;            // parse function for status buffer
+    ipslr_status_parse_t status_parser_function;     // parse function for status buffer
+    ipslr_settings_parse_t settings_parser_function; // parse function for settings buffer
 } ipslr_model_info_t;
 
 typedef struct {
@@ -141,6 +148,7 @@ typedef struct {
 struct ipslr_handle {
     FDTYPE fd;
     pslr_status status;
+    pslr_settings settings;
     uint32_t id;
     ipslr_model_info_t *model;
     ipslr_segment_t segments[MAX_SEGMENTS];
