@@ -1153,6 +1153,7 @@ int pslr_get_model_af_point_num(pslr_handle_t h) {
 bool pslr_get_model_old_bulb_mode(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->old_bulb_mode;
+}
 
 bool pslr_get_model_has_settings_parser(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
