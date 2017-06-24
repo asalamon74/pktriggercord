@@ -1152,7 +1152,7 @@ int pslr_get_model_af_point_num(pslr_handle_t h) {
 
 bool pslr_get_model_has_settings_parser(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return p->model->settings_parser_function != NULL;
+    return p->model->setting_defs != NULL;
 }
 
 const char *pslr_camera_name(pslr_handle_t h) {
@@ -1510,11 +1510,11 @@ int pslr_get_settings(pslr_handle_t h, pslr_settings *ps) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     memset( ps, 0, sizeof( pslr_settings ));
     CHECK(pslr_read_settings(h));
-    if ( !p->model->settings_parser_function ) {
+    if ( !p->model->setting_defs ) {
         // no settings parser
         return PSLR_OK;
     } else {
-        (*p->model->settings_parser_function)(p, &p->settings);
+        ipslr_settings_parser_generic(p, &p->settings);
     }
 
     memcpy(ps, &p->settings, sizeof (pslr_settings));

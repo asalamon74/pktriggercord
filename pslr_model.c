@@ -650,21 +650,6 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     status->shake_reduction = get_uint32_le(&buf[0xe4]);
 }
 
-void ipslr_settings_parse_k70(ipslr_handle_t *p, pslr_settings *settings) {
-    uint8_t *buf = p->settings_buffer;
-    memset(settings, 0, sizeof (*settings));
-    settings->one_push_bracketing = (buf[0x17e] == 1);
-    settings->bulb_timer = (buf[0x133] == 1);
-    settings->bulb_timer_sec = get_uint16_be(&buf[0x134]);
-}
-
-void ipslr_settings_parse_k1(ipslr_handle_t *p, pslr_settings *settings) {
-    uint8_t *buf = p->settings_buffer;
-    memset(settings, 0, sizeof (*settings));
-    settings->bulb_timer = (buf[0x131] == 1);
-    settings->bulb_timer_sec = get_uint16_be(&buf[0x132]);
-}
-
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -718,6 +703,57 @@ void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     // 4= remote, 5= remote 3s delay
 }
 
+pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_length, char *name) {
+    if (array == NULL || array_length == 0) {
+        return NULL;
+    }
+    int i;
+    for ( i = 0; i<array_length; i++) {
+        if ( strncmp(array[i].name, name, strlen(name))==0 ) {
+            return &array[i];
+        }
+    }
+    return NULL;
+}
+
+bool read_bool_setting(uint8_t *buf, pslr_setting_def_t *array, int array_length, char *name) {
+    pslr_setting_def_t *setting_def = find_setting_by_name(array, array_length, name);
+    if (setting_def != NULL) {
+        return buf[setting_def->address] == 1;
+    } else {
+        DPRINT("setting_def NULL\n");
+        return false;
+    }
+}
+
+uint16_t read_uint16be_setting(uint8_t *buf, pslr_setting_def_t *array, int array_length, char *name) {
+    pslr_setting_def_t *setting_def = find_setting_by_name(array, array_length, name);
+    if (setting_def != NULL) {
+        return get_uint16_be(&buf[setting_def->address]);
+    } else {
+        return 0;
+    }
+}
+
+void ipslr_settings_parser_generic(ipslr_handle_t *p, pslr_settings *settings) {
+    uint8_t *buf = p->settings_buffer;
+    memset(settings, 0, sizeof (*settings));
+    settings->one_push_bracketing = read_bool_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "one_push_bracketing");
+    settings->bulb_timer = read_bool_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "bulb_timer");
+    settings->bulb_timer_sec = read_uint16be_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "bulb_timer_sec");
+}
+
+pslr_setting_def_t k70_setting_defs[] = {
+    {"one_push_bracketing", 0x17e, 1},
+    {"bulb_timer",          0x133, 1},
+    {"bulb_timer_sec",      0x134, 2}
+};
+
+pslr_setting_def_t k1_setting_defs[] = {
+    {"bulb_timer",          0x131, 1},
+    {"bulb_timer_sec",      0x132, 2}
+};
+
 ipslr_model_info_t camera_models[] = {
     { 0x12aa2, "*ist DS",     true,  true,  false, 264, 3, {6, 4, 2},       5, 4000, 200, 3200, 200,  3200,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_istds,NULL },
     { 0x12cd2, "K20D",        false, true,  false, 412, 4, {14, 10, 6, 2},  7, 4000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k20d, NULL  },
@@ -749,8 +785,8 @@ ipslr_model_info_t camera_models[] = {
     { 0x12ba2, "K100D Super", true,  true,  false, 0,   3, {6, 4, 2}, 5, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_BRIGHT, false, 11, NULL, NULL},
     { 0x1301a, "K-S1",        false, true,  true,  452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_ks1, NULL },
     { 0x13024, "K-S2",        false, true,  true,  452,  3, {20, 12, 6, 2}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_k3,  NULL },
-    { 0x13092, "K-1",         false, true,  true,  456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_FLAT, true,  33, ipslr_status_parse_k1, ipslr_settings_parse_k1 },
-    { 0x13222, "K-70",        false, true,  true,  456,  3, {24, 14, 6, 2}, 9, 6000, 100, 102400, 100, 102400, PSLR_JPEG_IMAGE_TONE_AUTO, true,  11, ipslr_status_parse_k70, ipslr_settings_parse_k70 }
+    { 0x13092, "K-1",         false, true,  true,  456,  3, {36, 22, 12, 2}, 9, 8000, 100, 204800, 100, 204800, PSLR_JPEG_IMAGE_TONE_FLAT, true,  33, ipslr_status_parse_k1, k1_setting_defs, sizeof(k1_setting_defs)/sizeof(k1_setting_defs[0])  },
+    { 0x13222, "K-70",        false, true,  true,  456,  3, {24, 14, 6, 2}, 9, 6000, 100, 102400, 100, 102400, PSLR_JPEG_IMAGE_TONE_AUTO, true,  11, ipslr_status_parse_k70, k70_setting_defs, sizeof(k70_setting_defs)/sizeof(k70_setting_defs[0]) }
 };
 
 ipslr_model_info_t *find_model_by_id( uint32_t id ) {
