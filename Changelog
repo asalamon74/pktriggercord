@@ -5,6 +5,7 @@ version 0.84.05
 	Print out command line in debug mode
 	K-70 bulb mode bugfix
 	--settings
+	K-1 bulb mode bugfix (testing)
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
 	about/version code cleanup
