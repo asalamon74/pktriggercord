@@ -1490,6 +1490,20 @@ int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value) {
     return PSLR_OK;
 }
 
+int pslr_write_setting_by_name(pslr_handle_t *h, char *name, uint32_t value) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    pslr_setting_def_t *setting_def = find_setting_by_name(p->model->setting_defs, p->model->setting_defs_length, name);
+    if (setting_def != NULL) {
+        if (setting_def->length == 1) {
+            pslr_write_setting(h, setting_def->address, value);
+        } else if (setting_def->length == 2) {
+            pslr_write_setting(h, setting_def->address, value >> 8);
+            pslr_write_setting(h, setting_def->address+1, value & 0xff);
+        }
+    }
+    return PSLR_OK;
+}
+
 int pslr_read_settings(pslr_handle_t *h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     int index=0;
