@@ -743,11 +743,6 @@ int main(int argc, char **argv) {
     }
 
     camera_name = pslr_camera_name(camhandle);
-    if ( strcmp(camera_name, "K-70")==0 && !dangerous ) {
-        printf("Tethering K-70 is dangerous, please check https://github.com/asalamon74/pktriggercord/issues/14\nIf you really want to use it you also need to add --dangerous to the command line.\n");
-        camera_close(camhandle);
-        exit(-1);
-    }
     printf("%s: %s Connected...\n", argv[0], camera_name);
 
     if ( dump_memory_size > 0 ) {

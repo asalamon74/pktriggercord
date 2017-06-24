@@ -684,19 +684,6 @@ static gboolean status_poll(gpointer data) {
             DPRINT("after camera_specific_init\n");
             const char *name;
             name = pslr_camera_name(camhandle);
-
-            if ( strcmp(name, "K-70")==0 && !dangerous ) {
-                DPRINT("Dangerous camera detected\n");
-                gtk_statusbar_pop(statusbar, sbar_connect_ctx);
-                gtk_statusbar_push(statusbar, sbar_connect_ctx, "Tethering K-70 is dangerous. If you really want to use it you also need to add --dangerous to the command line.");
-                pslr_disconnect(camhandle);
-                pslr_shutdown(camhandle);
-                camhandle = NULL;
-                dangerous_camera_connected = true;
-                status_poll_inhibit = false;
-                return TRUE;
-            }
-
             snprintf(buf, sizeof(buf), "Connected: %s", name);
             buf[sizeof(buf)-1] = '\0';
             gtk_statusbar_pop(statusbar, sbar_connect_ctx);
