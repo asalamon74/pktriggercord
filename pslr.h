@@ -236,6 +236,7 @@ int pslr_read_dspinfo(pslr_handle_t *h, char *firmware);
 
 int pslr_read_setting(pslr_handle_t *h, int offset, uint32_t *value);
 int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value);
+int pslr_write_setting_by_name(pslr_handle_t *h, char *name, uint32_t value);
 int pslr_read_settings(pslr_handle_t *h);
 
 pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp );

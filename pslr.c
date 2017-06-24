@@ -1157,7 +1157,7 @@ bool pslr_get_model_old_bulb_mode(pslr_handle_t h) {
 
 bool pslr_get_model_has_settings_parser(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return p->model->settings_parser_function != NULL;
+    return p->model->setting_defs != NULL;
 }
 
 const char *pslr_camera_name(pslr_handle_t h) {
@@ -1495,6 +1495,20 @@ int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value) {
     return PSLR_OK;
 }
 
+int pslr_write_setting_by_name(pslr_handle_t *h, char *name, uint32_t value) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    pslr_setting_def_t *setting_def = find_setting_by_name(p->model->setting_defs, p->model->setting_defs_length, name);
+    if (setting_def != NULL) {
+        if (setting_def->length == 1) {
+            pslr_write_setting(h, setting_def->address, value);
+        } else if (setting_def->length == 2) {
+            pslr_write_setting(h, setting_def->address, value >> 8);
+            pslr_write_setting(h, setting_def->address+1, value & 0xff);
+        }
+    }
+    return PSLR_OK;
+}
+
 int pslr_read_settings(pslr_handle_t *h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     int index=0;
@@ -1515,11 +1529,11 @@ int pslr_get_settings(pslr_handle_t h, pslr_settings *ps) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     memset( ps, 0, sizeof( pslr_settings ));
     CHECK(pslr_read_settings(h));
-    if ( !p->model->settings_parser_function ) {
+    if ( !p->model->setting_defs ) {
         // no settings parser
         return PSLR_OK;
     } else {
-        (*p->model->settings_parser_function)(p, &p->settings);
+        ipslr_settings_parser_generic(p, &p->settings);
     }
 
     memcpy(ps, &p->settings, sizeof (pslr_settings));
