@@ -578,6 +578,7 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
 char *collect_settings_info( pslr_handle_t h, pslr_settings settings ) {
     char *strbuffer = malloc(8192);
     sprintf(strbuffer,"%-32s: %s\n", "one push bracketing", settings.one_push_bracketing ? "on" : "off");
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "bulb mode", settings.bulb_mode_press_press ? "press-press" : "press-hold");
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "bulb timer", settings.bulb_timer ? "on" : "off");
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d s\n", "bulb timer sec", settings.bulb_timer_sec);
     return strbuffer;

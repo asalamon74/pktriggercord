@@ -739,11 +739,13 @@ void ipslr_settings_parser_generic(ipslr_handle_t *p, pslr_settings *settings) {
     uint8_t *buf = p->settings_buffer;
     memset(settings, 0, sizeof (*settings));
     settings->one_push_bracketing = read_bool_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "one_push_bracketing");
+    settings->bulb_mode_press_press = read_bool_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "bulb_mode_press_press");
     settings->bulb_timer = read_bool_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "bulb_timer");
     settings->bulb_timer_sec = read_uint16be_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "bulb_timer_sec");
 }
 
 pslr_setting_def_t k70_setting_defs[] = {
+    {"bulb_mode_press_press", 0x178, 1},
     {"one_push_bracketing", 0x17e, 1},
     {"bulb_timer",          0x133, 1},
     {"bulb_timer_sec",      0x134, 2}
@@ -752,6 +754,10 @@ pslr_setting_def_t k70_setting_defs[] = {
 pslr_setting_def_t k1_setting_defs[] = {
     {"bulb_timer",          0x131, 1},
     {"bulb_timer_sec",      0x132, 2}
+};
+
+pslr_setting_def_t k50_setting_defs[] = {
+    {"blub_mode_press_press", 0x0f2, 1}
 };
 
 ipslr_model_info_t camera_models[] = {
@@ -771,7 +777,7 @@ ipslr_model_info_t camera_models[] = {
     { 0x12ef8, "K-01",        false, true,  true,  false, 452, 3, {16, 12, 8, 5},  9, 4000, 100,12800, 100, 25600,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k01,  NULL  },
     { 0x12f70, "K-5II",       false, true,  true,  false, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k5,   NULL  },
     { 0x12f71, "K-5IIs",      false, true,  true,  false, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k5,   NULL  },
-    { 0x12fb6, "K-50",        false, true,  true,  false, 452,  4, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k50,  NULL  },
+    { 0x12fb6, "K-50",        false, true,  true,  false, 452,  4, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k50,  k50_setting_defs, sizeof(k50_setting_defs)/sizeof(k50_setting_defs[0])  },
     { 0x12fc0, "K-3",         false, true,  true,  true,  452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  27, ipslr_status_parse_k3,   NULL  },
     { 0x1309c, "K-3II",       false, true,  true,  true,  452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  27, ipslr_status_parse_k3,   NULL  },
     { 0x12fca, "K-500",       false, true,  true,  false, 452,  3, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_k500, NULL  },

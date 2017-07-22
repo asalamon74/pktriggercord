@@ -109,6 +109,7 @@ typedef struct {
 
 typedef struct {
     bool one_push_bracketing;
+    bool bulb_mode_press_press;
     bool bulb_timer;
     uint16_t bulb_timer_sec;
 } pslr_settings;
