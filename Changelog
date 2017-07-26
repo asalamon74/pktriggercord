@@ -8,6 +8,8 @@ version 0.84.05
 	K-1 bulb mode bugfix (testing)
 	--dangerous no longer required for K-70
 	bulb_mode setting reading for K-70, K-50
+	better handling of unknown and n/a settings
+	K-x settings parser (very simple)
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
 	about/version code cleanup

@@ -1061,7 +1061,7 @@ int main(int argc, char **argv) {
                 }
             } else {
                 DPRINT("not bulb\n");
-                if (!settings.one_push_bracketing || bracket_index == 0) {
+                if (!settings.one_push_bracketing.value || bracket_index == 0) {
                     pslr_shutter(camhandle);
                 } else {
                     // TODO: fix waiting time

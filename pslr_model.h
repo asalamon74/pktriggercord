@@ -107,11 +107,28 @@ typedef struct {
     uint32_t battery_4;
 } pslr_status;
 
+typedef enum {
+    PSLR_SETTING_STATUS_READ,
+    PSLR_SETTING_STATUS_HARDWIRED,
+    PSLR_SETTING_STATUS_NA,
+    PSLR_SETTING_STATUS_UNKNOWN,
+} pslr_setting_status_t;
+
 typedef struct {
-    bool one_push_bracketing;
-    bool bulb_mode_press_press;
-    bool bulb_timer;
-    uint16_t bulb_timer_sec;
+    pslr_setting_status_t pslr_setting_status;
+    bool value;
+} pslr_bool_setting;
+
+typedef struct {
+    pslr_setting_status_t pslr_setting_status;
+    uint16_t value;
+} pslr_uint16_setting;
+
+typedef struct {
+    pslr_bool_setting one_push_bracketing;
+    pslr_bool_setting bulb_mode_press_press;
+    pslr_bool_setting bulb_timer;
+    pslr_uint16_setting bulb_timer_sec;
 } pslr_settings;
 
 typedef struct {
@@ -121,6 +138,7 @@ typedef struct {
 } pslr_setting_def_t;
 
 typedef void (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);
+typedef void (*ipslr_settings_parse_t)(ipslr_handle_t *p, pslr_settings *settings);
 void ipslr_settings_parser_generic(ipslr_handle_t *p, pslr_settings *settings);
 pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_length, char *name);
 
@@ -146,6 +164,7 @@ typedef struct {
     ipslr_status_parse_t status_parser_function;     // parse function for status buffer
     pslr_setting_def_t *setting_defs;
     int setting_defs_length;
+    ipslr_settings_parse_t settings_parser_function; // parse function for setting buffer
 } ipslr_model_info_t;
 
 typedef struct {

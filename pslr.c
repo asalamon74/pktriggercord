@@ -575,12 +575,41 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     return strbuffer;
 }
 
+char *get_hardwired_setting_bool_info( pslr_bool_setting setting) {
+    char *strbuffer = malloc(32);
+    sprintf(strbuffer,"%-32s", setting.pslr_setting_status == PSLR_SETTING_STATUS_HARDWIRED ? "\t[hardwired]" : "");
+    return strbuffer;
+}
+
+char *get_special_setting_info( pslr_setting_status_t setting_status) {
+    char *strbuffer = malloc(32);
+    switch ( setting_status ) {
+        case PSLR_SETTING_STATUS_NA:
+            sprintf(strbuffer,"N/A");
+            break;
+        case PSLR_SETTING_STATUS_UNKNOWN:
+            sprintf(strbuffer,"Unknown");
+            break;
+        default:
+            return NULL;
+    }
+    return strbuffer;
+}
+
+char *get_hardwired_setting_uint16_info( pslr_uint16_setting setting) {
+    char *strbuffer = malloc(32);
+    sprintf(strbuffer,"%-32s", setting.pslr_setting_status == PSLR_SETTING_STATUS_HARDWIRED ? "\t[hardwired]" : "");
+    return strbuffer;
+}
+
 char *collect_settings_info( pslr_handle_t h, pslr_settings settings ) {
     char *strbuffer = malloc(8192);
-    sprintf(strbuffer,"%-32s: %s\n", "one push bracketing", settings.one_push_bracketing ? "on" : "off");
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "bulb mode", settings.bulb_mode_press_press ? "press-press" : "press-hold");
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "bulb timer", settings.bulb_timer ? "on" : "off");
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %d s\n", "bulb timer sec", settings.bulb_timer_sec);
+    sprintf(strbuffer,"%-32s: %-8s%s\n", "one push bracketing", get_special_setting_info(settings.one_push_bracketing.pslr_setting_status) ?: settings.one_push_bracketing.value ? "on" : "off", get_hardwired_setting_bool_info(settings.one_push_bracketing));
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s%s\n", "bulb mode", get_special_setting_info(settings.bulb_mode_press_press.pslr_setting_status) ?: settings.bulb_mode_press_press.value ? "press-press" : "press-hold", get_hardwired_setting_bool_info(settings.bulb_mode_press_press));
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %-8s%s\n", "bulb timer", get_special_setting_info(settings.bulb_timer.pslr_setting_status) ?: settings.bulb_timer.value ? "on" : "off", get_hardwired_setting_bool_info(settings.bulb_timer));
+    char *bulb_timer_sec = malloc(32);
+    sprintf(bulb_timer_sec, "%d s", settings.bulb_timer_sec.value);
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s%s\n", "bulb timer sec", get_special_setting_info(settings.bulb_timer_sec.pslr_setting_status) ?: bulb_timer_sec, get_hardwired_setting_uint16_info(settings.bulb_timer_sec));
     return strbuffer;
 }
 
@@ -1534,7 +1563,11 @@ int pslr_get_settings(pslr_handle_t h, pslr_settings *ps) {
         // no settings parser
         return PSLR_OK;
     } else {
-        ipslr_settings_parser_generic(p, &p->settings);
+        if (!p->model->settings_parser_function) {
+            ipslr_settings_parser_generic(p, &p->settings);
+        } else {
+            (*p->model->settings_parser_function)(p, &p->settings);
+        }
     }
 
     memcpy(ps, &p->settings, sizeof (pslr_settings));

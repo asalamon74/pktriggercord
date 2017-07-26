@@ -716,23 +716,29 @@ pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_l
     return NULL;
 }
 
-bool read_bool_setting(uint8_t *buf, pslr_setting_def_t *array, int array_length, char *name) {
+pslr_bool_setting read_bool_setting(uint8_t *buf, pslr_setting_def_t *array, int array_length, char *name) {
     pslr_setting_def_t *setting_def = find_setting_by_name(array, array_length, name);
+    pslr_bool_setting ret;
     if (setting_def != NULL) {
-        return buf[setting_def->address] == 1;
+        ret.pslr_setting_status = PSLR_SETTING_STATUS_READ;
+        ret.value = buf[setting_def->address] == 1;
     } else {
         DPRINT("setting_def NULL\n");
-        return false;
+        ret.pslr_setting_status = PSLR_SETTING_STATUS_NA;
     }
+    return ret;
 }
 
-uint16_t read_uint16be_setting(uint8_t *buf, pslr_setting_def_t *array, int array_length, char *name) {
+pslr_uint16_setting read_uint16be_setting(uint8_t *buf, pslr_setting_def_t *array, int array_length, char *name) {
     pslr_setting_def_t *setting_def = find_setting_by_name(array, array_length, name);
+    pslr_uint16_setting ret;
     if (setting_def != NULL) {
-        return get_uint16_be(&buf[setting_def->address]);
+        ret.pslr_setting_status = PSLR_SETTING_STATUS_READ;
+        ret.value = get_uint16_be(&buf[setting_def->address]);
     } else {
-        return 0;
+        ret.pslr_setting_status = PSLR_SETTING_STATUS_NA;
     }
+    return ret;
 }
 
 void ipslr_settings_parser_generic(ipslr_handle_t *p, pslr_settings *settings) {
@@ -742,6 +748,22 @@ void ipslr_settings_parser_generic(ipslr_handle_t *p, pslr_settings *settings) {
     settings->bulb_mode_press_press = read_bool_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "bulb_mode_press_press");
     settings->bulb_timer = read_bool_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "bulb_timer");
     settings->bulb_timer_sec = read_uint16be_setting(buf, p->model->setting_defs, p->model->setting_defs_length, "bulb_timer_sec");
+}
+
+void ipslr_settings_parser_kx(ipslr_handle_t *p, pslr_settings *settings) {
+    ipslr_settings_parser_generic(p, settings);
+    settings->bulb_mode_press_press = (pslr_bool_setting) {
+        PSLR_SETTING_STATUS_HARDWIRED, false
+    };
+    settings->one_push_bracketing = (pslr_bool_setting) {
+        PSLR_SETTING_STATUS_HARDWIRED, false
+    };
+    settings->bulb_timer = (pslr_bool_setting) {
+        PSLR_SETTING_STATUS_HARDWIRED, false
+    };
+    settings->bulb_timer_sec = (pslr_uint16_setting) {
+        PSLR_SETTING_STATUS_NA, 0
+    };
 }
 
 pslr_setting_def_t k70_setting_defs[] = {
@@ -760,13 +782,16 @@ pslr_setting_def_t k50_setting_defs[] = {
     {"blub_mode_press_press", 0x0f2, 1}
 };
 
+pslr_setting_def_t kx_setting_defs[] = {
+};
+
 ipslr_model_info_t camera_models[] = {
     { 0x12aa2, "*ist DS",     true,  true,  true,  false, 264, 3, {6, 4, 2},       5, 4000, 200, 3200, 200,  3200,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_istds,NULL },
     { 0x12cd2, "K20D",        false, true,  true,  false, 412, 4, {14, 10, 6, 2},  7, 4000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k20d, NULL  },
     { 0x12c1e, "K10D",        false, true,  true,  false, 392, 3, {10, 6, 2},      7, 4000, 100, 1600, 100,  1600,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_k10d, NULL  },
     { 0x12c20, "GX10",        false, true,  true,  false, 392, 3, {10, 6, 2},      7, 4000, 100, 1600, 100,  1600,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_k10d, NULL  },
     { 0x12cd4, "GX20",        false, true,  true,  false, 412, 4, {14, 10, 6, 2},  7, 4000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k20d, NULL  },
-    { 0x12dfe, "K-x",         false, true,  true,  false, 436, 3, {12, 10, 6, 2},  9, 6000, 200, 6400, 100, 12800,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_kx,   NULL  }, //muted: bug
+    { 0x12dfe, "K-x",         false, true,  true,  false, 436, 3, {12, 10, 6, 2},  9, 6000, 200, 6400, 100, 12800,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_kx,   kx_setting_defs, 0, ipslr_settings_parser_kx  }, //muted: bug
     { 0x12cfa, "K200D",       false, true,  true,  false, 408, 3, {10, 6, 2},      9, 4000, 100, 1600, 100,  1600,  PSLR_JPEG_IMAGE_TONE_MONOCHROME,       true,  11, ipslr_status_parse_k200d,NULL  },
     { 0x12db8, "K-7",         false, true,  true,  false, 436, 4, {14, 10, 6, 2},  9, 8000, 100, 3200, 100,  6400,  PSLR_JPEG_IMAGE_TONE_MUTED,            true,  11, ipslr_status_parse_kx,   NULL  },
     { 0x12e6c, "K-r",         false, true,  true,  false, 440, 3, {12, 10, 6, 2},  9, 6000, 200,12800, 100, 25600,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_kr,   NULL  },
