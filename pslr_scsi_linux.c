@@ -63,39 +63,39 @@ void print_scsi_error(sg_io_hdr_t *pIo, uint8_t *sense_buffer) {
     }
 }
 
+const char* device_dirs[2] = {"/sys/class/scsi_generic", "/sys/block"};
+
 char **get_drives(int *driveNum) {
     DIR *d;
     struct dirent *ent;
     char *tmp[256];
-    char **ret;
-    int j,jj;
-    d = opendir("/sys/class/scsi_generic");
-
-    if (!d) {
-        DPRINT("Cannot open /sys/class/scsi_generic\n");
-        d = opendir("/sys/block");
-        if ( !d ) {
-            DPRINT("Cannot open /sys/block\n");
-            *driveNum = 0;
-            return NULL;
+    char **ret=NULL;
+    int j=0,jj;
+    int di;
+    for (di=0; di<sizeof(device_dirs)/sizeof(device_dirs[0]); ++di) {
+        d = opendir(device_dirs[di]);
+        if (d) {
+            while ( (ent = readdir(d)) ) {
+                if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
+                    tmp[j] = malloc( strlen(ent->d_name)+1 );
+                    strncpy(tmp[j], ent->d_name, strlen(ent->d_name)+1);
+                    ++j;
+                }
+            }
+            closedir(d);
+        } else {
+            DPRINT("Cannot open %s\n", device_dirs[di]);
         }
-    }
-    j=0;
-    while ( (ent = readdir(d)) ) {
-        if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-            tmp[j] = malloc( strlen(ent->d_name)+1 );
-            strncpy(tmp[j], ent->d_name, strlen(ent->d_name)+1);
-            ++j;
-        }
-    }
-    closedir(d);
-    ret = malloc( j * sizeof(char*) );
-    for ( jj=0; jj<j; ++jj ) {
-        ret[jj] = malloc( strlen(tmp[jj])+1 );
-        strncpy( ret[jj], tmp[jj], strlen(tmp[jj]) );
-        ret[jj][strlen(tmp[jj])]='\0';
     }
     *driveNum = j;
+    if (j>0) {
+        ret = malloc( j * sizeof(char*) );
+        for ( jj=0; jj<j; ++jj ) {
+            ret[jj] = malloc( strlen(tmp[jj])+1 );
+            strncpy( ret[jj], tmp[jj], strlen(tmp[jj]) );
+            ret[jj][strlen(tmp[jj])]='\0';
+        }
+    }
     return ret;
 }
 
