@@ -3,7 +3,7 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-23.0.1
+    - build-tools-26.0.2
     - android-12
 addons:
   apt:

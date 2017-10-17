@@ -1,0 +1,92 @@
+apply plugin: 'android'
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if(taskGraph.hasTask(':assembleRelease')) {
+        def storePassword = ""
+        def keyPassword = ""
+        System.out.println("tg:");
+        storePassword = System.console().readPassword("\n\n\nEnter keystore password: ")
+        storePassword = new String(storePassword)
+
+        if(storePassword.size() <= 0) {
+            throw new InvalidUserDataException("Empty keystore password")
+        }
+
+        keyPassword = System.console().readPassword("\nEnter key password: ")
+        keyPassword = new String(keyPassword)
+
+        if(keyPassword.size() <= 0) {
+            throw new InvalidUserDataException("Empty key password")
+        }
+
+        android.signingConfigs.release.storePassword = storePassword
+        android.signingConfigs.release.keyPassword = keyPassword
+    }
+}
+
+clean {
+    delete 'assets'
+    delete 'libs'
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+}
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
+
+    sourceSets {          
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+    }
+
+    defaultConfig {
+        applicationId "info.melda.sala.pktriggercord"
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 8405
+        versionName "0.84.05"
+        setProperty("archivesBaseName", "info.melda.sala.pktriggercord.PkTriggerCord-$versionName" );
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("${System.properties['user.home']}/progs/java_keystore_google_play.jks")
+            storePassword ''
+            keyAlias 'melda'
+            keyPassword ''
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.+'
+    }
+}

@@ -212,44 +212,31 @@ win: win-cli win-gui
 
 localwin: windownload win
 
-androidcreate:
-	$(ANDROID) create project \
-	--path $(ANDROID_DIR) \
-	--target android-12 \
-	--name $(ANDROID_PROJECT_NAME) \
-	--package $(ANDROID_PACKAGE) \
-	--activity MainActivity
-	mkdir $(ANDROID_DIR)/jni
-	ln -s ../.. $(ANDROID_DIR)/jni/src
-
-$(ANDROID_DIR)/build.xml $(ANDROID_DIR)/local.properties:
-	$(ANDROID) update project --path $(ANDROID_DIR)
-
-androidcli: $(ANDROID_DIR)/build.xml $(ANDROID_DIR)/local.properties
+androidcli:
 	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD)
 
 androidclean:
 	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD) clean
-	ant -f $(ANDROID_ANT_FILE) clean
-	rm -rf $(ANDROID_DIR)/assets
-	rm -rf $(ANDROID_DIR)/libs
+	cd $(ANDROID_DIR) && ./gradlew clean
 
 androidver:
 	sed -i s/android:versionName=\".*\"/android:versionName=\"$(VERSION)\"/ $(ANDROID_DIR)/AndroidManifest.xml
 	sed -i s/android:versionCode=\".*\"/android:versionCode=\"$(VERSIONCODE)\"/ $(ANDROID_DIR)/AndroidManifest.xml
+	sed -i s/versionName\ \".*\"/versionName\ \"$(VERSION)\"/ $(ANDROID_DIR)/build.gradle
+	sed -i s/versionCode\ .*/versionCode\ $(VERSIONCODE)/ $(ANDROID_DIR)/build.gradle
 
-androidcommon: androidcli androidver $(ANDROID_DIR)/build.xml
+androidcommon: androidcli androidver
 	mkdir -p $(ANDROID_DIR)/assets
 	cp $(ANDROID_DIR)/libs/armeabi/pktriggercord-cli $(ANDROID_DIR)/assets
 
 android: androidcommon
-	ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -f $(ANDROID_ANT_FILE) debug
-	cp $(ANDROID_DIR)/bin/$(ANDROID_PROJECT_NAME)-debug.apk $(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk
+	cd $(ANDROID_DIR) && ./gradlew assembleDebug
+	cp $(ANDROID_DIR)/build/outputs/apk/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk .
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
 androidrelease: androidcommon
-	ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -f $(ANDROID_ANT_FILE) release
-	cp $(ANDROID_DIR)/bin/$(ANDROID_PROJECT_NAME)-release.apk $(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-release.apk
+	cd $(ANDROID_DIR) && ./gradlew assembleRelease --no-daemon
+	cp $(ANDROID_DIR)/build/outputs/apk/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-release.apk .
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
 astyle:
