@@ -16,8 +16,8 @@ addons:
     - wine
     - groff
     - gtk2.0
-    - libgtk-2-0 
-    - libgtk-2-dev
+    - libgtk2.0 
+    - libgtk2.0-dev
 before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - pushd $HOME/android-ndk-root
