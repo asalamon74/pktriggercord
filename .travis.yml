@@ -21,7 +21,7 @@ before_install:
   - git checkout 9afc86eae45a544562bc7052ca6f529772754f16 .
   - popd
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
-  - sdkmanager --licenses
+  - /usr/local/android-sdk/tools/bin/sdkmanager --licenses
 before_script:
   - wget -O astyle_2.04_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz/download
   - tar -xf astyle_2.04_linux.tar.gz -C $HOME
