@@ -15,9 +15,7 @@ import java.security.MessageDigest;
 public class PkTriggerCord extends Application {
     public static final String TAG = "PkTriggerCord";
     private String cliHome;
-    //    private static final String CLI_DIR = "pktriggercord";
     private static final int MARK_LIMIT = 1000000;
-    private Process p;
     private SharedPreferences prefs;
     
     @Override
@@ -44,7 +42,7 @@ public class PkTriggerCord extends Application {
 
     private void startCli() {
 	try {
-	    p = new ProcessBuilder()
+	    Process process = new ProcessBuilder()
 		.command("su", "-c", cliHome+"/pktriggercord-cli --servermode")
 		.start();
 	    SystemClock.sleep(1000);
