@@ -15,12 +15,12 @@ public class AboutActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about);
 
-        TextView aboutTextView = (TextView) findViewById(R.id.abouttext);     
+        TextView aboutTextView = (TextView) findViewById(R.id.abouttext);
         String appName = getResources().getString(R.string.app_name);
         String versionName="";
         try {
             versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch( PackageManager.NameNotFoundException e ) {
+        } catch ( PackageManager.NameNotFoundException e ) {
             // should not happen
             Log.e(PkTriggerCord.TAG, "Cannot read version number", e);
         }
