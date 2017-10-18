@@ -6,18 +6,18 @@
         android:id="@+id/preview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-	android:scaleType="fitStart"/>
+        android:scaleType="fitStart"/>
 <TextView
         android:id="@+id/timedown"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-	android:typeface="monospace"
-	android:background="#60ffffff"
-	android:textSize="100sp"
-	android:layout_marginBottom="5sp"
-	android:gravity="center"
-	android:visibility="invisible"
-	android:layout_above="@+id/buttons" />
+        android:typeface="monospace"
+        android:background="#60ffffff"
+        android:textSize="100sp"
+        android:layout_marginBottom="5sp"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:layout_above="@+id/buttons" />
  <ProgressBar
         android:id="@+id/downloadprogress"
         android:layout_width="match_parent"
@@ -29,22 +29,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-	android:layout_above="@+id/buttons">
+        android:layout_above="@+id/buttons">
 <NumberPicker
         android:id="@+id/frames"
-	android:layout_weight="1.0"
+        android:layout_weight="1.0"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-	android:layout_marginLeft="10sp"
-	android:layout_marginRight="10sp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
  />
 <NumberPicker
         android:id="@+id/delay"
-	android:layout_weight="1.0"
+        android:layout_weight="1.0"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
-	android:layout_marginLeft="10sp"
-	android:layout_marginRight="10sp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
 />
 </LinearLayout>
 <LinearLayout
@@ -52,80 +52,80 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-	android:layout_above="@+id/statusinfo">
+        android:layout_above="@+id/statusinfo">
 <Button
         android:id="@+id/shutter"
         android:layout_width="fill_parent"
-	android:layout_weight="1.0"
+        android:layout_weight="1.0"
         android:layout_height="wrap_content"
-	android:typeface="monospace"
-	android:text="Shutter"
-	android:layout_marginLeft="5sp"
-	android:layout_marginRight="5sp"
-	android:background="#8000ff00" />
+        android:typeface="monospace"
+        android:text="Shutter"
+        android:layout_marginLeft="5sp"
+        android:layout_marginRight="5sp"
+        android:background="#8000ff00" />
 <Button
         android:id="@+id/focus"
         android:layout_width="fill_parent"
-	android:layout_weight="1.0"
+        android:layout_weight="1.0"
         android:layout_height="wrap_content"
-	android:typeface="monospace"
-	android:text="Focus"
-	android:layout_marginLeft="5sp"
-	android:layout_marginRight="5sp"
-	android:background="#8000ff00" />
+        android:typeface="monospace"
+        android:text="Focus"
+        android:layout_marginLeft="5sp"
+        android:layout_marginRight="5sp"
+        android:background="#8000ff00" />
 </LinearLayout>
 <LinearLayout
         android:id="@+id/statusinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-	android:layout_above="@+id/camerainfo">
+        android:layout_above="@+id/camerainfo">
 <TextView
         android:id="@+id/currentshutterspeed"
         android:layout_width="fill_parent"
-	android:layout_weight="1.0"
+        android:layout_weight="1.0"
         android:layout_height="wrap_content"
-	android:typeface="monospace"
-	android:layout_marginRight="15sp" />
+        android:typeface="monospace"
+        android:layout_marginRight="15sp" />
 <TextView
         android:id="@+id/currentaperture"
         android:layout_width="fill_parent"
-	android:layout_weight="1.0"
+        android:layout_weight="1.0"
         android:layout_height="wrap_content"
-	android:typeface="monospace"
-	android:layout_marginRight="15sp" />
+        android:typeface="monospace"
+        android:layout_marginRight="15sp" />
 <TextView
         android:id="@+id/currentiso"
         android:layout_width="fill_parent"
-	android:layout_weight="1.0"
+        android:layout_weight="1.0"
         android:layout_height="wrap_content"
-	android:typeface="monospace"
-	android:layout_marginRight="15sp" />
+        android:typeface="monospace"
+        android:layout_marginRight="15sp" />
 </LinearLayout>
 <LinearLayout
         android:id="@+id/camerainfo"        
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-	android:layout_above="@+id/errortext">
+        android:layout_above="@+id/errortext">
 <TextView
         android:id="@+id/camerastatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-	android:typeface="monospace"/>
+        android:typeface="monospace"/>
 <TextView
         android:id="@+id/lensstatus"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-	android:typeface="monospace"
-	android:gravity="right"/>
+        android:typeface="monospace"
+        android:gravity="right"/>
 </LinearLayout>
 <TextView
         android:id="@+id/errortext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-	android:textColor="#ff0000"
-	android:typeface="monospace"
-	android:layout_alignParentBottom="true"/>
+        android:textColor="#ff0000"
+        android:typeface="monospace"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>
 
