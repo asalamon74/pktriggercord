@@ -2,9 +2,8 @@ apply plugin: 'android'
 
 gradle.taskGraph.whenReady { taskGraph ->
     if(taskGraph.hasTask(':assembleRelease')) {
-        def storePassword = ""
-        def keyPassword = ""
-        System.out.println("tg:");
+        def storePassword
+        def keyPassword
         storePassword = System.console().readPassword("\n\n\nEnter keystore password: ")
         storePassword = new String(storePassword)
 

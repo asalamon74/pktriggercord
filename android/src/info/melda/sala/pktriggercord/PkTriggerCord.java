@@ -89,13 +89,12 @@ public class PkTriggerCord extends Application {
 	}
     }
 
-    static interface ProgressCallback {
+    interface ProgressCallback {
 	void progressUpdate(double progress);
     }
 
     static int copyStream(InputStream in, OutputStream out, int length, ProgressCallback callback) throws IOException {
 	byte[] buffer = new byte[16*1024];
-	int read;
 	int currentRead = 0;
 	int totalRead = 0;
 	while( totalRead < length && currentRead >= 0 ) {
