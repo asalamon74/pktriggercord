@@ -12,7 +12,7 @@ import java.util.Arrays;
 import android.os.SystemClock;
 import java.security.MessageDigest;
 
-public class PkTriggerCord extends Application {
+class PkTriggerCord extends Application {
     public static final String TAG = "PkTriggerCord";
     private String cliHome;
     private static final int MARK_LIMIT = 1000000;
@@ -51,9 +51,9 @@ public class PkTriggerCord extends Application {
 	}
     }
 
-    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
 
-    public static String bytesToHex(byte[] bytes) {
+    private static String bytesToHex(byte[] bytes) {
 	char[] hexChars = new char[bytes.length * 2];
 	for ( int j = 0; j < bytes.length; j++ ) {
 	    int v = bytes[j] & 0xFF;
@@ -113,7 +113,7 @@ public class PkTriggerCord extends Application {
 	return copyStream(in, out, length, null);
     }
 
-    static int copyStream(InputStream in, OutputStream out) throws IOException {
+    private static int copyStream(InputStream in, OutputStream out) throws IOException {
 	return copyStream( in, out, Integer.MAX_VALUE);
     }
 
