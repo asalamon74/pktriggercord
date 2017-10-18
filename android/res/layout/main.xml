@@ -59,7 +59,7 @@
         android:layout_weight="1.0"
         android:layout_height="wrap_content"
         android:typeface="monospace"
-        android:text="Shutter"
+        android:text="@string/shutter"
         android:layout_marginLeft="5sp"
         android:layout_marginRight="5sp"
         android:background="#8000ff00" />
@@ -69,7 +69,7 @@
         android:layout_weight="1.0"
         android:layout_height="wrap_content"
         android:typeface="monospace"
-        android:text="Focus"
+        android:text="@string/focus"
         android:layout_marginLeft="5sp"
         android:layout_marginRight="5sp"
         android:background="#8000ff00" />

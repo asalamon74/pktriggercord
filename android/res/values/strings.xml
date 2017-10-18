@@ -16,4 +16,6 @@ PK-Remote (C) 2008 Pontus Lidman</string>
 This is free software: you are free to change and redistribute it. \
 There is NO WARRANTY, to the extent permitted by law.</string>
     <string name="weburl">http://pktriggercord.melda.info</string>
+    <string name="shutter">Shutter</string>
+    <string name="focus">Focus</string>
 </resources>
