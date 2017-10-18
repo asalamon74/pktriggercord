@@ -349,14 +349,10 @@ public class MainActivity extends Activity {
 		InetSocketAddress isa = new InetSocketAddress(SERVER_IP, SERVER_PORT);
 		socket.connect(isa, 3000);
 
-		byte[] buffer = new byte[2100];
-    
-		int bytesRead;
 		is = socket.getInputStream();
 		OutputStream outputStream = socket.getOutputStream();
 		dos = new DataOutputStream(outputStream);
 		String answer;
-		int jpegBytes;
 		if( params.length > 0 ) {
 		    for( CliParam param : params ) {
 			Calendar c = Calendar.getInstance();
