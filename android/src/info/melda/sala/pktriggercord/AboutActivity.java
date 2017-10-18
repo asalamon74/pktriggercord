@@ -22,7 +22,7 @@ public class AboutActivity extends Activity {
             versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch( PackageManager.NameNotFoundException e ) {
             // should not happen
-            Log.e("Cannot read version number", e.getMessage(), e);
+            Log.e(PkTriggerCord.TAG, "Cannot read version number", e);
         }
         String copyright = getResources().getString(R.string.copyright);
         String license = getResources().getString(R.string.license);

@@ -470,7 +470,7 @@ public class MainActivity extends Activity {
 			}
 			socket.close();		
 		    } catch( IOException e ) {
-			Log.e( "Cannot close socket", e.getMessage(), e);
+			Log.e( PkTriggerCord.TAG, "Cannot close socket", e);
 			//			return "Cannot close socket";
 		    }
 		}
