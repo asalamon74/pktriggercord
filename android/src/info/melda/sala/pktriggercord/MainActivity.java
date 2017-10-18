@@ -537,7 +537,6 @@ public class MainActivity extends Activity {
 	    appendText("suRet:"+suProcessRetval+"\n");
 	    InputStream stdout = p.getInputStream();
 	    BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
-	    String line;
 	    String outputStr="";
 	    while (br.ready()) {
 		outputStr += br.readLine();
