@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.res.AssetManager;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
