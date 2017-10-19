@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/asalamon74/pktriggercord.svg?branch=master)](https://travis-ci.org/asalamon74/pktriggercord)
+[![Build Status](https://travis-ci.org/asalamon74/pktriggercord.svg?branch=master)](https://travis-ci.org/asalamon74/pktriggercord)  [![GitHub release](https://img.shields.io/github/release/asalamon74/pktriggercord.svg)](https://github.com/asalamon74/pktriggercord/releases)
 
 # PkTriggerCord
 
