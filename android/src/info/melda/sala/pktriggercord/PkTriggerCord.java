@@ -12,7 +12,7 @@ import java.util.Arrays;
 import android.os.SystemClock;
 import java.security.MessageDigest;
 
-class PkTriggerCord extends Application {
+public class PkTriggerCord extends Application {
     public static final String TAG = "PkTriggerCord";
     private String cliHome;
     private static final int MARK_LIMIT = 1000000;
