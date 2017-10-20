@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
     private CliHandler cli;
     private Bitmap previewBitmap;
     private ProgressBar progressBar;
+    private TextView progressBarTextView;
     private NumberPicker npf;
     private NumberPicker npd;
     private long nextRepeat;
@@ -73,7 +74,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
 
 	progressBar = (ProgressBar) findViewById(R.id.downloadprogress);
-	progressBar.setVisibility( View.INVISIBLE );
+        progressBarTextView = (TextView)findViewById(R.id.downloadprogresstext);
 
 	npf = (NumberPicker) findViewById(R.id.frames);
 	npf.setMaxValue(99);
@@ -495,9 +496,7 @@ public class MainActivity extends Activity {
 			previewBitmap = (Bitmap)entry.getValue();
 			preview.setImageBitmap( (Bitmap)entry.getValue());
 		    } else if( "progress".equals( entry.getKey() ) ) {
-			int prog = (Integer)entry.getValue();
-			progressBar.setProgress(prog);
-			progressBar.setVisibility( prog>0 && prog<100 ? View.VISIBLE : View.INVISIBLE );
+                        setProgressBarProgress((Integer)entry.getValue());
 		    }
 		}
 	    }
@@ -512,6 +511,12 @@ public class MainActivity extends Activity {
 		errorText.setText("");
 	    }		
 	}
+    }
+
+    private void setProgressBarProgress(int progress) {
+        progressBar.setProgress(progress);
+        progressBar.setVisibility( progress>0 && progress<100 ? View.VISIBLE : View.INVISIBLE );
+        progressBarTextView.setText( progress>0 && progress<100 ? String.format("Downloading image %d%%",progress) : "" );
     }
     
     private void commandWrapper(boolean asRoot,String command) {

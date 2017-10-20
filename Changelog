@@ -12,6 +12,7 @@ version 0.84.05
 	K-x settings parser (very simple)
 	Checking both both /dev/block and /dev
 	Android: using gradle instead of ant
+	Android: nicer image download indicator
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
