@@ -548,8 +548,8 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "raw format", get_pslr_raw_format_str(status.raw_format));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "light meter flags", status.light_meter_flags);
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "ec", format_rational( status.ec, "%.2f" ) );
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "custom ev steps", get_pslr_custom_ev_steps_str(status.custom_ev_steps));
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "custom sensitivity steps", status.custom_sensitivity_steps);
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s EV steps\n", "custom ev steps", get_pslr_custom_ev_steps_str(status.custom_ev_steps));
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s EV steps\n", "custom sensitivity steps", get_pslr_custom_sensitivity_steps_str(status.custom_sensitivity_steps));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "exposure mode", status.exposure_mode);
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "scene mode", get_pslr_scene_mode_str(status.scene_mode));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "user mode flag", status.user_mode_flag);
