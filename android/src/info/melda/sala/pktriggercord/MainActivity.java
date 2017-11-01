@@ -252,7 +252,7 @@ public class MainActivity extends Activity {
     }
 
     private static class CliParam {
-	String command;
+	final String command;
 	
 	public CliParam(String command) {
             this.command = command;
@@ -299,7 +299,7 @@ public class MainActivity extends Activity {
     }
 
     private class CliHandler extends AsyncTask<CliParam,Map<String,Object>,String> {
-	Map<String,Object> map = new HashMap<String,Object>();
+	final Map<String,Object> map = new HashMap<String,Object>();
 	DataOutputStream dos;
 	InputStream is;
 
@@ -331,7 +331,7 @@ public class MainActivity extends Activity {
 
 	private class DownloadProgressCallback implements PkTriggerCord.ProgressCallback {
 
-	    Map<String,Object> pmap = new HashMap<String, Object>();
+	    final Map<String,Object> pmap = new HashMap<String, Object>();
 
 	    public void progressUpdate(double progress) {
 		pmap.put("progress", (int)(100*progress));
