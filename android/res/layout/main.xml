@@ -6,7 +6,9 @@
         android:id="@+id/preview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="fitStart"/>
+        android:scaleType="fitStart"
+    android:background="@drawable/image_border"
+    android:layout_above="@+id/downloadprogress"/>
 <TextView
         android:id="@+id/timedown"
         android:layout_width="fill_parent"
