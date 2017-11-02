@@ -169,19 +169,8 @@
     <ui>
       <menubar name="menubar1">
         <menu action="menuitem1">
-<!--          <menuitem action="imagemenuitem1"/>
-          <menuitem action="imagemenuitem2"/>
-          <menuitem action="imagemenuitem3"/>
-          <menuitem action="imagemenuitem4"/>
-          <separator/> -->
           <menuitem action="menu_quit"/>
         </menu>
-<!--        <menu action="menuitem2">
-          <menuitem action="imagemenuitem6"/>
-          <menuitem action="imagemenuitem7"/>
-          <menuitem action="imagemenuitem8"/>
-          <menuitem action="imagemenuitem9"/>
-        </menu>-->
         <menu action="menuitem3">
           <menuitem action="menu_buffer_window"/>
           <menuitem action="menu_settings_window"/>
