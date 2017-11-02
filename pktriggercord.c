@@ -1160,15 +1160,15 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
 
     if (pMainPixbuf) {
-        gdk_pixbuf_render_to_drawable(pMainPixbuf, pw->window, pw->style->fg_gc[GTK_WIDGET_STATE (pw)], 0, 0, 0, 0, 640, 480, GDK_RGB_DITHER_NONE, 0, 0);
+        gdk_pixbuf_render_to_drawable(pMainPixbuf, pw->window, pw->style->fg_gc[gtk_widget_get_state(pw)], 0, 0, 0, 0, 640, 480, GDK_RGB_DITHER_NONE, 0, 0);
     }
 
     gc_focus = gdk_gc_new(pw->window);
     gc_sel = gdk_gc_new(pw->window);
     gc_presel = gdk_gc_new(pw->window);
-    gdk_gc_copy(gc_focus, pw->style->fg_gc[GTK_WIDGET_STATE (pw)]);
-    gdk_gc_copy(gc_sel, pw->style->fg_gc[GTK_WIDGET_STATE (pw)]);
-    gdk_gc_copy(gc_presel, pw->style->fg_gc[GTK_WIDGET_STATE (pw)]);
+    gdk_gc_copy(gc_focus, pw->style->fg_gc[gtk_widget_get_state (pw)]);
+    gdk_gc_copy(gc_sel, pw->style->fg_gc[gtk_widget_get_state (pw)]);
+    gdk_gc_copy(gc_presel, pw->style->fg_gc[gtk_widget_get_state (pw)]);
 
     gdk_gc_set_rgb_fg_color(gc_focus, &red);
     gdk_gc_set_rgb_fg_color(gc_sel, &green);
@@ -2014,7 +2014,7 @@ static void save_buffer(int bufno, const char *filename) {
         }
 
         current += bytes;
-        gtk_progress_bar_update(GTK_PROGRESS_BAR(pw), (gdouble) current / (gdouble) length);
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(pw), (gdouble) current / (gdouble) length);
         /* process pending events */
         while (gtk_events_pending()) {
             gtk_main_iteration();

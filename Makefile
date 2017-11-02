@@ -37,7 +37,8 @@ NDK_BUILD = $(ANDROID_NDK_HOME)/ndk-build
 endif
 
 LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
-LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0)
+LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES
+#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
 default: cli pktriggercord
 all: srczip rpm win pktriggercord_commandline.html
