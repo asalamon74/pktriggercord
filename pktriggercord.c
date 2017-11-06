@@ -224,7 +224,6 @@ void combobox_append( GtkComboBox *combobox, char **items, int item_num ) {
     gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( combobox ), cell, "text", 0, NULL );
 }
 
-
 int common_init(void) {
     GtkWidget *widget;
 
@@ -1816,9 +1815,11 @@ G_MODULE_EXPORT void jpeg_resolution_combo_changed_cb(GtkAction *action, gpointe
     }
 
     int ret;
-    char *val = gtk_combo_box_get_active_text(GTK_COMBO_BOX(GW("jpeg_resolution_combo")));
-    DPRINT("jpeg res active->%s\n", val);
-    int megapixel = atoi( val );
+
+    int idx = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("jpeg_resolution_combo")));
+    DPRINT("jpeg res active->%d\n", idx);
+    int *resolutions = pslr_get_model_jpeg_resolutions( camhandle );
+    int megapixel = resolutions[idx];
     DPRINT("jpeg res active->%d\n", megapixel);
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
     if (status_new == NULL || pslr_get_jpeg_resolution(camhandle, status_new->jpeg_resolution) != megapixel) {
@@ -1831,11 +1832,9 @@ G_MODULE_EXPORT void jpeg_resolution_combo_changed_cb(GtkAction *action, gpointe
 
 G_MODULE_EXPORT void jpeg_quality_combo_changed_cb(GtkAction *action, gpointer user_data) {
     DPRINT("start jpeg_quality_combo_changed_cb\n");
-    gchar *stars = gtk_combo_box_get_active_text(GTK_COMBO_BOX(GW("jpeg_quality_combo")));
-    int val = strlen(stars);
+    int idx = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("jpeg_quality_combo")));
+    int val=pslr_get_model_max_jpeg_stars( camhandle)-idx;
     int ret;
-    assert(val >= 0);
-    assert(val <= pslr_get_model_max_jpeg_stars( camhandle) );
 
     /* Prevent menu exit (see comment for iso_scale_value_changed_cb) */
     if (status_new == NULL || status_new->jpeg_quality != val) {
