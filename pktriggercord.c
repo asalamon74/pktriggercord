@@ -28,7 +28,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <gtk/gtk.h>
-#include <gio/gio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <unistd.h>
