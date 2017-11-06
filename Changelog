@@ -16,6 +16,7 @@ version 0.84.05
 	GUI ISO table bugfix
 	Updating lens info database ( exiftool 10.64 )
 	Android: better support of landscape mode
+	GTK code cleanup
 	Requires at least gtk+ 2.18
 
 version 0.84.04 ( 2017-05-13 )

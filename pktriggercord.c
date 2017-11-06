@@ -276,7 +276,7 @@ int common_init(void) {
 
     gtk_statusbar_push(statusbar, sbar_connect_ctx, "No camera connected.");
 
-    gdk_window_set_events(widget->window, GDK_ALL_EVENTS_MASK);
+    gdk_window_set_events(gtk_widget_get_window(widget), GDK_ALL_EVENTS_MASK);
 
     GtkComboBox *pw = (GtkComboBox*)GTK_WIDGET (gtk_builder_get_object (xml, "file_format_combo"));
 
@@ -807,25 +807,28 @@ static gboolean status_poll(gpointer data) {
     /* AF point indicators */
     if (handle_af_points) {
         pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
+        GdkWindow *window = gtk_widget_get_window(pw);
+        GtkAllocation allocation;
+        gtk_widget_get_allocation (pw, &allocation);
         if (status_new) {
             if (!status_old || status_old->focused_af_point != status_new->focused_af_point) {
                 /* Change in focused AF points */
                 focus_indicated_af_points |= status_new->focused_af_point;
-                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+                gdk_window_invalidate_rect(window, &allocation, FALSE);
             } else {
                 /* Same as previous check, stop indicating */
                 focus_indicated_af_points = 0;
-                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+                gdk_window_invalidate_rect(window, &allocation, FALSE);
             }
 
             if (!status_old || status_old->selected_af_point != status_new->selected_af_point) {
                 /* Change in selected AF points */
                 select_indicated_af_points = status_new->selected_af_point;
-                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+                gdk_window_invalidate_rect(window, &allocation, FALSE);
             } else {
                 /* Same as previous check, stop indicating */
                 select_indicated_af_points = 0;
-                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+                gdk_window_invalidate_rect(window, &allocation, FALSE);
             }
             preselect_indicated_af_points = 0;
             preselect_reselect = false;
@@ -1158,17 +1161,18 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
 
     //printf("Expose event for widget %p\n", widget);
     pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
+    GtkStyle *style=gtk_widget_get_style(pw);
 
     if (pMainPixbuf) {
-        gdk_pixbuf_render_to_drawable(pMainPixbuf, pw->window, pw->style->fg_gc[gtk_widget_get_state(pw)], 0, 0, 0, 0, 640, 480, GDK_RGB_DITHER_NONE, 0, 0);
+        gdk_pixbuf_render_to_drawable(pMainPixbuf, gtk_widget_get_window(pw), style->fg_gc[gtk_widget_get_state(pw)], 0, 0, 0, 0, 640, 480, GDK_RGB_DITHER_NONE, 0, 0);
     }
 
-    gc_focus = gdk_gc_new(pw->window);
-    gc_sel = gdk_gc_new(pw->window);
-    gc_presel = gdk_gc_new(pw->window);
-    gdk_gc_copy(gc_focus, pw->style->fg_gc[gtk_widget_get_state (pw)]);
-    gdk_gc_copy(gc_sel, pw->style->fg_gc[gtk_widget_get_state (pw)]);
-    gdk_gc_copy(gc_presel, pw->style->fg_gc[gtk_widget_get_state (pw)]);
+    gc_focus = gdk_gc_new(gtk_widget_get_window(pw));
+    gc_sel = gdk_gc_new(gtk_widget_get_window(pw));
+    gc_presel = gdk_gc_new(gtk_widget_get_window(pw));
+    gdk_gc_copy(gc_focus, style->fg_gc[gtk_widget_get_state (pw)]);
+    gdk_gc_copy(gc_sel, style->fg_gc[gtk_widget_get_state (pw)]);
+    gdk_gc_copy(gc_presel, style->fg_gc[gtk_widget_get_state (pw)]);
 
     gdk_gc_set_rgb_fg_color(gc_focus, &red);
     gdk_gc_set_rgb_fg_color(gc_sel, &green);
@@ -1192,7 +1196,7 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
                 }
             }
             fill = focus_indicated_af_points & (1<<i) ? TRUE : FALSE;
-            gdk_draw_rectangle(pw->window, the_gc, fill,
+            gdk_draw_rectangle(gtk_widget_get_window(pw), the_gc, fill,
                                af_points[i].x, af_points[i].y,
                                af_points[i].w, af_points[i].h);
         }
@@ -1239,7 +1243,9 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
                     preselect_reselect = false;
                 }
                 pw = GTK_WIDGET (gtk_builder_get_object (xml, "main_drawing_area"));
-                gdk_window_invalidate_rect(pw->window, &pw->allocation, FALSE);
+                GtkAllocation allocation;
+                gtk_widget_get_allocation( pw, &allocation);
+                gdk_window_invalidate_rect(gtk_widget_get_window(pw), &allocation, FALSE);
                 while (gtk_events_pending()) {
                     gtk_main_iteration();
                 }
