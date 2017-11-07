@@ -127,9 +127,17 @@
             </ul>
           </div>
 	  <div class="col-sm-12">
-	    <p>If you want to help adding support for new camera
-	    models or you want to test a model not yet fully
-	    supported, please check this <a href="debug.html">documentation</a>.</p>
+
+	    <div class="alert alert-info">
+	      <p>If the program is not working correctly please check
+	      <a class="alert-link" href="tips_and_tricks.html">the tips and tricks</a> page.</p>
+	    </div>
+	    <div class="alert alert-success">
+	      <p>If you want to help adding support for new camera
+		models or you want to test a model not yet fully
+		supported, please check
+		this <a class="alert-link" href="debug.html">documentation</a>.</p>
+	    </div>
 	  </div>
 	</div>
       </div>
@@ -199,13 +207,12 @@ sudo apt-get install pktriggercord</code></pre>
 	<div class="row">
 	  <h2>Documentation</h2>
           <p>The program has a <a href="#doc_cli">command line interface</a>, a <a href="#doc_gui">GUI</a>, and an
-          <a href="pktriggercord_android.html">Android port</a></p>        
+          <a href="pktriggercord_android.html">Android port</a>.</p>        
 	  <h3 id="doc_cli" class="header_shift">Commandline interface</h3>
 	  <p>The program has a rich command line interface. Some of
 	  the functions are only available here</p>
 <pre class="small">
-<code>
-pktriggercord-cli
+<code>pktriggercord-cli
 
       --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-x, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01, K-3, K-3II, K-500
       --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...
