@@ -1431,7 +1431,7 @@ G_MODULE_EXPORT void status_button_clicked_cb(GtkAction *action) {
 
     pw = GW("statuswindow");
     gtk_window_set_title( (GtkWindow *)pw, "Status Info");
-    gtk_widget_show(pw);
+    gtk_window_present(GTK_WINDOW(pw));
 }
 
 G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action) {
@@ -1451,7 +1451,7 @@ G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action) {
 
     pw = GW("statuswindow");
     gtk_window_set_title( (GtkWindow *)pw, "Status Hexdump");
-    gtk_widget_show(pw);
+    gtk_window_present(GTK_WINDOW(pw));
 }
 
 

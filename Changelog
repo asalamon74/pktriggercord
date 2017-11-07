@@ -18,6 +18,7 @@ version 0.84.05
 	Android: better support of landscape mode
 	GTK code cleanup
 	Requires at least gtk+ 2.18
+	GTK status info/status hex bugfix
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
