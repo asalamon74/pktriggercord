@@ -18,6 +18,7 @@ addons:
     - gtk2.0
     - libgtk2.0 
     - libgtk2.0-dev
+    - libjson-c-dev
 before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - pushd $HOME/android-ndk-root
