@@ -12,6 +12,7 @@ LOCAL_SRC_FILES := ../../pslr_enum.c \
 	../../pktriggercord-cli.c
 DEFINES 	:= -DANDROID -DVERSION=\"$(VERSION)\" 
 LOCAL_CFLAGS  	:= $(DEFINES) -frtti -I.. -Istlport -g -fPIE
-LOCAL_LDLIBS	:= -llog -lstdc++ -ljson-c -fPIE -pie
+LOCAL_LDLIBS	:= -llog -lstdc++ -fPIE -pie
+LOCAL_STATIC_LIBRARIES := json-c
 
 include $(BUILD_EXECUTABLE)
