@@ -141,6 +141,7 @@ typedef void (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);
 typedef void (*ipslr_settings_parse_t)(ipslr_handle_t *p, pslr_settings *settings);
 void ipslr_settings_parser_generic(ipslr_handle_t *p, pslr_settings *settings);
 pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_length, char *name);
+void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_settings *settings);
 
 typedef struct {
     uint32_t id;                                     // Pentax model ID

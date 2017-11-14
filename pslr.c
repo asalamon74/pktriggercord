@@ -1574,6 +1574,19 @@ int pslr_get_settings(pslr_handle_t h, pslr_settings *ps) {
     return PSLR_OK;
 }
 
+int pslr_get_settings_json(pslr_handle_t h, pslr_settings *ps) {
+    DPRINT("[C]\tpslr_get_settings_json()\n");
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    memset( ps, 0, sizeof( pslr_settings ));
+    CHECK(pslr_read_settings(h));
+    char cameraid[20];
+    sprintf(cameraid, "0x%05x", p->id);
+    printf("cameraid:%s\n", cameraid);
+    ipslr_settings_parser_json(cameraid, p, &p->settings);
+    memcpy(ps, &p->settings, sizeof (pslr_settings));
+    return PSLR_OK;
+}
+
 
 static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
     va_list ap;

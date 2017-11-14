@@ -1,0 +1,33 @@
+// pentax settings
+{
+    "0x13222": { // K-70
+        "fields": [
+	    { "name" : "bulb_mode_press_press", "type": "boolean", "address": "0x178" },
+	    { "name" : "one_push_bracketing", "type": "boolean", "address": "0x17e"},
+	    { "name" : "bulb_timer", "type": "boolean", "address": "0x133"},
+	    { "name" : "bulb_timer_sec", "type": "uint16", "address": "0x134"}
+	]
+    },
+
+    "0x12dfe": { // K-x
+        "fields": [
+	    { "name" : "bulb_mode_press_press", "type": "boolean", "value": "false" },
+	    { "name" : "one_push_bracketing", "type": "boolean", "value": "false"},
+	    { "name" : "bulb_timer", "type": "boolean", "value": "false"},
+	    { "name" : "bulb_timer_sec", "type": "boolean" }
+	]
+    },
+
+    "0x12fb6": { // K-50
+        "fields": [
+	    { "name" : "bulb_mode_press_press", "type": "boolean", "address": "0x0f2" }
+	]
+    },
+
+    "0x13092": { // K-1
+	"fields": [
+	    { "name" : "bulb_timer", "type": "boolean", "address": "0x131"},
+	    { "name" : "bulb_timer_sec", "type": "uint16", "address": "0x132"}
+	]
+    }
+}

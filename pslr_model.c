@@ -38,8 +38,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <json.h>
 
 #include "pslr_model.h"
+#include "pslr.h"
 
 static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
 static int first = 1;
@@ -724,7 +728,7 @@ pslr_bool_setting read_bool_setting(uint8_t *buf, pslr_setting_def_t *array, int
         ret.value = buf[setting_def->address] == 1;
     } else {
         DPRINT("setting_def NULL\n");
-        ret.pslr_setting_status = PSLR_SETTING_STATUS_NA;
+        ret.pslr_setting_status = PSLR_SETTING_STATUS_UNKNOWN;
     }
     return ret;
 }
@@ -736,7 +740,7 @@ pslr_uint16_setting read_uint16be_setting(uint8_t *buf, pslr_setting_def_t *arra
         ret.pslr_setting_status = PSLR_SETTING_STATUS_READ;
         ret.value = get_uint16_be(&buf[setting_def->address]);
     } else {
-        ret.pslr_setting_status = PSLR_SETTING_STATUS_NA;
+        ret.pslr_setting_status = PSLR_SETTING_STATUS_UNKNOWN;
     }
     return ret;
 }
@@ -784,6 +788,111 @@ pslr_setting_def_t k50_setting_defs[] = {
 
 pslr_setting_def_t kx_setting_defs[] = {
 };
+
+void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_settings *settings) {
+    //x    uint8_t *buf = p->settings_buffer;
+    uint8_t buf[1000];
+    buf[256+48+3]=1;
+    memset(settings, 0, sizeof (*settings));
+    int jsonfd = open("pentax_settings.json", O_RDONLY); // TODO: directory DATADIR
+    int jsonsize = lseek(jsonfd, 0, SEEK_END);
+    lseek(jsonfd, 0, SEEK_SET);
+    char *jsontext=malloc(jsonsize);
+    read(jsonfd, jsontext, jsonsize);
+    DPRINT("json text:\n%s\n", jsontext);
+
+    json_object * jobj = json_tokener_parse(jsontext);
+    if (json_object_get_type(jobj)!=json_type_object) {
+        fprintf(stderr, "JSON error\n");
+        return;
+    }
+    json_object *json_camera;
+    if (!json_object_object_get_ex( jobj, cameraid, &json_camera)) {
+        fprintf(stderr,"No camera settings defined in pentax_settings.json\n");
+        return;
+    };
+    if (json_object_get_type(json_camera)!=json_type_object) {
+        fprintf(stderr, "JSON error: incorrect camera type\n");
+        return;
+    }
+    json_object *json_camera_fields;
+    if (!json_object_object_get_ex( json_camera, "fields", &json_camera_fields)) {
+        fprintf(stderr, "No fields defined for the camera\n");
+        return;
+    };
+    if (json_object_get_type(json_camera_fields)!=json_type_array) {
+        fprintf(stderr, "Fields not defined as array\n");
+        return;
+    }
+    int arraylen = json_object_array_length(json_camera_fields);
+    json_object *json_camera_field;
+    int ai;
+    for (ai=0; ai<arraylen; ++ai) {
+        json_camera_field = json_object_array_get_idx(json_camera_fields, ai);
+        if (json_object_get_type(json_camera_field)!=json_type_object) {
+            fprintf(stderr, "JSON error\n");
+            return;
+        }
+        json_object *json_camera_field_name=NULL;
+        json_object *json_camera_field_address=NULL;
+        json_object *json_camera_field_type=NULL;
+        json_object *json_camera_field_value=NULL;
+        if (!json_object_object_get_ex( json_camera_field, "name", &json_camera_field_name) ||
+                !json_object_object_get_ex( json_camera_field, "type", &json_camera_field_type) ) {
+            fprintf(stderr, "No name or type is defined\n");
+            return;
+        };
+        json_object_object_get_ex( json_camera_field, "address", &json_camera_field_address);
+        json_object_object_get_ex( json_camera_field, "value", &json_camera_field_value);
+        const char *camera_field_name=json_object_get_string( json_camera_field_name);
+        const char *camera_field_type=json_object_get_string( json_camera_field_type);
+        const char *camera_field_value= json_camera_field_value == NULL ? NULL : json_object_get_string(json_camera_field_value);
+        const char *camera_field_address=json_camera_field_address == NULL ? NULL : json_object_get_string(json_camera_field_address);
+        printf("name: %s %s %s %s\n", camera_field_name, camera_field_address, camera_field_value, camera_field_type);
+        pslr_bool_setting bool_setting;
+        pslr_uint16_setting uint16_setting;
+        if (strcmp(camera_field_type, "boolean")==0) {
+            if (camera_field_value!=NULL) {
+                bool_setting = (pslr_bool_setting) {
+                    PSLR_SETTING_STATUS_HARDWIRED, strcmp("false", camera_field_value)==0 ? false : true
+                };
+            } else if (camera_field_address!=NULL) {
+                bool_setting = (pslr_bool_setting) {
+                    PSLR_SETTING_STATUS_READ, buf[strtoul(camera_field_address,NULL,16)] == 1
+                };
+            } else {
+                bool_setting = (pslr_bool_setting) {
+                    PSLR_SETTING_STATUS_HARDWIRED, false
+                };
+            }
+        } else if (strcmp(camera_field_type, "uint16")==0) {
+            if (camera_field_value!=NULL) {
+                uint16_setting = (pslr_uint16_setting) {
+                    PSLR_SETTING_STATUS_HARDWIRED, strcmp("false", camera_field_value)==0 ? false : true
+                };
+            } else if (camera_field_address!=NULL) {
+                uint16_setting = (pslr_uint16_setting) {
+                    PSLR_SETTING_STATUS_READ, get_uint16_be(&buf[strtoul(camera_field_address, NULL, 16)])
+                };
+            } else {
+                uint16_setting = (pslr_uint16_setting) {
+                    PSLR_SETTING_STATUS_NA, 0
+                };
+            }
+        }
+        if (strcmp(camera_field_name, "bulb_mode_press_press")==0) {
+            settings->bulb_mode_press_press = bool_setting;
+        } else if (strcmp(camera_field_name, "one_push_bracketing")==0) {
+            settings->one_push_bracketing = bool_setting;
+        } else if (strcmp(camera_field_name, "bulb_timer")==0) {
+            settings->bulb_timer = bool_setting;
+        } else if (strcmp(camera_field_name, "bulb_timer_sec")==0) {
+            settings->bulb_timer_sec = uint16_setting;
+        }
+    }
+    printf("%s", collect_settings_info( NULL, *settings));
+}
+
 
 ipslr_model_info_t camera_models[] = {
     { 0x12aa2, "*ist DS",     true,  true,  true,  false, 264, 3, {6, 4, 2},       5, 4000, 200, 3200, 200,  3200,  PSLR_JPEG_IMAGE_TONE_BRIGHT,           false, 11, ipslr_status_parse_istds,NULL },

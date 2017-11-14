@@ -6,8 +6,8 @@ LDFLAGS ?= -lm
 MANDIR = $(PREFIX)/share/man
 MAN1DIR = $(MANDIR)/man1
 
-LIN_CFLAGS = $(CFLAGS)
-LIN_LDFLAGS = $(LDFLAGS)
+LIN_CFLAGS = $(CFLAGS) $(shell pkg-config --cflags json-c)
+LIN_LDFLAGS = $(LDFLAGS) $(shell pkg-config --libs json-c)
 
 VERSION=0.84.05
 VERSIONCODE=$(shell echo $(VERSION) | sed s/\\.//g | sed s/^0// )

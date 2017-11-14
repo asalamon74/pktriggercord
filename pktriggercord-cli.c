@@ -396,6 +396,9 @@ int main(int argc, char **argv) {
     uint32_t dump_memory_size=0;
     static const char DUMP_FILE_NAME[] = "pentax_dump.dat";
 
+    //    ipslr_settings_parser_json("0x13222", NULL, &settings);
+    //    exit(2);
+
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
         switch (optc) {
@@ -962,7 +965,7 @@ int main(int argc, char **argv) {
 
     // read the status after setting the values
     pslr_read_settings(camhandle);
-    pslr_get_settings(camhandle, &settings);
+    pslr_get_settings_json(camhandle, &settings);
     pslr_get_status(camhandle, &status);
 
     if ( status_hex_info || status_info || settings_info || settings_hex ) {

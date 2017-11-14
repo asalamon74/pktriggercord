@@ -142,6 +142,7 @@ int pslr_focus(pslr_handle_t h);
 int pslr_get_status(pslr_handle_t h, pslr_status *sbuf);
 int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf);
 int pslr_get_settings(pslr_handle_t h, pslr_settings *ps);
+int pslr_get_settings_json(pslr_handle_t h, pslr_settings *ps);
 int pslr_get_settings_buffer(pslr_handle_t h, uint8_t *st_buf);
 
 char *collect_status_info( pslr_handle_t h, pslr_status status );
