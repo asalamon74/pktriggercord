@@ -26,7 +26,6 @@ ARCH=$(shell uname -m)
 #variables for Android
 ANDROID=android
 ANDROID_DIR = android
-ANDROID_ANT_FILE = $(ANDROID_DIR)/build.xml
 ANDROID_PROJECT_NAME = PkTriggerCord
 ANDROID_PACKAGE = info.melda.sala.pktriggercord
 APK_FILE = $(PROJECT_NAME)-debug.apk
@@ -115,10 +114,9 @@ srczip: clean
 	cp -r $(ANDROID_DIR)/src/* $(TARDIR)/$(ANDROID_DIR)/src/
 	mkdir -p $(TARDIR)/android/jni
 	cp -r $(ANDROID_DIR)/jni/* $(TARDIR)/$(ANDROID_DIR)/jni/
-	cp $(ANDROID_DIR)/build.xml $(TARDIR)/$(ANDROID_DIR)/
-	cp $(ANDROID_DIR)/ant.properties $(TARDIR)/$(ANDROID_DIR)/
+	cp $(ANDROID_DIR)/build.gradle $(TARDIR)/$(ANDROID_DIR)/
 	cp $(ANDROID_DIR)/project.properties $(TARDIR)/$(ANDROID_DIR)/
-	cp $(ANDROID_DIR)/proguard-project.txt $(TARDIR)/$(ANDROID_DIR)/
+	cp $(ANDROID_DIR)/proguard-rules.pro $(TARDIR)/$(ANDROID_DIR)/
 	cp $(ANDROID_DIR)/AndroidManifest.xml $(TARDIR)/$(ANDROID_DIR)/
 	tar cf - $(TARDIR) | gzip > $(SRCZIP)
 	rm -rf $(TARDIR)
