@@ -67,7 +67,7 @@ pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
 	$(CC) $(LIN_CFLAGS) -fPIC -c $<
 
 pktriggercord: pktriggercord.c $(OBJS)
-	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $? $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L.
+	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $^ $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L.
 
 install: pktriggercord-cli pktriggercord
 	install -d $(DESTDIR)/$(PREFIX)/bin
