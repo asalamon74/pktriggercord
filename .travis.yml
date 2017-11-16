@@ -38,6 +38,7 @@ script:
   - if [[ -n $(make astyle | grep Formatted) ]]; then echo "Code formatting error. Please check astyle"; exit -1; fi
   - make android
   - make localwin
+  - make srczip
   - make clean
   - make
   - ./pktriggercord-cli --version
