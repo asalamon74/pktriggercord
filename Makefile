@@ -239,4 +239,4 @@ androidrelease: androidcommon
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
 astyle:
-	astyle --options=astylerc [^j]*.h [^j]*.c
+	astyle --options=astylerc a*.h p*.h p*.c
