@@ -396,9 +396,6 @@ int main(int argc, char **argv) {
     uint32_t dump_memory_size=0;
     static const char DUMP_FILE_NAME[] = "pentax_dump.dat";
 
-    //    ipslr_settings_parser_json("0x13222", NULL, &settings);
-    //    exit(2);
-
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
         switch (optc) {
@@ -418,6 +415,10 @@ int main(int argc, char **argv) {
     if (debug) {
         DPRINT("command line:\n%s\n", command_line(argc, argv));
     }
+
+    //    ipslr_settings_parser_json("0x13222", NULL, &settings);
+    //    exit(2);
+
 
     optind = 1;
     // parse all the other flags

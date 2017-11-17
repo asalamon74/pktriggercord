@@ -3,7 +3,8 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := pktriggercord-cli
-LOCAL_SRC_FILES := ../../pslr_enum.c \
+LOCAL_SRC_FILES := ../../js0n.c \
+	../../pslr_enum.c \
 	../../pslr_lens.c \
 	../../pslr_model.c \
 	../../pslr_scsi.c \
@@ -12,7 +13,6 @@ LOCAL_SRC_FILES := ../../pslr_enum.c \
 	../../pktriggercord-cli.c
 DEFINES 	:= -DANDROID -DVERSION=\"$(VERSION)\" 
 LOCAL_CFLAGS  	:= $(DEFINES) -frtti -I.. -Istlport -g -fPIE
-LOCAL_LDLIBS	:= -llog -lstdc++ -ljson-c -fPIE -pie
-LOCAL_STATIC_LIBRARIES := json-c
+LOCAL_LDLIBS	:= -llog -lstdc++ -fPIE -pie
 
 include $(BUILD_EXECUTABLE)

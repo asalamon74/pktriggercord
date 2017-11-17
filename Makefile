@@ -6,8 +6,8 @@ LDFLAGS ?= -lm
 MANDIR = $(PREFIX)/share/man
 MAN1DIR = $(MANDIR)/man1
 
-LIN_CFLAGS = $(CFLAGS) $(shell pkg-config --cflags json-c)
-LIN_LDFLAGS = $(LDFLAGS) $(shell pkg-config --libs json-c)
+LIN_CFLAGS = $(CFLAGS)
+LIN_LDFLAGS = $(LDFLAGS)
 
 VERSION=0.84.05
 VERSIONCODE=$(shell echo $(VERSION) | sed s/\\.//g | sed s/^0// )
@@ -44,7 +44,7 @@ all: srczip rpm win pktriggercord_commandline.html
 cli: pktriggercord-cli
 
 MANS = pktriggercord-cli.1 pktriggercord.1
-SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
+SRCOBJNAMES = js0n pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
 OBJS = $(SRCOBJNAMES:=.o)
 WIN_DLLS_DIR=win_dlls
 SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE) android_scsi_sg.h
@@ -239,4 +239,4 @@ androidrelease: androidcommon
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
 astyle:
-	astyle --options=astylerc *.h *.c
+	astyle --options=astylerc [^j]*.h [^j]*.c
