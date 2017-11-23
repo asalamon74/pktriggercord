@@ -1,5 +1,7 @@
+JSONDIR=src/external/js0n
+
 PREFIX ?= /usr/local
-CFLAGS ?= -O3 -g -Wall
+CFLAGS ?= -O3 -g -Wall -I$(JSONDIR)
 # -Wextra
 LDFLAGS ?= -lm
 
@@ -44,10 +46,10 @@ all: srczip rpm win pktriggercord_commandline.html
 cli: pktriggercord-cli
 
 MANS = pktriggercord-cli.1 pktriggercord.1
-SRCOBJNAMES = js0n pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
-OBJS = $(SRCOBJNAMES:=.o)
+SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
+OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE) android_scsi_sg.h
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE) android_scsi_sg.h src/
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
@@ -63,8 +65,13 @@ pktriggercord-cli: pktriggercord-cli.c $(OBJS)
 
 pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
 
-%.o : %.c %.h
-	$(CC) $(LIN_CFLAGS) -fPIC -c $<
+$(JSONDIR)/js0n.o : $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
+	$(CC) $(LIN_CFLAGS) -fPIC -c $< -o $@
+
+external: $(JSONDIR)/js0n.o
+
+%.o : %.c %.h external
+	$(CC) $(LIN_CFLAGS) -fPIC -c $< -o $@
 
 pktriggercord: pktriggercord.c $(OBJS)
 	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $^ $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L.
@@ -89,7 +96,7 @@ install: pktriggercord-cli pktriggercord
 	fi
 
 clean:
-	rm -f pktriggercord pktriggercord-cli *.o
+	rm -f pktriggercord pktriggercord-cli *.o $(JSONDIR)/*.o
 	rm -f pktriggercord.exe pktriggercord-cli.exe
 	rm -f *.orig
 
@@ -192,7 +199,10 @@ localwin: WINGCC=$(LOCALMINGW)/mingw32/bin/i686-w64-mingw32-gcc
 winobjs:$(SRCOBJNAMES:=.c) 
 	$(foreach srcfile, $(SRCOBJNAMES:=.c), $(WINGCC) $(WIN_CFLAGS) -c $(srcfile);)
 
-win-cli:winobjs pktriggercord-cli.c pktriggercord_commandline.html
+winexternal: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
+	$(WINGCC) $(WIN_CFLAGS) -c $< -o $(JSONDIR)/js0n.o
+
+win-cli:winobjs winexternal pktriggercord-cli.c pktriggercord_commandline.html
 	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"'  pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) -L.
 	mkdir -p $(WINDIR)
 	cp pktriggercord-cli.exe Changelog COPYING pktriggercord_commandline.html $(WINDIR)
@@ -239,4 +249,4 @@ androidrelease: androidcommon
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
 astyle:
-	astyle --options=astylerc a*.h p*.h p*.c
+	astyle --options=astylerc *.h *.c
