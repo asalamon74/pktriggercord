@@ -416,6 +416,9 @@ int main(int argc, char **argv) {
         DPRINT("command line:\n%s\n", command_line(argc, argv));
     }
 
+    //    pslr_write_setting_by_name(camhandle, "bulb_timer", 1);
+
+
     //    ipslr_settings_parser_json("0x13222", NULL, &settings);
     //    exit(2);
 

@@ -1187,7 +1187,11 @@ bool pslr_get_model_old_bulb_mode(pslr_handle_t h) {
 
 bool pslr_get_model_has_settings_parser(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return p->model->setting_defs != NULL;
+    char cameraid[10];
+    sprintf(cameraid, "0x%0x", p->model->id);
+    int def_num;
+    setting_file_process(cameraid, &def_num);
+    return def_num>0;
 }
 
 const char *pslr_camera_name(pslr_handle_t h) {
@@ -1527,11 +1531,15 @@ int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value) {
 
 int pslr_write_setting_by_name(pslr_handle_t *h, char *name, uint32_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    pslr_setting_def_t *setting_def = find_setting_by_name(p->model->setting_defs, p->model->setting_defs_length, name);
+    int def_num;
+    char cameraid[10];
+    sprintf(cameraid, "0x%0x", p->model->id);
+    //    printf("cameraid: %s\n", cameraid);
+    pslr_setting_def_t *setting_def = find_setting_by_name(setting_file_process(cameraid, &def_num), def_num, name);
     if (setting_def != NULL) {
-        if (setting_def->length == 1) {
+        if (strcmp(setting_def->name,"boolean") == 0) {
             pslr_write_setting(h, setting_def->address, value);
-        } else if (setting_def->length == 2) {
+        } else if (strcmp(setting_def->name, "uint16") == 0) {
             pslr_write_setting(h, setting_def->address, value >> 8);
             pslr_write_setting(h, setting_def->address+1, value & 0xff);
         }
@@ -1551,26 +1559,6 @@ int pslr_read_settings(pslr_handle_t *h) {
         p->settings_buffer[index] = value;
         ++index;
     }
-    return PSLR_OK;
-}
-
-int pslr_get_settings(pslr_handle_t h, pslr_settings *ps) {
-    DPRINT("[C]\tpslr_get_settings()\n");
-    ipslr_handle_t *p = (ipslr_handle_t *) h;
-    memset( ps, 0, sizeof( pslr_settings ));
-    CHECK(pslr_read_settings(h));
-    if ( !p->model->setting_defs ) {
-        // no settings parser
-        return PSLR_OK;
-    } else {
-        if (!p->model->settings_parser_function) {
-            ipslr_settings_parser_generic(p, &p->settings);
-        } else {
-            (*p->model->settings_parser_function)(p, &p->settings);
-        }
-    }
-
-    memcpy(ps, &p->settings, sizeof (pslr_settings));
     return PSLR_OK;
 }
 

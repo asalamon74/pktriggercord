@@ -133,15 +133,15 @@ typedef struct {
 
 typedef struct {
     const char *name;
-    int address;
-    int length;
+    unsigned long address;
+    const char *value;
+    const char *type;
 } pslr_setting_def_t;
 
 typedef void (*ipslr_status_parse_t)(ipslr_handle_t *p, pslr_status *status);
-typedef void (*ipslr_settings_parse_t)(ipslr_handle_t *p, pslr_settings *settings);
-void ipslr_settings_parser_generic(ipslr_handle_t *p, pslr_settings *settings);
 pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_length, char *name);
 void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_settings *settings);
+pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num);
 
 typedef struct {
     uint32_t id;                                     // Pentax model ID
@@ -163,9 +163,9 @@ typedef struct {
     bool has_jpeg_hue;                               // camera has jpeg hue setting
     int af_point_num;                                // number of AF points
     ipslr_status_parse_t status_parser_function;     // parse function for status buffer
-    pslr_setting_def_t *setting_defs;
-    int setting_defs_length;
-    ipslr_settings_parse_t settings_parser_function; // parse function for setting buffer
+  //    pslr_setting_def_t *setting_defs;
+  //    int setting_defs_length;
+  //    ipslr_settings_parse_t settings_parser_function; // parse function for setting buffer
 } ipslr_model_info_t;
 
 typedef struct {
