@@ -163,9 +163,9 @@ typedef struct {
     bool has_jpeg_hue;                               // camera has jpeg hue setting
     int af_point_num;                                // number of AF points
     ipslr_status_parse_t status_parser_function;     // parse function for status buffer
-  //    pslr_setting_def_t *setting_defs;
-  //    int setting_defs_length;
-  //    ipslr_settings_parse_t settings_parser_function; // parse function for setting buffer
+    //    pslr_setting_def_t *setting_defs;
+    //    int setting_defs_length;
+    //    ipslr_settings_parse_t settings_parser_function; // parse function for setting buffer
 } ipslr_model_info_t;
 
 typedef struct {

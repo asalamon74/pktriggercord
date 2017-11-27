@@ -811,9 +811,9 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
             camera_field_address[address_length]='\0';
         }
         printf("name: %.*s %.*s %.*s %.*s\n", (int)name_length, camera_field_name, (int)address_length, camera_field_address, (int)value_length, camera_field_value, (int)type_length, camera_field_type);
-	pslr_setting_def_t setting_def = { camera_field_name, camera_field_address==NULL?0:strtoul(camera_field_address,NULL,16), camera_field_value, camera_field_type };
-	defs[(*def_num)++]=setting_def;
-	++ai;
+        pslr_setting_def_t setting_def = { camera_field_name, camera_field_address==NULL?0:strtoul(camera_field_address,NULL,16), camera_field_value, camera_field_type };
+        defs[(*def_num)++]=setting_def;
+        ++ai;
     }
     pslr_setting_def_t *ret=malloc(*def_num*sizeof(pslr_setting_def_t));
     //        printf("return %d defs\n",*def_num);
@@ -874,7 +874,7 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
         } else if (strcmp(defs[def_index].name, "bulb_timer_sec")==0) {
             settings->bulb_timer_sec = uint16_setting;
         }
-	++def_index;
+        ++def_index;
     }
     printf("%s", collect_settings_info( NULL, *settings));
 }
