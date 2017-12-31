@@ -14,7 +14,7 @@ version 0.84.05
 	Android: using gradle instead of ant
 	Android: nicer image download indicator
 	GUI ISO table bugfix
-	Updating lens info database ( exiftool 10.64 )
+	Updating lens info database ( exiftool 10.70 )
 	Android: better support of landscape mode
 	GTK code cleanup
 	Requires at least gtk+ 2.18
