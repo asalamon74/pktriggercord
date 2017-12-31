@@ -876,7 +876,7 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
         }
         ++def_index;
     }
-    printf("%s", collect_settings_info( NULL, *settings));
+//    printf("%s", collect_settings_info( NULL, *settings));
 }
 
 
