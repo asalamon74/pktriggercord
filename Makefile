@@ -1,6 +1,7 @@
 JSONDIR=src/external/js0n
 
 PREFIX ?= /usr/local
+PKTDATADIR = $(PREFIX)/share/pktriggercord
 CFLAGS ?= -O3 -g -Wall -I$(JSONDIR)
 # -Wextra
 LDFLAGS ?= -lm
@@ -49,7 +50,7 @@ MANS = pktriggercord-cli.1 pktriggercord.1
 SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
 OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui $(SPECFILE) android_scsi_sg.h src/
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h src/
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
@@ -71,10 +72,10 @@ $(JSONDIR)/js0n.o : $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 external: $(JSONDIR)/js0n.o
 
 %.o : %.c %.h external
-	$(CC) $(LIN_CFLAGS) -fPIC -c $< -o $@
+	$(CC) $(LIN_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
 
 pktriggercord: pktriggercord.c $(OBJS)
-	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DDATADIR=\"$(PREFIX)/share/pktriggercord\" $^ $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L.
+	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" $^ $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L.
 
 install: pktriggercord-cli pktriggercord
 	install -d $(DESTDIR)/$(PREFIX)/bin
@@ -93,6 +94,7 @@ install: pktriggercord-cli pktriggercord
 	(which setcap && setcap CAP_SYS_RAWIO+eip $(DESTDIR)/$(PREFIX)/bin/pktriggercord) || true; \
 	install -d $(DESTDIR)/$(PREFIX)/share/pktriggercord/; \
 	install -m 0644 pktriggercord.ui $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
+	install -m 0644 pentax_settings.json $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
 	fi
 
 clean:
@@ -197,21 +199,21 @@ localwin: WINMINGW=$(LOCALMINGW)
 localwin: WINGCC=$(LOCALMINGW)/mingw32/bin/i686-w64-mingw32-gcc
 
 winobjs:$(SRCOBJNAMES:=.c) 
-	$(foreach srcfile, $(SRCOBJNAMES:=.c), $(WINGCC) $(WIN_CFLAGS) -c $(srcfile);)
+	$(foreach srcfile, $(SRCOBJNAMES:=.c), $(WINGCC) -DVERSION='"$(VERSION)"' -DPKTDATADIR=\".\" $(WIN_CFLAGS) -c $(srcfile);)
 
 winexternal: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 	$(WINGCC) $(WIN_CFLAGS) -c $< -o $(JSONDIR)/js0n.o
 
 win-cli:winobjs winexternal pktriggercord-cli.c pktriggercord_commandline.html
-	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"'  pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) -L.
+	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) -L.
 	mkdir -p $(WINDIR)
 	cp pktriggercord-cli.exe Changelog COPYING pktriggercord_commandline.html $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
 
 win-gui: winobjs
-	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_GUI_CFLAGS) $(WIN_LDFLAGS) -L.
+	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DPKTDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_GUI_CFLAGS) $(WIN_LDFLAGS) -L.
 	mkdir -p $(WINDIR)
-	cp pktriggercord.exe pktriggercord.ui Changelog COPYING $(WINDIR)
+	cp pktriggercord.exe pktriggercord.ui pentax_settings.json Changelog COPYING $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
 
 win: win-cli win-gui

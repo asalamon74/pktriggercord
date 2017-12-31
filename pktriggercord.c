@@ -240,7 +240,7 @@ int common_init(void) {
         xml = gtk_builder_new ();
         if (!gtk_builder_add_from_file (xml, "pktriggercord.ui", &error))  {
             error = NULL;
-            if ( !gtk_builder_add_from_file (xml, DATADIR "/pktriggercord.ui", &error))  {
+            if ( !gtk_builder_add_from_file (xml, PKTDATADIR "/pktriggercord.ui", &error))  {
                 g_warning ("Couldn't load builder file: %s", error->message);
                 g_error_free (error);
                 return -1;
@@ -248,7 +248,7 @@ int common_init(void) {
         }
     } else {
         xml = gtk_builder_new ();
-        if (!gtk_builder_add_from_file (xml, DATADIR "/pktriggercord.ui", &error))  {
+        if (!gtk_builder_add_from_file (xml, PKTDATADIR "/pktriggercord.ui", &error))  {
             error = NULL;
             if ( !gtk_builder_add_from_file (xml, "pktriggercord.ui", &error))  {
                 g_warning ("Couldn't load builder file: %s", error->message);
