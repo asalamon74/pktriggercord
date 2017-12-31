@@ -749,6 +749,10 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
     pslr_setting_def_t defs[128];
     *def_num=0;
     int jsonfd = open("pentax_settings.json", O_RDONLY); // TODO: directory DATADIR
+    if (jsonfd == -1) {
+        fprintf(stderr, "Cannot open pentax_settings.json file\n");
+        return NULL;
+    }
     int jsonsize = lseek(jsonfd, 0, SEEK_END);
     lseek(jsonfd, 0, SEEK_SET);
     char *jsontext=malloc(jsonsize);
