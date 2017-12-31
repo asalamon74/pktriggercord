@@ -1569,7 +1569,7 @@ int pslr_get_settings_json(pslr_handle_t h, pslr_settings *ps) {
     CHECK(pslr_read_settings(h));
     char cameraid[20];
     sprintf(cameraid, "0x%05x", p->id);
-    printf("cameraid:%s\n", cameraid);
+    DPRINT("cameraid:%s\n", cameraid);
     ipslr_settings_parser_json(cameraid, p, &p->settings);
     memcpy(ps, &p->settings, sizeof (pslr_settings));
     return PSLR_OK;

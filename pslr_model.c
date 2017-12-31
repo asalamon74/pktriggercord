@@ -810,7 +810,7 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
             memcpy(camera_field_address, camera_field_address_ptr, address_length);
             camera_field_address[address_length]='\0';
         }
-        printf("name: %.*s %.*s %.*s %.*s\n", (int)name_length, camera_field_name, (int)address_length, camera_field_address, (int)value_length, camera_field_value, (int)type_length, camera_field_type);
+        DPRINT("name: %.*s %.*s %.*s %.*s\n", (int)name_length, camera_field_name, (int)address_length, camera_field_address, (int)value_length, camera_field_value, (int)type_length, camera_field_type);
         pslr_setting_def_t setting_def = { camera_field_name, camera_field_address==NULL?0:strtoul(camera_field_address,NULL,16), camera_field_value, camera_field_type };
         defs[(*def_num)++]=setting_def;
         ++ai;
