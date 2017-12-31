@@ -822,11 +822,7 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
 }
 
 void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_settings *settings) {
-    //x    uint8_t *buf = p->settings_buffer;
-    uint8_t buf[1000];
-    buf[256+48+3]=1;
-    buf[256+48+4]=0;
-    buf[256+48+5]=2;
+    uint8_t *buf = p->settings_buffer;
     memset(settings, 0, sizeof (*settings));
     int def_num;
 
