@@ -1,6 +1,6 @@
 /*
     pkTriggerCord
-    Copyright (C) 2011-2017 Andras Salamon <andras.salamon@melda.info>
+    Copyright (C) 2011-2018 Andras Salamon <andras.salamon@melda.info>
     Remote control of Pentax DSLR cameras.
 
     based on:
@@ -24,6 +24,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <stdint.h>
+#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <string.h>
 #include <fcntl.h>
