@@ -189,8 +189,8 @@ typedef enum {
 /* a different write_args function needs to be done with slightly changed */
 /* command sequence. Original function was ipslr_write_args(). */
 
-int pslr_get_buffer_status(pslr_handle_t *h, uint32_t *x, uint32_t *y) {
-    ipslr_handle_t *p = (ipslr_handle_t *) h;
+int pslr_get_buffer_status(ipslr_handle_t *p, uint32_t *x, uint32_t *y) {
+    //ipslr_handle_t *p = (ipslr_handle_t *) h;
     DPRINT("[C]\t\tipslr_get_buffer_status()\n");
     uint8_t buf[8];
     int n;
@@ -483,10 +483,6 @@ int pslr_get_status(pslr_handle_t h, pslr_status *ps) {
     memset( ps, 0, sizeof( pslr_status ));
     CHECK(ipslr_status_full(p, &p->status));
     memcpy(ps, &p->status, sizeof (pslr_status));
-
-//    uint32_t x, y;
-//    pslr_get_buffer_status(h, &x, &y);
-
     return PSLR_OK;
 }
 
@@ -1296,6 +1292,11 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
         (*p->model->status_parser_function)(p, status);
         if ( p->model->need_exposure_mode_conversion ) {
             status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
+        }
+        if ( p->model->bufmask_command ) {
+            uint32_t x, y;
+            pslr_get_buffer_status(p, &x, &y);
+            status->bufmask = x;
         }
         return PSLR_OK;
     }
