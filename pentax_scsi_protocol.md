@@ -235,6 +235,8 @@ typedef enum {
 
 #### [02 03] Delete Buffer (buffer_number)
 
+This command deletes the specified buffer. Indexing starts from `0`.
+
 ### 3.3 Command Group 0x04/0x05 - Segment Info Related
 
 The downloadable content of the selected image buffer are stored in chunks. The maximum number of chucks is four. Information about the chucks are stored in segments information blocks. The maximum number of blocks is ten.
