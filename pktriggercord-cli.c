@@ -193,7 +193,6 @@ void print_settings_info( pslr_handle_t h, pslr_settings settings ) {
 
 void usage(char *name) {
     printf("\nUsage: %s [OPTIONS]\n\n\
-Shoot a Pentax DSLR and send the picture to standard output.\n\
 \n\
       --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-x, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01, K-3, K-3II, K-500\n\
       --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...\n\
@@ -233,7 +232,7 @@ Shoot a Pentax DSLR and send the picture to standard output.\n\
   -F, --frames=NUMBER                   number of frames\n\
   -d, --delay=SECONDS                   delay between the frames (seconds)\n\
       --file_format=FORMAT              valid values: PEF, DNG, JPEG\n\
-  -o, --output_file=FILE                send output to FILE instead of stdout\n\
+  -o, --output_file=FILE                send output to FILE\n\
       --debug                           turn on debug messages\n\
       --noshutter                       do not send shutter command, just wait for new photo, download and delete from camera\n\
   -v, --version                         display version information and exit\n\
@@ -335,6 +334,7 @@ int main(int argc, char **argv) {
     char c1;
     char c2;
     char *output_file = NULL;
+    bool output_file_stdout = false;
     char *model = NULL;
     char *device = NULL;
     const char *camera_name;
@@ -353,7 +353,7 @@ int main(int argc, char **argv) {
     uint32_t iso = 0;
     uint32_t auto_iso_min = 0;
     uint32_t auto_iso_max = 0;
-    int frames = 1;
+    int frames = 0;
     int delay = 0;
     int timeout = 0;
     bool auto_focus = false;
@@ -634,7 +634,11 @@ int main(int argc, char **argv) {
                 break;
 
             case 'o':
-                output_file = optarg;
+                if (!strcmp(optarg, "-")) {
+                    output_file_stdout = true;
+                } else {
+                    output_file = optarg;
+                }
                 break;
 
             case 'f':
@@ -754,9 +758,13 @@ int main(int argc, char **argv) {
     }
 #endif
 
-    if (!output_file && frames > 1) {
-        fprintf(stderr, "Should specify output filename if frames>1\n");
+    if (!output_file && !output_file_stdout && frames > 0) {
+        fprintf(stderr, "Should specify output filename (use '-o -' if you really want to output to stdout)\n");
         exit(-1);
+    }
+
+    if (frames == 0 && (output_file || output_file_stdout)) {
+        frames = 1;
     }
 
     DPRINT("%s %s \n", argv[0], VERSION);
@@ -1002,6 +1010,13 @@ int main(int argc, char **argv) {
         pslr_dust_removal(camhandle);
         camera_close(camhandle);
         exit(0);
+    }
+
+    if (frames == 0) {
+        // no action specified
+        print_status_info( camhandle, status );
+        camera_close(camhandle);
+        exit(-1);
     }
 
     double waitsec=0;

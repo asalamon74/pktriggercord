@@ -20,6 +20,8 @@ version 0.84.05
 	Requires at least gtk+ 2.18
 	GTK status info/status hex bugfix
 	Using command 0x02 0x00 for buffer mask (K-70, K-3II)
+	Possibility to specify stdout as output file using -
+	Default mode prints out status info instead of taking a picture
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
