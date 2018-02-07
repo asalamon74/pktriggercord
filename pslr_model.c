@@ -884,6 +884,8 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
             settings->using_aperture_ring = bool_setting;
         } else if (strcmp(defs[def_index].name, "shake_reduction")==0) {
             settings->shake_reduction = bool_setting;
+        } else if (strcmp(defs[def_index].name, "astrotracer")==0) {
+            settings->astrotracer = bool_setting;
         }
         ++def_index;
     }
