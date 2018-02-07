@@ -129,6 +129,7 @@ typedef struct {
     pslr_bool_setting bulb_mode_press_press;
     pslr_bool_setting bulb_timer;
     pslr_uint16_setting bulb_timer_sec;
+    pslr_bool_setting using_aperture_ring;
 } pslr_settings;
 
 typedef struct {

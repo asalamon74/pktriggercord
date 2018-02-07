@@ -606,6 +606,7 @@ char *collect_settings_info( pslr_handle_t h, pslr_settings settings ) {
     char *bulb_timer_sec = malloc(32);
     sprintf(bulb_timer_sec, "%d s", settings.bulb_timer_sec.value);
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s%s\n", "bulb timer sec", get_special_setting_info(settings.bulb_timer_sec.pslr_setting_status) ?: bulb_timer_sec, get_hardwired_setting_uint16_info(settings.bulb_timer_sec));
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %-8s%s\n", "using aperture ring", get_special_setting_info(settings.using_aperture_ring.pslr_setting_status) ?: settings.using_aperture_ring.value ? "on" : "off", get_hardwired_setting_bool_info(settings.using_aperture_ring));
     return strbuffer;
 }
 

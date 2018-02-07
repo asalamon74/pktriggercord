@@ -877,6 +877,8 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
             settings->bulb_timer = bool_setting;
         } else if (strcmp(defs[def_index].name, "bulb_timer_sec")==0) {
             settings->bulb_timer_sec = uint16_setting;
+        } else if (strcmp(defs[def_index].name, "using_aperture_ring")==0) {
+            settings->using_aperture_ring = bool_setting;
         }
         ++def_index;
     }
