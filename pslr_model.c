@@ -840,14 +840,15 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
     while (def_index < def_num) {
         pslr_bool_setting bool_setting;
         pslr_uint16_setting uint16_setting;
-        if (strcmp(defs[def_index].type, "boolean")==0) {
+        if (strncmp(defs[def_index].type, "boolean", 7)==0) {
             if (defs[def_index].value!=NULL) {
                 bool_setting = (pslr_bool_setting) {
                     PSLR_SETTING_STATUS_HARDWIRED, strcmp("false", defs[def_index].value)==0 ? false : true
                 };
             } else if (defs[def_index].address!=0) {
+                uint8_t target = strcmp(defs[def_index].type, "boolean!")==0 ? 0 : 1;
                 bool_setting = (pslr_bool_setting) {
-                    PSLR_SETTING_STATUS_READ, buf[defs[def_index].address] == 1
+                    PSLR_SETTING_STATUS_READ, buf[defs[def_index].address] == target
                 };
             } else {
                 bool_setting = (pslr_bool_setting) {
@@ -868,6 +869,8 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
                     PSLR_SETTING_STATUS_NA, 0
                 };
             }
+        } else {
+            fprintf(stderr, "Invalid json type: %s\n", defs[def_index].type);
         }
         if (strcmp(defs[def_index].name, "bulb_mode_press_press")==0) {
             settings->bulb_mode_press_press = bool_setting;
@@ -879,6 +882,8 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
             settings->bulb_timer_sec = uint16_setting;
         } else if (strcmp(defs[def_index].name, "using_aperture_ring")==0) {
             settings->using_aperture_ring = bool_setting;
+        } else if (strcmp(defs[def_index].name, "shake_reduction")==0) {
+            settings->shake_reduction = bool_setting;
         }
         ++def_index;
     }
