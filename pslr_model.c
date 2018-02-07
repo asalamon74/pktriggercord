@@ -720,31 +720,6 @@ pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_l
     return NULL;
 }
 
-pslr_bool_setting read_bool_setting(uint8_t *buf, pslr_setting_def_t *array, int array_length, char *name) {
-    pslr_setting_def_t *setting_def = find_setting_by_name(array, array_length, name);
-    pslr_bool_setting ret;
-    if (setting_def != NULL) {
-        ret.pslr_setting_status = PSLR_SETTING_STATUS_READ;
-        ret.value = buf[setting_def->address] == 1;
-    } else {
-        DPRINT("setting_def NULL\n");
-        ret.pslr_setting_status = PSLR_SETTING_STATUS_UNKNOWN;
-    }
-    return ret;
-}
-
-pslr_uint16_setting read_uint16be_setting(uint8_t *buf, pslr_setting_def_t *array, int array_length, char *name) {
-    pslr_setting_def_t *setting_def = find_setting_by_name(array, array_length, name);
-    pslr_uint16_setting ret;
-    if (setting_def != NULL) {
-        ret.pslr_setting_status = PSLR_SETTING_STATUS_READ;
-        ret.value = get_uint16_be(&buf[setting_def->address]);
-    } else {
-        ret.pslr_setting_status = PSLR_SETTING_STATUS_UNKNOWN;
-    }
-    return ret;
-}
-
 pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
     pslr_setting_def_t defs[128];
     *def_num=0;
@@ -836,7 +811,6 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
 
     pslr_setting_def_t *defs = setting_file_process(cameraid,&def_num);
     int def_index=0;
-    //    printf("defnum:%lu\n",def_num);
     while (def_index < def_num) {
         pslr_bool_setting bool_setting;
         pslr_uint16_setting uint16_setting;
@@ -889,7 +863,6 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
         }
         ++def_index;
     }
-//    printf("%s", collect_settings_info( NULL, *settings));
 }
 
 

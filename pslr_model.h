@@ -108,10 +108,10 @@ typedef struct {
 } pslr_status;
 
 typedef enum {
+    PSLR_SETTING_STATUS_UNKNOWN,
     PSLR_SETTING_STATUS_READ,
     PSLR_SETTING_STATUS_HARDWIRED,
-    PSLR_SETTING_STATUS_NA,
-    PSLR_SETTING_STATUS_UNKNOWN,
+    PSLR_SETTING_STATUS_NA
 } pslr_setting_status_t;
 
 typedef struct {
