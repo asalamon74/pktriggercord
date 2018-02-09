@@ -7,7 +7,8 @@
 	    { "name" : "bulb_timer_sec", "type": "uint16", "address": "0x134"},
 	    { "name" : "using_aperture_ring", "type": "boolean", "address": "0x18c"},
 	    { "name" : "shake_reduction", "type": "boolean!", "address": "0x07d"},
-	    { "name" : "astrotracer", "type": "boolean", "address": "0x087"}
+	    { "name" : "astrotracer", "type": "boolean", "address": "0x087"},
+	    { "name" : "horizon_correction", "type": "boolean!", "address": "0x080"}
 	]
     },
 
