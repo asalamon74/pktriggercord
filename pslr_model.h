@@ -132,6 +132,7 @@ typedef struct {
     pslr_bool_setting using_aperture_ring;
     pslr_bool_setting shake_reduction;
     pslr_bool_setting astrotracer;
+    pslr_uint16_setting astrotracer_timer_sec;
     pslr_bool_setting horizon_correction;
 } pslr_settings;
 

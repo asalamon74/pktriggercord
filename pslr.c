@@ -609,6 +609,9 @@ char *collect_settings_info( pslr_handle_t h, pslr_settings settings ) {
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %-8s%s\n", "using aperture ring", get_special_setting_info(settings.using_aperture_ring.pslr_setting_status) ?: settings.using_aperture_ring.value ? "on" : "off", get_hardwired_setting_bool_info(settings.using_aperture_ring));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %-8s%s\n", "shake reduction", get_special_setting_info(settings.shake_reduction.pslr_setting_status) ?: settings.shake_reduction.value ? "on" : "off", get_hardwired_setting_bool_info(settings.shake_reduction));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %-8s%s\n", "astrotracer", get_special_setting_info(settings.astrotracer.pslr_setting_status) ?: settings.astrotracer.value ? "on" : "off", get_hardwired_setting_bool_info(settings.astrotracer));
+    char *astrotracer_timer_sec = malloc(32);
+    sprintf(astrotracer_timer_sec, "%d s", settings.astrotracer_timer_sec.value);
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s%s\n", "astrotracer timer sec", get_special_setting_info(settings.astrotracer_timer_sec.pslr_setting_status) ?: astrotracer_timer_sec, get_hardwired_setting_uint16_info(settings.astrotracer_timer_sec));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %-8s%s\n", "horizon correction", get_special_setting_info(settings.horizon_correction.pslr_setting_status) ?: settings.horizon_correction.value ? "on" : "off", get_hardwired_setting_bool_info(settings.horizon_correction));
     return strbuffer;
 }

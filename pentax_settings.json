@@ -37,7 +37,8 @@
 
     "0x1309c": {
 	"fields": [
-	    { "name" : "astrotracer", "type": "boolean", "address": "0x1ac"}
+	    { "name" : "astrotracer", "type": "boolean", "address": "0x1ac"},
+	    { "name" : "astrotracer_timer_sec", "type": "uint16", "address": "0x1ad"}
 	]
     }
 

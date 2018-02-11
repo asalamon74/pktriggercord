@@ -860,6 +860,8 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
             settings->shake_reduction = bool_setting;
         } else if (strcmp(defs[def_index].name, "astrotracer")==0) {
             settings->astrotracer = bool_setting;
+        } else if (strcmp(defs[def_index].name, "astrotracer_timer_sec")==0) {
+            settings->astrotracer_timer_sec = uint16_setting;
         } else if (strcmp(defs[def_index].name, "horizon_correction")==0) {
             settings->horizon_correction = bool_setting;
         }
