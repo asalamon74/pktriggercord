@@ -1545,9 +1545,9 @@ int pslr_write_setting_by_name(pslr_handle_t *h, char *name, uint32_t value) {
     //    printf("cameraid: %s\n", cameraid);
     pslr_setting_def_t *setting_def = find_setting_by_name(setting_file_process(cameraid, &def_num), def_num, name);
     if (setting_def != NULL) {
-        if (strcmp(setting_def->name,"boolean") == 0) {
+        if (strcmp(setting_def->type,"boolean") == 0) {
             pslr_write_setting(h, setting_def->address, value);
-        } else if (strcmp(setting_def->name, "uint16") == 0) {
+        } else if (strcmp(setting_def->type, "uint16") == 0) {
             pslr_write_setting(h, setting_def->address, value >> 8);
             pslr_write_setting(h, setting_def->address+1, value & 0xff);
         }
