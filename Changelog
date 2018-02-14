@@ -24,9 +24,9 @@ version 0.84.05
 	Default mode prints out status info instead of taking a picture
 	using_aperture_ring setting reading for K-70
 	shake_reduction setting reading for K-70
-	astrotracer setting reading for K70, K-3II (testing)
+	astrotracer setting reading for K70, K-3II
 	horizon_correction setting reading for K-70
-	astrotracer timer sec setting reading for K-3II (testing)
+	astrotracer timer sec setting reading for K-3II
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
