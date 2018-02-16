@@ -47,6 +47,8 @@
 
 static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
 static int first = 1;
+static char *jsontext=NULL;
+static int jsonsize;
 
 static void ipslr_status_diff(uint8_t *buf) {
     int n;
@@ -720,9 +722,7 @@ pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_l
     return NULL;
 }
 
-pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
-    pslr_setting_def_t defs[128];
-    *def_num=0;
+char *read_json_file(int *jsonsize) {
     int jsonfd = open("pentax_settings.json", O_RDONLY);
     if (jsonfd == -1) {
         // cannot find in the current directory, also checking PKTDATADIR
@@ -732,12 +732,20 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
             return NULL;
         }
     }
-    int jsonsize = lseek(jsonfd, 0, SEEK_END);
+    *jsonsize = lseek(jsonfd, 0, SEEK_END);
     lseek(jsonfd, 0, SEEK_SET);
-    char *jsontext=malloc(jsonsize);
-    read(jsonfd, jsontext, jsonsize);
+    char *jsontext=malloc(*jsonsize);
+    read(jsonfd, jsontext, *jsonsize);
     DPRINT("json text:\n%s\n", jsontext);
+    return jsontext;
+}
 
+pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
+    pslr_setting_def_t defs[128];
+    *def_num=0;
+    if (jsontext == NULL) {
+        jsontext = read_json_file(&jsonsize);
+    }
     size_t json_part_length;
     const char *json_part;
     if (!(json_part = js0n(cameraid, strlen(cameraid), jsontext, jsonsize, &json_part_length))) {
