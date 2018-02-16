@@ -1543,7 +1543,8 @@ int pslr_write_setting_by_name(pslr_handle_t *h, char *name, uint32_t value) {
     char cameraid[10];
     sprintf(cameraid, "0x%0x", p->model->id);
     //    printf("cameraid: %s\n", cameraid);
-    pslr_setting_def_t *setting_def = find_setting_by_name(setting_file_process(cameraid, &def_num), def_num, name);
+    pslr_setting_def_t *defs = setting_file_process(cameraid, &def_num);
+    pslr_setting_def_t *setting_def = find_setting_by_name(defs, def_num, name);
     if (setting_def != NULL) {
         if (strcmp(setting_def->type,"boolean") == 0) {
             pslr_write_setting(h, setting_def->address, value);
@@ -1554,6 +1555,18 @@ int pslr_write_setting_by_name(pslr_handle_t *h, char *name, uint32_t value) {
     }
     return PSLR_OK;
 }
+
+bool pslr_has_setting_by_name(pslr_handle_t *h, char *name) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    int def_num;
+    char cameraid[10];
+    sprintf(cameraid, "0x%0x", p->model->id);
+    pslr_setting_def_t *defs = setting_file_process(cameraid, &def_num);
+    pslr_setting_def_t *setting_def = find_setting_by_name(defs, def_num, name);
+//    printf("%d %d\n", def_num, (setting_def != NULL));
+    return (setting_def != NULL);
+}
+
 
 int pslr_read_settings(pslr_handle_t *h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;

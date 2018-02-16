@@ -322,9 +322,21 @@ void bulb_old(pslr_handle_t camhandle, pslr_rational_t shutter_speed, struct tim
 }
 
 void bulb_new(pslr_handle_t camhandle, pslr_rational_t shutter_speed) {
-    pslr_write_setting_by_name(camhandle, "bulb_timer", 1);
+    if (pslr_has_setting_by_name(camhandle, "bulb_timer")) {
+        pslr_write_setting_by_name(camhandle, "bulb_timer", 1);
+    } else if (pslr_has_setting_by_name(camhandle, "astrotracer")) {
+        pslr_write_setting_by_name(camhandle, "astrotracer", 1);
+    } else {
+        fprintf(stderr, "New bulb mode is not supported for this camera model\n");
+    }
     int bulb_sec = (int)(shutter_speed.nom / shutter_speed.denom);
-    pslr_write_setting_by_name(camhandle, "bulb_timer_sec", bulb_sec);
+    if (pslr_has_setting_by_name(camhandle, "bulb_timer_sec")) {
+        pslr_write_setting_by_name(camhandle, "bulb_timer_sec", bulb_sec);
+    } else if (pslr_has_setting_by_name(camhandle, "astrotracer_timer_sec")) {
+        pslr_write_setting_by_name(camhandle, "astrotracer_timer_sec", bulb_sec);
+    } else {
+        fprintf(stderr, "New bulb mode is not supported for this camera model\n");
+    }
     pslr_shutter(camhandle);
 }
 

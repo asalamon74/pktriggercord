@@ -898,7 +898,7 @@ ipslr_model_info_t camera_models[] = {
     { 0x12f71, "K-5IIs",      false, true,  true,  false, false, 444,  4, {16, 10, 6, 2}, 9, 8000, 100, 12800, 80, 51200,  PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k5},
     { 0x12fb6, "K-50",        false, true,  true,  false, false, 452,  4, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  11, ipslr_status_parse_k50},
     { 0x12fc0, "K-3",         false, true,  true,  false, true,  452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  27, ipslr_status_parse_k3},
-    { 0x1309c, "K-3II",       false, true,  true,  true,  true,  452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  27, ipslr_status_parse_k3},
+    { 0x1309c, "K-3II",       false, false,  true,  true,  true,  452,  4, {24, 14, 6, 2}, 9, 8000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_BLEACH_BYPASS,    true,  27, ipslr_status_parse_k3},
     { 0x12fca, "K-500",       false, true,  true,  false, false, 452,  3, {16, 12, 8, 5}, 9, 6000, 100, 51200, 100, 51200, PSLR_JPEG_IMAGE_TONE_CROSS_PROCESSING, true,  11, ipslr_status_parse_k500},
     // only limited support from here
     { 0x12994, "*ist D",      true,  true,  true,  false, false, 0,   3, {6, 4, 2}, 3, 4000, 200, 3200, 200, 3200, PSLR_JPEG_IMAGE_TONE_NONE  , false, 11, NULL}, // buffersize: 264
