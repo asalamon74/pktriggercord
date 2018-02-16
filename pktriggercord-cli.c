@@ -968,8 +968,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    // read the status after setting the values
-    pslr_read_settings(camhandle);
+    // read the status and settings after setting the values
     pslr_get_settings_json(camhandle, &settings);
     pslr_get_status(camhandle, &status);
 
