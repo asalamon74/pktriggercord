@@ -1042,10 +1042,8 @@ int main(int argc, char **argv) {
 
     if (pslr_has_setting_by_name(camhandle, "bulb_timer")) {
         bulb_timer_before = settings.bulb_timer.value;
-        printf("btb: %d\n", bulb_timer_before);
     } else if (pslr_has_setting_by_name(camhandle, "astrotracer")) {
         astrotracer_before = settings.astrotracer.value;
-        printf("ast: %d\n", astrotracer_before);
     }
 
     double waitsec=0;
