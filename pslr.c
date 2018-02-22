@@ -1118,9 +1118,9 @@ int pslr_get_model_max_jpeg_stars(pslr_handle_t h) {
     return p->model->max_jpeg_stars;
 }
 
-int pslr_get_model_buffer_size(pslr_handle_t h) {
+int pslr_get_model_status_buffer_size(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return p->model->buffer_size;
+    return p->model->status_buffer_size;
 }
 
 int pslr_get_model_jpeg_property_levels(pslr_handle_t h) {
@@ -1135,7 +1135,7 @@ int *pslr_get_model_jpeg_resolutions(pslr_handle_t h) {
 
 bool pslr_get_model_only_limited(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return p->model->buffer_size == 0 && !p->model->status_parser_function;
+    return p->model->status_buffer_size == 0 && !p->model->status_parser_function;
 }
 
 bool pslr_get_model_has_jpeg_hue(pslr_handle_t h) {
@@ -1280,7 +1280,7 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     CHECK(command(p->fd, 0, 8, 0));
     n = get_result(p->fd);
     DPRINT("\tread %d bytes\n", n);
-    int expected_bufsize = p->model != NULL ? p->model->buffer_size : 0;
+    int expected_bufsize = p->model != NULL ? p->model->status_buffer_size : 0;
     if ( p->model == NULL ) {
         DPRINT("\tp model null\n");
     }

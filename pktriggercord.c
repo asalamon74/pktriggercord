@@ -1438,10 +1438,10 @@ G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action) {
     DPRINT("Status hex");
     GtkWidget *pw;
 
-    int bufsize = pslr_get_model_buffer_size( camhandle );
+    int status_bufsize = pslr_get_model_status_buffer_size( camhandle );
     uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
     pslr_get_status_buffer(camhandle, status_buffer);
-    char *collected_status_hex = shexdump( status_buffer, bufsize > 0 ? bufsize : MAX_STATUS_BUF_SIZE);
+    char *collected_status_hex = shexdump( status_buffer, status_bufsize > 0 ? status_bufsize : MAX_STATUS_BUF_SIZE);
     GtkLabel *label = GTK_LABEL(GW("status_label"));
 
     char *markup = g_markup_printf_escaped ("<tt>%s</tt>", collected_status_hex);

@@ -156,7 +156,7 @@ typedef struct {
     bool bufmask_command;                            // true if bufmask determined by calling command 0x02 0x00
     bool need_exposure_mode_conversion;              // is exposure_mode_conversion required
     bool is_little_endian;                           // whether the return value should be parsed as little-endian
-    int buffer_size;                                 // buffer size in bytes
+    int status_buffer_size;                          // status buffer size in bytes
     int max_jpeg_stars;                              // maximum jpeg stars
     int jpeg_resolutions[MAX_RESOLUTION_SIZE];       // jpeg resolution table
     int jpeg_property_levels;                        // 5 [-2, 2] or 7 [-3,3] or 9 [-4,4]

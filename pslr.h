@@ -207,7 +207,7 @@ int pslr_select_af_point(pslr_handle_t h, uint32_t point);
 const char *pslr_camera_name(pslr_handle_t h);
 int pslr_get_model_max_jpeg_stars(pslr_handle_t h);
 int pslr_get_model_jpeg_property_levels(pslr_handle_t h);
-int pslr_get_model_buffer_size(pslr_handle_t h);
+int pslr_get_model_status_buffer_size(pslr_handle_t h);
 int pslr_get_model_fastest_shutter_speed(pslr_handle_t h);
 int pslr_get_model_base_iso_min(pslr_handle_t h);
 int pslr_get_model_base_iso_max(pslr_handle_t h);
