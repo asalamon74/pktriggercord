@@ -57,6 +57,11 @@ bool warnings = false;
 
 const char *shortopts = "m:q:a:r:d:t:o:i:F:fghvsSw";
 
+pslr_settings settings;
+bool bulb_timer_before=false;
+bool astrotracer_before=false;
+bool need_bulb_new_cleanup=false;
+
 static struct option const longopts[] = {
     {"exposure_mode", required_argument, NULL, 'm'},
     {"resolution", required_argument, NULL, 'r'},
@@ -340,6 +345,19 @@ void bulb_new(pslr_handle_t camhandle, pslr_rational_t shutter_speed) {
     pslr_shutter(camhandle);
 }
 
+void bulb_new_cleanup(pslr_handle_t camhandle) {
+    if (pslr_has_setting_by_name(camhandle, "bulb_timer")) {
+        if (!bulb_timer_before) {
+            pslr_write_setting_by_name(camhandle, "bulb_timer", bulb_timer_before);
+        }
+    } else if (pslr_has_setting_by_name(camhandle, "astrotracer")) {
+        if (!astrotracer_before) {
+            pslr_write_setting_by_name(camhandle, "astrotracer", astrotracer_before);
+        }
+    }
+
+}
+
 int main(int argc, char **argv) {
     float F = 0;
     char C;
@@ -357,7 +375,6 @@ int main(int argc, char **argv) {
     int wbadj_ss=0;
     pslr_handle_t camhandle;
     pslr_status status;
-    pslr_settings settings;
     user_file_format uff = USER_FILE_FORMAT_MAX;
     pslr_exposure_mode_t EM = PSLR_EXPOSURE_MODE_MAX;
     pslr_rational_t aperture = {0, 0};
@@ -1023,6 +1040,14 @@ int main(int argc, char **argv) {
         exit(-1);
     }
 
+    if (pslr_has_setting_by_name(camhandle, "bulb_timer")) {
+        bulb_timer_before = settings.bulb_timer.value;
+        printf("btb: %d\n", bulb_timer_before);
+    } else if (pslr_has_setting_by_name(camhandle, "astrotracer")) {
+        astrotracer_before = settings.astrotracer.value;
+        printf("ast: %d\n", astrotracer_before);
+    }
+
     double waitsec=0;
     user_file_format_t ufft = *get_file_format_t(uff);
     int bracket_count = status.auto_bracket_picture_count;
@@ -1083,6 +1108,7 @@ int main(int argc, char **argv) {
                 if (pslr_get_model_old_bulb_mode(camhandle)) {
                     bulb_old(camhandle, shutter_speed, prev_time);
                 } else {
+                    need_bulb_new_cleanup = true;
                     bulb_new(camhandle, shutter_speed);
                 }
             } else {
@@ -1113,6 +1139,9 @@ int main(int argc, char **argv) {
             }
         }
         ++bracket_index;
+    }
+    if (need_bulb_new_cleanup) {
+        bulb_new_cleanup(camhandle);
     }
     camera_close(camhandle);
 
