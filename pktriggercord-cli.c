@@ -61,6 +61,7 @@ pslr_settings settings;
 bool bulb_timer_before=false;
 bool astrotracer_before=false;
 bool need_bulb_new_cleanup=false;
+bool need_one_push_bracketing_cleanup=false;
 
 static struct option const longopts[] = {
     {"exposure_mode", required_argument, NULL, 'm'},
@@ -1055,11 +1056,16 @@ int main(int argc, char **argv) {
     gettimeofday(&prev_time, NULL);
 
     int bracket_index=0;
-    int buffer_index;
 
     bool continuous = status.drive_mode == PSLR_DRIVE_MODE_CONTINUOUS_HI ||
                       status.drive_mode == PSLR_DRIVE_MODE_CONTINUOUS_LO;
     DPRINT("cont: %d\n", continuous);
+
+    if (bracket_count >1 && settings.one_push_bracketing.pslr_setting_status == PSLR_SETTING_STATUS_READ && settings.one_push_bracketing.value) {
+        pslr_write_setting_by_name(camhandle, "one_push_bracketing", 0);
+        settings.one_push_bracketing.value=false;
+        need_one_push_bracketing_cleanup = true;
+    }
 
     for (frameNo = 0; frameNo < frames; ++frameNo) {
         gettimeofday(&current_time, NULL);
@@ -1120,13 +1126,11 @@ int main(int argc, char **argv) {
             }
             pslr_get_status(camhandle, &status);
         }
-        if ( bracket_index+1 >= bracket_count || frameNo+1>=frames ) {
-            if ( bracket_index+1 < bracket_count ) {
-                // partial bracket set
-                bracket_count = bracket_index+1;
-            }
-            for ( buffer_index = 0; buffer_index < bracket_count; ++buffer_index ) {
-                fd = open_file(output_file, frameNo-bracket_count+buffer_index+1, ufft);
+        if ( bracket_index+1 >= bracket_count || frameNo+1>=frames || pslr_get_model_bufmask_single(camhandle) ) {
+            int bracket_download = pslr_get_model_bufmask_single(camhandle) ? 1 : (bracket_index+1 < bracket_count ? bracket_index+1 : bracket_count);
+            int buffer_index;
+            for ( buffer_index = 0; buffer_index < bracket_download; ++buffer_index ) {
+                fd = open_file(output_file, frameNo-bracket_download+buffer_index+1, ufft);
                 while ( save_buffer(camhandle, buffer_index, fd, &status, uff, quality) ) {
                     usleep(10000);
                 }
@@ -1140,6 +1144,9 @@ int main(int argc, char **argv) {
     }
     if (need_bulb_new_cleanup) {
         bulb_new_cleanup(camhandle);
+    }
+    if (need_one_push_bracketing_cleanup) {
+        pslr_write_setting_by_name(camhandle, "one_push_bracketing", 1);
     }
     camera_close(camhandle);
 

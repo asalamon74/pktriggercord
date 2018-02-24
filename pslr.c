@@ -1188,6 +1188,11 @@ bool pslr_get_model_old_bulb_mode(pslr_handle_t h) {
     return p->model->old_bulb_mode;
 }
 
+bool pslr_get_model_bufmask_single(pslr_handle_t h) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    return p->model->bufmask_single;
+}
+
 bool pslr_get_model_has_settings_parser(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     char cameraid[10];

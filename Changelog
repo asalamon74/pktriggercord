@@ -29,6 +29,7 @@ version 0.84.05
 	astrotracer timer sec setting reading for K-3II
 	K-3II bulb mode bugfix (testing)
 	Restore bulb_timer, astrotracer fields after bulb
+	CLI: Support for single buffer mode mode (K-70)
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon

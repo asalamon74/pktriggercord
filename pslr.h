@@ -221,6 +221,7 @@ pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h);
 bool pslr_get_model_has_settings_parser(pslr_handle_t h);
 int pslr_get_model_af_point_num(pslr_handle_t h);
 bool pslr_get_model_old_bulb_mode(pslr_handle_t h);
+bool pslr_get_model_bufmask_single(pslr_handle_t h);
 
 pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
 int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
