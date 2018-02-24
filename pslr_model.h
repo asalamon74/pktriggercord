@@ -153,8 +153,8 @@ typedef struct {
     const char *name;                                // name
     bool old_scsi_command;                           // true for *ist cameras, false for the newer cameras
     bool old_bulb_mode;                              // true for older cameras
-    bool bufmask_command;                            // true if bufmask determined by calling command 0x02 0x00
     bool need_exposure_mode_conversion;              // is exposure_mode_conversion required
+    bool bufmask_command;                            // true if bufmask determined by calling command 0x02 0x00
     bool is_little_endian;                           // whether the return value should be parsed as little-endian
     int status_buffer_size;                          // status buffer size in bytes
     int max_jpeg_stars;                              // maximum jpeg stars
