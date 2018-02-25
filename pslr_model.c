@@ -72,6 +72,7 @@ static void ipslr_status_diff(uint8_t *buf) {
     }
 }
 
+static
 uint16_t get_uint16_be(uint8_t *buf) {
     uint16_t res;
     res = buf[0] << 8 | buf[1];
@@ -84,12 +85,14 @@ uint32_t get_uint32_be(uint8_t *buf) {
     return res;
 }
 
+static
 int32_t get_int32_be(uint8_t *buf) {
     int32_t res;
     res = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
     return res;
 }
 
+static
 uint16_t get_uint16_le(uint8_t *buf) {
     uint16_t res;
     res = buf[1] << 8 | buf[0];
@@ -102,6 +105,7 @@ uint32_t get_uint32_le(uint8_t *buf) {
     return res;
 }
 
+static
 int32_t get_int32_le(uint8_t *buf) {
     int32_t res;
     res = buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0];
@@ -171,6 +175,7 @@ const char* int_to_binary( uint16_t x ) {
 }
 
 
+static
 int _get_user_jpeg_stars( ipslr_model_info_t *model, int hwqual ) {
     if ( model->id == 0x12f71 ) {
         // K5IIs hack
@@ -200,6 +205,7 @@ int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars) {
 }
 
 
+static
 void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -244,6 +250,7 @@ void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
     status->focus = get_int32_be(&buf[0x174]);
 }
 
+static
 void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
@@ -293,6 +300,7 @@ void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
     // 0x160 and 0x164 change when AF
 }
 
+static
 void ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
@@ -316,6 +324,7 @@ void ipslr_status_parse_istds(ipslr_handle_t *p, pslr_status *status) {
 // this method is used for K-x, K-7, K-5, K-r
 //
 // some cameras also have this data block, but it's shifted a bit
+static
 void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift) {
 
     uint8_t *buf = p->status_buffer;
@@ -400,6 +409,7 @@ void ipslr_status_parse_common(ipslr_handle_t *p, pslr_status *status, int shift
 
 }
 
+static
 void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
@@ -418,6 +428,7 @@ void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 
 // Vince: K-r support 2011-06-22
 //
+static
 void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -433,6 +444,7 @@ void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id2 = get_uint32_be( &buf[0x198]);
 }
 
+static
 void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -451,6 +463,7 @@ void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
 //status.focused = getInt32(statusBuf, 0x164);
 }
 
+static
 void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -471,6 +484,7 @@ void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
 }
 
 // status check seems to be the same as K30
+static
 void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -490,6 +504,7 @@ void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id2 = get_uint32_be( &buf[0x19C]); // - good for K01
 }
 
+static
 void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -505,6 +520,7 @@ void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id2 = get_uint32_be( &buf[0x19C]);
 }
 
+static
 void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -523,6 +539,7 @@ void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
     status->max_shutter_speed.denom = 6000;
 }
 
+static
 void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -540,6 +557,7 @@ void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
 }
 
 // K-3 returns data in little-endian
+static
 void ipslr_status_parse_k3(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -556,6 +574,7 @@ void ipslr_status_parse_k3(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id2 = get_uint32_le( &buf[0x19C]);
 }
 
+static
 void ipslr_status_parse_ks1(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -573,6 +592,7 @@ void ipslr_status_parse_ks1(ipslr_handle_t *p, pslr_status *status) {
 }
 
 
+static
 void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -612,6 +632,7 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
 }
 
+static
 void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -656,6 +677,7 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     status->shake_reduction = get_uint32_le(&buf[0xe4]);
 }
 
+static
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
     if ( debug ) {
@@ -722,6 +744,7 @@ pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_l
     return NULL;
 }
 
+static
 char *read_json_file(int *jsonsize) {
     int jsonfd = open("pentax_settings.json", O_RDONLY);
     if (jsonfd == -1) {

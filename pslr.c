@@ -189,6 +189,7 @@ typedef enum {
 /* a different write_args function needs to be done with slightly changed */
 /* command sequence. Original function was ipslr_write_args(). */
 
+static
 int pslr_get_buffer_status(ipslr_handle_t *p, uint32_t *x, uint32_t *y) {
     //ipslr_handle_t *p = (ipslr_handle_t *) h;
     DPRINT("[C]\t\tipslr_get_buffer_status()\n");
@@ -496,6 +497,7 @@ char *format_rational( pslr_rational_t rational, char * fmt ) {
     return ret;
 }
 
+static
 char *get_white_balance_single_adjust_str( uint32_t adjust, char negativeChar, char positiveChar ) {
     char *ret = malloc(4);
     if ( adjust < 7 ) {
@@ -508,6 +510,7 @@ char *get_white_balance_single_adjust_str( uint32_t adjust, char negativeChar, c
     return ret;
 }
 
+static
 char *get_white_balance_adjust_str( uint32_t adjust_mg, uint32_t adjust_ba ) {
     char *ret = malloc(8);
     if ( adjust_mg != 7 || adjust_ba != 7 ) {
@@ -571,12 +574,14 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     return strbuffer;
 }
 
+static
 char *get_hardwired_setting_bool_info( pslr_bool_setting setting) {
-    char *strbuffer = malloc(32);
+    char *strbuffer = malloc(32+1);
     sprintf(strbuffer,"%-32s", setting.pslr_setting_status == PSLR_SETTING_STATUS_HARDWIRED ? "\t[hardwired]" : "");
     return strbuffer;
 }
 
+static
 char *get_special_setting_info( pslr_setting_status_t setting_status) {
     char *strbuffer = malloc(32);
     switch ( setting_status ) {
@@ -592,8 +597,9 @@ char *get_special_setting_info( pslr_setting_status_t setting_status) {
     return strbuffer;
 }
 
+static
 char *get_hardwired_setting_uint16_info( pslr_uint16_setting setting) {
-    char *strbuffer = malloc(32);
+    char *strbuffer = malloc(32+1);
     sprintf(strbuffer,"%-32s", setting.pslr_setting_status == PSLR_SETTING_STATUS_HARDWIRED ? "\t[hardwired]" : "");
     return strbuffer;
 }
@@ -672,6 +678,7 @@ int pslr_set_progress_callback(pslr_handle_t h, pslr_progress_callback_t cb, uin
     return PSLR_OK;
 }
 
+static
 int ipslr_handle_command_x18( ipslr_handle_t *p, bool cmd9_wrap, int subcommand, int argnum,  ...) {
     DPRINT("[C]\t\tipslr_handle_command_x18(0x%x, %d)\n", subcommand, argnum);
     if ( cmd9_wrap ) {
@@ -788,6 +795,7 @@ int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars ) {
     return ipslr_handle_command_x18( p, true, X18_JPEG_STARS, 2, 1, hwqual, 0);
 }
 
+static
 int _get_user_jpeg_resolution( ipslr_model_info_t *model, int hwres ) {
     return model->jpeg_resolutions[hwres];
 }
@@ -797,6 +805,7 @@ int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres) {
     return _get_user_jpeg_resolution( p->model, hwres );
 }
 
+static
 int _get_hw_jpeg_resolution( ipslr_model_info_t *model, int megapixel) {
     int resindex = 0;
     while ( resindex < MAX_RESOLUTION_SIZE && model->jpeg_resolutions[resindex] > megapixel ) {
@@ -1307,7 +1316,11 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
         }
         if ( p->model->bufmask_command ) {
             uint32_t x, y;
-            pslr_get_buffer_status(p, &x, &y);
+            int ret;
+
+            ret = pslr_get_buffer_status(p, &x, &y);
+            if (ret != PSLR_OK)
+                return ret;
             status->bufmask = x;
         }
         return PSLR_OK;
