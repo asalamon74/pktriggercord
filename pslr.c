@@ -1319,8 +1319,9 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
             int ret;
 
             ret = pslr_get_buffer_status(p, &x, &y);
-            if (ret != PSLR_OK)
+            if (ret != PSLR_OK) {
                 return ret;
+            }
             status->bufmask = x;
         }
         return PSLR_OK;
