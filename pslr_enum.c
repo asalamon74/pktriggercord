@@ -216,6 +216,7 @@ int find_in_array( const char** array, int length, char* str ) {
     return found_index;
 }
 
+static
 const char *get_pslr_str( const char** array, int length, int value ) {
     if (value >=0 && value < length) {
         return array[value];
