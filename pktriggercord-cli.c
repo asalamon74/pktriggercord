@@ -356,7 +356,6 @@ void bulb_new_cleanup(pslr_handle_t camhandle) {
             pslr_write_setting_by_name(camhandle, "astrotracer", astrotracer_before);
         }
     }
-
 }
 
 int main(int argc, char **argv) {
@@ -968,15 +967,6 @@ int main(int argc, char **argv) {
 //    pslr_button_test( camhandle, 0x05, 2 );
 //    sleep_sec(3);
 //    pslr_button_test( camhandle, 0x0c, 0 );
-//    int index;
-//    for (index=0; index<1000; ++index) {
-//        uint32_t value;
-//        pslr_read_setting(camhandle, index, &value);
-//        if (value!=0 || (index%1000==0)) {
-//            printf("setting[%d]=%d\n", index, value);
-//        }
-//    }
-//    pslr_write_setting(camhandle, 139, 17);
 
     if (read_datetime) {
         int year=0, month=0, day=0, hour=0, min=0, sec=0;
