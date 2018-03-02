@@ -805,6 +805,21 @@ Library.
                 <property name="position">3</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkButton" id="settings_button">
+                <property name="label" translatable="yes">Settings Info</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <signal handler="settings_button_clicked_cb" name="clicked"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>

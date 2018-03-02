@@ -606,6 +606,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
     gtk_widget_set_sensitive( GW("focus_button"), st_new != NULL);
     gtk_widget_set_sensitive( GW("status_button"), st_new != NULL);
     gtk_widget_set_sensitive( GW("status_hex_button"), st_new != NULL);
+    gtk_widget_set_sensitive( GW("settings_button"), st_new != NULL);
     gtk_widget_set_sensitive( GW("green_button"), st_new != NULL);
 
     pw = GW("ae_lock_button");
@@ -1087,9 +1088,7 @@ G_MODULE_EXPORT void menu_about_activate_cb(GtkAction *action, gpointer user_dat
     DPRINT("menu about.\n");
     pw = GW("about_dialog");
     gtk_about_dialog_set_version( GTK_ABOUT_DIALOG(pw), VERSION);
-
     gtk_about_dialog_set_copyright( GTK_ABOUT_DIALOG(pw), copyright());
-
     gtk_dialog_run(GTK_DIALOG(pw));
     gtk_widget_hide(pw);
 }
@@ -1448,6 +1447,26 @@ G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action) {
 
     pw = GW("statuswindow");
     gtk_window_set_title( (GtkWindow *)pw, "Status Hexdump");
+    gtk_window_present(GTK_WINDOW(pw));
+}
+
+G_MODULE_EXPORT void settings_button_clicked_cb(GtkAction *action) {
+    DPRINT("Settings");
+    GtkWidget *pw;
+    pslr_settings settings;
+
+    pslr_get_settings_json(camhandle, &settings);
+
+    char *collected_settings = collect_settings_info(  camhandle, settings );
+    GtkLabel *label = GTK_LABEL(GW("status_label"));
+
+    char *markup = g_markup_printf_escaped ("<tt>%s</tt>", collected_settings);
+    gtk_label_set_markup ( label, markup);
+    g_free (markup);
+    free( collected_settings );
+
+    pw = GW("statuswindow");
+    gtk_window_set_title( (GtkWindow *)pw, "Settings Info");
     gtk_window_present(GTK_WINDOW(pw));
 }
 
