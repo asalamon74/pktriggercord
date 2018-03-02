@@ -27,11 +27,10 @@ before_install:
   - mkdir -p "/usr/local/android-sdk/licenses"
   - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > /usr/local/android-sdk/licenses/android-sdk-license
 before_script:
-  - sudo apt-get install astyle
-#  - wget -O astyle_2.04_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz/download
-#  - tar -xf astyle_2.04_linux.tar.gz -C $HOME
-#  - make -C $HOME/astyle/build/gcc
-#  - make -C $HOME/astyle/build/gcc prefix=$HOME install
+  - wget -O astyle_2.04_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz/download
+  - tar -xf astyle_2.04_linux.tar.gz -C $HOME
+  - make -C $HOME/astyle/build/gcc
+  - make -C $HOME/astyle/build/gcc prefix=$HOME install
 script:
   - if [[ -n $(make astyle | grep Formatted) ]]; then echo "Code formatting error. Please check astyle"; exit -1; fi
   - make android
