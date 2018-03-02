@@ -366,7 +366,6 @@ void camera_specific_init() {
     gtk_range_set_range( GTK_RANGE(GW("jpeg_contrast_scale")), -get_jpeg_property_shift(), get_jpeg_property_shift());
     int *resolutions = pslr_get_model_jpeg_resolutions( camhandle );
     int resindex=0;
-    //    gchar buf[256];
     char **str_resolutions = malloc( MAX_RESOLUTION_SIZE * sizeof( char * ));
     while ( resindex < MAX_RESOLUTION_SIZE ) {
         str_resolutions[resindex] = malloc( 10 );
@@ -384,7 +383,6 @@ void camera_specific_init() {
     while ( starindex > 0 ) {
         str_jpegstars[index] = malloc(10);
         sprintf( str_jpegstars[index], "%.*s", starindex,ch);
-        //  gtk_combo_box_insert_text( GTK_COMBO_BOX(GW("jpeg_quality_combo"))), resindex, buf);
         --starindex;
         ++index;
     }
@@ -855,7 +853,6 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old) {
     }
 
     /* Show the newest picture in the main area */
-
     for (new_picture=MAX_BUFFERS; new_picture>=0; --new_picture) {
         if (new_pictures & (1<<new_picture)) {
             break;
@@ -1619,8 +1616,6 @@ void set_preview_icon(int n, GdkPixbuf *pBuf) {
 
 G_MODULE_EXPORT gchar* shutter_scale_format_value_cb(GtkAction *action, gdouble value) {
     int idx = rint(value);
-    //printf("shutter value: %f\n", value);
-
     pslr_rational_t *tbl = 0;
     int steps = 0;
     if (!status_new) {
@@ -1881,15 +1876,10 @@ G_MODULE_EXPORT void jpeg_hue_scale_value_changed_cb(GtkAction *action, gpointer
     if ( in_initcontrols ) {
         return;
     }
-    DPRINT("before get hue %f\n", gtk_range_get_value(GTK_RANGE(GW("jpeg_hue_scale"))));
     int value = rint(gtk_range_get_value(GTK_RANGE(GW("jpeg_hue_scale"))));
-    DPRINT("after get hue %d\n",value);
     int ret;
-    DPRINT("get_jpeg_property_shift %d\n",  get_jpeg_property_shift() );
     assert(value >= -get_jpeg_property_shift());
-    DPRINT("after assert1\n");
     assert(value <= get_jpeg_property_shift());
-    DPRINT("after assert2\n");
     ret = pslr_set_jpeg_hue(camhandle, value);
     if (ret != PSLR_OK) {
         DPRINT("Set JPEG hue failed.\n");
@@ -1921,7 +1911,6 @@ G_MODULE_EXPORT void preview_icon_view_selection_changed_cb(GtkAction *action) {
 
     /* If nothing is selected, disable the action buttons. Otherwise
      * enable them. */
-
     GtkIconView *icon_view = GTK_ICON_VIEW(GW("preview_icon_view"));
     l = gtk_icon_view_get_selected_items(icon_view);
     len = g_list_length(l);
@@ -1983,7 +1972,7 @@ static void save_buffer(int bufno, const char *filename) {
 
     pw = GW("download_progress");
 
-    while (1) {
+    while (true) {
         uint32_t bytes;
         bytes = pslr_buffer_read(camhandle, buf, sizeof(buf));
         //printf("Read %d bytes\n", bytes);
@@ -2042,7 +2031,6 @@ G_MODULE_EXPORT void preview_save_as_cb(GtkAction *action) {
             gtk_progress_bar_set_text(pbar, NULL);
         }
     }
-
     g_list_foreach (l, (GFunc) gtk_tree_path_free, NULL);
     g_list_free (l);
 }
@@ -2107,7 +2095,6 @@ G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user
     }
     assert(val >= 0);
     assert(val < PSLR_GUI_EXPOSURE_MODE_MAX);
-
     if (status_new == NULL || val != status_new->exposure_mode ) {
         pslr_set_exposure_mode(camhandle, val);
     }
@@ -2175,8 +2162,6 @@ void gui_getopt(int argc, char **argv) {
     }
     return;
 }
-
-
 
 int main(int argc, char **argv) {
     gui_getopt(argc, argv);
