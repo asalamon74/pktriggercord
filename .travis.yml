@@ -18,6 +18,7 @@ addons:
     - gtk2.0
     - libgtk2.0 
     - libgtk2.0-dev
+    - astyle
 before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - pushd $HOME/android-ndk-root
@@ -26,11 +27,11 @@ before_install:
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
   - mkdir -p "/usr/local/android-sdk/licenses"
   - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > /usr/local/android-sdk/licenses/android-sdk-license
-before_script:
-  - wget -O astyle_2.04_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz/download
-  - tar -xf astyle_2.04_linux.tar.gz -C $HOME
-  - make -C $HOME/astyle/build/gcc
-  - make -C $HOME/astyle/build/gcc prefix=$HOME install
+#before_script:
+#  - wget -O astyle_2.04_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz/download
+#  - tar -xf astyle_2.04_linux.tar.gz -C $HOME
+#  - make -C $HOME/astyle/build/gcc
+#  - make -C $HOME/astyle/build/gcc prefix=$HOME install
 script:
   - if [[ -n $(make astyle | grep Formatted) ]]; then echo "Code formatting error. Please check astyle"; exit -1; fi
   - make android
