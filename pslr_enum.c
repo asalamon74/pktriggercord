@@ -65,12 +65,12 @@ const char* pslr_flash_mode_str[PSLR_FLASH_MODE_MAX] = {
     "TrailingCurtain",
     "Auto",
     "Auto-RedEye",
-    "TrailingCurtain", // maybe in manual mode??
+    "TrailingCurtain", /* maybe in manual mode?? */
     "Wireless"
 };
 
 const char* pslr_drive_mode_str[PSLR_DRIVE_MODE_MAX] = {
-    "Single", // Bracketing also returns Single
+    "Single", /* Bracketing also returns Single */
     "Continuous-HI",
     "SelfTimer-12",
     "SelfTimer-2",
@@ -112,7 +112,7 @@ const char* pslr_white_balance_mode_str[PSLR_WHITE_BALANCE_MODE_MAX] = {
     "Fluorescent_W",
     "Tungsten",
     "Flash",
-    "Manual", // sometimes called Manual1
+    "Manual", /* sometimes called Manual1 */
     "Manual2",
     "Manual3",
     "Kelvin1",
@@ -155,7 +155,7 @@ const char* pslr_scene_mode_str[PSLR_SCENE_MODE_MAX] = {
     "MACRO",
     "SPORT",
     "NIGHTSCENEPORTRAIT",
-    "NOFLASH",//10
+    "NOFLASH",
     "NIGHTSCENE",
     "SURFANDSNOW",
     "TEXT",
@@ -164,22 +164,21 @@ const char* pslr_scene_mode_str[PSLR_SCENE_MODE_MAX] = {
     "PET",
     "CANDLELIGHT",
     "MUSEUM",
-    "19", // ?
+    "19",
     "FOOD",
     "STAGE",
     "NIGHTSNAP",
     "SWALLOWDOF",
-    "24", // ?
+    "24",
     "NIGHTSCENEHDR",
     "BLUESKY",
     "FOREST",
-    "28", // ?
+    "28",
     "BLACKLIGHTSILHOUETTE"
 };
 
 
-// case insenstive comparison
-// strnicmp
+/* case insenstive comparison - strnicmp */
 int str_comparison_i (const char *s1, const char *s2, int n) {
     if ( s1 == NULL ) {
         return s2 == NULL ? 0 : -(*s2);

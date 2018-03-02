@@ -150,7 +150,7 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
         } else if (r == -1) {
             perror("write(buf)");
         } else if (r < bytes) {
-            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
+            DPRINT("write(buf): only write %zu bytes, should be %d bytes.\n", r, bytes);
         }
         current += bytes;
     }
@@ -179,7 +179,7 @@ void save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
         } else if (r == -1) {
             perror("write(buf)");
         } else if (r < bytes) {
-            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
+            DPRINT("write(buf): only write %zu bytes, should be %d bytes.\n", r, bytes);
         }
         current += bytes;
     }

@@ -875,7 +875,7 @@ int pslr_set_jpeg_saturation(pslr_handle_t h, int32_t saturation) {
 int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format) {
     DPRINT("[C]\tpslr_set_image_format(%X)\n", format);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (format < 0 || format > PSLR_IMAGE_FORMAT_MAX) {
+    if (format >= PSLR_IMAGE_FORMAT_MAX) {
         return PSLR_PARAM;
     }
     return ipslr_handle_command_x18( p, true, X18_IMAGE_FORMAT, 2, 1, format, 0);
@@ -884,7 +884,7 @@ int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format) {
 int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format) {
     DPRINT("[C]\tpslr_set_raw_format(%X)\n", format);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (format < 0 || format > PSLR_RAW_FORMAT_MAX) {
+    if (format >= PSLR_RAW_FORMAT_MAX) {
         return PSLR_PARAM;
     }
     return ipslr_handle_command_x18( p, true, X18_RAW_FORMAT, 2, 1, format, 0);
@@ -893,7 +893,7 @@ int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format) {
 int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space) {
     DPRINT("[C]\tpslr_set_raw_format(%X)\n", color_space);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    if (color_space < 0 || color_space > PSLR_COLOR_SPACE_MAX) {
+    if (color_space >= PSLR_COLOR_SPACE_MAX) {
         return PSLR_PARAM;
     }
     return ipslr_handle_command_x18( p, true, X18_COLOR_SPACE, 1, color_space, 0, 0);
@@ -965,7 +965,7 @@ int pslr_set_exposure_mode(pslr_handle_t h, pslr_exposure_mode_t mode) {
     DPRINT("[C]\tpslr_set_exposure_mode(%X)\n", mode);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
 
-    if (mode < 0 || mode >= PSLR_EXPOSURE_MODE_MAX) {
+    if (mode >= PSLR_EXPOSURE_MODE_MAX) {
         return PSLR_PARAM;
     }
     return ipslr_handle_command_x18( p, true, X18_EXPOSURE_MODE, 2, 1, mode, 0);

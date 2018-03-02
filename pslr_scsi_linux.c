@@ -73,7 +73,8 @@ char **get_drives(int *driveNum) {
     char **ret=NULL;
     int j=0,jj;
     int di;
-    for (di=0; di<sizeof(device_dirs)/sizeof(device_dirs[0]); ++di) {
+    int device_num = sizeof(device_dirs)/sizeof(device_dirs[0]);
+    for (di=0; di<device_num; ++di) {
         d = opendir(device_dirs[di]);
         if (d) {
             while ( (ent = readdir(d)) ) {
@@ -155,7 +156,7 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     sg_io_hdr_t io;
     uint8_t sense[32];
     int r;
-    int i;
+    uint32_t i;
 
     memset(&io, 0, sizeof (io));
 
@@ -225,7 +226,7 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     sg_io_hdr_t io;
     uint8_t sense[32];
     int r;
-    int i;
+    uint32_t i;
 
     memset(&io, 0, sizeof (io));
 
@@ -243,7 +244,7 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     /* io.pack_id = 0; */
     /* io.usr_ptr = NULL; */
 
-    //  print debug scsi cmd
+    /*  print debug scsi cmd */
     DPRINT("[S]\t\t\t\t\t >>> [");
     for (i = 0; i < cmdLen; ++i) {
         if (i > 0) {
@@ -256,7 +257,7 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     }
     DPRINT("]\n");
     if (bufLen > 0) {
-        //  print debug write buffer
+        /*  print debug write buffer */
         DPRINT("[S]\t\t\t\t\t >>> [");
         for (i = 0; i < 32 && i < bufLen; ++i) {
             if (i > 0) {
