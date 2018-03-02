@@ -18,7 +18,7 @@ addons:
     - gtk2.0
     - libgtk2.0 
     - libgtk2.0-dev
- efore_install:
+before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - pushd $HOME/android-ndk-root
   - git checkout 9afc86eae45a544562bc7052ca6f529772754f16 .
