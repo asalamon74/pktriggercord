@@ -31,6 +31,7 @@ version 0.84.05
 	Restore bulb_timer, astrotracer fields after bulb
 	CLI: Support for single buffer mode mode (K-70)
 	GUI: Settings info
+	GUI: Support for single buffer mode mode (K-70)
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon

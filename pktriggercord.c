@@ -128,6 +128,7 @@ static uint32_t focus_indicated_af_points;
 static uint32_t select_indicated_af_points;
 static uint32_t preselect_indicated_af_points;
 static bool preselect_reselect = false;
+static pslr_settings settings;
 
 /* 40-220 confirmed */
 /* This is the nominator, the denominator is 10 for all confirmed
@@ -199,6 +200,7 @@ bool debug = false;
 bool dangerous = false;
 bool dangerous_camera_connected = false;
 bool in_initcontrols = false;
+bool need_one_push_bracketing_cleanup = false;
 
 static const int THUMBNAIL_WIDTH = 160;
 static const int THUMBNAIL_HEIGHT = 120;
@@ -405,6 +407,14 @@ void camera_specific_init() {
 
     gtk_widget_set_sensitive( GTK_WIDGET(pw), max_supported_image_tone > -1 );
     handle_af_points = pslr_get_model_af_point_num(camhandle) == 11;
+
+    pslr_get_settings_json(camhandle, &settings);
+
+    if (pslr_get_model_bufmask_single(camhandle) && settings.one_push_bracketing.pslr_setting_status == PSLR_SETTING_STATUS_READ && settings.one_push_bracketing.value) {
+        pslr_write_setting_by_name(camhandle, "one_push_bracketing", 0);
+        settings.one_push_bracketing.value=false;
+        need_one_push_bracketing_cleanup = true;
+    }
 }
 
 static void init_controls(pslr_status *st_new, pslr_status *st_old) {
@@ -600,7 +610,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
     gtk_widget_set_sensitive(pw, st_new != NULL);
 
     /* Buttons */
-    gtk_widget_set_sensitive( GW("shutter_button"), st_new != NULL);
+    gtk_widget_set_sensitive( GW("shutter_button"), st_new != NULL && (!pslr_get_model_bufmask_single(camhandle) || !st_new->bufmask) );
     gtk_widget_set_sensitive( GW("focus_button"), st_new != NULL);
     gtk_widget_set_sensitive( GW("status_button"), st_new != NULL);
     gtk_widget_set_sensitive( GW("status_hex_button"), st_new != NULL);
@@ -889,13 +899,11 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old) {
     gtk_icon_view_unselect_all( GTK_ICON_VIEW(pw) );
     gtk_icon_view_select_path( GTK_ICON_VIEW(pw), path );
     gtk_tree_path_free (path);
-
 }
 
 static void manage_camera_buffers_limited() {
     update_image_areas(0, true);
 }
-
 
 G_MODULE_EXPORT void auto_save_folder_button_clicked_cb(GtkAction *action) {
     GtkWidget *pw;
@@ -1451,9 +1459,6 @@ G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action) {
 G_MODULE_EXPORT void settings_button_clicked_cb(GtkAction *action) {
     DPRINT("Settings");
     GtkWidget *pw;
-    pslr_settings settings;
-
-    pslr_get_settings_json(camhandle, &settings);
 
     char *collected_settings = collect_settings_info(  camhandle, settings );
     GtkLabel *label = GTK_LABEL(GW("status_label"));
@@ -1504,6 +1509,11 @@ static void my_atexit(void) {
 static gboolean added_quit(gpointer data) {
     DPRINT("added_quit\n");
     if (camhandle) {
+
+        if (need_one_push_bracketing_cleanup) {
+            pslr_write_setting_by_name(camhandle, "one_push_bracketing", 1);
+        }
+
         pslr_disconnect(camhandle);
         pslr_shutdown(camhandle);
         camhandle = 0;
