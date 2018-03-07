@@ -35,9 +35,11 @@
 #include <errno.h>
 #include <math.h>
 #include <getopt.h>
+#include <sys/time.h>
 
 #include "pslr.h"
 #include "pslr_lens.h"
+#include "pktriggercord-servermode.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
@@ -201,6 +203,7 @@ bool dangerous = false;
 bool dangerous_camera_connected = false;
 bool in_initcontrols = false;
 bool need_one_push_bracketing_cleanup = false;
+struct timeval expected_bulb_end_time;
 
 static const int THUMBNAIL_WIDTH = 160;
 static const int THUMBNAIL_HEIGHT = 120;
@@ -1052,7 +1055,24 @@ static void update_image_areas(int buffer, bool main) {
     int r;
     GdkPixbuf *pixBuf;
 
-    gtk_statusbar_push(statusbar, sbar_download_ctx, "Getting preview");
+    struct timeval current_time;
+    gettimeofday(&current_time, NULL);
+    int bulb_remain_sec = timeval_diff(&expected_bulb_end_time, &current_time)  / 1000000.0;
+    GtkButton *shutterButton = (GtkButton *)GW("shutter_button");
+    while (bulb_remain_sec>0) {
+        static gchar bulb_message[100];
+        sprintf (bulb_message, "BULB -> wait : %d seconds", bulb_remain_sec);
+        gtk_button_set_label(shutterButton, bulb_message);
+        sleep_sec(1);
+        while (gtk_events_pending ()) {
+            gtk_main_iteration ();
+        }
+        gettimeofday(&current_time, NULL);
+        bulb_remain_sec = timeval_diff(&expected_bulb_end_time, &current_time)  / 1000000.0;
+    }
+    gtk_button_set_label(shutterButton, "Take picture");
+
+    gtk_statusbar_push(statusbar, sbar_download_ctx, "Getting preview ");
     while (gtk_events_pending()) {
         gtk_main_iteration();
     }
@@ -1376,23 +1396,45 @@ G_MODULE_EXPORT void shutter_press(GtkAction *action) {
         if (shutter_speed <= 0) {
             return;
         }
-        is_bulbing_on = TRUE;
-        pslr_bulb(camhandle, true);
-        pslr_shutter(camhandle);
-        while (shutter_speed > 0 && is_bulbing_on == TRUE) {
-            static gchar bulb_message[100];
-            sprintf (bulb_message, "BULB -> wait : %d seconds", shutter_speed);
-            gtk_button_set_label((GtkButton *)widget, bulb_message);
-            sleep_sec(1);
-            shutter_speed--;
-            while (gtk_events_pending ()) {
-                gtk_main_iteration ();
+        if (pslr_get_model_old_bulb_mode(camhandle)) {
+            is_bulbing_on = TRUE;
+            pslr_bulb(camhandle, true);
+            pslr_shutter(camhandle);
+            while (shutter_speed > 0 && is_bulbing_on == TRUE) {
+                static gchar bulb_message[100];
+                sprintf (bulb_message, "BULB -> wait : %d seconds", shutter_speed);
+                gtk_button_set_label((GtkButton *)widget, bulb_message);
+                sleep_sec(1);
+                shutter_speed--;
+                while (gtk_events_pending ()) {
+                    gtk_main_iteration ();
+                }
             }
-        }
-        if (is_bulbing_on == TRUE) {
-            pslr_bulb(camhandle, false);
-            is_bulbing_on = FALSE;
-            gtk_button_set_label((GtkButton *)widget, "Take picture");
+            if (is_bulbing_on == TRUE) {
+                pslr_bulb(camhandle, false);
+                is_bulbing_on = FALSE;
+                gtk_button_set_label((GtkButton *)widget, "Take picture");
+            }
+        } else {
+            if (pslr_has_setting_by_name(camhandle, "bulb_timer")) {
+                pslr_write_setting_by_name(camhandle, "bulb_timer", 1);
+            } else if (pslr_has_setting_by_name(camhandle, "astrotracer")) {
+                pslr_write_setting_by_name(camhandle, "astrotracer", 1);
+            } else {
+                fprintf(stderr, "New bulb mode is not supported for this camera model\n");
+                return;
+            }
+            if (pslr_has_setting_by_name(camhandle, "bulb_timer_sec")) {
+                pslr_write_setting_by_name(camhandle, "bulb_timer_sec", shutter_speed);
+            } else if (pslr_has_setting_by_name(camhandle, "astrotracer_timer_sec")) {
+                pslr_write_setting_by_name(camhandle, "astrotracer_timer_sec", shutter_speed);
+            } else {
+                fprintf(stderr, "New bulb mode is not supported for this camera model\n");
+                return;
+            }
+            gettimeofday(&expected_bulb_end_time, NULL);
+            expected_bulb_end_time.tv_sec += shutter_speed;
+            pslr_shutter(camhandle);
         }
     } else {
         r = pslr_shutter(camhandle);
