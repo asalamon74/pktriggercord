@@ -389,7 +389,6 @@ void camera_specific_init() {
 
     combobox_append(  GTK_COMBO_BOX(GW("jpeg_quality_combo")), str_jpegstars, num_stars );
 
-    // jpeg image tone
     int max_supported_image_tone = pslr_get_model_max_supported_image_tone( camhandle )+1;
     DPRINT("max image tone:%d", max_supported_image_tone);
     GtkComboBox *pw = (GtkComboBox*)GW("jpeg_image_tone_combo");
@@ -402,7 +401,6 @@ void camera_specific_init() {
         memset(imagetones[i], '\0', strlen( get_pslr_jpeg_image_tone_str( i ))+1);
         strncpy( imagetones[i], get_pslr_jpeg_image_tone_str( i ), strlen( get_pslr_jpeg_image_tone_str( i ) ));
     }
-
     combobox_append( pw, imagetones, max_supported_image_tone );
 
     gtk_widget_set_sensitive( GTK_WIDGET(pw), max_supported_image_tone > -1 );
