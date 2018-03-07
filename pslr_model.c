@@ -759,7 +759,7 @@ char *read_json_file(int *jsonsize) {
     lseek(jsonfd, 0, SEEK_SET);
     char *jsontext=malloc(*jsonsize);
     read(jsonfd, jsontext, *jsonsize);
-    DPRINT("json text:\n%s\n", jsontext);
+    DPRINT("json text:\n%.*s\n", *jsonsize, jsontext);
     return jsontext;
 }
 
