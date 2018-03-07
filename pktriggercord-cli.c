@@ -1051,7 +1051,7 @@ int main(int argc, char **argv) {
                       status.drive_mode == PSLR_DRIVE_MODE_CONTINUOUS_LO;
     DPRINT("cont: %d\n", continuous);
 
-    if (bracket_count >1 && settings.one_push_bracketing.pslr_setting_status == PSLR_SETTING_STATUS_READ && settings.one_push_bracketing.value) {
+    if (pslr_get_model_bufmask_single(camhandle) && bracket_count >1 && settings.one_push_bracketing.pslr_setting_status == PSLR_SETTING_STATUS_READ && settings.one_push_bracketing.value) {
         pslr_write_setting_by_name(camhandle, "one_push_bracketing", 0);
         settings.one_push_bracketing.value=false;
         need_one_push_bracketing_cleanup = true;
