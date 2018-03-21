@@ -73,10 +73,10 @@ public class MainActivity extends Activity {
 	getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
-	progressBar = (ProgressBar) findViewById(R.id.downloadprogress);
-        progressBarTextView = (TextView)findViewById(R.id.downloadprogresstext);
+	progressBar = findViewById(R.id.downloadprogress);
+	progressBarTextView = findViewById(R.id.downloadprogresstext);
 
-	npf = (NumberPicker) findViewById(R.id.frames);
+	npf = findViewById(R.id.frames);
 	npf.setMaxValue(99);
 	npf.setMinValue(1);
 	npf.setWrapSelectorWheel(false);
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
 		}
 	    });
 
-	npd = (NumberPicker) findViewById(R.id.delay);
+	npd = findViewById(R.id.delay);
 	npd.setMaxValue(120);
 	npd.setMinValue(3);
 	npd.setWrapSelectorWheel(false);
@@ -102,7 +102,7 @@ public class MainActivity extends Activity {
 	if( savedInstanceState != null ) {
 	    previewBitmap = savedInstanceState.getParcelable("preview");
 	    if( previewBitmap != null ) {
-		ImageView preview = (ImageView) findViewById(R.id.preview);
+		ImageView preview = findViewById(R.id.preview);
 		preview.setImageBitmap( previewBitmap );			
 	    }
 	    npf.setValue( savedInstanceState.getInt("frames"));
@@ -110,13 +110,13 @@ public class MainActivity extends Activity {
 	}
 	npd.setVisibility( npf.getValue() == 1 ? View.INVISIBLE : View.VISIBLE);
 
-	final Button focusButton = (Button) findViewById(R.id.focus);
+	final Button focusButton = findViewById(R.id.focus);
         focusButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
 		    callAsynchronousTask(0, 1, 0, 1000, new CliParam("focus"));
 		}
 	    });
-	final Button shutterButton = (Button) findViewById(R.id.shutter);
+	final Button shutterButton = findViewById(R.id.shutter);
         shutterButton.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
 		    actionTimer = callAsynchronousTask(0, npf.getValue(), 0, 1000*npd.getValue(), new CliParam("shutter"));
@@ -139,7 +139,7 @@ public class MainActivity extends Activity {
 	    if( currentRuns < currentMaxRuns ) {
 		long initialDelay = Math.max( 0, nextRepeat - SystemClock.elapsedRealtime());
 
-		TextView timedown = (TextView) findViewById(R.id.timedown);     
+		TextView timedown = findViewById(R.id.timedown);
 		timedown.setVisibility ( View.VISIBLE );
 		timedown.setText( String.format("%2d/%d\n ", currentRuns+1, currentMaxRuns));
 
@@ -206,7 +206,7 @@ public class MainActivity extends Activity {
 				} else {
 				    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 				}
-				TextView timedown = (TextView) findViewById(R.id.timedown);     
+				TextView timedown = findViewById(R.id.timedown);
 				try {
 				    if( maxRuns > 1 ) {
 					timedown.setText( String.format("%2d/%d\n ", runs+1, maxRuns));
@@ -299,7 +299,7 @@ public class MainActivity extends Activity {
     }
 
     private class CliHandler extends AsyncTask<CliParam,Map<String,Object>,String> {
-	final Map<String,Object> map = new HashMap<String,Object>();
+	final Map<String,Object> map = new HashMap<>();
 	DataOutputStream dos;
 	InputStream is;
 
@@ -331,7 +331,7 @@ public class MainActivity extends Activity {
 
 	private class DownloadProgressCallback implements PkTriggerCord.ProgressCallback {
 
-	    final Map<String,Object> pmap = new HashMap<String, Object>();
+	    final Map<String,Object> pmap = new HashMap<>();
 
 	    public void progressUpdate(double progress) {
 		pmap.put("progress", (int)(100*progress));
@@ -473,11 +473,11 @@ public class MainActivity extends Activity {
 	}
 
 	protected void onProgressUpdate(Map<String,Object>... progress) {
-	    TextView cameraStatus = (TextView) findViewById(R.id.camerastatus);
-	    TextView lensStatus = (TextView) findViewById(R.id.lensstatus);
-	    TextView currentShutterSpeedText = (TextView) findViewById(R.id.currentshutterspeed);
-	    TextView currentApertureText = (TextView) findViewById(R.id.currentaperture);
-	    TextView currentIsoText = (TextView) findViewById(R.id.currentiso);
+	    TextView cameraStatus = findViewById(R.id.camerastatus);
+	    TextView lensStatus = findViewById(R.id.lensstatus);
+	    TextView currentShutterSpeedText = findViewById(R.id.currentshutterspeed);
+	    TextView currentApertureText = findViewById(R.id.currentaperture);
+	    TextView currentIsoText = findViewById(R.id.currentiso);
 	    for( Map<String,Object> pr : progress ) {
 		for (Map.Entry<String, Object> entry : pr.entrySet()) {
 		    appendText(entry.getKey() + "/" + entry.getValue()+"\n");
@@ -492,7 +492,7 @@ public class MainActivity extends Activity {
 		    } else if( "current_iso".equals( entry.getKey() ) ) {
 			currentIsoText.setText("ISO "+entry.getValue()); 
 		    } else if( "preview".equals( entry.getKey() ) ) {
-			ImageView preview = (ImageView) findViewById(R.id.preview);
+			ImageView preview = findViewById(R.id.preview);
 			previewBitmap = (Bitmap)entry.getValue();
 			preview.setImageBitmap( (Bitmap)entry.getValue());
 		    } else if( "progress".equals( entry.getKey() ) ) {
@@ -503,7 +503,7 @@ public class MainActivity extends Activity {
 	}
 
 	protected void onPostExecute(String result) {
-	    TextView errorText = (TextView) findViewById(R.id.errortext);
+	    TextView errorText = findViewById(R.id.errortext);
 	    if( result != null ) {
 		appendText(result);
 		errorText.setText(result);
@@ -521,7 +521,7 @@ public class MainActivity extends Activity {
     
     private void commandWrapper(boolean asRoot,String command) {
 	appendText("Executing as "+(asRoot ? "" : "non-") + "root");
-	List<String> commands = new ArrayList<String>();
+	List<String> commands = new ArrayList<>();
 	if( asRoot ) {
 	    commands.add("su");
 	    commands.add("-c");
