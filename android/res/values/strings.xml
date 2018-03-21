@@ -19,4 +19,5 @@ There is NO WARRANTY, to the extent permitted by law.</string>
     <string name="shutter">Shutter</string>
     <string name="focus">Focus</string>
     <string name="image">Image</string>
+    <string name="contentDescriptionPreview">Preview image</string>
 </resources>
