@@ -3,10 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 <ImageView
-        android:id="@+id/preview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitStart"
+    android:id="@+id/preview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="fitStart"
+    android:padding="5dp"
+    android:cropToPadding="true"
     android:background="@drawable/image_border"
     android:layout_above="@+id/downloadprogress"/>
 <TextView
