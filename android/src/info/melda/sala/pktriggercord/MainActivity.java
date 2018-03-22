@@ -193,53 +193,52 @@ public class MainActivity extends Activity {
 
 
     private Timer callAsynchronousTask(final int cRuns, final int maxRuns, long initialDelay, final long period, final CliParam... param) {
-               final Handler handler = new Handler();
+        final Handler handler = new Handler();
         final Timer timer = new Timer();
         TimerTask doAsynchronousTask = new TimerTask() {
-                private int runs=cRuns;
-                @Override
-                public void run() {
-                    handler.post(new Runnable() {
-                            public void run() {
-                                if( maxRuns > 1 || param != null ) {
-                                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                                } else {
-                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                                }
-                                TextView timedown = findViewById(R.id.timedown);
-                                try {
-                                    if( maxRuns > 1 ) {
-                                        timedown.setText( String.format("%2d/%d\n ", runs+1, maxRuns));
-                                        timedown.setVisibility ( View.VISIBLE );
-                                        if( runs+1 != maxRuns ) {
-                                            nextRepeat = SystemClock.elapsedRealtime()+ period;
-                                        }
-                                        currentRuns = runs+1;
-                                        currentMaxRuns = maxRuns;
-                                    } else if( param != null ) {
-                                        timedown.setVisibility ( View.INVISIBLE );
-                                    } else {
-                                        long tillNextRepeat = nextRepeat - SystemClock.elapsedRealtime();
-                                        timedown.setText( String.format("%2d/%d\n%2.1f", currentRuns, currentMaxRuns, Math.round(1.0 * tillNextRepeat / 100) / 10.0 ));
-                                    }
-
-                                    CliHandler cli = new CliHandler();
-                                    if( param != null ) {
-                                        cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, param);
-                                    } else {
-                                        cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-                                    }
-                                } catch (Exception e) {
-                                    appendText("Error:"+e.getMessage());
-                                }
-                                if( ++runs == maxRuns ) {
-                                    timer.cancel();
-                                    timedown.setVisibility ( View.INVISIBLE );
-                                }
+            private int runs=cRuns;
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                        public void run() {
+                            if( maxRuns > 1 || param != null ) {
+                                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                            } else {
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                             }
-                        });
-                }
-            };
+                            TextView timedown = findViewById(R.id.timedown);
+                            try {
+                                if( maxRuns > 1 ) {
+                                    timedown.setText( String.format("%2d/%d\n ", runs+1, maxRuns));
+                                    timedown.setVisibility ( View.VISIBLE );
+                                    if( runs+1 != maxRuns ) {
+                                        nextRepeat = SystemClock.elapsedRealtime()+ period;
+                                    }
+                                    currentRuns = runs+1;
+                                    currentMaxRuns = maxRuns;
+                                } else if( param != null ) {
+                                    timedown.setVisibility ( View.INVISIBLE );
+                                } else {
+                                    long tillNextRepeat = nextRepeat - SystemClock.elapsedRealtime();
+                                    timedown.setText( String.format("%2d/%d\n%2.1f", currentRuns, currentMaxRuns, Math.round(1.0 * tillNextRepeat / 100) / 10.0 ));
+                                }
+                                CliHandler cli = new CliHandler();
+                                if( param != null ) {
+                                    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, param);
+                                } else {
+                                    cli.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+                                }
+                            } catch (Exception e) {
+                                appendText("Error:"+e.getMessage());
+                            }
+                            if( ++runs == maxRuns ) {
+                                timer.cancel();
+                                timedown.setVisibility ( View.INVISIBLE );
+                            }
+                        }
+                    });
+            }
+        };
         timer.schedule(doAsynchronousTask, initialDelay, period);
         //        timer.scheduleAtFixedRate(doAsynchronousTask, 0, 50);
         return timer;
