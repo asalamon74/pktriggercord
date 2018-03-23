@@ -320,8 +320,7 @@ public class MainActivity extends Activity {
         }
 
         private int getIntParam(String str) {
-            String[] separated = str.split(" ");
-            return Integer.parseInt(separated[1]);
+            return Integer.parseInt(str.split(" ")[1]);
         }
 
         private boolean answerStatus(String answer) {
@@ -329,7 +328,6 @@ public class MainActivity extends Activity {
         }
 
         private class DownloadProgressCallback implements PkTriggerCord.ProgressCallback {
-
             final Map<String,Object> pmap = new HashMap<>();
 
             public void progressUpdate(double progress) {
@@ -339,7 +337,6 @@ public class MainActivity extends Activity {
         }
 
         protected String doInBackground(CliParam... params) {
-
             long time1 = SystemClock.elapsedRealtime();
             Socket socket=null;
             SimpleDateFormat logDf = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS");
@@ -480,22 +477,30 @@ public class MainActivity extends Activity {
             for( Map<String,Object> pr : progress ) {
                 for (Map.Entry<String, Object> entry : pr.entrySet()) {
                     appendText(entry.getKey() + "/" + entry.getValue()+"\n");
-                    if( "camera_name".equals( entry.getKey() ) ) {
-                        cameraStatus.setText((String)entry.getValue());
-                    } else if( "lens_name".equals( entry.getKey() ) ) {
-                        lensStatus.setText((String)entry.getValue());
-                    } else if( "current_shutter_speed".equals( entry.getKey() ) ) {
-                        currentShutterSpeedText.setText(entry.getValue()+"s");
-                    } else if( "current_aperture".equals( entry.getKey() ) ) {
-                        currentApertureText.setText("f/"+entry.getValue());
-                    } else if( "current_iso".equals( entry.getKey() ) ) {
-                        currentIsoText.setText("ISO "+entry.getValue());
-                    } else if( "preview".equals( entry.getKey() ) ) {
-                        ImageView preview = findViewById(R.id.preview);
-                        previewBitmap = (Bitmap)entry.getValue();
-                        preview.setImageBitmap( (Bitmap)entry.getValue());
-                    } else if( "progress".equals( entry.getKey() ) ) {
-                        setProgressBarProgress((Integer)entry.getValue());
+                    switch (entry.getKey()) {
+                        case "camera_name":
+                            cameraStatus.setText((String)entry.getValue());
+                            break;
+                        case "lens_name":
+                            lensStatus.setText((String)entry.getValue());
+                            break;
+                        case "current_shutter_speed":
+                            currentShutterSpeedText.setText(entry.getValue()+"s");
+                            break;
+                        case "current_aperture":
+                            currentApertureText.setText("f/"+entry.getValue());
+                            break;
+                        case "current_iso":
+                            currentIsoText.setText("ISO "+entry.getValue());
+                            break;
+                        case "preview":
+                            ImageView preview = findViewById(R.id.preview);
+                            previewBitmap = (Bitmap)entry.getValue();
+                            preview.setImageBitmap( (Bitmap)entry.getValue());
+                            break;
+                        case "progress":
+                            setProgressBarProgress((Integer)entry.getValue());
+                            break;
                     }
                 }
             }
