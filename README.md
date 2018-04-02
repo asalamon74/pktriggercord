@@ -24,7 +24,6 @@ the camera.
 - Pentax K-x
 - Pentax K10D (Samsung GX-10) _<sub>requires firmware 1.20 or later</sub>_
 - Pentax K20D (Samsung GX-20)
-- Pentax istDS (Not working)
 - Pentax K200D
 - Pentax K-7
 - Pentax K-r
@@ -39,19 +38,23 @@ the camera.
 
 ### Limited support
 
-- Pentax istD (Not working)
 - Pentax istDS2
 - Pentax istDL
-- Pentax K110D (Not working)
-- Pentax K100D (Not working)
 - Pentax K100D Super
+
+### Not working
+
+- Pentax istD
+- Pentax istDS
+- Pentax K110D
+- Pentax K100D
+- Pentax K-S2
 
 ### Testing
 
 *The following cameras are not yet tested, please contact us if you can help.*
 
 - Pentax K-S1
-- Pentax K-S2
 
 ## More info
 
