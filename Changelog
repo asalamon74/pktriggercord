@@ -32,6 +32,7 @@ version 0.84.05
 	CLI: Support for single buffer mode mode (K-70)
 	GUI: Settings info
 	GUI: Support for single buffer mode mode (K-70)
+	Testing support for KP
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
