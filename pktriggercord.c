@@ -210,6 +210,13 @@ static const int THUMBNAIL_HEIGHT = 120;
 static const int HISTOGRAM_WIDTH = 640;
 static const int HISTOGRAM_HEIGHT = 480;
 
+static void wait_for_gtk_events_pending() {
+    while (gtk_events_pending()) {
+        gtk_main_iteration();
+    }
+}
+
+
 void combobox_append( GtkComboBox *combobox, char **items, int item_num ) {
     GtkListStore *store = gtk_list_store_new (1, G_TYPE_STRING);
     GtkTreeIter iter;
@@ -663,9 +670,7 @@ static gboolean status_poll(gpointer data) {
             gtk_statusbar_push(statusbar, sbar_connect_ctx, "Connecting...");
 
             /* Allow the message to be seen */
-            while (gtk_events_pending()) {
-                gtk_main_iteration();
-            }
+            wait_for_gtk_events_pending();
 
             /* Connect */
             ret = pslr_connect(camhandle);
@@ -987,9 +992,7 @@ static bool auto_save_check(int format, int buffer) {
     }
 
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Auto-saving");
-    while (gtk_events_pending()) {
-        gtk_main_iteration();
-    }
+    wait_for_gtk_events_pending();
 
     snprintf(filename, sizeof(filename), "%s%04d.%s", filebase, counter, file_formats[format].extension);
     DPRINT("Save buffer %d\n", buffer);
@@ -1065,18 +1068,14 @@ static void update_image_areas(int buffer, bool main) {
         sprintf (bulb_message, "BULB -> wait : %d seconds", bulb_remain_sec);
         gtk_button_set_label(shutterButton, bulb_message);
         sleep_sec(1);
-        while (gtk_events_pending ()) {
-            gtk_main_iteration ();
-        }
+        wait_for_gtk_events_pending();
         gettimeofday(&current_time, NULL);
         bulb_remain_sec = timeval_diff(&expected_bulb_end_time, &current_time)  / 1000000.0;
     }
     gtk_button_set_label(shutterButton, "Take picture");
 
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Getting preview ");
-    while (gtk_events_pending()) {
-        gtk_main_iteration();
-    }
+    wait_for_gtk_events_pending();
 
     pError = NULL;
     DPRINT("Trying to read buffer %d %d\n", buffer, main);
@@ -1264,9 +1263,7 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
                 GtkAllocation allocation;
                 gtk_widget_get_allocation( pw, &allocation);
                 gdk_window_invalidate_rect(gtk_widget_get_window(pw), &allocation, FALSE);
-                while (gtk_events_pending()) {
-                    gtk_main_iteration();
-                }
+                wait_for_gtk_events_pending();
                 if (status_new && status_new->af_point_select == PSLR_AF_POINT_SEL_SELECT) {
                     ret = pslr_select_af_point(camhandle, 1 << i);
                     if (ret != PSLR_OK) {
@@ -1417,9 +1414,7 @@ G_MODULE_EXPORT void shutter_press(GtkAction *action) {
                 gtk_button_set_label((GtkButton *)widget, bulb_message);
                 sleep_sec(1);
                 shutter_speed--;
-                while (gtk_events_pending ()) {
-                    gtk_main_iteration ();
-                }
+                wait_for_gtk_events_pending();
             }
             if (is_bulbing_on == TRUE) {
                 pslr_bulb(camhandle, false);
@@ -2044,10 +2039,7 @@ static void save_buffer(int bufno, const char *filename) {
                 return;
             }
             write(fd, pLastPreviewImage, lastPreviewImageSize);
-            /* process pending events */
-            while (gtk_events_pending()) {
-                gtk_main_iteration();
-            }
+            wait_for_gtk_events_pending();
             close(fd);
         }
         return;
@@ -2090,10 +2082,7 @@ static void save_buffer(int bufno, const char *filename) {
 
         current += bytes;
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(pw), (gdouble) current / (gdouble) length);
-        /* process pending events */
-        while (gtk_events_pending()) {
-            gtk_main_iteration();
-        }
+        wait_for_gtk_events_pending();
     }
     close(fd);
     pslr_buffer_close(camhandle);
