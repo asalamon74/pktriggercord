@@ -224,10 +224,10 @@ For old camera, there is only 3 arguments:
 typedef enum {
     PSLR_BUF_PEF,
     PSLR_BUF_DNG,
-    PSLR_BUF_JPEG_4, // only for cameras supporting 4* mode ?
-    PSLR_BUF_JPEG_3,
-    PSLR_BUF_JPEG_2,
-    PSLR_BUF_JPEG_1,
+    PSLR_BUF_JPEG_MAX,
+    PSLR_BUF_JPEG_MAX_M1,
+    PSLR_BUF_JPEG_MAX_M2,
+    PSLR_BUF_JPEG_MAX_M3,
     PSLR_BUF_PREVIEW = 8,
     PSLR_BUF_THUMBNAIL = 9 // 7 works also
 } pslr_buffer_type;
