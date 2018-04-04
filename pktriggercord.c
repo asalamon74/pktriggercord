@@ -1045,13 +1045,14 @@ static bool auto_save_check(int format, int buffer) {
 
 bool buf_updated = false;
 GdkPixbuf *pMainPixbuf = NULL;
+uint8_t *pLastPreviewImage;
+uint32_t lastPreviewImageSize;
+
 //static GdkPixbuf *pThumbPixbuf[MAX_BUFFERS];
 
 // updates the thumbnails and optionally the main preview
 static void update_image_areas(int buffer, bool main) {
     GError *pError;
-    uint8_t *pImage;
-    uint32_t imageSize;
     int r;
     GdkPixbuf *pixBuf;
 
@@ -1079,13 +1080,17 @@ static void update_image_areas(int buffer, bool main) {
 
     pError = NULL;
     DPRINT("Trying to read buffer %d %d\n", buffer, main);
-    r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_PREVIEW, 4, &pImage, &imageSize);
+    if (pslr_get_model_bufmask_single(camhandle)) {
+        r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_JPEG_MAX, 0, &pLastPreviewImage, &lastPreviewImageSize);
+    } else {
+        r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_PREVIEW, 4, &pLastPreviewImage, &lastPreviewImageSize);
+    }
     if (r != PSLR_OK) {
         printf("Could not get buffer data\n");
         goto the_end;
     }
 
-    GInputStream *ginput = g_memory_input_stream_new_from_data (pImage, imageSize, NULL);
+    GInputStream *ginput = g_memory_input_stream_new_from_data (pLastPreviewImage, lastPreviewImageSize, NULL);
     pixBuf = gdk_pixbuf_new_from_stream( ginput, NULL, &pError);
     if (!pixBuf) {
         printf("No pixbuf from loader.\n");
@@ -1171,7 +1176,13 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
     GtkStyle *style=gtk_widget_get_style(pw);
 
     if (pMainPixbuf) {
-        gdk_pixbuf_render_to_drawable(pMainPixbuf, gtk_widget_get_window(pw), style->fg_gc[gtk_widget_get_state(pw)], 0, 0, 0, 0, 640, 480, GDK_RGB_DITHER_NONE, 0, 0);
+        GdkPixbuf *pMainToRender;
+        if (gdk_pixbuf_get_width(pMainPixbuf)>640) {
+            pMainToRender = gdk_pixbuf_scale_simple( pMainPixbuf, 640, 480, GDK_INTERP_BILINEAR);
+        } else {
+            pMainToRender = pMainPixbuf;
+        }
+        gdk_pixbuf_render_to_drawable(pMainToRender, gtk_widget_get_window(pw), style->fg_gc[gtk_widget_get_state(pw)], 0, 0, 0, 0, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
     }
 
     gc_focus = gdk_gc_new(gtk_widget_get_window(pw));
@@ -2022,6 +2033,26 @@ static void save_buffer(int bufno, const char *filename) {
     } else {
         imagetype = pslr_get_jpeg_buffer_type( camhandle, quality );
     }
+
+    if (pslr_get_model_bufmask_single(camhandle)) {
+        if ((imagetype == PSLR_BUF_PEF || imagetype == PSLR_BUF_DNG)) {
+            fprintf(stderr, "Cannot download RAW images for this model if preview is already visible");
+        } else {
+            fd = open(filename, FILE_ACCESS, 0664);
+            if (fd == -1) {
+                perror("could not open target");
+                return;
+            }
+            write(fd, pLastPreviewImage, lastPreviewImageSize);
+            /* process pending events */
+            while (gtk_events_pending()) {
+                gtk_main_iteration();
+            }
+            close(fd);
+        }
+        return;
+    }
+
     DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, resolution);
 
     r = pslr_buffer_open(camhandle, bufno, imagetype, resolution);
