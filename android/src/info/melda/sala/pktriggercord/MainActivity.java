@@ -2,6 +2,7 @@ package info.melda.sala.pktriggercord;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Button;
@@ -36,7 +37,7 @@ import android.media.AudioManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     private static final int BUFF_LEN = 1024;
     private static final String SERVER_IP = "localhost";
     private static final int SERVER_PORT = 8888;
@@ -72,6 +73,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
+
+        if( getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.drawable.icon);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setTitle(" "+getResources().getString(R.string.app_name));
+        }
 
         progressBar = findViewById(R.id.downloadprogress);
         progressBarTextView = findViewById(R.id.downloadprogresstext);
