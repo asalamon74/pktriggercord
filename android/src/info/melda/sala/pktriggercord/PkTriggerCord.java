@@ -17,6 +17,7 @@ public class PkTriggerCord extends Application {
     private String cliHome;
     private static final int MARK_LIMIT = 1000000;
     private SharedPreferences prefs;
+    private boolean cliInstalled;
 
     @Override
     public void onCreate() {
@@ -27,9 +28,11 @@ public class PkTriggerCord extends Application {
         PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Log.v( TAG, "Before installCli");
-        installCli();
+        cliInstalled = installCli();
         Log.v( TAG, "After installCli");
-        startCli();
+        if (cliInstalled) {
+            startCli();
+        }
     }
 
     public boolean isShowPreview() {
@@ -79,11 +82,13 @@ public class PkTriggerCord extends Application {
         }
     }
 
-    private void installCli() {
+    private boolean installCli() {
         try {
             copyAsset("pktriggercord-cli");
+            return true;
         } catch ( Exception e ) {
             Log.e( TAG, e.getMessage(), e );
+            return false;
         }
     }
 
@@ -178,4 +183,7 @@ public class PkTriggerCord extends Application {
         }
     }
 
+    boolean isCliInstalled() {
+        return cliInstalled;
+    }
 }

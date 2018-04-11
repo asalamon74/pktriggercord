@@ -55,17 +55,24 @@ public class MainActivity extends AppCompatActivity {
     private Timer updateTimer = new Timer();
     private Timer actionTimer = new Timer();
 
-    private void alert(String str) {
+    private void alert(String title, String neutralString, String str, final boolean exitApp) {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Alert");
+        alertDialog.setTitle(title);
         alertDialog.setMessage(str);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, neutralString,
                               new DialogInterface.OnClickListener() {
                                   public void onClick(DialogInterface dialog, int which) {
                                       dialog.dismiss();
+                                      if (exitApp) {
+                                          MainActivity.this.finishAffinity();
+                                      }
                                   }
                               });
         alertDialog.show();
+    }
+
+    private void alert(String str) {
+        alert("Alert", "OK", str, false);
     }
     
     @Override
@@ -79,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setLogo(R.drawable.icon);
             getSupportActionBar().setDisplayUseLogoEnabled(true);
             getSupportActionBar().setTitle(" "+getResources().getString(R.string.app_name));
+        }
+
+        PkTriggerCord application = (PkTriggerCord)getApplicationContext();
+        if (!application.isCliInstalled()) {
+            alert("Missing Root access", "Exit", "PkTriggercord requires root access, without that it's not possible to connect to the camera.", true);
         }
 
         progressBar = findViewById(R.id.downloadprogress);
@@ -154,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
                 actionTimer = callAsynchronousTask( currentRuns, currentMaxRuns, initialDelay, 1000*npd.getValue(), new CliParam("shutter") );
             }
         }
-
     }
 
     @Override
