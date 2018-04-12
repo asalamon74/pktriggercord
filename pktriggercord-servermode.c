@@ -42,7 +42,7 @@
 #include "pslr_lens.h"
 
 long int timeval_diff(struct timeval *t2, struct timeval *t1) {
-    return (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
+    return (t2->tv_usec - t1->tv_usec) + 1000000 * (t2->tv_sec - t1->tv_sec);
 }
 
 void camera_close(pslr_handle_t camhandle) {
