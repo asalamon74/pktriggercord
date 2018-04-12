@@ -48,6 +48,7 @@
 #endif
 
 #define GW(name) GTK_WIDGET (gtk_builder_get_object (xml, name))
+#define GTA(name) GTK_TOGGLE_ACTION (gtk_builder_get_object (xml, name))
 
 /* ----------------------------------------------------------------------- */
 
@@ -1129,9 +1130,9 @@ static void resize_preview_icons() {
     bool chk_preview;
     bool chk_histogram;
 
-    chk_preview = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION (GW("menu_buffer_window")));
+    chk_preview = gtk_toggle_action_get_active(GTA("menu_buffer_window"));
 
-    chk_histogram = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION (GW("menu_histogram_window")));
+    chk_histogram = gtk_toggle_action_get_active(GTA("menu_histogram_window"));
 
     gtk_widget_set_size_request(GW("preview_icon_view"), chk_preview ? (chk_histogram ? 400 : 200) : 0 , 10 );
 
@@ -1153,7 +1154,7 @@ G_MODULE_EXPORT void menu_settings_window_toggled_cb(GtkAction *action, gpointer
     guint checked;
     GtkWidget *pw;
     pw = GW("settings_window");
-    checked = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(GW("menu_settings_window")));
+    checked = gtk_toggle_action_get_active(GTA("menu_settings_window"));
     DPRINT("settings window %d.\n", checked);
     if (checked) {
         gtk_widget_show(pw);
@@ -1578,9 +1579,9 @@ G_MODULE_EXPORT void plugin_quit(GtkAction *action) {
 G_MODULE_EXPORT gboolean settings_window_delete_event_cb(GtkAction *action, gpointer user_data) {
     GtkToggleAction *pw;
     DPRINT("Hide settings window.\n");
-    pw = GTK_TOGGLE_ACTION ( GW("menu_settings_window"));
+    pw = GTA ("menu_settings_window");
     gtk_widget_hide(GW("settings_window"));
-    gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(pw), FALSE);
+    gtk_toggle_action_set_active(pw, FALSE);
     return TRUE;
 }
 
@@ -1660,7 +1661,7 @@ G_MODULE_EXPORT void menu_histogram_window_toggled_cb(GtkAction *action, gpointe
     resize_preview_icons();
 
     DPRINT("before need_histogram\n");
-    need_histogram =  gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(GW("menu_histogram_window")));
+    need_histogram =  gtk_toggle_action_get_active(GTA("menu_histogram_window"));
     DPRINT("after need_histogram %d\n", need_histogram);
 
     for (i = 0; i < MAX_BUFFERS; i++) {
