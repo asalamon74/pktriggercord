@@ -203,7 +203,7 @@ bool dangerous = false;
 bool dangerous_camera_connected = false;
 bool in_initcontrols = false;
 bool need_one_push_bracketing_cleanup = false;
-struct timeval expected_bulb_end_time;
+struct timeval expected_bulb_end_time = {0, 0};
 
 static const int THUMBNAIL_WIDTH = 160;
 static const int THUMBNAIL_HEIGHT = 120;
@@ -1059,6 +1059,7 @@ static void update_image_areas(int buffer, bool main) {
     int r;
     GdkPixbuf *pixBuf;
 
+    DPRINT("update_image_area\n");
     struct timeval current_time;
     gettimeofday(&current_time, NULL);
     int bulb_remain_sec = timeval_diff(&expected_bulb_end_time, &current_time)  / 1000000.0;
