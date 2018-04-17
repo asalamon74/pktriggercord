@@ -1803,7 +1803,6 @@ G_MODULE_EXPORT void shutter_scale_value_changed_cb(GtkAction *action, gpointer 
 }
 
 G_MODULE_EXPORT void iso_scale_value_changed_cb(GtkAction *action, gpointer user_data) {
-    gdouble a;
     int idx;
     int ret;
     const int *tbl;
@@ -1813,8 +1812,7 @@ G_MODULE_EXPORT void iso_scale_value_changed_cb(GtkAction *action, gpointer user
         return;
     }
 
-    a = gtk_range_get_value(GTK_RANGE(GW("iso_scale")));
-    idx = rint(a);
+    idx = rint(gtk_range_get_value(GTK_RANGE(GW("iso_scale"))));
     which_iso_table(status_new, &tbl, &steps);
     assert(idx >= 0);
     assert(idx <= steps);
