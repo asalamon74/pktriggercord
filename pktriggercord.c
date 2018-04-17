@@ -403,7 +403,7 @@ void camera_specific_init() {
     combobox_append(  GTK_COMBO_BOX(GW("jpeg_quality_combo")), str_jpegstars, num_stars );
 
     int max_supported_image_tone = pslr_get_model_max_supported_image_tone( camhandle )+1;
-    DPRINT("max image tone:%d", max_supported_image_tone);
+    DPRINT("max image tone:%d\n", max_supported_image_tone);
     GtkComboBox *pw = (GtkComboBox*)GW("jpeg_image_tone_combo");
 
     char **imagetones = malloc( max_supported_image_tone * sizeof(char*) );
