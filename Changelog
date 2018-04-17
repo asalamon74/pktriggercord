@@ -35,6 +35,7 @@ version 0.84.05
 	Testing support for KP
 	K-70 GUI image save bugfixes
 	Android: Better error message if root access is missing.
+	GUI ISO table simplification
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon

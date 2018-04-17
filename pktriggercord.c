@@ -343,6 +343,7 @@ void shutter_speed_table_init(pslr_status *st) {
 }
 
 void iso_speed_table_init(pslr_status *st) {
+    DPRINT("iso_speed_table_init\n");
     GtkWidget *pw;
     pw = GW("iso_scale");
 
@@ -365,8 +366,14 @@ void iso_speed_table_init(pslr_status *st) {
         }
     }
 
-    gtk_range_set_range(GTK_RANGE(pw), (gdouble)(min_iso_index), (gdouble) (max_iso_index));
 
+    GtkAdjustment *adj = gtk_range_get_adjustment (GTK_RANGE(pw));
+    gdouble current_scale_iso_min = gtk_adjustment_get_lower(adj);
+    gdouble current_scale_iso_max = gtk_adjustment_get_upper(adj);
+    DPRINT("iso_speed_table_init %f - %f\n", current_scale_iso_min, current_scale_iso_max);
+    if ((gdouble)(min_iso_index) != current_scale_iso_min || (gdouble)(max_iso_index) != current_scale_iso_max) {
+        gtk_range_set_range(GTK_RANGE(pw), (gdouble)(min_iso_index), (gdouble) (max_iso_index));
+    }
 }
 
 void camera_specific_init() {
@@ -500,7 +507,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
     /* ISO scale */
     pw = GW("iso_scale");
     if (st_new) {
-
+        DPRINT("init_controls iso %d\n", st_new->fixed_iso);
         const int *tbl = 0;
         int steps = 0;
         which_iso_table(st_new, &tbl, &steps);
@@ -510,6 +517,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
                 break;
             }
         }
+        DPRINT("init_controls current_iso: %d\n", current_iso);
         if (current_iso >= 0) {
             //printf("set value for ISO slider, new = %d old = %d\n",
             //       st_new->set_iso, st_old ? st_old->set_iso : -1);
@@ -719,7 +727,6 @@ static gboolean status_poll(gpointer data) {
     }
 
     ret = pslr_get_status(camhandle, status_new);
-    // one time init of camera and status specific fields
     shutter_speed_table_init( status_new );
     iso_speed_table_init( status_new );
     if (ret != PSLR_OK) {
@@ -1726,15 +1733,19 @@ G_MODULE_EXPORT gchar* aperture_scale_format_value_cb(GtkAction *action, gdouble
 }
 
 G_MODULE_EXPORT gchar* iso_scale_format_value_cb(GtkAction *action, gdouble value) {
+    DPRINT("iso_scale_format_value_cb\n");
     int i = rint(value);
+    DPRINT("iso index %f %d\n", value, i);
     const int *tbl = 0;
     int steps = 0;
     if (status_new) {
         which_iso_table(status_new, &tbl, &steps);
         if (i >= 0 && i < steps) {
+            DPRINT("printable iso: %d\n", tbl[i]);
             return g_strdup_printf("%d", tbl[i]);
         }
     }
+    DPRINT("printable iso: (%d)\n", i);
     return g_strdup_printf("(%d)", i);
 }
 
