@@ -41,8 +41,9 @@
 #include "pslr.h"
 #include "pslr_lens.h"
 
-long int timeval_diff(struct timeval *t2, struct timeval *t1) {
-    return (t2->tv_usec - t1->tv_usec) + 1000000 * (t2->tv_sec - t1->tv_sec);
+double timeval_diff_sec(struct timeval *t2, struct timeval *t1) {
+    //DPRINT("tv2 %ld %ld t1 %ld %ld\n", t2->tv_sec, t2->tv_usec, t1->tv_sec, t1->tv_usec);
+    return (t2->tv_usec - t1->tv_usec) / 1000000.0 + (t2->tv_sec - t1->tv_sec);
 }
 
 void camera_close(pslr_handle_t camhandle) {
@@ -59,8 +60,8 @@ pslr_handle_t camera_connect( char *model, char *device, int timeout, char *erro
     gettimeofday(&prev_time, NULL);
     while (!(camhandle = pslr_init( model, device ))) {
         gettimeofday(&current_time, NULL);
-        DPRINT("diff: %f\n", timeval_diff(&current_time, &prev_time) / 1000000.0);
-        if ( timeout == 0 || timeout > timeval_diff(&current_time, &prev_time) / 1000000.0 ) {
+        DPRINT("diff: %f\n", timeval_diff_sec(&current_time, &prev_time));
+        if ( timeout == 0 || timeout > timeval_diff_sec(&current_time, &prev_time)) {
             DPRINT("sleep 1 sec\n");
             sleep_sec(1);
         } else {

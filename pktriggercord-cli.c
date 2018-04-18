@@ -319,7 +319,7 @@ void bulb_old(pslr_handle_t camhandle, pslr_rational_t shutter_speed, struct tim
     pslr_bulb( camhandle, true );
     pslr_shutter(camhandle);
     gettimeofday(&current_time, NULL);
-    double waitsec = 1.0 * shutter_speed.nom / shutter_speed.denom - timeval_diff(&current_time, &prev_time) / 1000000.0;
+    double waitsec = 1.0 * shutter_speed.nom / shutter_speed.denom - timeval_diff_sec(&current_time, &prev_time);
     if ( waitsec < 0 ) {
         waitsec = 0;
     }
@@ -1067,7 +1067,7 @@ int main(int argc, char **argv) {
                 }
                 pslr_connect(camhandle);
             }
-            waitsec = 1.0 * delay - timeval_diff(&current_time, &prev_time) / 1000000.0;
+            waitsec = 1.0 * delay - timeval_diff_sec(&current_time, &prev_time);
             if ( waitsec > 0 ) {
                 printf("Waiting for %.2f sec\n", waitsec);
                 sleep_sec( waitsec );
@@ -1086,7 +1086,7 @@ int main(int argc, char **argv) {
                 }
 
                 gettimeofday (&current_time, NULL);
-                if ( timeout != 0 && ( timeval_diff(&current_time, &prev_time) / 1000000.0 >= timeout) ) {
+                if ( timeout != 0 && ( timeval_diff_sec(&current_time, &prev_time) >= timeout) ) {
                     printf("Timeout %d sec passed!\n", timeout);
                     break;
                 }

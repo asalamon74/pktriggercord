@@ -1070,16 +1070,16 @@ static void update_image_areas(int buffer, bool main) {
     DPRINT("update_image_areas\n");
     struct timeval current_time;
     gettimeofday(&current_time, NULL);
-    long int bulb_remain_sec = timeval_diff(&expected_bulb_end_time, &current_time)  / 1000000.0;
+    double bulb_remain_sec = timeval_diff_sec(&expected_bulb_end_time, &current_time);
     GtkButton *shutterButton = (GtkButton *)GW("shutter_button");
     while (bulb_remain_sec>0) {
         static gchar bulb_message[100];
-        sprintf (bulb_message, "BULB -> wait : %ld seconds", bulb_remain_sec);
+        sprintf (bulb_message, "BULB -> wait : %.0f seconds", bulb_remain_sec);
         gtk_button_set_label(shutterButton, bulb_message);
         sleep_sec(1);
         wait_for_gtk_events_pending();
         gettimeofday(&current_time, NULL);
-        bulb_remain_sec = timeval_diff(&expected_bulb_end_time, &current_time)  / 1000000.0;
+        bulb_remain_sec = timeval_diff_sec(&expected_bulb_end_time, &current_time);
     }
     gtk_button_set_label(shutterButton, "Take picture");
 

@@ -35,6 +35,6 @@ pslr_handle_t camera_connect( char *model, char *device, int timeout, char *erro
 
 void camera_close(pslr_handle_t camhandle);
 
-long int timeval_diff(struct timeval *t2, struct timeval *t1);
+double timeval_diff_sec(struct timeval *t2, struct timeval *t1);
 
 #endif
