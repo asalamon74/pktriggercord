@@ -1067,7 +1067,7 @@ static void update_image_areas(int buffer, bool main) {
     int r;
     GdkPixbuf *pixBuf;
 
-    DPRINT("update_image_area\n");
+    DPRINT("update_image_areas\n");
     struct timeval current_time;
     gettimeofday(&current_time, NULL);
     long int bulb_remain_sec = timeval_diff(&expected_bulb_end_time, &current_time)  / 1000000.0;
