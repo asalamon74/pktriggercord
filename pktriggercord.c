@@ -204,7 +204,7 @@ bool dangerous = false;
 bool dangerous_camera_connected = false;
 bool in_initcontrols = false;
 bool need_one_push_bracketing_cleanup = false;
-struct timeval expected_bulb_end_time = {0, 0};
+static struct timeval expected_bulb_end_time = {0, 0};
 
 static const int THUMBNAIL_WIDTH = 160;
 static const int THUMBNAIL_HEIGHT = 120;
@@ -1107,6 +1107,7 @@ static void update_image_areas(int buffer, bool main) {
     g_object_ref(pixBuf);
     pError = NULL;
     if (main) {
+        DPRINT("Setting pMainPixbuf\n");
         pMainPixbuf = pixBuf;
     }
 
@@ -1179,11 +1180,12 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
     int i;
     gboolean fill;
 
-    //printf("Expose event for widget %p\n", widget);
+    DPRINT("mainwindow_expose\n");
     pw = GW("main_drawing_area");
     GtkStyle *style=gtk_widget_get_style(pw);
 
     if (pMainPixbuf) {
+        DPRINT("pMainPixbuf drawing\n");
         GdkPixbuf *pMainToRender;
         if (gdk_pixbuf_get_width(pMainPixbuf)>640) {
             pMainToRender = gdk_pixbuf_scale_simple( pMainPixbuf, 640, 480, GDK_INTERP_BILINEAR);
