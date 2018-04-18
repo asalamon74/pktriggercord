@@ -660,6 +660,9 @@ int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resol
     uint32_t bufpos = 0;
     while (true) {
         uint32_t nextread = size - bufpos > 65536 ? 65536 : size - bufpos;
+        if (nextread == 0) {
+            break;
+        }
         uint32_t bytes = pslr_buffer_read(h, buf+bufpos, nextread);
         if (bytes == 0) {
             break;
