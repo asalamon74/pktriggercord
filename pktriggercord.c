@@ -1054,8 +1054,7 @@ static bool auto_save_check(int format, int buffer) {
     return deleted;
 }
 
-bool buf_updated = false;
-GdkPixbuf *pMainPixbuf = NULL;
+static GdkPixbuf *pMainPixbuf = NULL;
 uint8_t *pLastPreviewImage;
 uint32_t lastPreviewImageSize;
 
@@ -1109,6 +1108,11 @@ static void update_image_areas(int buffer, bool main) {
     if (main) {
         DPRINT("Setting pMainPixbuf\n");
         pMainPixbuf = pixBuf;
+        GtkAllocation allocation;
+        GtkWidget *pw;
+        pw = GW("main_drawing_area");
+        gtk_widget_get_allocation( pw, &allocation);
+        gdk_window_invalidate_rect(gtk_widget_get_window(pw), &allocation, FALSE);
     }
 
     GdkPixbuf *scaledThumb = gdk_pixbuf_scale_simple( pixBuf, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, GDK_INTERP_BILINEAR);
@@ -1184,7 +1188,7 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
     pw = GW("main_drawing_area");
     GtkStyle *style=gtk_widget_get_style(pw);
 
-    if (pMainPixbuf) {
+    if (pMainPixbuf != NULL) {
         DPRINT("pMainPixbuf drawing\n");
         GdkPixbuf *pMainToRender;
         if (gdk_pixbuf_get_width(pMainPixbuf)>640) {
@@ -1192,7 +1196,7 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
         } else {
             pMainToRender = pMainPixbuf;
         }
-        gdk_pixbuf_render_to_drawable(pMainToRender, gtk_widget_get_window(pw), style->fg_gc[gtk_widget_get_state(pw)], 0, 0, 0, 0, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+        gdk_draw_pixbuf(gtk_widget_get_window(pw), style->fg_gc[gtk_widget_get_state(pw)], pMainToRender, 0, 0, 0, 0, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
     }
 
     gc_focus = gdk_gc_new(gtk_widget_get_window(pw));
@@ -1248,6 +1252,7 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
     int ret;
     GtkWidget *pw;
 
+    DPRINT("main_drawing_area_button_press_event_cb");
     /* Don't care about clicks on AF points if no camera is connected. */
     if (!camhandle) {
         return TRUE;
