@@ -7,7 +7,7 @@ version 0.84.05
 	--settings
 	K-1 bulb mode bugfix (testing)
 	--dangerous no longer required for K-70
-	bulb_mode setting reading for K-70, K-50
+	bulb_mode setting reading for K-70, K-50, K-01
 	better handling of unknown and n/a settings
 	K-x settings parser (very simple)
 	Checking both both /dev/block and /dev

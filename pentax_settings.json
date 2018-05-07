@@ -28,6 +28,12 @@
 	]
     },
 
+    "0x12ef8": {
+        "fields": [
+	    { "name" : "bulb_mode_press_press", "type": "boolean", "address": "0x0f2" }
+	]
+    },
+
     "0x13092": {
 	"fields": [
 	    { "name" : "bulb_timer", "type": "boolean", "address": "0x131"},
