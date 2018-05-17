@@ -2130,8 +2130,18 @@ G_MODULE_EXPORT void preview_save_as_cb(GtkAction *action) {
         DPRINT("Run dialog -> %d\n", res);
         gtk_widget_hide(pw);
         if (res > 0) {
+            char *sel_filename;
             char *filename;
-            filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (pw));
+            sel_filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (pw));
+            char *dot = strrchr(sel_filename, '.');
+            if (dot) {
+                filename = sel_filename;
+            } else {
+                filename = malloc(strlen(sel_filename)+10);
+                pw = GW("file_format_combo");
+                int filefmt = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
+                sprintf(filename, "%s.%s", sel_filename, file_formats[filefmt].extension);
+            }
             DPRINT("Save to: %s\n", filename);
             gtk_progress_bar_set_text(pbar, filename);
             save_buffer(*pi, filename);
