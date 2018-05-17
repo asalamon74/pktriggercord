@@ -435,6 +435,10 @@ int main(int argc, char **argv) {
     // just parse warning, debug flags
     while  ((optc = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
         switch (optc) {
+            case '?':
+            case 'h':
+                usage(argv[0]);
+                exit(-1);
             case 'w':
                 warnings = true;
                 break;
