@@ -254,7 +254,14 @@ int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
     if (!output_file) {
         ofd = 1;
     } else {
-        snprintf(fileName, 256, "%s-%04d.%s", output_file, frameNo, ufft.extension);
+        char *dot = strrchr(output_file, '.');
+        int prefix_length;
+        if (dot && !strcmp(dot+1, ufft.extension)) {
+            prefix_length = dot - output_file;
+        } else {
+            prefix_length = strlen(output_file);
+        }
+        snprintf(fileName, 256, "%.*s-%04d.%s", prefix_length, output_file, frameNo, ufft.extension);
         ofd = open(fileName, FILE_ACCESS, 0664);
         if (ofd == -1) {
             fprintf(stderr, "Could not open %s\n", output_file);
