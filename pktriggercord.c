@@ -1002,7 +1002,7 @@ static bool auto_save_check(int format, int buffer) {
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Auto-saving");
     wait_for_gtk_events_pending();
 
-    snprintf(filename, sizeof(filename), "%s%04d.%s", filebase, counter, file_formats[format].extension);
+    snprintf(filename, sizeof(filename), "%s-%04d.%s", filebase, counter, file_formats[format].extension);
     DPRINT("Save buffer %d\n", buffer);
     gtk_progress_bar_set_text(pbar, filename);
     save_buffer(buffer, filename);
