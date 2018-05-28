@@ -290,7 +290,6 @@ const char *get_pslr_af_point_sel_str( pslr_af_point_sel_t value ) {
 }
 
 char *get_pslr_af11_point_str( uint32_t value ) {
-    printf("value:%d\n", value);
     if (value==0) {
         return "none";
     }
