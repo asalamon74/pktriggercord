@@ -1285,6 +1285,11 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
                     if (ret != PSLR_OK) {
                         DPRINT("Could not select AF point %d\n", i);
                     }
+                } else {
+                    gtk_statusbar_push(statusbar, sbar_download_ctx, "Cannot select AF point in this AF mode.");
+                    wait_for_gtk_events_pending();
+                    sleep_sec(3);
+                    gtk_statusbar_pop(statusbar, sbar_download_ctx);
                 }
                 break;
             }
