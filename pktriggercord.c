@@ -106,8 +106,7 @@ static void save_buffer(int bufno, const char *filename);
 #define AF_LINE_W     7
 #define AF_LINE_H     21
 
-/* Order of array corresponsds to AF point bitmask, see
- * PSLR_AF_POINT_* defines. */
+/* Order of array corresponsds to AF point bitmask, pslr_af11_point_t */
 static struct {
     int x;
     int y;

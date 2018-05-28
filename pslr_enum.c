@@ -86,6 +86,20 @@ const char*  pslr_af_point_sel_str[PSLR_AF_POINT_SEL_MAX] = {
     "Auto-11"
 };
 
+const char*  pslr_af11_point_str[11] = {
+    "topleft",
+    "topmiddle",
+    "topright",
+    "farleft",
+    "middleleft",
+    "middlemiddle",
+    "middleright",
+    "farright",
+    "bottomleft",
+    "bottommiddle",
+    "bottomright"
+};
+
 const char* pslr_jpeg_image_tone_str[PSLR_JPEG_IMAGE_TONE_MAX] = {
     "Natural",
     "Bright",
@@ -274,6 +288,25 @@ pslr_af_point_sel_t get_pslr_af_point_sel( char *str ) {
 const char *get_pslr_af_point_sel_str( pslr_af_point_sel_t value ) {
     return get_pslr_str( pslr_af_point_sel_str, sizeof(pslr_af_point_sel_str)/sizeof(pslr_af_point_sel_str[0]),value);
 }
+
+char *get_pslr_af11_point_str( uint32_t value ) {
+    printf("value:%d\n", value);
+    if (value==0) {
+        return "none";
+    }
+    int bitidx=0;
+    char *ret = malloc(1024);
+    sprintf(ret, "%s", "");
+    while (value>0) {
+        if ((value & 0x01) == 1) {
+            sprintf(ret, "%s%s%s", ret, strlen(ret) == 0 ? "" : ",", pslr_af11_point_str[bitidx]);
+        }
+        value >>= 1;
+        ++bitidx;
+    }
+    return ret;
+}
+
 
 pslr_jpeg_image_tone_t get_pslr_jpeg_image_tone( char *str ) {
     return find_in_array( pslr_jpeg_image_tone_str, sizeof(pslr_jpeg_image_tone_str)/sizeof(pslr_jpeg_image_tone_str[0]),str);

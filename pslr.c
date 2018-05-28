@@ -521,6 +521,17 @@ char *get_white_balance_adjust_str( uint32_t adjust_mg, uint32_t adjust_ba ) {
     return ret;
 }
 
+char *pslr_get_af_name(pslr_handle_t h, uint32_t af_point) {
+    ipslr_handle_t *p = (ipslr_handle_t *) h;
+    if (p->model->af_point_num==11) {
+        return get_pslr_af11_point_str(af_point);
+    } else {
+        char *raw = malloc(11);
+        sprintf(raw, "%d", af_point);
+        return raw;
+    }
+}
+
 char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     char *strbuffer = malloc(8192);
     sprintf(strbuffer,"%-32s: %d\n", "current iso", status.current_iso);
@@ -555,8 +566,8 @@ char *collect_status_info( pslr_handle_t h, pslr_status status ) {
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "ae metering mode", get_pslr_ae_metering_str(status.ae_metering_mode));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "af mode", get_pslr_af_mode_str(status.af_mode));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "af point select", get_pslr_af_point_sel_str(status.af_point_select));
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "selected af point", status.selected_af_point);
-    sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "focused af point", status.focused_af_point);
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "selected af point", pslr_get_af_name( h, status.selected_af_point));
+    sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "focused af point", pslr_get_af_name( h, status.focused_af_point));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "drive mode", get_pslr_drive_mode_str(status.drive_mode));
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %s\n", "auto bracket mode", status.auto_bracket_mode > 0 ? "on" : "off");
     sprintf(strbuffer+strlen(strbuffer),"%-32s: %d\n", "auto bracket picture count", status.auto_bracket_picture_count);
