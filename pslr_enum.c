@@ -83,7 +83,8 @@ const char*  pslr_af_point_sel_str[PSLR_AF_POINT_SEL_MAX] = {
     "Auto-5",
     "Select",
     "Spot",
-    "Auto-11"
+    "Auto-11",
+    "Expanded"
 };
 
 const char*  pslr_af11_point_str[11] = {
