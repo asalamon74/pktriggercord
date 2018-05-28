@@ -459,7 +459,6 @@ int main(int argc, char **argv) {
             case 'h':
                 usage(argv[0]);
                 exit(-1);
-            /***************************************************************/
             case 'v':
                 printf("%s", copyright_version(argv[0], VERSION));
                 exit(0);
@@ -494,12 +493,10 @@ int main(int argc, char **argv) {
                 break;
 
             case 'm':
-
                 MODESTRING = optarg;
                 for (i = 0; i < strlen(optarg); i++) {
                     optarg[i] = toupper(optarg[i]);
                 }
-
                 if (!strcmp(optarg, "GREEN")) {
                     EM = PSLR_EXPOSURE_MODE_GREEN;
                 } else if (!strcmp(optarg, "P")) {
@@ -625,14 +622,11 @@ int main(int argc, char **argv) {
                 if (sscanf(optarg, "%f%c", &F, &C) != 1) {
                     F = 0;
                 }
-
                 /*It's unlikely that you want an f-number > 100, even for a pinhole.
                  On the other hand, the fastest lens I know of is a f:0.8 Zeiss*/
-
                 if (F > 100 || F < 0.8) {
                     warning_message( "%s: Invalid aperture value.\n", argv[0]);
                 }
-
                 if (F >= 11) {
                     aperture.nom = F;
                     aperture.denom = 1;
@@ -641,7 +635,6 @@ int main(int argc, char **argv) {
                     aperture.nom = F;
                     aperture.denom = 10;
                 }
-
                 break;
 
             case 't':
@@ -971,9 +964,6 @@ int main(int argc, char **argv) {
 
 //    pslr_test( camhandle, true, 0x1e, 4, 1, 2, 3, 4);
 //    pslr_button_test( camhandle, 0x0c, 1 );
-//    pslr_button_test( camhandle, 0x05, 2 );
-//    sleep_sec(3);
-//    pslr_button_test( camhandle, 0x0c, 0 );
 
     if (read_datetime) {
         int year=0, month=0, day=0, hour=0, min=0, sec=0;
