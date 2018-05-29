@@ -85,11 +85,11 @@ static void save_buffer(int bufno, const char *filename);
 #define AF_LEFT       223
 #define AF_CENTER     319
 #define AF_RIGHT      415
-#define AF_FAR_RIGHT  505      // 283
+#define AF_FAR_RIGHT  505
 
-#define AF_TOP        (149+27) // 84
+#define AF_TOP        (149+27)
 #define AF_MID        (213+27)
-#define AF_BOTTOM     (276+27) // 156
+#define AF_BOTTOM     (276+27)
 
 #define AF_CROSS_W    9
 #define AF_CROSS_H    10
@@ -126,7 +126,6 @@ static uint32_t preselect_indicated_af_points;
 static bool preselect_reselect = false;
 static pslr_settings settings;
 
-/* 40-220 confirmed */
 /* This is the nominator, the denominator is 10 for all confirmed
  * apertures */
 static const int aperture_tbl[] = {
