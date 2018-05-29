@@ -50,16 +50,12 @@
 #define GW(name) GTK_WIDGET (gtk_builder_get_object (xml, name))
 #define GTA(name) GTK_TOGGLE_ACTION (gtk_builder_get_object (xml, name))
 
-/* ----------------------------------------------------------------------- */
-
 // status.bufmask
 #define MAX_BUFFERS 8*sizeof(uint16_t)
 
 static struct {
     char *autosave_path;
 } plugin_config;
-
-/* ----------------------------------------------------------------------- */
 
 static gboolean added_quit(gpointer data);
 static void my_atexit(void);
@@ -84,8 +80,6 @@ static void which_ec_table(pslr_status *st, const int **table, int *steps);
 static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, int py);
 
 static void save_buffer(int bufno, const char *filename);
-
-/* ----------------------------------------------------------------------- */
 
 #define AF_FAR_LEFT   132
 #define AF_LEFT       223
@@ -187,8 +181,6 @@ static const int ec_tbl_1_2[]= {
     -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 30
 };
 
-/* ----------------------------------------------------------------------- */
-
 static pslr_handle_t camhandle;
 static bool handle_af_points;
 static GtkBuilder *xml;
@@ -215,7 +207,6 @@ static void wait_for_gtk_events_pending() {
         gtk_main_iteration();
     }
 }
-
 
 void combobox_append( GtkComboBox *combobox, char **items, int item_num ) {
     GtkListStore *store = gtk_list_store_new (1, G_TYPE_STRING);
@@ -2220,8 +2211,6 @@ G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user
         pslr_set_exposure_mode(camhandle, val);
     }
 }
-
-/* ----------------------------------------------------------------------- */
 
 static void which_iso_table(pslr_status *st, const int **table, int *steps) {
     if (st->custom_sensitivity_steps == PSLR_CUSTOM_SENSITIVITY_STEPS_1EV) {

@@ -1257,8 +1257,6 @@ pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int jpeg_stars) {
     return 2 + get_hw_jpeg_quality( p->model, jpeg_stars );
 }
 
-/* ----------------------------------------------------------------------- */
-
 static int ipslr_set_mode(ipslr_handle_t *p, uint32_t mode) {
     DPRINT("[C]\t\tipslr_set_mode(0x%x)\n", mode);
     CHECK(ipslr_write_args(p, 1, mode));
@@ -1701,8 +1699,6 @@ static int _ipslr_write_args(uint8_t cmd_2, ipslr_handle_t *p, int n, ...) {
     va_end(ap);
     return PSLR_OK;
 }
-
-/* ----------------------------------------------------------------------- */
 
 static int command(FDTYPE fd, int a, int b, int c) {
     DPRINT("[C]\t\t\tcommand(fd=%x, %x, %x, %x)\n", fd, a, b, c);
