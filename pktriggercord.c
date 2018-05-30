@@ -1288,19 +1288,7 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
 }
 
 static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, int py) {
-    if (px < rect_x) {
-        return false;
-    }
-    if (py < rect_y) {
-        return false;
-    }
-    if (px >= rect_x + rect_w) {
-        return false;
-    }
-    if (py >= rect_y + rect_h) {
-        return false;
-    }
-    return true;
+    return px >= rect_x && py >= rect_y && px < rect_x + rect_w && py < rect_y + rect_h;
 }
 
 gboolean bufferwindow_expose_event_cb(GtkWidget *widget, GdkEventExpose *pEvent, gpointer userData) {
