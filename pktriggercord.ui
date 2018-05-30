@@ -132,8 +132,15 @@
           <object class="GtkToggleAction" id="menu_buffer_window">
             <property name="active">True</property>
             <property name="name">menu_buffer_window</property>
-            <property name="label" translatable="yes">_Preview Buffer</property>
+            <property name="label" translatable="yes">_Thumbnails</property>
             <signal handler="menu_buffer_window_toggled_cb" name="toggled"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkToggleAction" id="menu_histogram_window">
+            <property name="name">menu_histogram_window</property>
+            <property name="label" translatable="yes">Thumbnail _Histogram</property>
+            <signal handler="menu_histogram_window_toggled_cb" name="toggled"/>
           </object>
         </child>
         <child>
@@ -142,13 +149,6 @@
             <property name="name">menu_settings_window</property>
             <property name="label" translatable="yes">_Settings Window</property>
             <signal handler="menu_settings_window_toggled_cb" name="toggled"/>
-          </object>
-        </child>
-        <child>
-          <object class="GtkToggleAction" id="menu_histogram_window">
-            <property name="name">menu_histogram_window</property>
-            <property name="label" translatable="yes">_Histogram</property>
-            <signal handler="menu_histogram_window_toggled_cb" name="toggled"/>
           </object>
         </child>
         <child>
