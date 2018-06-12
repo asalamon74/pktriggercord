@@ -424,6 +424,7 @@ void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
     status->focus = get_int32_be(&buf[0x1A0]);
     status->lens_id1 = (get_uint32_be( &buf[0x188])) & 0x0F;
     status->lens_id2 = get_uint32_be( &buf[0x194]);
+    // selected_af_point: cannot find the field, 0xc8 is always zero
 }
 
 // Vince: K-r support 2011-06-22
