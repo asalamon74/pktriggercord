@@ -684,8 +684,15 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     status->battery_3 = 0;
     status->battery_4 = 0;
 
-    // selected_af_point is invalid
-    status->selected_af_point = 0;
+    uint32_t converted_selected_af_point=0;
+    int convert_bit_index[11] = { 26, 24, 22, 1, 16, 14, 12, 0, 6, 4, 2};
+    int bitidx=0;
+    for (bitidx=0; bitidx<11; ++bitidx) {
+        if (status->selected_af_point & 1<<convert_bit_index[bitidx]) {
+            converted_selected_af_point |= 1 << bitidx;
+        }
+    }
+    status->selected_af_point = converted_selected_af_point;
 
     status->bufmask = get_uint16_le( &buf[0x0C]);
     status->zoom.nom = get_uint32_le(&buf[0x1A4]);

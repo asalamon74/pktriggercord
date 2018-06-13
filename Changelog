@@ -42,6 +42,7 @@ version 0.84.05
 	Show error message if servermode is specified in Windows
 	Human readable selected/focused af point (for 11 AF points)
 	K-70 AF selection mode reading hack
+	K-70 reading selected af point
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
