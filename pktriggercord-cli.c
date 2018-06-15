@@ -209,7 +209,7 @@ void usage(char *name) {
   -i, --iso=ISO                         single value (400) or interval (200-800)\n\
       --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB\n\
       --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A\n\
-      --select_af_point=AF_SELECT_MODE  valid values are: Auto-5, Auto-11, Spot, Select\n\
+      --select_af_point=AF_SELECT_MODE  valid values are: Auto-5, Auto-11, Spot, Select, or numerical value\n\
       --ae_metering=AE_METERING         valid values are: Multi, Center, Spot\n\
       --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless\n\
       --flash_exposure_compensation=VAL flash exposure compensation value\n\
@@ -403,6 +403,7 @@ int main(int argc, char **argv) {
     pslr_flash_mode_t flash_mode = -1;
     pslr_drive_mode_t drive_mode = -1;
     pslr_af_point_sel_t af_point_sel = -1;
+    uint32_t af_point_selected = 0;
     pslr_jpeg_image_tone_t jpeg_image_tone = -1;
     pslr_white_balance_mode_t white_balance_mode = -1;
     uint32_t white_balance_adjustment_mg = 0;
@@ -563,7 +564,12 @@ int main(int argc, char **argv) {
             case 12:
                 af_point_sel = get_pslr_af_point_sel( optarg );
                 if ( af_point_sel == -1 ) {
-                    warning_message("%s: Invalid select af point\n", argv[0]);
+                    af_point_selected = atoi(optarg);
+                    if (af_point_selected != 0) {
+                        af_point_sel = PSLR_AF_POINT_SEL_SELECT;
+                    } else {
+                        warning_message("%s: Invalid select af point: %s\n", argv[0], optarg);
+                    }
                 }
                 break;
 
@@ -836,6 +842,9 @@ int main(int argc, char **argv) {
 
     if ( af_point_sel != -1 ) {
         pslr_set_af_point_sel( camhandle, af_point_sel );
+        if (af_point_selected != 0) {
+            pslr_select_af_point(camhandle, af_point_selected);
+        }
     }
 
     if ( ae_metering != -1 ) {

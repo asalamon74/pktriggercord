@@ -43,6 +43,7 @@ version 0.84.05
 	Human readable selected/focused af point (for 11 AF points)
 	K-70 AF selection mode reading hack
 	K-70 reading selected af point
+	--select_af_point also accepts raw numerical values
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
