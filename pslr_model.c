@@ -622,8 +622,12 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     status->battery_1 = get_uint32_le(&buf[0x174]);
     status->battery_2 = get_uint32_le(&buf[0x178]);
 
-    // selected_af_point is invalid
-    status->selected_af_point = 0;
+    // selected_af_point
+    // toprow left: 0x04000000
+    // toprow leftmiddle: 0x02000000
+    // toprow middle: 0x01000000
+    // toprow rightmiddle: 0x00800000
+    // bottomright: 0x00000004
 
     status->bufmask = get_uint16_le( &buf[0x0C]);
     status->zoom.nom = get_uint32_le(&buf[0x1A4]);
