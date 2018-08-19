@@ -44,6 +44,7 @@ version 0.84.05
 	K-70 AF selection mode reading hack
 	K-70 reading selected af point
 	--select_af_point also accepts raw numerical values
+	Testing support for K-1 II
 
 version 0.84.04 ( 2017-05-13 )
 	Android: adding icon
