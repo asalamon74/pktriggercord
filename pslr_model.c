@@ -802,12 +802,12 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
     size_t json_part_length;
     const char *json_part;
     if (!(json_part = js0n(cameraid, strlen(cameraid), jsontext, jsonsize, &json_part_length))) {
-        fprintf(stderr, "JSON error\n");
+        fprintf(stderr, "JSON: Cannot find camera model\n");
         return NULL;
     }
 
     if (!(json_part = js0n("fields", strlen("fields"), json_part, json_part_length, &json_part_length))) {
-        fprintf(stderr, "No fields defined for the camera\n");
+        fprintf(stderr, "JSON: No fields defined for the camera model\n");
         return NULL;
     }
     int ai=0;
