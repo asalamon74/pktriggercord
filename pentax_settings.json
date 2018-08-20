@@ -46,6 +46,12 @@
 	    { "name" : "astrotracer", "type": "boolean", "address": "0x1ac"},
 	    { "name" : "astrotracer_timer_sec", "type": "uint16", "address": "0x1ad"}
 	]
-    }
+    },
 
+    "0x13240": {
+	"fields": [
+	    { "name" : "bulb_timer", "type": "boolean", "address": "0x131"},
+	    { "name" : "bulb_timer_sec", "type": "uint16", "address": "0x132"}
+	]
+    },
 }
