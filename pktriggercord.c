@@ -424,23 +424,10 @@ void camera_specific_init() {
     }
 }
 
-static void init_controls(pslr_status *st_new, pslr_status *st_old) {
-    GtkWidget *pw;
+static void init_aperture_scale(pslr_status *st_new) {
+    GtkWidget *pw = GW("aperture_scale");
     int min_ap=-1, max_ap=-1, current_ap = -1;
-    int current_iso = -1;
-    int idx;
     int i;
-    bool disable = false;
-
-    in_initcontrols = true;
-    DPRINT("start initcontrols\n");
-    if (st_new == NULL) {
-        disable = true;
-    }
-
-    /* Aperture scale */
-    pw = GW("aperture_scale");
-
     if (st_new) {
         for (i=0; i<sizeof(aperture_tbl)/sizeof(aperture_tbl[0]); i++) {
             if (st_new->lens_min_aperture.nom == aperture_tbl[i]) {
@@ -453,9 +440,7 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
                 current_ap = i;
             }
         }
-
         gtk_range_set_increments(GTK_RANGE(pw), 1.0, 1.0);
-
         if (min_ap >= 0 && max_ap >= 0 && current_ap >= 0) {
             //printf("range %f-%f (%f)\n", (float) min_ap, (float)max_ap, (float)current_ap);
             gtk_range_set_range(GTK_RANGE(pw), min_ap, max_ap);
@@ -463,17 +448,18 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
             gtk_widget_set_sensitive(pw, TRUE);
         }
     }
-
-    if (disable || min_ap < 0 || max_ap < 0 || current_ap < 0) {
+    if (st_new == NULL || min_ap < 0 || max_ap < 0 || current_ap < 0) {
         gtk_widget_set_sensitive(pw, FALSE);
     } else {
         gtk_widget_set_sensitive(pw, TRUE);
     }
+}
 
-    /* Shutter speed scale */
-    pw = GW("shutter_scale");
+static void init_shutter_scale(pslr_status *st_new) {
+    GtkWidget *pw = GW("shutter_scale");
+    int i;
     if (st_new) {
-        idx = -1;
+        int idx = -1;
         pslr_rational_t *tbl = 0;
         int steps = 0;
         which_shutter_table( st_new, &tbl, &steps );
@@ -488,13 +474,17 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
         }
     }
     gtk_widget_set_sensitive(pw, st_new != NULL);
+}
 
-    /* Bulb */
-    pw = GW("bulb_exp_value");
+static void init_bulb_value(pslr_status *st_new) {
+    GtkWidget *pw = GW("bulb_exp_value");
     gtk_widget_set_sensitive(pw, st_new != NULL);
+}
 
-    /* ISO scale */
-    pw = GW("iso_scale");
+static void init_iso_scale(pslr_status *st_new) {
+    GtkWidget *pw = GW("iso_scale");
+    int current_iso = -1;
+    int i;
     if (st_new) {
         DPRINT("init_controls iso %d\n", st_new->fixed_iso);
         const int *tbl = 0;
@@ -513,15 +503,17 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
             gtk_range_set_value(GTK_RANGE(pw), current_iso);
         }
     }
-
     gtk_widget_set_sensitive(pw, st_new != NULL);
-    /* EC scale */
-    pw = GW("ec_scale");
+}
+
+static void init_ec_scale(pslr_status *st_new, pslr_status *st_old) {
+    GtkWidget *pw = GW("ec_scale");
+    int i;
     if (st_new) {
         const int *tbl;
         int steps;
         which_ec_table( st_new, &tbl, &steps);
-        idx = -1;
+        int idx = -1;
         for (i=0; i<steps; i++) {
             if (tbl[i] == st_new->ec.nom) {
                 idx = i;
@@ -536,6 +528,10 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
         }
     }
     gtk_widget_set_sensitive(pw, st_new != NULL);
+}
+
+static void init_jpeg_scales(pslr_status *st_new) {
+    GtkWidget *pw;
     /* JPEG contrast */
     pw = GW("jpeg_contrast_scale");
     if (st_new) {
@@ -596,28 +592,29 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
     if (st_new ) {
         gtk_combo_box_set_active(GTK_COMBO_BOX(pw), st_new->jpeg_image_tone);
     }
-
     gtk_widget_set_sensitive(pw, st_new != NULL);
-    /* USER mode selector */
-    pw = GW("user_mode_combo");
+}
+
+static void init_user_mode_combo(pslr_status *st_new, pslr_status *st_old) {
+    GtkWidget *pw = GW("user_mode_combo");
     if (st_new) {
         if (!st_old || st_old->exposure_mode != st_new->exposure_mode) {
             gtk_combo_box_set_active(GTK_COMBO_BOX(pw), st_new->exposure_mode);
         }
     }
-
     gtk_widget_set_sensitive(pw, st_new != NULL && st_new->user_mode_flag);
+}
 
-    /* Format selector */
-    pw = GW("file_format_combo");
+static void init_file_format_combo(pslr_status *st_new) {
+    GtkWidget *pw = GW("file_format_combo");
     if (st_new) {
         int val = get_user_file_format(st_new);
         gtk_combo_box_set_active(GTK_COMBO_BOX(pw), val);
     }
-
     gtk_widget_set_sensitive(pw, st_new != NULL);
+}
 
-    /* Buttons */
+static void init_buttons(pslr_status *st_new) {
     gtk_widget_set_sensitive( GW("shutter_button"), st_new != NULL && (!pslr_get_model_bufmask_single(camhandle) || !st_new->bufmask) );
     gtk_widget_set_sensitive( GW("focus_button"), st_new != NULL);
     gtk_widget_set_sensitive( GW("status_button"), st_new != NULL);
@@ -625,13 +622,27 @@ static void init_controls(pslr_status *st_new, pslr_status *st_old) {
     gtk_widget_set_sensitive( GW("settings_button"), st_new != NULL);
     gtk_widget_set_sensitive( GW("green_button"), st_new != NULL);
 
-    pw = GW("ae_lock_button");
+    GtkWidget *pw = GW("ae_lock_button");
     if (st_new) {
         bool lock;
         lock = (st_new->light_meter_flags & PSLR_LIGHT_METER_AE_LOCK) != 0;
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pw), lock);
     }
     gtk_widget_set_sensitive(pw, st_new != NULL);
+}
+
+static void init_controls(pslr_status *st_new, pslr_status *st_old) {
+    in_initcontrols = true;
+    DPRINT("start initcontrols\n");
+    init_aperture_scale(st_new);
+    init_shutter_scale(st_new);
+    init_bulb_value(st_new);
+    init_iso_scale(st_new);
+    init_ec_scale(st_new, st_old);
+    init_jpeg_scales(st_new);
+    init_user_mode_combo(st_new, st_old);
+    init_file_format_combo(st_new);
+    init_buttons(st_new);
     in_initcontrols = false;
     DPRINT("end initcontrols\n");
 }
