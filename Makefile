@@ -231,8 +231,6 @@ androidclean:
 	cd $(ANDROID_DIR) && ./gradlew clean
 
 androidver:
-	sed -i s/android:versionName=\".*\"/android:versionName=\"$(VERSION)\"/ $(ANDROID_DIR)/AndroidManifest.xml
-	sed -i s/android:versionCode=\".*\"/android:versionCode=\"$(VERSIONCODE)\"/ $(ANDROID_DIR)/AndroidManifest.xml
 	sed -i s/versionName\ \".*\"/versionName\ \"$(VERSION)\"/ $(ANDROID_DIR)/build.gradle
 	sed -i s/versionCode\ .*/versionCode\ $(VERSIONCODE)/ $(ANDROID_DIR)/build.gradle
 
