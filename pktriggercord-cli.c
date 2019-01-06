@@ -995,7 +995,9 @@ int main(int argc, char **argv) {
     }
 
     // read the status and settings after setting the values
-    pslr_get_settings_json(camhandle, &settings);
+    if (settings_hex || settings_info || pslr_get_model_has_settings_parser(camhandle)) {
+        pslr_get_settings_json(camhandle, &settings);
+    }
     pslr_get_status(camhandle, &status);
 
     if ( status_hex_info || status_info || settings_info || settings_hex ) {
