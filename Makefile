@@ -242,12 +242,12 @@ androidcommon: androidcli androidver
 
 android: androidcommon
 	cd $(ANDROID_DIR) && ./gradlew assembleDebug
-	cp $(ANDROID_DIR)/build/outputs/apk/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk .
+	cp $(ANDROID_DIR)/build/outputs/apk/debug/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk .
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
 androidrelease: androidcommon
 	cd $(ANDROID_DIR) && ./gradlew assembleRelease --no-daemon
-	cp $(ANDROID_DIR)/build/outputs/apk/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-release.apk .
+	cp $(ANDROID_DIR)/build/outputs/apk/release/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-release.apk .
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
 astyle:
