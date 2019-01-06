@@ -522,6 +522,8 @@ public class MainActivity extends AppCompatActivity {
                         case "progress":
                             setProgressBarProgress((Integer)entry.getValue());
                             break;
+                        default:
+                            Log.e(PkTriggerCord.TAG, "Invalid key in progress map");
                     }
                 }
             }
