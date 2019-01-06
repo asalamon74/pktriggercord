@@ -9,7 +9,6 @@ import android.text.method.LinkMovementMethod;
 
 public class AboutActivity extends Activity {
 
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +26,8 @@ public class AboutActivity extends Activity {
         String copyright = getResources().getString(R.string.copyright);
         String license = getResources().getString(R.string.license);
         String weburl = getResources().getString(R.string.weburl);
-        aboutTextView.setText( appName+" "+versionName+"\n\n"+copyright+"\n\n"+license+"\n\n"+weburl );
+        String aboutText = String.format("%s %s\n\n%s\n\n%s\n\n%s", appName, versionName,copyright,license,weburl);
+        aboutTextView.setText(aboutText);
 
         aboutTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }

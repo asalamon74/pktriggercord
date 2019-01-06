@@ -45,7 +45,7 @@ public class PkTriggerCord extends Application {
 
     private void startCli() {
         try {
-            Process process = new ProcessBuilder()
+            new ProcessBuilder()
             .command("su", "-c", cliHome+"/pktriggercord-cli --servermode")
             .start();
             SystemClock.sleep(1000);
@@ -129,16 +129,16 @@ public class PkTriggerCord extends Application {
     }
 
     private void simpleSudoWrapper(List<String> commands) throws Exception {
-        String appendedCommands="";
+        StringBuilder appendedCommands = new StringBuilder();
         String sep = "";
         for ( String command : commands ) {
-            appendedCommands += sep + command;
+            appendedCommands.append(sep).append(command);
             sep = " && ";
         }
-        simpleSudoWrapper( appendedCommands );
+        simpleSudoWrapper(appendedCommands.toString());
     }
 
-    private void copyAsset(String fileName) throws Exception {
+    private void copyAsset(final String fileName) throws Exception {
         boolean needCliInstall;
         AssetManager assetManager =  getAssets();
         InputStream in = assetManager.open(fileName);

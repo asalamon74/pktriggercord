@@ -1,6 +1,5 @@
 package info.melda.sala.pktriggercord;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -182,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onSaveInstanceState (Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putParcelable("preview", previewBitmap);
         outState.putInt("frames", npf.getValue());
         outState.putInt("delay", npd.getValue());
