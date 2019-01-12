@@ -651,70 +651,8 @@ static pslr_status cam_status[2];
 static pslr_status *status_new = NULL;
 static pslr_status *status_old = NULL;
 
-static gboolean status_poll(gpointer data) {
-    GtkWidget *pw;
-    gchar buf[256];
-    pslr_status *tmp;
-    int ret=0;
-    static bool status_poll_inhibit = false;
-
-    DPRINT("start status_poll\n");
-    if (status_poll_inhibit) {
-        return TRUE;
-    }
-
-    /* Do not recursively status poll */
-    status_poll_inhibit = true;
-
-    if (!camhandle) {
-        if ( dangerous_camera_connected ) {
-            DPRINT("dangerous camera connected\n");
-            status_poll_inhibit = false;
-            return TRUE;
-        }
-        camhandle = pslr_init( NULL, NULL );
-        if (camhandle) {
-            /* Try to reconnect */
-            gtk_statusbar_pop(statusbar, sbar_connect_ctx);
-            gtk_statusbar_push(statusbar, sbar_connect_ctx, "Connecting...");
-
-            /* Allow the message to be seen */
-            wait_for_gtk_events_pending();
-
-            /* Connect */
-            ret = pslr_connect(camhandle);
-            DPRINT("ret: %d\n", ret);
-            if ( ret == -1 ) {
-                gtk_statusbar_pop(statusbar, sbar_connect_ctx);
-                gtk_statusbar_push(statusbar, sbar_connect_ctx, "Unknown Pentax camera found.");
-                camhandle=NULL;
-            } else if ( ret != 0 ) {
-                gtk_statusbar_pop(statusbar, sbar_connect_ctx);
-                gtk_statusbar_push(statusbar, sbar_connect_ctx, "Cannot connect to Pentax camera.");
-                camhandle=NULL;
-            }
-        }
-
-        if (camhandle) {
-            DPRINT("before camera_specific_init\n");
-            camera_specific_init();
-            DPRINT("after camera_specific_init\n");
-            const char *name;
-            name = pslr_camera_name(camhandle);
-            snprintf(buf, sizeof(buf), "Connected: %s", name);
-            buf[sizeof(buf)-1] = '\0';
-            gtk_statusbar_pop(statusbar, sbar_connect_ctx);
-            gtk_statusbar_push(statusbar, sbar_connect_ctx, buf);
-        } else if ( ret == 0 ) {
-            gtk_statusbar_pop(statusbar, sbar_connect_ctx);
-            gtk_statusbar_push(statusbar, sbar_connect_ctx, "No camera connected.");
-        }
-        status_poll_inhibit = false;
-        DPRINT("end status_poll\n");
-        return TRUE;
-    }
-
-    tmp = status_new;
+static void update_status_pointers(void) {
+    pslr_status *tmp = status_new;
     status_new = status_old;
     status_old = tmp;
 
@@ -725,32 +663,65 @@ static gboolean status_poll(gpointer data) {
             status_new = &cam_status[1];
         }
     }
+}
 
-    ret = pslr_get_status(camhandle, status_new);
-    shutter_speed_table_init( status_new );
-    iso_speed_table_init( status_new );
-    if (ret != PSLR_OK) {
-        if (ret == PSLR_DEVICE_ERROR) {
-            /* Camera disconnected */
-            camhandle = NULL;
-        }
-        DPRINT("pslr_get_status: %d\n", ret);
-        status_new = NULL;
+
+static void connect_camera(void) {
+    int ret;
+    /* Try to reconnect */
+    gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+    gtk_statusbar_push(statusbar, sbar_connect_ctx, "Connecting...");
+
+    /* Allow the message to be seen */
+    wait_for_gtk_events_pending();
+
+    /* Connect */
+    ret = pslr_connect(camhandle);
+    DPRINT("ret: %d\n", ret);
+    if ( ret == -1 ) {
+        gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+        gtk_statusbar_push(statusbar, sbar_connect_ctx, "Unknown Pentax camera found.");
+        camhandle = NULL;
+    } else if ( ret != 0 ) {
+        gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+        gtk_statusbar_push(statusbar, sbar_connect_ctx, "Cannot connect to Pentax camera.");
+        camhandle = NULL;
     }
+}
 
-    /* aperture label */
-    pw = GW("label_aperture");
+static void update_widgets_after_connect(void) {
+    gchar buf[256];
+    if (camhandle) {
+        DPRINT("before camera_specific_init\n");
+        camera_specific_init();
+        DPRINT("after camera_specific_init\n");
+        const char *name;
+        name = pslr_camera_name(camhandle);
+        snprintf(buf, sizeof(buf), "Connected: %s", name);
+        buf[sizeof(buf)-1] = '\0';
+        gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+        gtk_statusbar_push(statusbar, sbar_connect_ctx, buf);
+    } else {
+        gtk_statusbar_pop(statusbar, sbar_connect_ctx);
+        gtk_statusbar_push(statusbar, sbar_connect_ctx, "No camera connected.");
+    }
+}
+
+static void update_aperture_label(void) {
+    gchar buf[256];
+    GtkLabel *aperture_label = GTK_LABEL(GW("label_aperture"));
     if (status_new && status_new->current_aperture.denom) {
-        float aper = (float)status_new->current_aperture.nom / (float)status_new->current_aperture.denom;
-        sprintf(buf, "f/%.1f", aper);
-        gtk_label_set_text(GTK_LABEL(pw), buf);
+        float aperture = (float)status_new->current_aperture.nom / (float)status_new->current_aperture.denom;
+        sprintf(buf, "f/%.1f", aperture);
+        gtk_label_set_text(aperture_label, buf);
     }
+}
 
-    /* shutter speed label */
+static void update_shutter_speed_widgets(void) {
+    gchar buf[256];
     if (status_new && (status_new->exposure_mode == PSLR_GUI_EXPOSURE_MODE_B)) {
         sprintf(buf, "BULB");
-        pw = GW("label_shutter");
-        gtk_label_set_text(GTK_LABEL(pw), buf);
+        gtk_label_set_text(GTK_LABEL(GW("label_shutter")), buf);
         /* inhibit shutter exposure slide */
         gtk_widget_set_visible( GW("shutter_scale"), FALSE);
         gtk_widget_set_visible( GW("shutter_scale_label"), FALSE);
@@ -770,52 +741,56 @@ static gboolean status_poll(gpointer data) {
         gtk_widget_set_visible( GW("bulb_exp_value"), FALSE);
         gtk_widget_set_visible( GW("bulb_exp_value_label"), FALSE);
     }
+}
 
-    /* ISO label */
+static void update_iso_label(void) {
+    gchar buf[256];
     if (status_new) {
         sprintf(buf, "ISO %d", status_new->current_iso);
         gtk_label_set_text(GTK_LABEL(GW("label_iso")), buf);
     }
+}
 
-    /* EV label */
+static void update_ev_label(void) {
+    gchar buf[256];
     if (status_new && status_new->current_aperture.denom
             && status_new->current_shutter_speed.denom) {
         float ev, a, s;
         a = (float)status_new->current_aperture.nom/(float)status_new->current_aperture.denom;
         s = (float)status_new->current_shutter_speed.nom/(float)status_new->current_shutter_speed.denom;
-
         ev = log(a*a/s)/M_LN2 - log(status_new->current_iso/100)/M_LN2;
-
         sprintf(buf, "<span size=\"xx-large\">EV %.2f</span>", ev);
-        pw = GW("label_ev");
-        gtk_label_set_markup(GTK_LABEL(pw), buf);
+        gtk_label_set_markup(GTK_LABEL(GW("label_ev")), buf);
     }
-    /* Zoom label */
+}
+
+static void update_zoom_label(void) {
+    gchar buf[256];
     if (status_new && status_new->zoom.denom) {
-        pw = GW("label_zoom");
         sprintf(buf, "%d mm", status_new->zoom.nom / status_new->zoom.denom);
-        gtk_label_set_text(GTK_LABEL(pw), buf);
+        gtk_label_set_text(GTK_LABEL(GW("label_zoom")), buf);
     }
-    /* Focus label */
+}
+
+static void update_focus_label(void) {
+    gchar buf[256];
     if (status_new) {
-        pw = GW("label_focus");
         sprintf(buf, "focus: %d", status_new->focus);
-        gtk_label_set_text(GTK_LABEL(pw), buf);
+        gtk_label_set_text(GTK_LABEL(GW("label_focus")), buf);
     }
+}
 
-    /* Lens label */
+static void update_lens_label(void) {
+    gchar buf[256];
     if (status_new) {
-        pw = GW("label_lens");
         sprintf(buf, "%s", get_lens_name(status_new->lens_id1, status_new->lens_id2));
-        gtk_label_set_text(GTK_LABEL(pw), buf);
+        gtk_label_set_text(GTK_LABEL(GW("label_lens")), buf);
     }
+}
 
-    /* Other controls */
-    init_controls(status_new, status_old);
-
-    /* AF point indicators */
+static void update_af_points(void) {
     if (handle_af_points) {
-        pw = GW("main_drawing_area");
+        GtkWidget *pw = GW("main_drawing_area");
         GdkWindow *window = gtk_widget_get_window(pw);
         GtkAllocation allocation;
         gtk_widget_get_allocation (pw, &allocation);
@@ -843,6 +818,64 @@ static gboolean status_poll(gpointer data) {
             preselect_reselect = false;
         }
     }
+}
+
+static gboolean status_poll(gpointer data) {
+    int ret;
+    static bool status_poll_inhibit = false;
+
+    DPRINT("start status_poll\n");
+    if (status_poll_inhibit) {
+        return TRUE;
+    }
+
+    /* Do not recursively status poll */
+    status_poll_inhibit = true;
+
+    if (!camhandle) {
+        if ( dangerous_camera_connected ) {
+            DPRINT("dangerous camera connected\n");
+            status_poll_inhibit = false;
+            return TRUE;
+        }
+        camhandle = pslr_init( NULL, NULL );
+        if (camhandle) {
+            connect_camera();
+        }
+
+        update_widgets_after_connect();
+        status_poll_inhibit = false;
+        DPRINT("end status_poll\n");
+        return TRUE;
+    }
+
+    update_status_pointers();
+
+    ret = pslr_get_status(camhandle, status_new);
+    shutter_speed_table_init( status_new );
+    iso_speed_table_init( status_new );
+    if (ret != PSLR_OK) {
+        if (ret == PSLR_DEVICE_ERROR) {
+            /* Camera disconnected */
+            camhandle = NULL;
+        }
+        DPRINT("pslr_get_status: %d\n", ret);
+        status_new = NULL;
+    }
+
+    update_aperture_label();
+    update_shutter_speed_widgets();
+    update_iso_label();
+    update_ev_label();
+    update_zoom_label();
+    update_focus_label();
+    update_lens_label();
+
+    /* Other controls */
+    init_controls(status_new, status_old);
+
+    update_af_points();
+
     /* Camera buffer checks */
     manage_camera_buffers(status_new, status_old);
     DPRINT("end status_poll\n");
