@@ -893,7 +893,7 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
         } else if (strcmp(defs[def_index].type, "uint16")==0) {
             if (defs[def_index].value!=NULL) {
                 uint16_setting = (pslr_uint16_setting) {
-                    PSLR_SETTING_STATUS_HARDWIRED, strcmp("false", defs[def_index].value)==0 ? false : true
+                    PSLR_SETTING_STATUS_HARDWIRED, atoi(defs[def_index].value)
                 };
             } else if (defs[def_index].address!=0) {
                 uint16_setting = (pslr_uint16_setting) {
