@@ -17,8 +17,12 @@
 	    { "name" : "bulb_mode_press_press", "type": "boolean", "value": "false" },
 	    { "name" : "one_push_bracketing", "type": "boolean", "value": "false"},
 	    { "name" : "bulb_timer", "type": "boolean", "value": "false"},
-	    { "name" : "bulb_timer_sec", "type": "boolean" },
-	    { "name" : "astrotracer", "type": "boolean", "value": "false"}
+	    { "name" : "bulb_timer_sec", "type": "uint16", "value": 0 },
+	    { "name" : "using_aperture_ring", "type": "boolean", "address": "0x142"},
+	    { "name" : "shake_reduction", "type": "boolean!", "address": "0x065"},
+	    { "name" : "astrotracer", "type": "boolean", "value": "false"},
+	    { "name" : "astrotracer_timer_sec", "type": "uint16", "value": "0"},
+	    { "name" : "horizon_correction", "type": "boolean", "value": "false"}
 	]
     },
 
