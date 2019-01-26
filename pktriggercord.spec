@@ -22,7 +22,7 @@ Version: %ver
 Release: %rel
 License: LGPL
 Group: Applications/Tools
-Source: https://github.com/asalamon74/pktriggercord/releases/download/v%ver/pkTriggerCord-%ver.src.tar.gz
+Source: https://github.com/asalamon74/pktriggercord/releases/download/v%{ver}/pkTriggerCord-%{ver}.src.tar.gz
 URL: http://pktriggercord.melda.info/
 Packager: Andras Salamon <andras.salamon@melda.info>
 BuildRoot: /var/tmp/%{name}-root
@@ -40,15 +40,15 @@ make clean
 make PREFIX=%{prefix}
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf ${RPM_BUILD_ROOT}
 make install PREFIX=%{prefix} DESTDIR=${RPM_BUILD_ROOT}
 
 %post
-(which setcap && setcap CAP_SYS_RAWIO+eip /usr/bin/pktriggercord-cli) || true
-(which setcap && setcap CAP_SYS_RAWIO+eip /usr/bin/pktriggercord) || true
+(which setcap && setcap CAP_SYS_RAWIO+eip %{prefix}/bin/pktriggercord-cli) || true
+(which setcap && setcap CAP_SYS_RAWIO+eip %{prefix}/bin/pktriggercord) || true
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-,root,root)
