@@ -1,3 +1,9 @@
+pktriggercord (0.85.00-1) unstable; urgency=low
+
+  * built from pkTriggerCord 0.85.00
+
+ -- Andras Salamon <andras.salamon@melda.info>  Sun, 27 Jan 2019 12:00:00 +0000
+
 pktriggercord (0.84.04-1) unstable; urgency=low
 
   * built from pkTriggerCord 0.84.04

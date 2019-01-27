@@ -1,4 +1,4 @@
-version 0.84.05
+version 0.85.00 ( 2019-JAN-27 )
 	K-1 battery fields fix
 	K-70: read one push bracketing field
 	Using one push bracketing field in command line
