@@ -160,7 +160,7 @@ deb: srczip
 # Remote deb creation on Raspberry PI
 # address, dir hardwired
 remotedeb:
-	ssh pi@raspberrypi "rm -rf /tmp/pktriggercord && cd /tmp && git clone --depth 1 https://github.com/asalamon74/pktriggercord.git && cd pktriggercord && make clean deb"
+	git ls-files | tar Tzcf - - | ssh pi@raspberrypi "rm -rf /tmp/pktriggercord && cd /tmp && mkdir pktriggercord && tar xzfv - -C pktriggercord && cd pktriggercord && make clean deb"
 	scp pi@raspberrypi:/tmp/pktriggercord/pktriggercord_*.deb .
 
 
