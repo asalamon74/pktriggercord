@@ -54,8 +54,8 @@ android {
         applicationId "info.melda.sala.pktriggercord"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 8500
-        versionName "0.85.00"
+        versionCode 8501
+        versionName "0.85.01"
         setProperty("archivesBaseName", "info.melda.sala.pktriggercord.PkTriggerCord-$versionName" )
     }
 
