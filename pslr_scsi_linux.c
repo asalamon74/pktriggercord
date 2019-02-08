@@ -107,40 +107,52 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     char nmbuf[256];
     int fd;
 
+    DPRINT("Getting drive info for %s\n", driveName);
     vendorId[0] = '\0';
     productId[0] = '\0';
+    DPRINT("Looking for vendor\n");
     snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/vendor", driveName);
     fd = open(nmbuf, O_RDONLY);
     if (fd == -1) {
+        DPRINT("Cannot open /sys/class/scsi_generic/%s/device/vendor\n", driveName);
         snprintf(nmbuf, sizeof (nmbuf), "/sys/block/%s/device/vendor", driveName);
         fd = open(nmbuf, O_RDONLY);
         if (fd == -1) {
+            DPRINT("Cannot open /sys/block/%s/device/vendor\n", driveName);
             return PSLR_DEVICE_ERROR;
         }
     }
     int v_length = read(fd, vendorId, vendorIdSizeMax-1);
     vendorId[v_length]='\0';
+    DPRINT("vendorId: %s\n", vendorId);
     close(fd);
 
+    DPRINT("Looking for model\n");
     snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/model", driveName);
     fd = open(nmbuf, O_RDONLY);
     if (fd == -1) {
+        DPRINT("Cannot open /sys/class/scsi_generic/%s/device/model\n", driveName);
         snprintf(nmbuf, sizeof (nmbuf), "/sys/block/%s/device/model", driveName);
         fd = open(nmbuf, O_RDONLY);
         if (fd == -1) {
+            DPRINT("Cannot open /sys/block/%s/device/model\n", driveName);
             return PSLR_DEVICE_ERROR;
         }
     }
     int p_length = read(fd, productId, productIdSizeMax-1);
     productId[p_length]='\0';
+    DPRINT("product id: %s\n", productId);
     close(fd);
 
+    DPRINT("Looking for device file\n");
     snprintf(nmbuf, sizeof (nmbuf), "/dev/%s", driveName);
     *hDevice = open(nmbuf, O_RDWR);
     if ( *hDevice == -1) {
+        DPRINT("Cannot open /dev/%s\n", driveName);
         snprintf(nmbuf, sizeof (nmbuf), "/dev/block/%s", driveName);
         *hDevice = open(nmbuf, O_RDWR);
         if ( *hDevice == -1 ) {
+            DPRINT("Cannot open /dev/block/%s\n", driveName);
             return PSLR_DEVICE_ERROR;
         }
     }
