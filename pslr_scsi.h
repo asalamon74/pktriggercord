@@ -47,6 +47,15 @@ extern void write_debug( const char* message, ... );
 #endif
 #endif
 
+#define CHECK(x) do {                           \
+        int __r;                                \
+        __r = (x);                                                      \
+        if (__r != PSLR_OK) {                                           \
+            fprintf(stderr, "%s:%d:%s failed: %d\n", __FILE__, __LINE__, #x, __r); \
+            return __r;                                                 \
+        }                                                               \
+    } while (0)
+
 typedef enum {
     PSLR_OK = 0,
     PSLR_DEVICE_ERROR,

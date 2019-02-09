@@ -926,7 +926,6 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
         } else if (strcmp(defs[def_index].name, "horizon_correction")==0) {
             settings->horizon_correction = bool_setting;
         }
-
         ++def_index;
     }
 }

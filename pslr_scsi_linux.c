@@ -101,31 +101,32 @@ char **get_drives(int *driveNum) {
     return ret;
 }
 
-pslr_result get_drive_info(char* driveName, int* hDevice,
-                           char* vendorId, int vendorIdSizeMax,
-                           char* productId, int productIdSizeMax) {
+pslr_result get_drive_info_vendor(const char *driveName, char *vendorId, int vendorIdSizeMax) {
     char nmbuf[256];
     int fd;
 
-    DPRINT("Getting drive info for %s\n", driveName);
-    vendorId[0] = '\0';
-    productId[0] = '\0';
     DPRINT("Looking for vendor\n");
-    snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/vendor", driveName);
+    snprintf(nmbuf, sizeof(nmbuf), "/sys/class/scsi_generic/%s/device/vendor", driveName);
     fd = open(nmbuf, O_RDONLY);
     if (fd == -1) {
         DPRINT("Cannot open /sys/class/scsi_generic/%s/device/vendor\n", driveName);
-        snprintf(nmbuf, sizeof (nmbuf), "/sys/block/%s/device/vendor", driveName);
+        snprintf(nmbuf, sizeof(nmbuf), "/sys/block/%s/device/vendor", driveName);
         fd = open(nmbuf, O_RDONLY);
         if (fd == -1) {
             DPRINT("Cannot open /sys/block/%s/device/vendor\n", driveName);
             return PSLR_DEVICE_ERROR;
         }
     }
-    int v_length = read(fd, vendorId, vendorIdSizeMax-1);
-    vendorId[v_length]='\0';
+    int v_length = read(fd, vendorId, vendorIdSizeMax - 1);
+    vendorId[v_length] = '\0';
     DPRINT("vendorId: %s\n", vendorId);
     close(fd);
+    return PSLR_OK;
+}
+
+pslr_result get_drive_info_model(const char *driveName, char *productId, int productIdSizeMax) {
+    char nmbuf[256];
+    int fd;
 
     DPRINT("Looking for model\n");
     snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/model", driveName);
@@ -143,6 +144,11 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     productId[p_length]='\0';
     DPRINT("product id: %s\n", productId);
     close(fd);
+    return PSLR_OK;
+}
+
+pslr_result get_drive_info_device(const char *driveName, int* hDevice) {
+    char nmbuf[256];
 
     DPRINT("Looking for device file\n");
     snprintf(nmbuf, sizeof (nmbuf), "/dev/%s", driveName);
@@ -156,6 +162,18 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
             return PSLR_DEVICE_ERROR;
         }
     }
+    return PSLR_OK;
+}
+
+pslr_result get_drive_info(char* driveName, int* hDevice,
+                           char* vendorId, int vendorIdSizeMax,
+                           char* productId, int productIdSizeMax) {
+    DPRINT("Getting drive info for %s\n", driveName);
+    vendorId[0] = '\0';
+    productId[0] = '\0';
+    CHECK(get_drive_info_vendor(driveName, vendorId, vendorIdSizeMax));
+    CHECK(get_drive_info_model(driveName, productId, productIdSizeMax));
+    CHECK(get_drive_info_device(driveName, hDevice));
     return PSLR_OK;
 }
 
