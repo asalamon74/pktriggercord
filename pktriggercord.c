@@ -884,43 +884,38 @@ static gboolean status_poll(gpointer data) {
     return TRUE;
 }
 
-static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old) {
-    uint32_t new_pictures;
-    bool deleted;
-    int new_picture;
-    int format;
+static void clear_preview_icons() {
     int i;
-
-    if (!st_new) {
-        for (i=0; i<MAX_BUFFERS; i++) {
-            set_preview_icon(i, NULL);
-        }
-        return;
+    for (i=0; i < MAX_BUFFERS; i++) {
+        set_preview_icon(i, NULL);
     }
+}
 
-    if (st_old && st_new->bufmask == st_old->bufmask) {
-        return;
-    }
+static int find_new_pictures(pslr_status *st_new, pslr_status *st_old) {
+    int new_pictures;
     if (st_old) {
         new_pictures = (st_new->bufmask ^ st_old->bufmask) & st_new->bufmask;
     } else {
         new_pictures = st_new->bufmask;
     }
-    if (!new_pictures) {
-        return;
-    }
+    return new_pictures;
+}
 
-    /* Show the newest picture in the main area */
-    for (new_picture=MAX_BUFFERS; new_picture>=0; --new_picture) {
-        if (new_pictures & (1<<new_picture)) {
+static int find_newest_picture(int new_pictures) {
+    int newest_picture;
+    for (newest_picture=MAX_BUFFERS; newest_picture>=0; --newest_picture) {
+        if (new_pictures & (1<<newest_picture)) {
             break;
         }
     }
-    if (new_picture >= 0) {
-        update_image_areas(new_picture, true);
-    }
+    return newest_picture;
+}
 
-    format = get_user_file_format(st_new);
+static int auto_save_pictures(pslr_status *st_new, int new_pictures) {
+    int i;
+    bool deleted;
+    int format = get_user_file_format(st_new);
+
 
     /* auto-save check buffers */
     for (i=0; i<MAX_BUFFERS; i++) {
@@ -931,23 +926,53 @@ static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old) {
             }
         }
     }
+    return new_pictures;
+}
 
-    /* Update buffer window for buffers that were not deleted by
-     * auto_save_check */
+static void update_thumbnails(int new_pictures, int newest_picture) {
+    int i;
     for (i=0; i<MAX_BUFFERS; i++) {
-        if (i!=new_picture && new_pictures & (1<<i)) {
+        if (i!=newest_picture && new_pictures & (1<<i)) {
             update_image_areas(i, false);
         }
     }
-    /* Select the new picture in the buffer window */
-    GtkWidget *pw;
-    pw = GW("preview_icon_view");
+}
+
+static void select_thumbnail(int thumbnail_index) {
+    GtkIconView *pw = GTK_ICON_VIEW(GW("preview_icon_view"));
 
     GtkTreePath *path;
-    path = gtk_tree_path_new_from_indices (new_picture, -1);
-    gtk_icon_view_unselect_all( GTK_ICON_VIEW(pw) );
-    gtk_icon_view_select_path( GTK_ICON_VIEW(pw), path );
+    path = gtk_tree_path_new_from_indices (thumbnail_index, -1);
+    gtk_icon_view_unselect_all( pw );
+    gtk_icon_view_select_path( pw, path );
     gtk_tree_path_free (path);
+}
+
+static void manage_camera_buffers(pslr_status *st_new, pslr_status *st_old) {
+    uint32_t new_pictures;
+    int newest_picture;
+
+    if (!st_new) {
+        clear_preview_icons();
+        return;
+    }
+
+    if (st_old && st_new->bufmask == st_old->bufmask) {
+        return;
+    }
+    new_pictures = find_new_pictures(st_new, st_old);
+    if (!new_pictures) {
+        return;
+    }
+
+    newest_picture = find_newest_picture(new_pictures);
+    if (newest_picture >= 0) {
+        update_image_areas(newest_picture, true);
+    }
+
+    new_pictures = auto_save_pictures(st_new, new_pictures);
+    update_thumbnails(new_pictures, newest_picture);
+    select_thumbnail(newest_picture);
 }
 
 static void manage_camera_buffers_limited() {
