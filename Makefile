@@ -66,12 +66,12 @@ pktriggercord-cli: pktriggercord-cli.c $(OBJS)
 
 pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
 
-$(JSONDIR)/js0n.o : $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
+$(JSONDIR)/js0n.o: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 	$(CC) $(LIN_CFLAGS) -fPIC -c $< -o $@
 
 external: $(JSONDIR)/js0n.o
 
-%.o : %.c %.h external
+%.o: %.c %.h external
 	$(CC) $(LIN_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
 
 pktriggercord: pktriggercord.c $(OBJS)
