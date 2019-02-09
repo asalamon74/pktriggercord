@@ -76,9 +76,9 @@ char **get_drives(int *driveNum) {
     return ret;
 }
 
-pslr_result get_drive_info(char* driveName, int* hDevice,
-                           char* vendorId, int vendorIdSizeMax,
-                           char* productId, int productIdSizeMax
+pslr_result get_drive_info(char* drive_name, int* device,
+                           char* vendor_id, int vendor_id_size_max,
+                           char* product_id, int product_id_size_max
                           ) {
     bool Status;
     STORAGE_PROPERTY_QUERY query;
@@ -89,12 +89,12 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     HANDLE hDrive;
     char fullDriveName[7];
 
-    vendorId[0] = '\0';
-    productId[0] = '\0';
+    vendor_id[0] = '\0';
+    product_id[0] = '\0';
     query.PropertyId = StorageDeviceProperty;
     query.QueryType = PropertyStandardQuery;
 
-    snprintf( fullDriveName, 7, "\\\\.\\%s:", driveName);
+    snprintf( fullDriveName, 7, "\\\\.\\%s:", drive_name);
 
     hDrive = CreateFile(fullDriveName,
                         GENERIC_READ | GENERIC_WRITE,
@@ -119,7 +119,7 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
                 CancelIo(hDrive);
             }
         } else {
-            *hDevice = (int)hDrive;
+            *device = (int)hDrive;
             drive_status = PSLR_OK;
 
             pdescriptor = (STORAGE_DEVICE_DESCRIPTOR *)descriptorBuf;
@@ -127,30 +127,30 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
             if (pdescriptor->VendorIdOffset != 0) {
                 int i = 0;
                 while ((descriptorBuf[pdescriptor->VendorIdOffset + i] != 0)
-                        &&(i < vendorIdSizeMax)
+                        &&(i < vendor_id_size_max)
                       ) {
-                    vendorId[i] = descriptorBuf[pdescriptor->VendorIdOffset + i];
+                    vendor_id[i] = descriptorBuf[pdescriptor->VendorIdOffset + i];
                     i++;
                 }
-                vendorId[i]='\0';
+                vendor_id[i]='\0';
             }
             if (pdescriptor->ProductIdOffset != 0) {
                 int i = 0;
                 while ((descriptorBuf[pdescriptor->ProductIdOffset + i] != 0)
-                        &&(i < productIdSizeMax)
+                        &&(i < product_id_size_max)
                       ) {
-                    productId[i] = descriptorBuf[pdescriptor->ProductIdOffset + i];
+                    product_id[i] = descriptorBuf[pdescriptor->ProductIdOffset + i];
                     i++;
                 }
-                productId[i]='\0';
+                product_id[i]='\0';
             }
         }
     }
     return drive_status;
 }
 
-void close_drive(int *hDevice) {
-    CloseHandle((HANDLE)*hDevice);
+void close_drive(int *device) {
+    CloseHandle((HANDLE)*device);
 }
 
 int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,

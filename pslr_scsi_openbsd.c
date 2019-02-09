@@ -56,7 +56,7 @@ void print_scsi_error(scsireq_t *req) {
     DPRINT("SCSI status=0x%x\n", req->status);
 }
 
-char **get_drives(int *driveNum) {
+char **get_drives(int *drive_num) {
     DIR *d;
     struct dirent *ent;
     char *tmp[256];
@@ -67,7 +67,7 @@ char **get_drives(int *driveNum) {
 
     if ( !d ) {
         DPRINT("Cannot open /dev\n");
-        *driveNum = 0;
+        *drive_num = 0;
         return NULL;
     }
     j=0;
@@ -86,13 +86,13 @@ char **get_drives(int *driveNum) {
         strncpy( ret[jj], tmp[jj], strlen(tmp[jj]) );
         ret[jj][strlen(tmp[jj])]='\0';
     }
-    *driveNum = j;
+    *drive_num = j;
     return ret;
 }
 
-pslr_result get_drive_info(char* driveName, int* hDevice,
-                           char* vendorId, int vendorIdSizeMax,
-                           char* productId, int productIdSizeMax) {
+pslr_result get_drive_info(char* drive_name, int* device,
+                           char* vendor_id, int vendor_id_size_max,
+                           char* product_id, int product_id_size_max) {
     int fd;
     char buf[100];
     char deviceName[256];
@@ -113,9 +113,9 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     };
     char *p, *q;
 
-    vendorId[0] = '\0';
-    productId[0] = '\0';
-    snprintf(deviceName, 256, "/dev/%s", driveName);
+    vendor_id[0] = '\0';
+    product_id[0] = '\0';
+    snprintf(deviceName, 256, "/dev/%s", drive_name);
     fd = open(deviceName, O_RDWR);
     if (fd == -1) {
         perror("Device open while querying:");
@@ -124,7 +124,7 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     if (ioctl(fd, SCIOCCOMMAND, &screq) < 0 ||
             screq.status != 0 ||
             screq.retsts != SCCMD_OK) {
-        vendorId[0] = productId[0] = '\0';
+        vendor_id[0] = product_id[0] = '\0';
         close(fd);
         DPRINT("IOCTL failed in query\n");
         return PSLR_DEVICE_ERROR;
@@ -132,32 +132,32 @@ pslr_result get_drive_info(char* driveName, int* hDevice,
     DPRINT("Camera queried.+n");
     /* Vendor */
     p = buf + 8;
-    q = buf + ((16 < vendorIdSizeMax)?16:vendorIdSizeMax);
+    q = buf + ((16 < vendor_id_size_max)?16:vendor_id_size_max);
     while (q > p && q[-1] == ' ') {
         q--;
     }
-    memcpy(vendorId, p, q - p);
-    vendorId[q - p] = '\0';
+    memcpy(vendor_id, p, q - p);
+    vendor_id[q - p] = '\0';
     /* Product */
     p = buf + 16;
-    q = p + ((16 < productIdSizeMax)?16:productIdSizeMax);
+    q = p + ((16 < product_id_size_max)?16:product_id_size_max);
     while (q > p && q[-1] == ' ') {
         q--;
     }
-    memcpy(productId, p, q - p);
-    productId[q - p] = '\0';
+    memcpy(product_id, p, q - p);
+    product_id[q - p] = '\0';
 
     close(fd);
 
-    *hDevice = open(deviceName, O_RDWR);
-    if ( *hDevice == -1) {
+    *device = open(deviceName, O_RDWR);
+    if ( *device == -1) {
         return PSLR_DEVICE_ERROR;
     }
     return PSLR_OK;
 }
 
-void close_drive(int *hDevice) {
-    close( *hDevice );
+void close_drive(int *device) {
+    close( *device );
 }
 
 int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,

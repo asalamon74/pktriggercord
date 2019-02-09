@@ -40,6 +40,8 @@
 
 #include "pslr_scsi.h"
 
+static const int MAX_DEVICE_NUM = 256;
+
 void print_scsi_error(sg_io_hdr_t *pIo, uint8_t *sense_buffer) {
     int k;
 
@@ -65,16 +67,17 @@ void print_scsi_error(sg_io_hdr_t *pIo, uint8_t *sense_buffer) {
 }
 
 const char* device_dirs[2] = {"/sys/class/scsi_generic", "/sys/block"};
+const int device_dir_num = sizeof(device_dirs)/sizeof(device_dirs[0]);
 
-char **get_drives(int *driveNum) {
+char **get_drives(int *drive_num) {
     DIR *d;
     struct dirent *ent;
-    char *tmp[256];
+    char *tmp[MAX_DEVICE_NUM];
     char **ret=NULL;
     int j=0,jj;
     int di;
-    int device_num = sizeof(device_dirs)/sizeof(device_dirs[0]);
-    for (di=0; di<device_num; ++di) {
+
+    for (di=0; di<device_dir_num; ++di) {
         d = opendir(device_dirs[di]);
         if (d) {
             while ( (ent = readdir(d)) ) {
@@ -89,7 +92,7 @@ char **get_drives(int *driveNum) {
             DPRINT("Cannot open %s\n", device_dirs[di]);
         }
     }
-    *driveNum = j;
+    *drive_num = j;
     if (j>0) {
         ret = malloc( j * sizeof(char*) );
         for ( jj=0; jj<j; ++jj ) {
@@ -101,84 +104,71 @@ char **get_drives(int *driveNum) {
     return ret;
 }
 
-pslr_result get_drive_info_vendor(const char *driveName, char *vendorId, int vendorIdSizeMax) {
-    char nmbuf[256];
-    int fd;
+pslr_result get_drive_info_property(const char *drive_name, char *id, int id_size_max, char *property_name) {
+    char file_name[256];
+    int fd = -1;
 
-    DPRINT("Looking for vendor\n");
-    snprintf(nmbuf, sizeof(nmbuf), "/sys/class/scsi_generic/%s/device/vendor", driveName);
-    fd = open(nmbuf, O_RDONLY);
-    if (fd == -1) {
-        DPRINT("Cannot open /sys/class/scsi_generic/%s/device/vendor\n", driveName);
-        snprintf(nmbuf, sizeof(nmbuf), "/sys/block/%s/device/vendor", driveName);
-        fd = open(nmbuf, O_RDONLY);
+    DPRINT("Looking for %s\n", property_name);
+    int di = 0;
+    while (fd == -1 && di < device_dir_num) {
+        snprintf(file_name, sizeof(file_name), "%s/%s/device/%s", device_dirs[di], drive_name, property_name);
+        fd = open(file_name, O_RDONLY);
         if (fd == -1) {
-            DPRINT("Cannot open /sys/block/%s/device/vendor\n", driveName);
-            return PSLR_DEVICE_ERROR;
+            DPRINT("Cannot open %s\n", file_name);
         }
+        ++di;
     }
-    int v_length = read(fd, vendorId, vendorIdSizeMax - 1);
-    vendorId[v_length] = '\0';
-    DPRINT("vendorId: %s\n", vendorId);
-    close(fd);
-    return PSLR_OK;
+    if (fd == -1) {
+        return PSLR_DEVICE_ERROR;
+    } else {
+        int v_length = read(fd, id, id_size_max - 1);
+        id[v_length] = '\0';
+        DPRINT("%s: %s\n", property_name, id);
+        close(fd);
+        return PSLR_OK;
+    }
 }
 
-pslr_result get_drive_info_model(const char *driveName, char *productId, int productIdSizeMax) {
-    char nmbuf[256];
-    int fd;
-
-    DPRINT("Looking for model\n");
-    snprintf(nmbuf, sizeof (nmbuf), "/sys/class/scsi_generic/%s/device/model", driveName);
-    fd = open(nmbuf, O_RDONLY);
-    if (fd == -1) {
-        DPRINT("Cannot open /sys/class/scsi_generic/%s/device/model\n", driveName);
-        snprintf(nmbuf, sizeof (nmbuf), "/sys/block/%s/device/model", driveName);
-        fd = open(nmbuf, O_RDONLY);
-        if (fd == -1) {
-            DPRINT("Cannot open /sys/block/%s/device/model\n", driveName);
-            return PSLR_DEVICE_ERROR;
-        }
-    }
-    int p_length = read(fd, productId, productIdSizeMax-1);
-    productId[p_length]='\0';
-    DPRINT("product id: %s\n", productId);
-    close(fd);
-    return PSLR_OK;
+pslr_result get_drive_info_vendor(const char *drive_name, char *vendor_id, int vendor_id_size_max) {
+    return get_drive_info_property(drive_name, vendor_id, vendor_id_size_max, "vendor");
 }
 
-pslr_result get_drive_info_device(const char *driveName, int* hDevice) {
-    char nmbuf[256];
+pslr_result get_drive_info_model(const char *drive_name, char *product_id, int product_id_size_max) {
+    return get_drive_info_property(drive_name, product_id, product_id_size_max, "model");
+}
+
+pslr_result get_drive_info_device(const char *drive_name, int* device) {
+    char file_name[256];
 
     DPRINT("Looking for device file\n");
-    snprintf(nmbuf, sizeof (nmbuf), "/dev/%s", driveName);
-    *hDevice = open(nmbuf, O_RDWR);
-    if ( *hDevice == -1) {
-        DPRINT("Cannot open /dev/%s\n", driveName);
-        snprintf(nmbuf, sizeof (nmbuf), "/dev/block/%s", driveName);
-        *hDevice = open(nmbuf, O_RDWR);
-        if ( *hDevice == -1 ) {
-            DPRINT("Cannot open /dev/block/%s\n", driveName);
+    snprintf(file_name, sizeof (file_name), "/dev/%s", drive_name);
+    *device = open(file_name, O_RDWR);
+    if ( *device == -1) {
+        DPRINT("Cannot open %s\n", file_name);
+        snprintf(file_name, sizeof (file_name), "/dev/block/%s", drive_name);
+        *device = open(file_name, O_RDWR);
+        if ( *device == -1 ) {
+            DPRINT("Cannot open %s\n", file_name);
             return PSLR_DEVICE_ERROR;
         }
     }
     return PSLR_OK;
 }
 
-pslr_result get_drive_info(char* driveName, int* hDevice,
-                           char* vendorId, int vendorIdSizeMax,
-                           char* productId, int productIdSizeMax) {
-    DPRINT("Getting drive info for %s\n", driveName);
-    vendorId[0] = '\0';
-    productId[0] = '\0';
-    CHECK(get_drive_info_vendor(driveName, vendorId, vendorIdSizeMax));
-    CHECK(get_drive_info_model(driveName, productId, productIdSizeMax));
-    CHECK(get_drive_info_device(driveName, hDevice));
+pslr_result get_drive_info(char* drive_name, int* device,
+                           char* vendor_id, int vendor_id_size_max,
+                           char* product_id, int product_id_size_max) {
+    DPRINT("Getting drive info for %s\n", drive_name);
+    vendor_id[0] = '\0';
+    product_id[0] = '\0';
+    CHECK(get_drive_info_vendor(drive_name, vendor_id, vendor_id_size_max));
+    CHECK(get_drive_info_model(drive_name, product_id, product_id_size_max));
+    CHECK(get_drive_info_device(drive_name, device));
     return PSLR_OK;
 }
 
-void close_drive(int *hDevice) {
-    close( *hDevice );
+void close_drive(int *device) {
+    close( *device );
 }
 
 int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
