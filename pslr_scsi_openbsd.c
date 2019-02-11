@@ -28,7 +28,11 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdio.h>
+#ifdef __APPLE__
+#include "scsiio.h"
+#else
 #include <sys/scsiio.h>
+#endif
 #include <unistd.h>
 #include <dirent.h>
 #include <stdlib.h>
@@ -72,8 +76,10 @@ char **get_drives(int *drive_num) {
     }
     j=0;
     while ( (ent = readdir(d)) ) {
-        if (strncmp(ent->d_name, "rsd", 3) == 0 &&
-                strnlen(ent->d_name, 6) > 4 && ent->d_name[4] == 'c') {
+      //      DPRINT("ent: %s\n", ent->d_name);
+      /*if (strncmp(ent->d_name, "rsd", 3) == 0 &&
+	strnlen(ent->d_name, 6) > 4 && ent->d_name[4] == 'c') {*/
+      if (strncmp(ent->d_name, "disk2",5) == 0 &&strnlen(ent->d_name,10)==5) {
             tmp[j] = malloc( strlen(ent->d_name)+1 );
             strncpy(tmp[j], ent->d_name, strlen(ent->d_name)+1);
             ++j;
@@ -121,6 +127,11 @@ pslr_result get_drive_info(char* drive_name, int* device,
         perror("Device open while querying:");
         return PSLR_DEVICE_ERROR;
     }
+
+    /*char flags;
+    ioctl(fd, TIOCMGET, &flags);
+    fprintf(stderr, "Flags are %x.\n", flags);*/
+    
     if (ioctl(fd, SCIOCCOMMAND, &screq) < 0 ||
             screq.status != 0 ||
             screq.retsts != SCCMD_OK) {

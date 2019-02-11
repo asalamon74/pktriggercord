@@ -28,7 +28,7 @@
 #include "pslr_scsi_win.c"
 #else
 /* Ugly hack. More generic ifs required */
-#ifdef __OpenBSD__
+#if defined(__OpenBSD__) || defined(__APPLE__)
 #include "pslr_scsi_openbsd.c"
 #else
 #include "pslr_scsi_linux.c"
