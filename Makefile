@@ -224,10 +224,10 @@ win: win-cli win-gui
 localwin: windownload win
 
 androidcli:
-	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD)
+	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 V=1 $(NDK_BUILD)
 
 androidclean:
-	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 $(NDK_BUILD) clean
+	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 V=1 $(NDK_BUILD) clean
 	cd $(ANDROID_DIR) && ./gradlew clean
 
 androidver:
