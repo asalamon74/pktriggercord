@@ -32,11 +32,6 @@ ANDROID_DIR = android
 ANDROID_PROJECT_NAME = PkTriggerCord
 ANDROID_PACKAGE = info.melda.sala.pktriggercord
 APK_FILE = $(PROJECT_NAME)-debug.apk
-ifndef ANDROID_NDK_HOME
-NDK_BUILD=ndk-build
-else
-NDK_BUILD = $(ANDROID_NDK_HOME)/ndk-build
-endif
 
 LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
 LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
@@ -223,30 +218,24 @@ win: win-cli win-gui
 
 localwin: windownload win
 
-androidcli:
-	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 V=1 $(NDK_BUILD)
-
 androidclean:
-	VERSION=$(VERSION) NDK_PROJECT_PATH=$(ANDROID_DIR) NDK_DEBUG=1 V=1 $(NDK_BUILD) clean
 	cd $(ANDROID_DIR) && ./gradlew clean
 
 androidver:
 	sed -i s/versionName\ \".*\"/versionName\ \"$(VERSION)\"/ $(ANDROID_DIR)/build.gradle
 	sed -i s/versionCode\ .*/versionCode\ $(VERSIONCODE)/ $(ANDROID_DIR)/build.gradle
 
-androidcommon: androidcli androidver
-	mkdir -p $(ANDROID_DIR)/assets
-	cp $(ANDROID_DIR)/libs/armeabi/pktriggercord-cli $(ANDROID_DIR)/assets
-
-android: androidcommon
+android:
 	cd $(ANDROID_DIR) && ./gradlew assembleDebug
 	cp $(ANDROID_DIR)/build/outputs/apk/debug/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-debug.apk .
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
-androidrelease: androidcommon
+androidrelease:
 	cd $(ANDROID_DIR) && ./gradlew assembleRelease --no-daemon
 	cp $(ANDROID_DIR)/build/outputs/apk/release/$(ANDROID_PACKAGE).$(ANDROID_PROJECT_NAME)-$(VERSION)-release.apk .
 	echo "android build is EXPERIMENTAL. Use it at your own risk"
 
 astyle:
 	astyle --options=astylerc *.h *.c
+
+.PHONY: android androidrelease

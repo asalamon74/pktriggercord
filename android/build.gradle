@@ -38,6 +38,12 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
+    externalNativeBuild {
+        ndkBuild {
+            path "jni/Android.mk"
+        }
+    }
+
     sourceSets {          
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -57,6 +63,13 @@ android {
         versionCode 8501
         versionName "0.85.01"
         setProperty("archivesBaseName", "info.melda.sala.pktriggercord.PkTriggerCord-$versionName" )
+        externalNativeBuild {
+            ndkBuild {
+                abiFilters "armeabi-v7a"
+                targets "pktriggercord-cli"
+                arguments  "V=1 install"
+            }
+        }
     }
 
     signingConfigs {
