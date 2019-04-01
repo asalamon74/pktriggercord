@@ -79,7 +79,7 @@ char **get_drives(int *drive_num) {
       //      DPRINT("ent: %s\n", ent->d_name);
       /*if (strncmp(ent->d_name, "rsd", 3) == 0 &&
 	strnlen(ent->d_name, 6) > 4 && ent->d_name[4] == 'c') {*/
-      if (strncmp(ent->d_name, "disk2",5) == 0 &&strnlen(ent->d_name,10)==5) {
+      if (strncmp(ent->d_name, "disk2",5) == 0) {
             tmp[j] = malloc( strlen(ent->d_name)+1 );
             strncpy(tmp[j], ent->d_name, strlen(ent->d_name)+1);
             ++j;
@@ -188,7 +188,7 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     screq.cmdlen = cmdLen;
     screq.senselen = SENSEBUFLEN;
 
-    screq.databuf = buf;
+    screq.databuf = (char*)buf;
     screq.datalen = bufLen;
 
     DPRINT("[S]\t\t\t\t\t >>> [");
@@ -239,7 +239,7 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
         if (screq.datalen_used == 0)
             return bufLen;
         */
-        return screq.datalen_used;
+        return (int)screq.datalen_used;
 
     }
 }
@@ -262,7 +262,7 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
     screq.cmdlen = cmdLen;
     screq.senselen = SENSEBUFLEN;
 
-    screq.databuf = buf;
+    screq.databuf = (char*)buf;
     screq.datalen = bufLen;
 
 

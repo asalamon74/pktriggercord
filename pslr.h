@@ -218,8 +218,8 @@ int pslr_read_datetime(pslr_handle_t *h, int *year, int *month, int *day, int *h
 
 int pslr_read_dspinfo(pslr_handle_t *h, char *firmware);
 
-int pslr_read_setting(pslr_handle_t *h, int offset, uint32_t *value);
-int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value);
+int pslr_read_setting(pslr_handle_t *h, uint32_t offset, uint32_t *value);
+int pslr_write_setting(pslr_handle_t *h, uint32_t offset, uint32_t value);
 int pslr_write_setting_by_name(pslr_handle_t *h, char *name, uint32_t value);
 bool pslr_has_setting_by_name(pslr_handle_t *h, char *name);
 int pslr_read_settings(pslr_handle_t *h);

@@ -138,7 +138,7 @@ typedef struct {
 
 typedef struct {
     const char *name;
-    unsigned long address;
+    uint32_t address;
     const char *value;
     const char *type;
 } pslr_setting_def_t;
