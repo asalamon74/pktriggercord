@@ -30,6 +30,7 @@
 #include <stdio.h>
 #ifdef __APPLE__
 #include "scsiio.h"
+#include "regex.h"
 #else
 #include <sys/scsiio.h>
 #endif
@@ -63,36 +64,57 @@ void print_scsi_error(scsireq_t *req) {
 char **get_drives(int *drive_num) {
     DIR *d;
     struct dirent *ent;
-    char *tmp[256];
+    char *names[256];
     char **ret;
-    int j,jj;
+    int nameIdx, nameLen, namesCount;
+    
+    #if __APPLE__
+        // We want to find "diskN" but not "diskNsM". We set up a regex search for that.
+        regex_t re;
+        assert (regcomp (&re, "^disk[0-9]+$", REG_EXTENDED) == 0);
+        /* and here are some tests to make sure it works:
+			regmatch_t matches[1];
+			assert (0 == regexec(&re, "disk1", 0, NULL, 0));
+			assert (0 == regexec(&re, "disk10", 0, NULL, 0));
+			assert (1 == regexec(&re, "rdisk10", 0, NULL, 0));
+			assert (1 == regexec(&re, "disk10s1", 0, NULL, 0));
+        */
+    #endif
+
     d = opendir("/dev");
-
-
     if ( !d ) {
         DPRINT("Cannot open /dev\n");
         *drive_num = 0;
         return NULL;
     }
-    j=0;
+    namesCount = 0;
     while ( (ent = readdir(d)) ) {
-      //      DPRINT("ent: %s\n", ent->d_name);
-      /*if (strncmp(ent->d_name, "rsd", 3) == 0 &&
-	strnlen(ent->d_name, 6) > 4 && ent->d_name[4] == 'c') {*/
-      if (strncmp(ent->d_name, "disk2",5) == 0) {
-            tmp[j] = malloc( strlen(ent->d_name)+1 );
-            strncpy(tmp[j], ent->d_name, strlen(ent->d_name)+1);
-            ++j;
+        #ifdef __APPLE__
+            // Mac OS X
+        int match = regexec(&re, ent->d_name, 0, NULL, 0);
+        if (match == 0) {
+        #else
+            // BSD: Does name begin with "rsd" and is at least 5 chars long, with the 5th char being a "c", e.g. "rsd1c"?
+        if (strncmp(ent->d_name, "rsd", 3) == 0 &&
+            strlen(ent->d_name) > 4 && ent->d_name[4] == 'c') {
+        #endif
+            names[namesCount] = calloc( strlen(ent->d_name)+1, sizeof(char) );
+            strlcpy(names[namesCount], ent->d_name, strlen(ent->d_name)+1);
+            ++namesCount;
         }
     }
     closedir(d);
-    ret = malloc( j * sizeof(char*) );
-    for ( jj=0; jj<j; ++jj ) {
-        ret[jj] = malloc( strlen(tmp[jj])+1 );
-        strncpy( ret[jj], tmp[jj], strlen(tmp[jj]) );
-        ret[jj][strlen(tmp[jj])]='\0';
+    #ifdef __APPLE__
+        regfree(&re);
+    #endif
+
+    ret = malloc( namesCount * sizeof(char*) );
+    for ( nameIdx = 0; nameIdx < namesCount; ++nameIdx ) {
+        nameLen = (int) strlen(names[nameIdx]);
+        ret[nameIdx] = calloc(nameLen+1, sizeof(char));
+        strlcpy( ret[nameIdx], names[nameIdx], nameLen+1 );
     }
-    *drive_num = j;
+    *drive_num = namesCount;
     return ret;
 }
 
@@ -121,10 +143,11 @@ pslr_result get_drive_info(char* drive_name, int* device,
 
     vendor_id[0] = '\0';
     product_id[0] = '\0';
-    snprintf(deviceName, 256, "/dev/%s", drive_name);
-    fd = open(deviceName, O_RDWR);
+
+    snprintf(deviceName, sizeof(deviceName), "/dev/%s", drive_name);
+    fd = open(deviceName, O_RDWR | O_SHLOCK);
     if (fd == -1) {
-        perror("Device open while querying:");
+        perror("Device open while querying");
         return PSLR_DEVICE_ERROR;
     }
 
@@ -132,15 +155,20 @@ pslr_result get_drive_info(char* drive_name, int* device,
     ioctl(fd, TIOCMGET, &flags);
     fprintf(stderr, "Flags are %x.\n", flags);*/
     
-    if (ioctl(fd, SCIOCCOMMAND, &screq) < 0 ||
-            screq.status != 0 ||
-            screq.retsts != SCCMD_OK) {
-        vendor_id[0] = product_id[0] = '\0';
+    int res = ioctl(fd, SCIOCCOMMAND, &screq);
+    if (res < 0) {
         close(fd);
-        DPRINT("IOCTL failed in query\n");
+        perror("IOCTL failed in query");
         return PSLR_DEVICE_ERROR;
     }
-    DPRINT("Camera queried.+n");
+    if (screq.status != 0 || screq.retsts != SCCMD_OK) {
+        close(fd);
+        fprintf(stderr, "IOCTL failed in query (bad status)\n");
+        return PSLR_DEVICE_ERROR;
+    }
+    
+    DPRINT("Camera queried.\n");
+
     /* Vendor */
     p = buf + 8;
     q = buf + ((16 < vendor_id_size_max)?16:vendor_id_size_max);
