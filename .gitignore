@@ -21,3 +21,4 @@
 .#*
 *.orig
 /i686-w64-mingw32
+/pktriggercord-cli.dSYM/
