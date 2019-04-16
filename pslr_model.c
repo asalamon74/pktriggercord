@@ -422,7 +422,7 @@ void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_be(&buf[0x198]);
     status->zoom.denom = get_uint32_be(&buf[0x19C]);
     status->focus = get_int32_be(&buf[0x1A0]);
-    status->lens_id1 = (get_uint32_be( &buf[0x188])) & 0x0F;
+    status->lens_id1 = get_uint32_be(&buf[0x188]) & 0x0F;
     status->lens_id2 = get_uint32_be( &buf[0x194]);
     // selected_af_point: cannot find the field, 0xc8 is always zero
 }
@@ -441,7 +441,7 @@ void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_be(&buf[0x19C]);
     status->zoom.denom = get_uint32_be(&buf[0x1A0]);
     status->focus = get_int32_be(&buf[0x1A4]);
-    status->lens_id1 = (get_uint32_be( &buf[0x18C])) & 0x0F;
+    status->lens_id1 = get_uint32_be(&buf[0x18C]) & 0x0F;
     status->lens_id2 = get_uint32_be( &buf[0x198]);
 }
 
@@ -457,7 +457,7 @@ void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_be(&buf[0x1A0]);
     status->zoom.denom = get_uint32_be(&buf[0x1A4]);
     status->focus = get_int32_be(&buf[0x1A8]); // ?
-    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F;
+    status->lens_id1 = get_uint32_be(&buf[0x190]) & 0x0F;
     status->lens_id2 = get_uint32_be( &buf[0x19C]);
 
 // TODO: check these fields
@@ -480,7 +480,7 @@ void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_be(&buf[0x1A0]);
     status->zoom.denom = 100;
     status->focus = get_int32_be(&buf[0x1A8]); // ?
-    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F;
+    status->lens_id1 = get_uint32_be(&buf[0x190]) & 0x0F;
     status->lens_id2 = get_uint32_be( &buf[0x19C]);
 }
 
@@ -501,7 +501,7 @@ void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_be(&buf[0x1A0]); // - good for K01
     status->zoom.denom = 100; // good for K-01
     status->focus = get_int32_be(&buf[0x1A8]); // ? - good for K01
-    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F; // - good for K01
+    status->lens_id1 = get_uint32_be(&buf[0x190]) & 0x0F; // - good for K01
     status->lens_id2 = get_uint32_be( &buf[0x19C]); // - good for K01
 }
 
@@ -517,7 +517,7 @@ void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_be(&buf[0x1A0]);
     status->zoom.denom = get_uint32_be(&buf[0x1A4]);
     //    status->focus = get_int32_be(&buf[0x1A8]); // ?
-    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F;
+    status->lens_id1 = get_uint32_be(&buf[0x190]) & 0x0F;
     status->lens_id2 = get_uint32_be( &buf[0x19C]);
 }
 
@@ -533,7 +533,7 @@ void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_be(&buf[0x1A0]);
     status->zoom.denom = get_uint32_be(&buf[0x1A4]);
     //    status->focus = get_int32_be(&buf[0x1A8]); // ?
-    status->lens_id1 = (get_uint32_be( &buf[0x190])) & 0x0F;
+    status->lens_id1 = get_uint32_be(&buf[0x190]) & 0x0F;
     status->lens_id2 = get_uint32_be( &buf[0x19C]);
     // cannot read max_shutter_speed from status buffer, hardwire the values here
     status->max_shutter_speed.nom = 1;
@@ -551,7 +551,7 @@ void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
     ipslr_status_parse_common( p, status, -4);
     status->zoom.nom = get_uint32_be(&buf[0x180]);
     status->zoom.denom = get_uint32_be(&buf[0x184]);
-    status->lens_id1 = (get_uint32_be( &buf[0x170])) & 0x0F;
+    status->lens_id1 = get_uint32_be(&buf[0x170]) & 0x0F;
     status->lens_id2 = get_uint32_be( &buf[0x17c]);
 // TODO
 // status.focused = getInt32(statusBuf, 0x164);
@@ -571,7 +571,7 @@ void ipslr_status_parse_k3(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_le(&buf[0x1A0]);
     status->zoom.denom = get_uint32_le(&buf[0x1A4]);
     status->focus = get_int32_le(&buf[0x1A8]);
-    status->lens_id1 = (get_uint32_le( &buf[0x190])) & 0x0F;
+    status->lens_id1 = get_uint32_le(&buf[0x190]) & 0x0F;
     status->lens_id2 = get_uint32_le( &buf[0x19C]);
 }
 
@@ -588,7 +588,7 @@ void ipslr_status_parse_ks1(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_le(&buf[0x1A0]);
     status->zoom.denom = get_uint32_le(&buf[0x1A4]);
     status->focus = get_int32_le(&buf[0x1A8]);
-    status->lens_id1 = (get_uint32_le( &buf[0x190])) & 0x0F;
+    status->lens_id1 = get_uint32_le(&buf[0x190]) & 0x0F;
     status->lens_id2 = get_uint32_le( &buf[0x19C]);
 }
 
@@ -633,7 +633,7 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_le(&buf[0x1A4]);
     status->zoom.denom = get_uint32_le(&buf[0x1A8]);
 //    status->focus = get_int32_le(&buf[0x1A8]);
-    status->lens_id1 = (get_uint32_le( &buf[0x194])) & 0x0F;
+    status->lens_id1 = get_uint32_le(&buf[0x194]) & 0x0F;
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
 }
 
@@ -702,7 +702,7 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     status->zoom.nom = get_uint32_le(&buf[0x1A4]);
     status->zoom.denom = get_uint32_le(&buf[0x1A8]);
 //    status->focus = get_int32_le(&buf[0x1A8]);
-    status->lens_id1 = (get_uint32_le( &buf[0x194])) & 0x0F;
+    status->lens_id1 = get_uint32_le(&buf[0x194]) & 0x0F;
     status->lens_id2 = get_uint32_le( &buf[0x1A0]);
     status->shake_reduction = get_uint32_le(&buf[0xe4]);
 }
