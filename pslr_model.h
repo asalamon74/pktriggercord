@@ -201,7 +201,7 @@ void set_uint32_be(uint32_t v, uint8_t *buf);
 void set_uint32_le(uint32_t v, uint8_t *buf);
 
 typedef uint32_t (*get_uint32_func)(uint8_t *buf);
-typedef uint16_t (*get_uint16_func)(uint8_t *buf);
+typedef uint16_t (*get_uint16_func)(const uint8_t *buf);
 typedef int32_t (*get_int32_func)(uint8_t *buf);
 
 char *shexdump(uint8_t *buf, uint32_t bufLen);

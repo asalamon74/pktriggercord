@@ -73,7 +73,7 @@ static void ipslr_status_diff(uint8_t *buf) {
 }
 
 static
-uint16_t get_uint16_be(uint8_t *buf) {
+uint16_t get_uint16_be(const uint8_t *buf) {
     uint16_t res;
     res = buf[0] << 8 | buf[1];
     return res;
@@ -93,7 +93,7 @@ int32_t get_int32_be(uint8_t *buf) {
 }
 
 static
-uint16_t get_uint16_le(uint8_t *buf) {
+uint16_t get_uint16_le(const uint8_t *buf) {
     uint16_t res;
     res = buf[1] << 8 | buf[0];
     return res;
@@ -865,6 +865,43 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
     return ret;
 }
 
+pslr_bool_setting ipslr_settings_parse_bool(const uint8_t *buf, const pslr_setting_def_t *def) {
+    pslr_bool_setting bool_setting;
+    if (def->value != NULL) {
+        bool_setting = (pslr_bool_setting) {
+            PSLR_SETTING_STATUS_HARDWIRED, strcmp("false", def->value) == 0 ? false : true
+        };
+    } else if (def->address != 0) {
+        uint8_t target = strcmp(def->type, "boolean!") == 0 ? 0 : 1;
+        bool_setting = (pslr_bool_setting) {
+            PSLR_SETTING_STATUS_READ, buf[def->address] == target
+        };
+    } else {
+        bool_setting = (pslr_bool_setting) {
+            PSLR_SETTING_STATUS_NA, false
+        };
+    }
+    return bool_setting;
+}
+
+pslr_uint16_setting ipslr_settings_parse_uint16(const uint8_t *buf, const pslr_setting_def_t *def) {
+    pslr_uint16_setting uint16_setting;
+    if (def->value != NULL) {
+        uint16_setting = (pslr_uint16_setting) {
+            PSLR_SETTING_STATUS_HARDWIRED, atoi(def->value)
+        };
+    } else if (def->address != 0) {
+        uint16_setting = (pslr_uint16_setting) {
+            PSLR_SETTING_STATUS_READ, get_uint16_be(&buf[def->address])
+        };
+    } else {
+        uint16_setting = (pslr_uint16_setting) {
+            PSLR_SETTING_STATUS_NA, 0
+        };
+    }
+    return uint16_setting;
+}
+
 void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_settings *settings) {
     uint8_t *buf = p->settings_buffer;
     memset(settings, 0, sizeof (*settings));
@@ -875,55 +912,31 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
     while (def_index < def_num) {
         pslr_bool_setting bool_setting;
         pslr_uint16_setting uint16_setting;
-        if (strncmp(defs[def_index].type, "boolean", 7)==0) {
-            if (defs[def_index].value!=NULL) {
-                bool_setting = (pslr_bool_setting) {
-                    PSLR_SETTING_STATUS_HARDWIRED, strcmp("false", defs[def_index].value)==0 ? false : true
-                };
-            } else if (defs[def_index].address!=0) {
-                uint8_t target = strcmp(defs[def_index].type, "boolean!")==0 ? 0 : 1;
-                bool_setting = (pslr_bool_setting) {
-                    PSLR_SETTING_STATUS_READ, buf[defs[def_index].address] == target
-                };
-            } else {
-                bool_setting = (pslr_bool_setting) {
-                    PSLR_SETTING_STATUS_HARDWIRED, false
-                };
-            }
-        } else if (strcmp(defs[def_index].type, "uint16")==0) {
-            if (defs[def_index].value!=NULL) {
-                uint16_setting = (pslr_uint16_setting) {
-                    PSLR_SETTING_STATUS_HARDWIRED, atoi(defs[def_index].value)
-                };
-            } else if (defs[def_index].address!=0) {
-                uint16_setting = (pslr_uint16_setting) {
-                    PSLR_SETTING_STATUS_READ, get_uint16_be(&buf[defs[def_index].address])
-                };
-            } else {
-                uint16_setting = (pslr_uint16_setting) {
-                    PSLR_SETTING_STATUS_NA, 0
-                };
-            }
+        pslr_setting_def_t def = defs[def_index];
+        if (strncmp(def.type, "boolean", 7) == 0) {
+            bool_setting = ipslr_settings_parse_bool(buf, &def);
+        } else if (strcmp(def.type, "uint16") == 0) {
+            uint16_setting = ipslr_settings_parse_uint16(buf, &def);
         } else {
-            fprintf(stderr, "Invalid json type: %s\n", defs[def_index].type);
+            fprintf(stderr, "Invalid json type: %s\n", def.type);
         }
-        if (strcmp(defs[def_index].name, "bulb_mode_press_press")==0) {
+        if (strcmp(def.name, "bulb_mode_press_press") == 0) {
             settings->bulb_mode_press_press = bool_setting;
-        } else if (strcmp(defs[def_index].name, "one_push_bracketing")==0) {
+        } else if (strcmp(def.name, "one_push_bracketing") == 0) {
             settings->one_push_bracketing = bool_setting;
-        } else if (strcmp(defs[def_index].name, "bulb_timer")==0) {
+        } else if (strcmp(def.name, "bulb_timer") == 0) {
             settings->bulb_timer = bool_setting;
-        } else if (strcmp(defs[def_index].name, "bulb_timer_sec")==0) {
+        } else if (strcmp(def.name, "bulb_timer_sec") == 0) {
             settings->bulb_timer_sec = uint16_setting;
-        } else if (strcmp(defs[def_index].name, "using_aperture_ring")==0) {
+        } else if (strcmp(def.name, "using_aperture_ring") == 0) {
             settings->using_aperture_ring = bool_setting;
-        } else if (strcmp(defs[def_index].name, "shake_reduction")==0) {
+        } else if (strcmp(def.name, "shake_reduction") == 0) {
             settings->shake_reduction = bool_setting;
-        } else if (strcmp(defs[def_index].name, "astrotracer")==0) {
+        } else if (strcmp(def.name, "astrotracer") == 0) {
             settings->astrotracer = bool_setting;
-        } else if (strcmp(defs[def_index].name, "astrotracer_timer_sec")==0) {
+        } else if (strcmp(def.name, "astrotracer_timer_sec") == 0) {
             settings->astrotracer_timer_sec = uint16_setting;
-        } else if (strcmp(defs[def_index].name, "horizon_correction")==0) {
+        } else if (strcmp(def.name, "horizon_correction") == 0) {
             settings->horizon_correction = bool_setting;
         }
         ++def_index;
