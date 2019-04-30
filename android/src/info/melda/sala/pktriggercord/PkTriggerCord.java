@@ -84,7 +84,7 @@ public class PkTriggerCord extends Application {
 
     private boolean installCli() {
         try {
-            copyAsset("pktriggercord-cli");
+            copyAssetIfNeeded("pktriggercord-cli");
             return true;
         } catch ( Exception e ) {
             Log.e( TAG, e.getMessage(), e );
@@ -138,18 +138,18 @@ public class PkTriggerCord extends Application {
         simpleSudoWrapper(appendedCommands.toString());
     }
 
-    private void copyAsset(final String fileName) throws Exception {
+    private void copyAssetIfNeeded(final String fileName) throws Exception {
         boolean needCliInstall;
-        AssetManager assetManager =  getAssets();
+        AssetManager assetManager = getAssets();
         InputStream in = assetManager.open(fileName);
-        String fullFileName = cliHome + "/" + fileName;
+        final String fullFileName = cliHome + "/" + fileName;
 
         try {
             FileInputStream fis = new FileInputStream(fullFileName);
             byte []fmd5sum = calculateDigest(fis);
             fis.close();
             in.mark(MARK_LIMIT);
-            byte md5sum[] = calculateDigest(in);
+            byte[] md5sum = calculateDigest(in);
             in.reset();
             needCliInstall = !Arrays.equals( fmd5sum, md5sum );
         } catch ( Exception e ) {
@@ -170,13 +170,11 @@ public class PkTriggerCord extends Application {
             simpleSudoWrapper("rm -f "+fullFileName);
             Log.v( TAG, "After rm -f");
             OutputStream out = new FileOutputStream(fullFileName);
-            copyStream(in, out);
+            int copiedBytes = copyStream(in, out);
+            Log.v( TAG, "copied "+copiedBytes+" bytes");
             in.close();
-            //        in = null;
             out.flush();
             out.close();
-            //        out = null;
-            //  simpleSudoWrapper("chown root "+fullFileName);
             Log.v( TAG, "before chmod 4777");
             simpleSudoWrapper("chmod 4777 "+fullFileName);
             Log.v( TAG, "End of needCliInstall");
