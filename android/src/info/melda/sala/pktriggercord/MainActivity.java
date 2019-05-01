@@ -474,10 +474,10 @@ public class MainActivity extends AppCompatActivity {
             } finally {
                 if( socket != null && !socket.isClosed() ) {
                     try {
-                        if( !socket.isInputShutdown() ) {
+                        if( socket.isConnected() && !socket.isInputShutdown() ) {
                             socket.shutdownInput();
                         }
-                        if( !socket.isOutputShutdown() ) {
+                        if( socket.isConnected() && !socket.isOutputShutdown() ) {
                             socket.shutdownOutput();
                         }
                         socket.close();                
