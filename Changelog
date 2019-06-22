@@ -1,5 +1,7 @@
 version 0.85.01
 	Testing status reader for KP
+	Settings reading for K5II (thx blemasle)
+	remote_bulb_mode_press_press setting (thx blemasle)
 
 version 0.85.00 ( 2019-JAN-27 )
 	K-1 battery fields fix
