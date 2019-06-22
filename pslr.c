@@ -989,7 +989,7 @@ int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int b
     uint16_t bufs;
     uint32_t buf_total = 0;
     int i, j;
-    int ret;
+    int ret = 0;
     int retry = 0;
     int retry2 = 0;
 
@@ -1532,7 +1532,7 @@ int pslr_read_dspinfo(pslr_handle_t *h, char* firmware) {
     return PSLR_OK;
 }
 
-int pslr_read_setting(pslr_handle_t *h, int offset, uint32_t *value) {
+int pslr_read_setting(pslr_handle_t *h, uint32_t offset, uint32_t *value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     DPRINT("[C]\t\tipslr_read_setting(%d)\n", offset);
     uint8_t buf[4];
@@ -1556,7 +1556,7 @@ int pslr_read_setting(pslr_handle_t *h, int offset, uint32_t *value) {
     return PSLR_OK;
 }
 
-int pslr_write_setting(pslr_handle_t *h, int offset, uint32_t value) {
+int pslr_write_setting(pslr_handle_t *h, uint32_t offset, uint32_t value) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     DPRINT("[C]\t\tipslr_write_setting(%d)=%d\n", offset, value);
     CHECK(ipslr_cmd_00_09(p, 1));

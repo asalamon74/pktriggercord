@@ -29,7 +29,7 @@
 #ifndef PKTRIGGERCORD_SERVERMODE_H
 #define PKTRIGGERCORD_SERVERMODE_H
 
-int servermode_socket();
+int servermode_socket(int servermode_timeout);
 
 pslr_handle_t camera_connect( char *model, char *device, int timeout, char *error_message );
 

@@ -48,7 +48,7 @@
 static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
 static int first = 1;
 static char *jsontext=NULL;
-static int jsonsize;
+static off_t jsonsize;
 
 static void ipslr_status_diff(uint8_t *buf) {
     int n;
@@ -775,7 +775,7 @@ pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_l
 }
 
 static
-char *read_json_file(int *jsonsize) {
+char *read_json_file(off_t *jsonsize) {
     int jsonfd = open("pentax_settings.json", O_RDONLY);
     if (jsonfd == -1) {
         // cannot find in the current directory, also checking PKTDATADIR
@@ -855,7 +855,7 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
             camera_field_address[address_length]='\0';
         }
         DPRINT("name: %.*s %.*s %.*s %.*s\n", (int)name_length, camera_field_name, (int)address_length, camera_field_address, (int)value_length, camera_field_value, (int)type_length, camera_field_type);
-        pslr_setting_def_t setting_def = { camera_field_name, camera_field_address==NULL?0:strtoul(camera_field_address,NULL,16), camera_field_value, camera_field_type };
+        pslr_setting_def_t setting_def = { camera_field_name, camera_field_address==NULL?0:(uint32_t)strtoul(camera_field_address,NULL,16), camera_field_value, camera_field_type };
         defs[(*def_num)++]=setting_def;
         ++ai;
     }
@@ -873,8 +873,8 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
     pslr_setting_def_t *defs = setting_file_process(cameraid,&def_num);
     int def_index=0;
     while (def_index < def_num) {
-        pslr_bool_setting bool_setting;
-        pslr_uint16_setting uint16_setting;
+        pslr_bool_setting bool_setting = {0};
+        pslr_uint16_setting uint16_setting = {0};
         if (strncmp(defs[def_index].type, "boolean", 7)==0) {
             if (defs[def_index].value!=NULL) {
                 bool_setting = (pslr_bool_setting) {

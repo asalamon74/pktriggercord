@@ -10,7 +10,9 @@
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Winitializer-overrides"
+#ifndef __APPLE__
 #pragma GCC diagnostic ignored "-Woverride-init"
+#endif
 
 // only at depth 1, track start pointers to match key/value
 #define PUSH(i) if(depth == 1) { if(!index) { val = cur+i; }else{ if(klen && index == 1) start = cur+i; else index--; } }

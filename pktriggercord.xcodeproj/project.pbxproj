@@ -1,0 +1,339 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A4CA472D22521E6100DA2BCB /* pslr_enum.c in Sources */ = {isa = PBXBuildFile; fileRef = A4CA471C22521E6100DA2BCB /* pslr_enum.c */; };
+		A4CA472E22521E6100DA2BCB /* pslr.c in Sources */ = {isa = PBXBuildFile; fileRef = A4CA471D22521E6100DA2BCB /* pslr.c */; };
+		A4CA472F22521E6100DA2BCB /* pslr_scsi_openbsd.c in Sources */ = {isa = PBXBuildFile; fileRef = A4CA471E22521E6100DA2BCB /* pslr_scsi_openbsd.c */; };
+		A4CA473022521E6100DA2BCB /* pslr_lens.c in Sources */ = {isa = PBXBuildFile; fileRef = A4CA472022521E6100DA2BCB /* pslr_lens.c */; };
+		A4CA473222521E6100DA2BCB /* pslr_model.c in Sources */ = {isa = PBXBuildFile; fileRef = A4CA472622521E6100DA2BCB /* pslr_model.c */; };
+		A4CA473322521E6100DA2BCB /* pktriggercord-servermode.c in Sources */ = {isa = PBXBuildFile; fileRef = A4CA472722521E6100DA2BCB /* pktriggercord-servermode.c */; };
+		A4CA473B22521E7700DA2BCB /* js0n.c in Sources */ = {isa = PBXBuildFile; fileRef = A4CA473822521E7700DA2BCB /* js0n.c */; };
+		A4CA473E2252244700DA2BCB /* pktriggercord-cli.c in Sources */ = {isa = PBXBuildFile; fileRef = A4CA473D2252244700DA2BCB /* pktriggercord-cli.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A4CA471022521E1B00DA2BCB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A4CA471222521E1B00DA2BCB /* pktriggercord */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pktriggercord; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4CA471C22521E6100DA2BCB /* pslr_enum.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pslr_enum.c; sourceTree = "<group>"; };
+		A4CA471D22521E6100DA2BCB /* pslr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pslr.c; sourceTree = "<group>"; };
+		A4CA471E22521E6100DA2BCB /* pslr_scsi_openbsd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pslr_scsi_openbsd.c; sourceTree = "<group>"; };
+		A4CA471F22521E6100DA2BCB /* pslr_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pslr_model.h; sourceTree = "<group>"; };
+		A4CA472022521E6100DA2BCB /* pslr_lens.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pslr_lens.c; sourceTree = "<group>"; };
+		A4CA472222521E6100DA2BCB /* pslr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pslr.h; sourceTree = "<group>"; };
+		A4CA472322521E6100DA2BCB /* scsiio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scsiio.h; sourceTree = "<group>"; };
+		A4CA472422521E6100DA2BCB /* pslr_scsi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pslr_scsi.h; sourceTree = "<group>"; };
+		A4CA472522521E6100DA2BCB /* pslr_lens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pslr_lens.h; sourceTree = "<group>"; };
+		A4CA472622521E6100DA2BCB /* pslr_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pslr_model.c; sourceTree = "<group>"; };
+		A4CA472722521E6100DA2BCB /* pktriggercord-servermode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "pktriggercord-servermode.c"; sourceTree = "<group>"; };
+		A4CA472A22521E6100DA2BCB /* pslr_enum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pslr_enum.h; sourceTree = "<group>"; };
+		A4CA472B22521E6100DA2BCB /* pktriggercord-servermode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "pktriggercord-servermode.h"; sourceTree = "<group>"; };
+		A4CA473822521E7700DA2BCB /* js0n.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = js0n.c; sourceTree = "<group>"; };
+		A4CA473922521E7700DA2BCB /* js0n.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = js0n.h; sourceTree = "<group>"; };
+		A4CA473D2252244700DA2BCB /* pktriggercord-cli.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "pktriggercord-cli.c"; sourceTree = "<group>"; };
+		A4CA47522252408000DA2BCB /* Mac_Notes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Mac_Notes.md; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A4CA470F22521E1B00DA2BCB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A4CA470922521E1B00DA2BCB = {
+			isa = PBXGroup;
+			children = (
+				A4CA47522252408000DA2BCB /* Mac_Notes.md */,
+				A4CA473D2252244700DA2BCB /* pktriggercord-cli.c */,
+				A4CA471D22521E6100DA2BCB /* pslr.c */,
+				A4CA472222521E6100DA2BCB /* pslr.h */,
+				A4CA472722521E6100DA2BCB /* pktriggercord-servermode.c */,
+				A4CA472B22521E6100DA2BCB /* pktriggercord-servermode.h */,
+				A4CA471C22521E6100DA2BCB /* pslr_enum.c */,
+				A4CA472A22521E6100DA2BCB /* pslr_enum.h */,
+				A4CA472022521E6100DA2BCB /* pslr_lens.c */,
+				A4CA472522521E6100DA2BCB /* pslr_lens.h */,
+				A4CA472622521E6100DA2BCB /* pslr_model.c */,
+				A4CA471F22521E6100DA2BCB /* pslr_model.h */,
+				A4CA471E22521E6100DA2BCB /* pslr_scsi_openbsd.c */,
+				A4CA472422521E6100DA2BCB /* pslr_scsi.h */,
+				A4CA472322521E6100DA2BCB /* scsiio.h */,
+				A4CA473722521E7700DA2BCB /* js0n */,
+				A4CA471322521E1B00DA2BCB /* Products */,
+			);
+			sourceTree = "<group>";
+			usesTabs = 0;
+		};
+		A4CA471322521E1B00DA2BCB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A4CA471222521E1B00DA2BCB /* pktriggercord */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A4CA473722521E7700DA2BCB /* js0n */ = {
+			isa = PBXGroup;
+			children = (
+				A4CA473822521E7700DA2BCB /* js0n.c */,
+				A4CA473922521E7700DA2BCB /* js0n.h */,
+			);
+			name = js0n;
+			path = src/external/js0n;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A4CA471122521E1B00DA2BCB /* pktriggercord */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A4CA471922521E1B00DA2BCB /* Build configuration list for PBXNativeTarget "pktriggercord" */;
+			buildPhases = (
+				A4CA470E22521E1B00DA2BCB /* Sources */,
+				A4CA470F22521E1B00DA2BCB /* Frameworks */,
+				A4CA471022521E1B00DA2BCB /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = pktriggercord;
+			productName = pktriggercord;
+			productReference = A4CA471222521E1B00DA2BCB /* pktriggercord */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A4CA470A22521E1B00DA2BCB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = "Thomas Tempelmann";
+				TargetAttributes = {
+					A4CA471122521E1B00DA2BCB = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = A4CA470D22521E1B00DA2BCB /* Build configuration list for PBXProject "pktriggercord" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A4CA470922521E1B00DA2BCB;
+			productRefGroup = A4CA471322521E1B00DA2BCB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A4CA471122521E1B00DA2BCB /* pktriggercord */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A4CA470E22521E1B00DA2BCB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4CA473322521E6100DA2BCB /* pktriggercord-servermode.c in Sources */,
+				A4CA472E22521E6100DA2BCB /* pslr.c in Sources */,
+				A4CA473E2252244700DA2BCB /* pktriggercord-cli.c in Sources */,
+				A4CA472F22521E6100DA2BCB /* pslr_scsi_openbsd.c in Sources */,
+				A4CA473022521E6100DA2BCB /* pslr_lens.c in Sources */,
+				A4CA473222521E6100DA2BCB /* pslr_model.c in Sources */,
+				A4CA473B22521E7700DA2BCB /* js0n.c in Sources */,
+				A4CA472D22521E6100DA2BCB /* pslr_enum.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A4CA471722521E1B00DA2BCB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		A4CA471822521E1B00DA2BCB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A4CA471A22521E1B00DA2BCB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					__APPLE__,
+					"$(inherited)",
+					"PKTDATADIR=\\\"/usr/local/share/pktriggercord\\\"",
+					"VERSION=\\\"0.85.01(bsd)\\\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A4CA471B22521E1B00DA2BCB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"PKTDATADIR=/usr/local/share/pktriggercord",
+					"VERSION=\\\"0.85.01(bsd)\\\"",
+					__APPLE__,
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A4CA470D22521E1B00DA2BCB /* Build configuration list for PBXProject "pktriggercord" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A4CA471722521E1B00DA2BCB /* Debug */,
+				A4CA471822521E1B00DA2BCB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A4CA471922521E1B00DA2BCB /* Build configuration list for PBXNativeTarget "pktriggercord" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A4CA471A22521E1B00DA2BCB /* Debug */,
+				A4CA471B22521E1B00DA2BCB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A4CA470A22521E1B00DA2BCB /* Project object */;
+}

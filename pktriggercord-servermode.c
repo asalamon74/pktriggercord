@@ -88,14 +88,14 @@ pslr_handle_t camera_connect( char *model, char *device, int timeout, char *erro
 int client_sock;
 
 void write_socket_answer( char *answer ) {
-    ssize_t r = write(client_sock , answer , strlen(answer));
+    ssize_t r = write(client_sock, answer, strlen(answer));
     if (r != strlen(answer)) {
         fprintf(stderr, "write(answer) failed");
     }
 }
 
 void write_socket_answer_bin( uint8_t *answer, uint32_t length ) {
-    ssize_t r = write(client_sock , answer , length);
+    ssize_t r = write(client_sock, answer, length);
     if (r != length) {
         fprintf(stderr, "write(answer) failed");
     }
@@ -136,8 +136,9 @@ void strip(char *s) {
 }
 
 int servermode_socket(int servermode_timeout) {
-    int socket_desc, c , read_size;
-    struct sockaddr_in server , client;
+    int socket_desc, c;
+    size_t read_size;
+    struct sockaddr_in server, client;
     char client_message[2000];
     char *arg;
     char buf[2100];
@@ -151,7 +152,7 @@ int servermode_socket(int servermode_timeout) {
     uint32_t auto_iso_max = 0;
 
     //Create socket
-    socket_desc = socket(AF_INET , SOCK_STREAM , 0);
+    socket_desc = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_desc == -1) {
         fprintf(stderr, "Could not create socket");
     }
@@ -168,14 +169,14 @@ int servermode_socket(int servermode_timeout) {
     server.sin_port = htons( 8888 );
 
     //Bind
-    if ( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0) {
+    if ( bind(socket_desc,(struct sockaddr *)&server, sizeof(server)) < 0) {
         fprintf(stderr, "bind failed. Error");
         return 1;
     }
     DPRINT("bind done\n");
 
     //Listen
-    listen(socket_desc , 3);
+    listen(socket_desc, 3);
 
     //Accept and incoming connection
     DPRINT("Waiting for incoming connections...\n");
@@ -208,7 +209,7 @@ int servermode_socket(int servermode_timeout) {
         }
 
         //Receive a message from client
-        while ( (read_size = recv(client_sock , client_message , 2000 , 0)) > 0 ) {
+        while ( (read_size = recv(client_sock, client_message, 2000, 0)) > 0 ) {
             client_message[read_size]='\0';
             strip( client_message );
             DPRINT(":%s:\n",client_message);
