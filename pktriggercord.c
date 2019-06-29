@@ -2140,13 +2140,13 @@ static void save_buffer(int bufno, const char *filename) {
         if (bytes == 0) {
             break;
         }
-        ssize_t r = write(fd, buf, bytes);
-        if (r == 0) {
+        ssize_t written_bytes = write(fd, buf, bytes);
+        if (written_bytes == 0) {
             DPRINT("write(buf): Nothing has been written to buf.\n");
-        } else if (r == -1) {
+        } else if (written_bytes == -1) {
             perror("write(buf)");
-        } else if (r < bytes) {
-            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", r, bytes);
+        } else if (written_bytes < bytes) {
+            DPRINT("write(buf): only write %d bytes, should be %d bytes.\n", written_bytes, bytes);
         }
 
         current += bytes;
@@ -2326,7 +2326,6 @@ void gui_getopt(int argc, char **argv) {
                 break;
         }
     }
-    return;
 }
 
 int main(int argc, char **argv) {

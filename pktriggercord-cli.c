@@ -50,8 +50,6 @@
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC
 #endif
 
-extern char *optarg;
-extern int optind, opterr, optopt;
 bool debug = false;
 bool warnings = false;
 
@@ -181,7 +179,6 @@ void save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
         }
         current += bytes;
     }
-    return;
 }
 
 
@@ -246,7 +243,7 @@ void usage(char *name) {
 }
 
 int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
-    int ofd = -1;
+    int ofd;
     char fileName[256];
 
     if (!output_file) {
@@ -765,6 +762,9 @@ int main(int argc, char **argv) {
                         case 'k':
                             mult = 1024;
                             break;
+                        default:
+                            warning_message("%s: Invalid dump memory size: %s\n", argv[0], optarg);
+
                     }
                     dump_memory_size *= mult;
                 } else {
