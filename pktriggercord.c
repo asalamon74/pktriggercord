@@ -2066,27 +2066,17 @@ G_MODULE_EXPORT void preview_icon_view_selection_changed_cb(GtkAction *action) {
     gtk_widget_set_sensitive(GW("preview_delete_button"), en);
 }
 
-/*
- * Save the indicated buffer using the current UI file format
- * settings.  Updates the progress bar periodically & runs the GTK
- * main loop to show it.
- */
-static void save_buffer(int bufno, const char *filename) {
-    int r;
-    int fd;
+static pslr_buffer_type get_image_type_based_on_ui() {
     GtkWidget *pw;
     int quality;
-    int resolution;
+    //int resolution;
     int filefmt;
     pslr_buffer_type imagetype;
-    uint8_t buf[65536];
-    uint32_t length;
-    uint32_t current;
 
     pw = GW("jpeg_quality_combo");
     quality = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
-    pw = GW("jpeg_resolution_combo");
-    resolution = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
+    //pw = GW("jpeg_resolution_combo");
+    //resolution = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
     pw = GW("file_format_combo");
     filefmt = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
 
@@ -2095,44 +2085,33 @@ static void save_buffer(int bufno, const char *filename) {
     } else if (filefmt == USER_FILE_FORMAT_DNG) {
         imagetype = PSLR_BUF_DNG;
     } else {
-        imagetype = pslr_get_jpeg_buffer_type( camhandle, quality );
+        imagetype = pslr_get_jpeg_buffer_type(camhandle, quality);
     }
+    return imagetype;
+}
 
-    if (pslr_get_model_bufmask_single(camhandle)) {
-        if ((imagetype == PSLR_BUF_PEF || imagetype == PSLR_BUF_DNG)) {
-            fprintf(stderr, "Cannot download RAW images for this model if preview is already visible");
-        } else {
-            fd = open(filename, FILE_ACCESS, 0664);
-            if (fd == -1) {
-                perror("could not open target");
-                return;
-            }
-            write(fd, pLastPreviewImage, lastPreviewImageSize);
-            wait_for_gtk_events_pending();
-            close(fd);
+static void save_buffer_single(const char *filename, const pslr_buffer_type imagetype) {
+    int fd;
+    if ((imagetype == PSLR_BUF_PEF || imagetype == PSLR_BUF_DNG)) {
+        fprintf(stderr, "Cannot download RAW images for this model if preview is already visible");
+    } else {
+        fd = open(filename, FILE_ACCESS, 0664);
+        if (fd == -1) {
+            perror("could not open target");
+            return;
         }
-        return;
+        write(fd, pLastPreviewImage, lastPreviewImageSize);
+        wait_for_gtk_events_pending();
+        close(fd);
     }
+}
 
-    DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, resolution);
-
-    r = pslr_buffer_open(camhandle, bufno, imagetype, resolution);
-    if (r != PSLR_OK) {
-        DPRINT("Could not open buffer: %d\n", r);
-        return;
-    }
-
+static void save_file_from_buffer(int fd) {
+    uint8_t buf[65536];
+    uint32_t length;
+    uint32_t current = 0;
+    GtkProgressBar *progress_bar = GTK_PROGRESS_BAR(GW("download_progress"));
     length = pslr_buffer_get_size(camhandle);
-    current = 0;
-
-    fd = open(filename, FILE_ACCESS, 0664);
-    if (fd == -1) {
-        perror("could not open target");
-        return;
-    }
-
-    pw = GW("download_progress");
-
     while (true) {
         uint32_t bytes;
         bytes = pslr_buffer_read(camhandle, buf, sizeof(buf));
@@ -2150,9 +2129,46 @@ static void save_buffer(int bufno, const char *filename) {
         }
 
         current += bytes;
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(pw), (gdouble) current / (gdouble) length);
+        gtk_progress_bar_set_fraction(progress_bar, (gdouble) current / (gdouble) length);
         wait_for_gtk_events_pending();
     }
+}
+
+/*
+ * Save the indicated buffer using the current UI file format
+ * settings.  Updates the progress bar periodically & runs the GTK
+ * main loop to show it.
+ */
+static void save_buffer(int bufno, const char *filename) {
+    int r;
+    int fd;
+    GtkComboBox *resolution_combo_box;
+    int resolution;
+    pslr_buffer_type imagetype;
+
+    resolution_combo_box = GTK_COMBO_BOX(GW("jpeg_resolution_combo"));
+    resolution = gtk_combo_box_get_active(resolution_combo_box);
+
+    imagetype = get_image_type_based_on_ui();
+    if (pslr_get_model_bufmask_single(camhandle)) {
+        save_buffer_single(filename, imagetype);
+        return;
+    }
+
+    DPRINT("get buffer %d type %d res %d\n", bufno, imagetype, resolution);
+    r = pslr_buffer_open(camhandle, bufno, imagetype, resolution);
+    if (r != PSLR_OK) {
+        DPRINT("Could not open buffer: %d\n", r);
+        return;
+    }
+
+    fd = open(filename, FILE_ACCESS, 0664);
+    if (fd == -1) {
+        perror("could not open target");
+        return;
+    }
+
+    save_file_from_buffer(fd);
     close(fd);
     pslr_buffer_close(camhandle);
 }
