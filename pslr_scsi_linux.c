@@ -140,7 +140,7 @@ pslr_result get_drive_info_model(const char *drive_name, char *product_id, int p
 pslr_result get_drive_info_device(const char *drive_name, int* device) {
     char file_name[256];
 
-    DPRINT("Looking for device file\n");
+    DPRINT("Looking for device file %s\n", drive_name);
     snprintf(file_name, sizeof (file_name), "/dev/%s", drive_name);
     *device = open(file_name, O_RDWR);
     if ( *device == -1) {
@@ -161,10 +161,15 @@ pslr_result get_drive_info(char* drive_name, int* device,
     DPRINT("Getting drive info for %s\n", drive_name);
     vendor_id[0] = '\0';
     product_id[0] = '\0';
-    CHECK(get_drive_info_vendor(drive_name, vendor_id, vendor_id_size_max));
-    CHECK(get_drive_info_model(drive_name, product_id, product_id_size_max));
-    CHECK(get_drive_info_device(drive_name, device));
-    return PSLR_OK;
+    pslr_result result;
+    result = get_drive_info_vendor(drive_name, vendor_id, vendor_id_size_max);
+    if (result == PSLR_OK) {
+        result = get_drive_info_model(drive_name, product_id, product_id_size_max);
+    }
+    if (result == PSLR_OK) {
+        result = get_drive_info_device(drive_name, device);
+    }
+    return result;
 }
 
 void close_drive(int *device) {
