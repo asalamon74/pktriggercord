@@ -2,8 +2,12 @@ footer {
     background-color: #aaaaaa;
 }
 
-body, .header_shift { 
-   padding-top: 60px;
+#header nav {
+    background-color: #cccccc;
+}
+
+body, .header_shift {
+    padding-top: 60px;
 }
 
 .header_shift {
@@ -11,8 +15,8 @@ body, .header_shift {
 }
 
 html body {
-   padding-bottom: 100px;
-   margin-bottom: 0px;
+    padding-bottom: 100px;
+    margin-bottom: 0px;
 }
 
 @media (max-width: 767px) {
@@ -20,15 +24,17 @@ html body {
 	padding-bottom: 150px;
 	margin-bottom: 0px;
     }
-    div.bootmark nav.navbar-fixed-side {
-	display:none;
-    }
-
 }
 
 code {
    padding: 0px;
 }
+
+pre {
+    padding: 10px;
+    background-color: #cccccc;
+}
+
 div[class="roww"] {
     border: 1px dotted rgba(0, 0, 0, 0.5);
 }
@@ -53,22 +59,14 @@ footer div.text-center a {
     padding-right: 1em;
 }
 
-div.bootmark nav.navbar-fixed-side {
-    height: calc( 100vh - 160px );
-}
-
-div.bootmark div.navbar-header {
-    display: none;
-}
-
-li.bootmark-h1 {
-    font-size: 110%;
-}
-
-li.bootmark-h1, li.bootmark-h2 {
-    font-weight: bold;
+#header .navbar-brand {
+    width: inherit;
 }
 
 ul.nav li.dropdown:hover ul.dropdown-menu {
     display: block;
+}
+
+h2 {
+    width: 100%;
 }

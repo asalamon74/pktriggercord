@@ -4,20 +4,26 @@
   <title>pkTriggerCord</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css">-->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
   <link rel="stylesheet" href="pktriggercord.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://use.fontawesome.com/999c1ebb04.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.0.47/jquery.fancybox.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.0.47/jquery.fancybox.min.js"></script>
-  <script> 
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/brands.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $.fancybox.defaults.transitionEffect = "tube";
     $(function(){
-    $("#header").load("header.html"); 
-    $("#footer").load("footer.html"); 
+    $("#header").load("header.html");
+    $("#footer").load("footer.html");
     });
-  </script> 
+  </script>
 </head>
 <body>
   <div id="header"></div>
@@ -29,83 +35,88 @@
 	your mobile phone or tablet.</p>
       </p>
       <div class="alert alert-danger">
-	<p>The android port of <a href="index.html">pktriggerCord</a> is <strong>experimental</strong>. 
-	  Use only <strong>at your own risk</strong>.</p>
+	The android port of <a href="index.html">pktriggerCord</a> is <strong>experimental</strong>.
+	  Use only <strong>at your own risk</strong>.
       </div>
   </div>
 
   <div class="container" id="requirements">
     <div class="row">
-      <div class="col-xs-12">
-	<div class="row">
-
-	  <h2>Requirements</h2>
-	  <ul>
-	    <li>Android 4.1 or newer device (tested only using 4.2, 5.1).</li>
-	    <li><a href="http://en.wikipedia.org/wiki/USB_On-The-Go">OTG</a> USB
-	      port.</li>
-	    <li>Root access.</li>
-	    <li>Supported Pentax camera (check the list <a href="index.html#cameras">here</a>).</li>
-	    <li>A cable which connects the android device and a camera.</li>
-	  </ul>
-	</div>
+      <div class="col-12">
+	<h2>Requirements</h2>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+	<ul>
+	  <li>Android 4.1 or newer device (tested only using 4.2, 5.1).</li>
+	  <li><a href="http://en.wikipedia.org/wiki/USB_On-The-Go">OTG</a> USB
+	    port.</li>
+	  <li>Root access.</li>
+	  <li>Supported Pentax camera (check the list <a href="index.html#cameras">here</a>).</li>
+	  <li>A cable which connects the android device and a camera.</li>
+	</ul>
+	</div>
     </div>
   </div>
 
   <div class="container" id="features">
     <div class="row">
-      <div class="col-xs-12">
-	<div class="row">
+      <div class="col-12">
 	  <h2>Features</h2>
-	  <p>Right now the program is very-very simple:</p>
-	  <ul>
-	    <li>The program automatically connects to the camera (the bottom red
-	      line shows this info).</li>
-	    <li>The program continuously updates basic info like: shutter speed,
-	      aperture,...</li>
-	    <li>You can press the Focus button to focus.</li>
-	    <li>You can press the Shutter to make pictures. You can specify the
-	      number of frames (left widget) and the delay between the frames
-	      (right widget - seconds).</li>
-	    <li>The program shows the last picture and the progress of the
-	      exposure series.</li>
-	    <li>The pictures are stored
-	      in <code>/mnt/sdcard/pktriggercord</code>. You can check the
-	      picture
-	      using <a href="https://play.google.com/store/apps/details?id=com.anthonymandra.rawdroid&hl=en">RawDroid</a>.</li>
-	    <li>Output directory can be changed in Preferences</li>
-	  </ul>
-	  
-	  <p>
-	    <a data-fancybox="gallery" href="screenshots/pktriggercord_android_1.jpg">
-	      <img src="screenshots/pktriggercord_android_1.jpg" class="img-thumbnail"
-		   alt="pktriggercord android 1" /></a>	
-	    <a data-fancybox="gallery" href="screenshots/pktriggercord_android_2.jpg">
-	      <img src="screenshots/pktriggercord_android_2.jpg" class="img-thumbnail"
-		   alt="pktriggercord android 2" /></a>	
-	    <a data-fancybox="gallery" href="screenshots/pktriggercord_android_3.jpg">
-	      <img src="screenshots/pktriggercord_android_3.jpg" class="img-thumbnail"
-		   alt="pktriggercord android 3" /></a>		
-	  </p>	
-
-	</div>
       </div>
     </div>
-  </div>		
+    <div class="row">
+      <div class="col-12">
+	<p>Right now the program is very-very simple:</p>
+	<ul>
+	  <li>The program automatically connects to the camera (the bottom red
+	    line shows this info).</li>
+	  <li>The program continuously updates basic info like: shutter speed,
+	    aperture,...</li>
+	  <li>You can press the Focus button to focus.</li>
+	  <li>You can press the Shutter to make pictures. You can specify the
+	    number of frames (left widget) and the delay between the frames
+	    (right widget - seconds).</li>
+	  <li>The program shows the last picture and the progress of the
+	    exposure series.</li>
+	  <li>The pictures are stored
+	    in <code>/mnt/sdcard/pktriggercord</code>. You can check the
+	    picture
+	    using <a href="https://play.google.com/store/apps/details?id=com.anthonymandra.rawdroid&hl=en">RawDroid</a>.</li>
+	  <li>Output directory can be changed in Preferences</li>
+	</ul>
+	<p>
+	  <a data-fancybox="gallery" href="screenshots/pktriggercord_android_1.jpg">
+	    <img src="screenshots/pktriggercord_android_1.jpg" class="img-thumbnail"
+		 alt="pktriggercord android 1" /></a>
+	  <a data-fancybox="gallery" href="screenshots/pktriggercord_android_2.jpg">
+	    <img src="screenshots/pktriggercord_android_2.jpg" class="img-thumbnail"
+		 alt="pktriggercord android 2" /></a>
+	  <a data-fancybox="gallery" href="screenshots/pktriggercord_android_3.jpg">
+	    <img src="screenshots/pktriggercord_android_3.jpg" class="img-thumbnail"
+		 alt="pktriggercord android 3" /></a>
+	</p>
+      </div>
+    </div>
+  </div>
+  </div>
 
   <div class="container" id="download">
     <div class="row">
-      <div class="col-xs-12">
-	<div class="row">
+      <div class="col-12">
 	  <h2>Download</h2>
+      </div>
+    </div>
+    <div class="row">
+	<div class="col-12">
 	  <p>You can download the program from the <a href="https://play.google.com/store/apps/details?id=info.melda.sala.pktriggercord">google play store</a> or you can also download
 	    the <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/info.melda.sala.pktriggercord.PkTriggerCord-0.85.00-release.apk">APK</a></p>
 	</div>
       </div>
     </div>
-  </div>		
-  
+  </div>
+
   <div id="footer"></div>
 </body>
 </html>

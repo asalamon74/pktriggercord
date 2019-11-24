@@ -1,277 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>pkTriggerCord</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css">-->
-  <link rel="stylesheet" href="pktriggercord.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://use.fontawesome.com/999c1ebb04.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.0.47/jquery.fancybox.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.0.47/jquery.fancybox.min.js"></script>
-  <script> 
-    $(function(){
-    $("#header").load("header.html"); 
-    $("#footer").load("footer.html"); 
-    });
-  </script> 
-</head>
-<body data-spy="scroll" data-target=".navbar" data-offset="60">
-  <div id="header"></div>
-  <div class="container" id="description">
-    <div class="jumbotron">
-      <h1>PkTriggerCord</h1>
-      <p>Remote control (tethering) software for Pentax DSLR
-      cameras. Supported systems: Linux (x86, arm), OpenBSD, Windows,
-      and Android.</p>
-      <p>After you connect the camera to your PC with the USB
-        cable, you can control the camera from the computer. You
-        can read status information, you can change several
-        settings, and you can take pictures. The pictures are stored
-        in the camera's buffer and can be downloaded to the
-        PC. Pictures are not written on the SD card of the camera.</p>
-      <div class="alert alert-danger">
-	<p>The program uses undocumented features of the cameras. Use it at your own risk!</p>
+  <head>
+    <title>pkTriggerCord</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="pktriggercord.css">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/brands.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <script>
+      $.fancybox.defaults.transitionEffect = "tube";
+      $(function(){
+        $("#header").load("header.html");
+        $("#footer").load("footer.html");
+      });
+    </script>
+  </head>
+  <body data-spy="scroll" data-target=".navbar" data-offset="60">
+    <div id="header"></div>
+    <div class="container" id="description">
+      <div class="jumbotron">
+        <h1>PkTriggerCord</h1>
+        <p>Remote control (tethering) software for Pentax DSLR
+          cameras. Supported systems: Linux (x86, arm), OpenBSD, Windows,
+          and Android.</p>
+        <p>After you connect the camera to your PC with the USB
+          cable, you can control the camera from the computer. You
+          can read status information, you can change several
+          settings, and you can take pictures. The pictures are stored
+          in the camera's buffer and can be downloaded to the
+          PC. Pictures are not written on the SD card of the camera.</p>
+        <div class="alert alert-danger">
+	  The program uses undocumented features of the cameras. Use it at your own risk!
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="container header_shift" id="cameras">
-    <div class="row">
-      <div class="col-xs-12">
-	<div class="row">
-	  <h2><span class="fa fa-fw fa-camera"></span>Cameras</h2>
-          <div class="col-sm-6">
-            <h3>Full support</h3>
+    <div class="container header_shift" id="cameras">
+      <div class="row">
+        <div class="col-12">
+	  <div class="row">
+            <h2><span class="fa fa-fw fa-camera"></span>Cameras</h2>
+            <div class="col-sm-6">
+              <h3>Full support</h3>
+	      <div class="well well-sm">
+	        <p>You can take pictures, read status info. Individual
+	          camera models might have limitations.</p>
+	      </div>
+              <ul>
+                <li>Pentax K-x</li>
+                <li>Pentax K10D (Samsung GX-10)
+		  <button type="button" class="btn btn-info btn-sm disabled">Requires firmware 1.20 or later</button>
+	        </li>
+                <li>Pentax K20D (Samsung GX-20)</li>
+                <li>Pentax K200D</li>
+                <li>Pentax K-7</li>
+                <li>Pentax K-r</li>
+                <li>Pentax K-5</li>
+                <li>Pentax K-m / K2000</li>
+                <li>Pentax K-30</li>
+                <li>Pentax K-01
+		  <button type="button" class="btn btn-warning btn-sm disabled" data-toggle="tooltip" title="Several bugs have been reported. Please check github project issues page">bugs</button>
+	        </li>
+                <li>Pentax K-5 II / K-5 IIs</li>
+                <li>Pentax K-50
+		  <button type="button" class="btn btn-warning btn-sm disabled" data-toggle="tooltip" title="Several bugs have been reported. Please check github project issues page">bugs</button>
+	        </li>
+                <li>Pentax K-3 / K-3 II
+	        </li>
+                <li>Pentax K-500</li>
+                <li>Pentax K-70
+		  <button type="button" class="btn btn-warning btn-sm disabled" data-toggle="tooltip" title="Several bugs have been reported. Please check github project issues page">bugs</button>
+	        </li>
+              </ul>
+            </div>
+            <div class="col-sm-6">
+              <h3>Limited support</h3>
 
-	    <div class="well well-sm">
-	      <p>You can take pictures, read status info. Individual
-	      camera models might have limitations.</p>
+	      <div class="well well-sm">
+                <p>You can take pictures, change settings using the
+		  command line version, but you cannot read the status
+		  fields. Limited version of GUI allows taking a picture
+		  (only one, you need to save (only PEF) or delete it
+		  before taking the next one), but camera settings cannot
+		  be read or modified.</p>
+	      </div>
+              <ul>
+                <li>Pentax istDS2</li>
+                <li>Pentax istDL</li>
+                <li>Pentax K100D Super</li>
+              </ul>
 	    </div>
-            <ul>
-              <li>Pentax K-x</li>
-              <li>Pentax K10D (Samsung GX-10)
-		<button type="button" class="btn btn-info btn-xs disabled">Requires firmware 1.20 or later</button>
-	      </li>
-              <li>Pentax K20D (Samsung GX-20)</li>
-              <li>Pentax K200D</li>
-              <li>Pentax K-7</li>
-              <li>Pentax K-r</li>
-              <li>Pentax K-5</li>
-              <li>Pentax K-m / K2000</li>
-              <li>Pentax K-30</li>
-              <li>Pentax K-01
-		<button type="button" class="btn btn-warning btn-xs disabled" data-toggle="tooltip" title="Several bugs have been reported. Please check github project issues page">bugs</button>
-	      </li>
-              <li>Pentax K-5 II / K-5 IIs</li>
-              <li>Pentax K-50 
-		<button type="button" class="btn btn-warning btn-xs disabled" data-toggle="tooltip" title="Several bugs have been reported. Please check github project issues page">bugs</button>
-	      </li>
-              <li>Pentax K-3 / K-3 II
-	      </li>
-              <li>Pentax K-500</li>
-              <li>Pentax K-70
-		<button type="button" class="btn btn-warning btn-xs disabled" data-toggle="tooltip" title="Several bugs have been reported. Please check github project issues page">bugs</button>
-	      </li>
-            </ul>
-          </div>
-          <div class="col-sm-6">
-            <h3>Limited support</h3>
+	    <div class="clearfix"></div>
+            <div class="col-sm-6">
+              <h3>Not working</h3>
+	      <div class="well well-sm">
+                <p>The following cameras has been tested and reported not to
+                  work</p>
+	      </div>
 
-	    <div class="well well-sm">
-              <p>You can take pictures, change settings using the
-		command line version, but you cannot read the status
-		fields. Limited version of GUI allows taking a picture
-		(only one, you need to save (only PEF) or delete it
-		before taking the next one), but camera settings cannot
-		be read or modified.</p>
+	      <ul>
+                <li>Pentax istDS</li>
+                <li>Pentax istD</li>
+                <li>Samsung GX-1L</li>
+                <li>Pentax K110D</li>
+                <li>Pentax K100D</li>
+                <li>Pentax K-S2
+		  <button type="button" class="btn btn-danger btn-sm disabled">downloaded image has artifacts</button>
+	        </li>
+	      </ul>
 	    </div>
-            <ul>
-              <li>Pentax istDS2</li>
-              <li>Pentax istDL</li>
-              <li>Pentax K100D Super</li>
-            </ul>
-	  </div>
-	  <div class="clearfix"></div>
-          <div class="col-sm-6">
-            <h3>Not working</h3>
-	    
-	    <div class="well well-sm">
-              <p>The following cameras has been tested and reported not to
-              work</p>
-	    </div>
+	    <div class="col-sm-6">
+              <h3>Testing</h3>
 
-	    <ul>
-              <li>Pentax istDS</li>
-              <li>Pentax istD</li>
-              <li>Samsung GX-1L</li>
-              <li>Pentax K110D</li>
-              <li>Pentax K100D</li>
-              <li>Pentax K-S2
-		<button type="button" class="btn btn-danger btn-xs disabled">downloaded image has artifacts</button>
-	      </li>
-	    </ul>
-	  </div>
-	  <div class="col-sm-6">
-            <h3>Testing</h3>
+	      <div class="well well-sm">
+                <p>The following cameras are not yet tested,
+		  please <a href="debug.html">read this</a> if
+		  you can help.</p>
+	      </div>
 
-	    <div class="well well-sm">
-              <p>The following cameras are not yet tested,
-		please <a href="debug.html">read this</a> if
-		you can help.</p>
-	    </div>
+              <ul>
+                <li>Pentax K-S1</li>
+              </ul>
+            </div>
+	    <div class="col-sm-12">
 
-            <ul>
-              <li>Pentax K-S1</li>
-            </ul>
-          </div>
-	  <div class="col-sm-12">
-
-	    <div class="alert alert-info">
-	      <p>If the program is not working correctly please check
-	      <a class="alert-link" href="tips_and_tricks.html">the tips and tricks</a> page.</p>
-	    </div>
-	    <div class="alert alert-success">
-	      <p>If you want to help adding support for new camera
-		models or you want to test a model not yet fully
-		supported, please check
-		this <a class="alert-link" href="debug.html">documentation</a>.</p>
+	      <div class="alert alert-info">
+	        If the program is not working correctly please check
+	          <a class="alert-link" href="tips_and_tricks.html">the tips and tricks</a> page.
+	      </div>
+	      <div class="alert alert-success">
+	        If you want to help adding support for new camera
+		  models or you want to test a model not yet fully
+		  supported, please check
+		  this <a class="alert-link" href="debug.html">documentation</a>.
+	      </div>
 	    </div>
 	  </div>
-	</div>
+        </div>
       </div>
     </div>
-  </div>
+    <div class="container header_shift" id="download">
+      <div class="row">
+        <div class="col-12">
+	  <div class="row">
+	    <h2><span class="fa fa-fw fa-download"></span>Download</h2>
+	    <div class="col-sm-6">
+	      <h3>Binary</h3>
+	      <ul>
+	        <li>Rpm file for Mageia 5 (64 bit): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pktriggercord-0.85.00-1.x86_64.rpm">pktriggercord-0.85.00-1.x86_64.rpm</a></li>
+	        <li>Deb file for Raspbian ( Raspberry PI ):
+		  <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pktriggercord_0.85.00-1_armhf.deb">pktriggercord_0.85.00-1_armhf.deb</a>
+	        </li>
+	        <li>Windows (requires <a href="http://gtk-win.sourceforge.net">GTK2</a>
+		  ): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pktriggercord-0.85.00-win.zip"><strong>pktriggercord-0.85.00-win.zip</strong></a></li>
+	        <li>Android: <a href="pktriggercord_android.html">Please read this</a>.</li>
+	        <li>Linux repositories
+		  <ul>
+		    <li><a href="http://sisyphus.ru/en/srpm/Sisyphus/pktriggercord">ALT
+		        Linux Sisyphus repository rpms (obsoleted)</a>.</li>
+		    <li><a href="https://software.opensuse.org/package/pkTriggerCord">openSUSE
+		        packages</a></li>
+		    <li><a href="https://aur.archlinux.org/packages/pktriggercord/">archLinux</a></li>
+		    <li>Ubuntu users can install the program using the following commands:
+		      <pre><code>sudo add-apt-repository ppa:dhor/myway
+                          sudo apt-get update
+                          sudo apt-get install pktriggercord</code></pre>
+		    </li>
+		  </ul>
+	        </li>
+	      </ul>
+	      <p><em>You can also download previous releases from <a href="https://github.com/asalamon74/pktriggercord/releases">here</a>.</em></p>
+	    </div>
 
-  <div class="container header_shift" id="download">
-    <div class="row">
-      <div class="col-xs-12">
-	<div class="row">
-	  <h2><span class="fa fa-fw fa-download"></span>Download</h2>
-	  <div class="col-sm-6">
-	    <h3>Binary</h3>
+	    <div class="col-sm-6">
+	      <h3>Source code</h3>
 
-	    <ul>
-	      <li>Rpm file for Mageia 5 (64 bit): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pktriggercord-0.85.00-1.x86_64.rpm">pktriggercord-0.85.00-1.x86_64.rpm</a></li>
-	      <li>Deb file for Raspbian ( Raspberry PI ):
-		<a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pktriggercord_0.85.00-1_armhf.deb">pktriggercord_0.85.00-1_armhf.deb</a>
+	      <ul>
+	        <li>Source: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pkTriggerCord-0.85.00.src.tar.gz"><strong>pkTriggerCord-0.85.00.src.tar.gz</strong></a></li>
+	        <li>Source
+		  rpm: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pktriggercord-0.85.00-1.src.rpm">pktriggercord-0.85.00-1.src.rpm</a></li>
+	        <li>It is also possible to checkout the latest version from git repository:
+		  <pre><code>git clone https://github.com/asalamon74/pktriggercord.git</code></pre>
+	        </li>
+	      </ul>
 
-	      </li>
-	      <li>Windows (requires <a href="http://gtk-win.sourceforge.net">GTK2</a>
-		): <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pktriggercord-0.85.00-win.zip"><strong>pktriggercord-0.85.00-win.zip</strong></a></li>
-	      <li>Android: <a href="pktriggercord_android.html">Please read this</a>.</li>
-	      <li>Linux repositories
-		<ul>
-		  <li><a href="http://sisyphus.ru/en/srpm/Sisyphus/pktriggercord">ALT
-		      Linux Sisyphus repository rpms (obsoleted)</a>.</li>
-		  <li><a href="https://software.opensuse.org/package/pkTriggerCord">openSUSE
-		      packages</a></li>
-		  <li><a href="https://aur.archlinux.org/packages/pktriggercord/">archLinux</a></li>
-		  <li>Ubuntu users can install the program using the following commands:
-		    <pre><code>sudo add-apt-repository ppa:dhor/myway
-sudo apt-get update
-sudo apt-get install pktriggercord</code></pre>
-		  </li>
-		</ul>
-	      </li>
-	    </ul>
-
-	    <p><em>You can also download previous releases from <a href="https://github.com/asalamon74/pktriggercord/releases">here</a>.</em></p> 
-
+	      <p><em>Please note: This software is crosscompiled under Linux for
+		  Windows. If you want to compile it, you need Linux.</em></p>
+	    </div>
 	  </div>
-
-	  <div class="col-sm-6">
-	    <h3>Source code</h3>
-
-	    <ul>
-	      <li>Source: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pkTriggerCord-0.85.00.src.tar.gz"><strong>pkTriggerCord-0.85.00.src.tar.gz</strong></a></li>
-	      <li>Source
-		rpm: <a href="https://github.com/asalamon74/pktriggercord/releases/download/v0.85.00/pktriggercord-0.85.00-1.src.rpm">pktriggercord-0.85.00-1.src.rpm</a></li>
-	      <li>It is also possible to checkout the latest version from git repository:
-		<pre><code>git clone https://github.com/asalamon74/pktriggercord.git</code></pre>
-	      </li>
-	    </ul>
-
-	    <p><em>Please note: This software is crosscompiled under Linux for
-		Windows. If you want to compile it, you need Linux.</em></p>
-	  </div>
-	</div>
+        </div>
       </div>
     </div>
-  </div>
+</div>
 
-  <div class="container header_shift" id="documentation">
-    <div class="row">
-      <div class="col-xs-12">
-	<div class="row">
-	  <h2><span class="fa fa-fw fa-file-text"></span>Documentation</h2>
+<div class="container header_shift" id="documentation">
+  <div class="row">
+    <div class="col-12">
+      <div class="row">
+	<h2><span class="fas fa-fw fa-file-alt"></span>Documentation</h2>
+        <div class="col-12">
           <p>The program has a <a href="#doc_cli">command line interface</a>, a <a href="#doc_gui">GUI</a>, and an
-          <a href="pktriggercord_android.html">Android port</a>.</p>        
+            <a href="pktriggercord_android.html">Android port</a>.</p>
 	  <h3 id="doc_cli" class="header_shift"><span class="fa fa-fw fa-terminal"></span>Commandline interface</h3>
 	  <p>The program has a rich command line interface. Some of
-	  the functions are only available here</p>
-<pre class="small">
-<code>
-Usage: pktriggercord-cli [OPTIONS]
+	    the functions are only available here</p>
+          <pre class="small">
+            <code>
+              Usage: pktriggercord-cli [OPTIONS]
 
 
-      --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-x, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01, K-3, K-3II, K-500
-      --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...
-      --timeout=SECONDS                 timeout for camera connection ( 0 means forever )
-  -w, --warnings                        warning mode on
-      --nowarnings                      warning mode off
-  -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X
-      --exposure_compensation=VALUE     exposure compensation value
-      --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO
-  -i, --iso=ISO                         single value (400) or interval (200-800)
-      --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB
-      --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A
-      --select_af_point=AF_SELECT_MODE  valid values are: Auto-5, Auto-11, Spot, Select, or numerical value
-      --ae_metering=AE_METERING         valid values are: Multi, Center, Spot
-      --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless
-      --flash_exposure_compensation=VAL flash exposure compensation value
-  -a, --aperture=APERTURE
-  -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90) or decimal form (eg. 0.8)
-  -r, --resolution=RESOLUTION           resolution in megapixels
-  -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4
-      --jpeg_image_tone=IMAGE_TONE      valid values are: Auto, Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm, BleachBypass, Radiant, CrossProcessing, Flat
-      --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, Manual2, Manual3, Kelvin1, Kelvin2, Kelvin3, CTE, MultiAuto
-      --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...
-  -f, --auto_focus                      autofocus
-      --reconnect                       reconnect between shots
-      --servermode                      start in server mode and wait for commands
-      --servermode_timeout=SECONDS      servermode timeout
-  -g, --green                           green button
-  -s, --status                          print status info
-      --status_hex                      print status hex info
-  -S, --settings                        print settings info
-      --settings_hex                    print settings hex info
-      --read_datetime                   print the camera date and time
-      --read_firmware_version           print the firmware version of the camera
-      --dump_memory SIZE                dumps the internal memory of the camera to pentax_dump.dat file. Size is in bytes, but can be specified using K, M, and G modifiers.
-      --dust_removal                    dust removal
-  -F, --frames=NUMBER                   number of frames
-  -d, --delay=SECONDS                   delay between the frames (seconds)
-      --file_format=FORMAT              valid values: PEF, DNG, JPEG
-  -o, --output_file=FILE                send output to FILE
-      --debug                           turn on debug messages
-      --noshutter                       do not send shutter command, just wait for new photo, download and delete from camera
-  -v, --version                         display version information and exit
-  -h, --help                            display this help and exit
-      --pentax_debug_mode={0|1}		enable or disable camera debug mode and exit (DANGEROUS). Valid values are: 0, 1
-</code>
-</pre>
+              --model=CAMERA_MODEL              valid values are: K20d, K10d, GX10, GX20, K-x, K200D, K-7, K-r, K-5, K-2000, K-m, K-30, K100D, K110D, K-01, K-3, K-3II, K-500
+              --device=DEVICE                   valid values for Linux: sg0, sg1, ..., for Windows: C, D, E, ...
+              --timeout=SECONDS                 timeout for camera connection ( 0 means forever )
+              -w, --warnings                        warning mode on
+              --nowarnings                      warning mode off
+              -m, --exposure_mode=MODE              valid values are GREEN, P, SV, TV, AV, TAV, M and X
+              --exposure_compensation=VALUE     exposure compensation value
+              --drive_mode=DRIVE_MODE           valid values are: Single, Continuous-HI, SelfTimer-12, SelfTimer-2, Remote, Remote-3, Continuous-LO
+              -i, --iso=ISO                         single value (400) or interval (200-800)
+              --color_space=COLOR_SPACE         valid values are: sRGB, AdobeRGB
+              --af_mode=AF_MODE                 valid values are: AF.S, AF.C, AF.A
+              --select_af_point=AF_SELECT_MODE  valid values are: Auto-5, Auto-11, Spot, Select, or numerical value
+              --ae_metering=AE_METERING         valid values are: Multi, Center, Spot
+              --flash_mode=FLASH_MODE           valid values are: Manual, Manual-RedEye, Slow, Slow-RedEye, TrailingCurtain, Auto, Auto-RedEye, Wireless
+              --flash_exposure_compensation=VAL flash exposure compensation value
+              -a, --aperture=APERTURE
+              -t, --shutter_speed=SHUTTER SPEED     values can be given in rational form (eg. 1/90) or decimal form (eg. 0.8)
+              -r, --resolution=RESOLUTION           resolution in megapixels
+              -q, --quality=QUALITY                 valid values are 1, 2, 3 and 4
+              --jpeg_image_tone=IMAGE_TONE      valid values are: Auto, Natural, Bright, Portrait, Landscape, Vibrant, Monochrome, Muted, ReversalFilm, BleachBypass, Radiant, CrossProcessing, Flat
+              --white_balance_mode=WB_MODE      valid values are: Auto, Daylight, Shade, Cloudy, Fluorescent_D, Fluorescent_N, Fluorescent_W, Fluorescent_L, Tungsten, Flash, Manual, Manual2, Manual3, Kelvin1, Kelvin2, Kelvin3, CTE, MultiAuto
+              --white_balance_adjustment=WB_ADJ valid values like: G5B2, G3A5, B5, A3, G5, M4...
+              -f, --auto_focus                      autofocus
+              --reconnect                       reconnect between shots
+              --servermode                      start in server mode and wait for commands
+              --servermode_timeout=SECONDS      servermode timeout
+              -g, --green                           green button
+              -s, --status                          print status info
+              --status_hex                      print status hex info
+              -S, --settings                        print settings info
+              --settings_hex                    print settings hex info
+              --read_datetime                   print the camera date and time
+              --read_firmware_version           print the firmware version of the camera
+              --dump_memory SIZE                dumps the internal memory of the camera to pentax_dump.dat file. Size is in bytes, but can be specified using K, M, and G modifiers.
+              --dust_removal                    dust removal
+              -F, --frames=NUMBER                   number of frames
+              -d, --delay=SECONDS                   delay between the frames (seconds)
+              --file_format=FORMAT              valid values: PEF, DNG, JPEG
+              -o, --output_file=FILE                send output to FILE
+              --debug                           turn on debug messages
+              --noshutter                       do not send shutter command, just wait for new photo, download and delete from camera
+              -v, --version                         display version information and exit
+              -h, --help                            display this help and exit
+              --pentax_debug_mode={0|1}		enable or disable camera debug mode and exit (DANGEROUS). Valid values are: 0, 1
+            </code>
+          </pre>
 	  <p>Detailed description can be found <a href="pktriggercord_commandline.html">here</a>.</p>
 
 	  <p>You can also use the command line interface to create a
-	  timelapse if your camera does not support interval
-	  shooting. You can find a tutorial <a href="timelapse.html">here</a>.</p>	  
+	    timelapse if your camera does not support interval
+	    shooting. You can find a tutorial <a href="timelapse.html">here</a>.</p>
 	  <h3 id="doc_gui" class="header_shift"><span class="fa fa-fw fa-window-maximize"></span>GUI</h3>
 	  <p>The GUI requires GTK2. It does not support all the
-	  features of the command line interface.</p>
+	    features of the command line interface.</p>
 	  <p>
 	    <a data-fancybox="gallery" href="screenshots/pktriggercord_camerasettings.jpg">
 	      <img src="screenshots/pktriggercord_camerasettings.jpg" class="img-thumbnail"
@@ -290,31 +291,32 @@ Usage: pktriggercord-cli [OPTIONS]
       </div>
     </div>
   </div>
+</div>
 
-  <div class="container header_shift" id="development">
-    <div class="row">
-      <div class="col-xs-12">
-	<div class="row">
-	  <h2><span class="fa fa-fw fa-code-fork"></span>Development</h2>
+<div class="container header_shift" id="development">
+  <div class="row">
+    <div class="col-12">
+      <div class="row">
+	<h2><span class="fas fa-fw fa-code-branch"></span>Development</h2>
+        <div class="col-12">
 	  <p>You can find more information at
-	  the <a href="https://github.com/asalamon74/pktriggercord/">GitHub
-	  project page.</a> Feel free to send pull requests if you
-	  enhance the program. If you want to add a new camera model
-	  or fix a model specific bug, it is very likely that you only
-	  need to modify the <a href="https://github.com/asalamon74/pktriggercord/blob/master/pslr_model.c">pslr_model.c</a>
-	  file. This software is crosscompiled under Linux for Windows. If you want to compile it, you need Linux.</p>
-
+	    the <a href="https://github.com/asalamon74/pktriggercord/">GitHub
+	      project page.</a> Feel free to send pull requests if you
+	    enhance the program. If you want to add a new camera model
+	    or fix a model specific bug, it is very likely that you only
+	    need to modify the <a href="https://github.com/asalamon74/pktriggercord/blob/master/pslr_model.c">pslr_model.c</a>
+	    file. This software is crosscompiled under Linux for Windows. If you want to compile it, you need Linux.</p>
           <p>There is no official documentation of the Pentax
-          tethering protocol, but you can check our <a href="pentax_scsi_protocol.html">Pentax SCSI protocol documentation</a>.
-
+            tethering protocol, but you can check our <a href="https://github.com/asalamon74/pktriggercord/blob/master/pentax_scsi_protocol.md">Pentax SCSI protocol documentation</a>.
           <p>This program is based on <a href="http://pkremote.sourceforge.net/">PKRemote for Linux</a>
-and <a href="https://sites.google.com/a/pentax.org.pl/tomaszkos/en/pkremote-for-windows">PKRemote
-  for Windows</a> programs.</p>
-	</div>
+            and <a href="https://sites.google.com/a/pentax.org.pl/tomaszkos/en/pkremote-for-windows">PKRemote
+              for Windows</a> programs.</p>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <div id="footer"></div>
+<div id="footer"></div>
 </body>
 </html>

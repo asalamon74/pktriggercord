@@ -4,16 +4,21 @@
   <title>pkTriggerCord</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css">-->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
   <link rel="stylesheet" href="pktriggercord.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://use.fontawesome.com/999c1ebb04.js"></script>
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/brands.css">
+
   <script> 
     $(function(){
-    $("#header").load("header.html"); 
-    $("#footer").load("footer.html"); 
+    $("#header").load("header.html");
+    $("#footer").load("footer.html");
     });
   </script> 
 </head>
@@ -29,10 +34,10 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-xs-12">
+      <div class="col-12">
 	<ul class="list-group" id="timelapse_steps">
 	  <li class="list-group-item">
-            <span class="badge">1</span>
+            <span class="badge badge-pill badge-dark float-right">1</span>
 	    <p class="list-group-item-heading">Take pictures</p>
 	    <p class="list-group-item-text">
 	      <pre><code>pktriggercord-cli --frames 150 --delay 8 --aperture=5.6 --shutter=1/4 --iso=800 -o timelapse</code></pre></p>
@@ -43,7 +48,7 @@
 	      create 150 files: <code>timelapse-0000.dng</code>, <code>timelapse-0001.dng</code>,...</p>
 	  </li>
 	  <li class="list-group-item">
-            <span class="badge">2</span>
+            <span class="badge badge-pill badge-dark float-right">2</span>
 	    <p class="list-group-item-heading">Convert to png</p>
 	    <p class="list-group-item-text"><pre><code>ufraw-batch --temperature=5500 --exposure=0 --out-type=png timelapse*.dng</code></pre></p>
 	    <p class="list-group-item-text">Converting the raw dng images
@@ -56,7 +61,7 @@
 
 	  </li>
 	  <li class="list-group-item">
-            <span class="badge">3</span>
+            <span class="badge badge-pill badge-dark float-right">3</span>
 	    <p class="list-group-item-heading">Resize images</p>
 	    <p class="list-group-item-text">
 	      <pre><code>for i in `seq -w 0 149`; do 
@@ -79,7 +84,7 @@ done</code></pre>
 	      <code>timelapse-0000_small.jpg</code>, <code>timelapse-0001_small.jpg</code>,...</p>
 	  </li>
 	  <li class="list-group-item">
-            <span class="badge">4</span>
+            <span class="badge badge-pill badge-dark float-right">4</span>
 	    <p class="list-group-item-heading">Create video</p>
 	    <p class="list-group-item-text"><pre><code>ffmpeg -r 25 -i timelapse-%04d_small.jpg -vcodec libx264 -vpre normal -b 1800k -aspect 16:9 timelapse.mkv</code></pre></p><br />
 	    <p class="list-group-item-text">I'm using

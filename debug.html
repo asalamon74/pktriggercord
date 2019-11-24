@@ -4,18 +4,23 @@
   <title>pkTriggerCord</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css">-->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
   <link rel="stylesheet" href="pktriggercord.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://use.fontawesome.com/999c1ebb04.js"></script>
-  <script> 
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/brands.css">
+
+  <script>
     $(function(){
-    $("#header").load("header.html"); 
-    $("#footer").load("footer.html"); 
+    $("#header").load("header.html");
+    $("#footer").load("footer.html");
     });
-  </script> 
+  </script>
 </head>
   <body>
     <div id="header"></div>
@@ -29,7 +34,7 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-xs-12">
+      <div class="col-12">
 	<p>It is always best to start the debugging using the command
 	  line interface and only test the GUI
 	  later. The <code>--debug</code> switch help to collect lots
@@ -50,17 +55,17 @@
 	  by adding <code> > debug.log 2>&1</code> to the commands. For
 	  instance the following command will send all the output
 	  messages to the debug.log file:</p>
-	<pre><code>pktriggercord-cli --statux_hex --debug > debug.log 2>&1</code></pre>	
+	<pre><code>pktriggercord-cli --statux_hex --debug > debug.log 2>&1</code></pre>
 
 	<div class="alert alert-warning">
-	  <p>If you want to test a camera model not yet listed
+	  If you want to test a camera model not yet listed
 	  <a href="index.html#cameras">here</a> then please first
 	  contact <a href="mailto:andras.salamon@melda.info">me</a>
-	  and I'll add it to the list.</p>
+	  and I'll add it to the list.
 	</div>
       </div>
     </div>
-  </div> 
+  </div>
   <div id="footer"></div>
   </body>
 </html>
