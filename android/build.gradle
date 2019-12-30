@@ -52,8 +52,10 @@ android {
     signingConfigs {
         release {
             storeFile file("${System.properties['user.home']}/progs/java_keystore_google_play.jks")
+            def RELEASE_STORE_PASSWORD=project.properties['RELEASE_STORE_PASSWORD'] ?: ""
             storePassword RELEASE_STORE_PASSWORD
             keyAlias 'melda'
+            def RELEASE_KEY_PASSWORD=project.properties['RELEASE_KEY_PASSWORD'] ?: ""
             keyPassword RELEASE_KEY_PASSWORD
         }
     }
