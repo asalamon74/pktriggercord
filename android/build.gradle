@@ -1,28 +1,5 @@
 apply plugin: 'com.android.application'
 
-gradle.taskGraph.whenReady { taskGraph ->
-    if(taskGraph.hasTask(':assembleRelease')) {
-        def storePassword
-        def keyPassword
-        storePassword = System.console().readPassword("\n\n\nEnter keystore password: ")
-        storePassword = new String(storePassword)
-
-        if(storePassword.size() <= 0) {
-            throw new InvalidUserDataException("Empty keystore password")
-        }
-
-        keyPassword = System.console().readPassword("\nEnter key password: ")
-        keyPassword = new String(keyPassword)
-
-        if(keyPassword.size() <= 0) {
-            throw new InvalidUserDataException("Empty key password")
-        }
-
-        android.signingConfigs.release.storePassword = storePassword
-        android.signingConfigs.release.keyPassword = keyPassword
-    }
-}
-
 clean {
     delete 'assets'
     delete 'libs'
@@ -75,9 +52,9 @@ android {
     signingConfigs {
         release {
             storeFile file("${System.properties['user.home']}/progs/java_keystore_google_play.jks")
-            storePassword ''
+            storePassword RELEASE_STORE_PASSWORD
             keyAlias 'melda'
-            keyPassword ''
+            keyPassword RELEASE_KEY_PASSWORD
         }
     }
 
@@ -104,7 +81,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.android.tools.build:gradle:3.5.3'
     }
 }
 
