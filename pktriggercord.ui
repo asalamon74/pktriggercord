@@ -152,6 +152,13 @@
           </object>
         </child>
         <child>
+          <object class="GtkToggleAction" id="menu_fullsize_preview">
+            <property name="name">menu_fullsize_preview</property>
+            <property name="label" translatable="yes">Fullsize Preview</property>
+            <signal handler="menu_fullsize_preview_toggled_cb" name="toggled"/>
+          </object>
+        </child>
+        <child>
           <object class="GtkAction" id="menuitem4">
             <property name="name">menuitem4</property>
             <property name="label" translatable="yes">_Help</property>
@@ -175,6 +182,7 @@
           <menuitem action="menu_buffer_window"/>
           <menuitem action="menu_settings_window"/>
           <menuitem action="menu_histogram_window"/>
+          <menuitem action="menu_fullsize_preview"/>
         </menu>
         <menu action="menuitem4">
           <menuitem action="menu_about"/>

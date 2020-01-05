@@ -81,6 +81,7 @@ static bool is_inside(int rect_x, int rect_y, int rect_w, int rect_h, int px, in
 
 static void save_buffer(int bufno, const char *filename);
 
+// coordinates for 640 x 480 image
 #define AF_FAR_LEFT   132
 #define AF_LEFT       223
 #define AF_CENTER     319
@@ -182,11 +183,14 @@ static const int ec_tbl_1_2[]= {
 
 static pslr_handle_t camhandle;
 static bool handle_af_points;
+static double af_width_multiplier;
+static double af_height_multiplier;
 static GtkBuilder *xml;
 static GtkStatusbar *statusbar;
 static guint sbar_connect_ctx;
 static guint sbar_download_ctx;
 bool need_histogram=false;
+bool fullsize_preview=false;
 static GtkListStore *list_store;
 
 bool debug = false;
@@ -1145,7 +1149,7 @@ static void update_image_areas(int buffer, bool main) {
 
     pError = NULL;
     DPRINT("Trying to read buffer %d %d\n", buffer, main);
-    if (pslr_get_model_bufmask_single(camhandle)) {
+    if (fullsize_preview || pslr_get_model_bufmask_single(camhandle)) {
         r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_JPEG_MAX, 0, &pLastPreviewImage, &lastPreviewImageSize);
     } else {
         r = pslr_get_buffer(camhandle, buffer, PSLR_BUF_PREVIEW, 4, &pLastPreviewImage, &lastPreviewImageSize);
@@ -1246,11 +1250,29 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
     pw = GW("main_drawing_area");
     GtkStyle *style=gtk_widget_get_style(pw);
 
+    double ratio = 1.0;
+    af_width_multiplier = 1.0;
+    af_height_multiplier = 1.0;
     if (pMainPixbuf != NULL) {
         DPRINT("pMainPixbuf drawing\n");
         GdkPixbuf *pMainToRender;
-        if (gdk_pixbuf_get_width(pMainPixbuf)>640) {
-            pMainToRender = gdk_pixbuf_scale_simple( pMainPixbuf, 640, 480, GDK_INTERP_BILINEAR);
+        int pixbufWidth = gdk_pixbuf_get_width(pMainPixbuf);
+        int pixbufHeight = gdk_pixbuf_get_height(pMainPixbuf);
+        DPRINT("Preview image size: %d x %d\n", pixbufWidth, pixbufHeight);
+        GtkAllocation allocation;
+        gtk_widget_get_allocation( pw, &allocation);
+        int areaWidth = allocation.width;
+        int areaHeight = allocation.height;
+        DPRINT("Preview area size: %d x %d\n", areaWidth, areaHeight);
+        double ratioWidth = 1.0 * areaWidth / pixbufWidth;
+        double ratioHeight = 1.0 * areaHeight / pixbufHeight;
+        ratio = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+        ratio = ratio > 1 ? 1 : ratio;
+        DPRINT("Scaling ratio: %f\n, ratio");
+        if (ratio < 1) {
+            pMainToRender = gdk_pixbuf_scale_simple( pMainPixbuf, pixbufWidth * ratio, pixbufHeight * ratio, GDK_INTERP_BILINEAR);
+            af_width_multiplier = ratio * pixbufWidth / 640;
+            af_height_multiplier = ratio * pixbufHeight / 480;
         } else {
             pMainToRender = pMainPixbuf;
         }
@@ -1287,8 +1309,8 @@ G_MODULE_EXPORT int mainwindow_expose(GtkAction *action, gpointer userData) {
             }
             fill = focus_indicated_af_points & (1<<i) ? TRUE : FALSE;
             gdk_draw_rectangle(gtk_widget_get_window(pw), the_gc, fill,
-                               af_points[i].x, af_points[i].y,
-                               af_points[i].w, af_points[i].h);
+                               af_points[i].x * af_width_multiplier, af_points[i].y * af_height_multiplier,
+                               af_points[i].w * af_width_multiplier, af_points[i].h * af_height_multiplier);
         }
     }
 
@@ -1323,7 +1345,10 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
         }
 
         for (i=0; i<sizeof(af_points)/sizeof(af_points[0]); i++) {
-            if (is_inside(af_points[i].x, af_points[i].y, af_points[i].w, af_points[i].h,
+            if (is_inside(af_points[i].x * af_width_multiplier,
+                          af_points[i].y * af_height_multiplier,
+                          af_points[i].w * af_width_multiplier,
+                          af_points[i].h * af_height_multiplier,
                           x, y)) {
                 //printf("click: af point %d\n", i);
 
@@ -1739,6 +1764,11 @@ G_MODULE_EXPORT void menu_histogram_window_toggled_cb(GtkAction *action, gpointe
             gtk_list_store_set (list_store, &iter, 0, thumb, 1, hist, 2, pMerged, -1);
         }
     }
+}
+
+G_MODULE_EXPORT void menu_fullsize_preview_toggled_cb(GtkAction *action, gpointer user_data) {
+    fullsize_preview =  gtk_toggle_action_get_active(GTA("menu_fullsize_preview"));
+    DPRINT("menu_fullsize_preview %d\n", fullsize_preview);
 }
 
 void set_preview_icon(int n, GdkPixbuf *pBuf) {
