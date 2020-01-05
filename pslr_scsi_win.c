@@ -183,7 +183,7 @@ int scsi_read(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
                            sizeof(sptdwb),
                            &sptdwb,
                            sizeof(sptdwb),
-                           &outByte ,
+                           &outByte,
                            NULL);
     if (Status==0) {
         LastError = GetLastError();
@@ -234,7 +234,7 @@ int scsi_write(int sg_fd, uint8_t *cmd, uint32_t cmdLen,
                            sizeof(sptdwb),
                            &sptdwb,
                            sizeof(sptdwb),
-                           &outByte ,
+                           &outByte,
                            NULL);
     if (Status==0) {
         LastError = GetLastError();
