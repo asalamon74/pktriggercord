@@ -1,4 +1,5 @@
 version 0.85.01
+	Exposure mode conversion bugfix (thx blemasle)
 	Testing status reader for KP
 	Settings reading for K5II (thx blemasle)
 	remote_bulb_mode_press_press setting (thx blemasle)

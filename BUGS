@@ -11,9 +11,6 @@ General
   Taking picture restores jpeg image tone, so jpeg image tone setting
   is quite useless.
 
-  Setting exposure mode has no effect ( maybe it's not a bug only it's
-  not allowed ).
-
   ISO table of GUI only shows the extended iso range even is base iso
   range is set.
 
