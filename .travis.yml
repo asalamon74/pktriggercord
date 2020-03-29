@@ -32,7 +32,7 @@ before_script:
   - make -C $HOME/astyle/build/gcc
   - make -C $HOME/astyle/build/gcc prefix=$HOME install
 script:
-  - if [[ -n $(make astyle | grep Formatted) ]]; then echo "Code formatting error. Please check astyle"; exit -1; fi
+  - if [[ -n $(make astyle | grep Formatted) ]]; then echo "Code formatting error. Please check astyle"; exit 1; fi
   - make android
   - make localwin
   - make srczip
