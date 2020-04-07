@@ -23,7 +23,9 @@
     and GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#ifdef RAD10
+#include "pslr_scsi_win.c"
+#else
 #ifdef WIN32
 #include "pslr_scsi_win.c"
 #else
@@ -32,5 +34,6 @@
 #include "pslr_scsi_openbsd.c"
 #else
 #include "pslr_scsi_linux.c"
+#endif
 #endif
 #endif

@@ -39,7 +39,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <fcntl.h>
+#ifndef RAD10
 #include <unistd.h>
+#endif
 #include "js0n.h"
 
 #include "pslr_model.h"
@@ -778,12 +780,16 @@ static
 char *read_json_file(int *jsonsize) {
     int jsonfd = open("pentax_settings.json", O_RDONLY);
     if (jsonfd == -1) {
+#ifndef RAD10
         // cannot find in the current directory, also checking PKTDATADIR
         jsonfd = open(PKTDATADIR "/pentax_settings.json", O_RDONLY);
         if (jsonfd == -1) {
+#endif
             fprintf(stderr, "Cannot open pentax_settings.json file\n");
             return NULL;
+#ifndef RAD10
         }
+#endif
     }
     *jsonsize = lseek(jsonfd, 0, SEEK_END);
     lseek(jsonfd, 0, SEEK_SET);

@@ -41,7 +41,13 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <signal.h>
+#ifdef RAD10
+#include <windows.h>
+#include <utime.h>
+#include "tdbtime.h"
+#else
 #include <unistd.h>
+#endif
 #include <stdbool.h>
 #include <stdarg.h>
 #include <dirent.h>
