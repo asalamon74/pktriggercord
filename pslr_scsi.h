@@ -35,6 +35,9 @@
 extern bool debug;
 extern void write_debug( const char* message, ... );
 
+#ifdef RAD10
+#include <windows.h>
+#endif
 #ifdef ANDROID
 #include <android/log.h>
 #define DPRINT(...) __android_log_print(ANDROID_LOG_DEBUG, "PkTriggerCord", __VA_ARGS__)

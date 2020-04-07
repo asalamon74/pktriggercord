@@ -1,4 +1,5 @@
 version 0.85.01
+	RAD10 compilation (thx FrankBijnen)
 	Exposure mode conversion bugfix (thx blemasle)
 	Testing status reader for KP
 	Settings reading for K5II (thx blemasle)

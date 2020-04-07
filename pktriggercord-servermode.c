@@ -26,6 +26,14 @@
     and GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifdef RAD10
+#include <windows.h>
+#include <utime.h>
+#include "tdbtimes.h"
+#else
+#include <sys/time.h>
+#include <unistd.h>
+#endif
 #ifndef WIN32
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -33,10 +41,8 @@
 #endif
 
 #include <stdio.h>
-#include <sys/time.h>
 #include <stdlib.h>
 
-#include <unistd.h>
 
 #include "pslr.h"
 #include "pslr_lens.h"
