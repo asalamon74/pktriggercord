@@ -72,9 +72,9 @@ bool need_one_push_bracketing_cleanup=false;
 
 #ifdef RAD10
 static option const longopts[] = {
-#else    
+#else
 static struct option const longopts[] = {
-#endif    
+#endif
     {"exposure_mode", required_argument, NULL, 'm'},
     {"resolution", required_argument, NULL, 'r'},
     {"quality", required_argument, NULL, 'q'},
