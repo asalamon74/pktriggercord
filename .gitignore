@@ -4,7 +4,9 @@
 /pktriggercord-cli
 *~
 *.exe
+libpktriggercord.dll
 /pktriggercord_commandline.html
+/pktriggercord-*-win
 /pktriggercord-*-win.zip
 /pkTriggerCord-*.src.tar.gz
 /pktriggercord-*.rpm
