@@ -102,7 +102,7 @@ install: pktriggercord-cli pktriggercord
 	fi
 
 clean:
-	rm -f pktriggercord pktriggercord-cli *.o $(JSONDIR)/*.o *.so*
+	rm -f pktriggercord pktriggercord-cli *.o $(JSONDIR)/*.o *.so* *.dll
 	rm -f pktriggercord.exe pktriggercord-cli.exe
 	rm -f *.orig
 
@@ -214,13 +214,18 @@ win-cli:winobjs winexternal pktriggercord-cli.c pktriggercord_commandline.html
 	cp pktriggercord-cli.exe Changelog COPYING pktriggercord_commandline.html $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
 
+win-lib: winobjs winexternal
+	$(WINGCC) -mms-bitfields libpktriggercord.c $(OBJS) -shared -o libpktriggercord.dll $(WIN_CFLAGS) -L.
+	mkdir -p $(WINDIR)
+	cp libpktriggercord.dll Changelog COPYING $(WIN_DLLS_DIR)/libgcc_s_sjlj-1.dll $(WINDIR)
+
 win-gui: winobjs
 	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DPKTDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_GUI_CFLAGS) $(WIN_LDFLAGS) -L.
 	mkdir -p $(WINDIR)
 	cp pktriggercord.exe pktriggercord.ui pentax_settings.json Changelog COPYING $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
 
-win: win-cli win-gui
+win: win-cli win-gui win-lib
 	rm -f $(WINDIR).zip
 	zip -rj $(WINDIR).zip $(WINDIR)
 	rm -r $(WINDIR)
