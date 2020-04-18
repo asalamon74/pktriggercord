@@ -72,7 +72,7 @@
         <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
         <IncludePath>..\;..\src\external\js0n\;rad10\;src\external\js0n\;$(IncludePath)</IncludePath>
         <ILINK_LibraryPath>..\;..\src\external\js0n\;rad10\;src\external\js0n\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <BCC_Defines>RAD10;EVENTS;$(BCC_Defines)</BCC_Defines>
+        <BCC_Defines>RAD10;PKTDATADIR=&quot;&quot;;$(BCC_Defines)</BCC_Defines>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <PackageImports>adortl;appanalytics;bcbie;bcbsmp;bindcomp;bindcompdbx;bindcompfmx;bindcompvcl;bindengine;CustomIPTransport;DataSnapClient;DataSnapCommon;DataSnapConnectors;DatasnapConnectorsFreePascal;DataSnapFireDAC;DataSnapIndy10ServerTransport;DataSnapNativeClient;DataSnapProviderClient;DataSnapServer;DataSnapServerMidas;dbexpress;dbrtl;dbxcds;DbxClientDriver;DbxCommonDriver;DBXDb2Driver;DBXFirebirdDriver;DBXInformixDriver;DBXInterBaseDriver;DBXMSSQLDriver;DBXMySQLDriver;DBXOdbcDriver;DBXOracleDriver;DBXSqliteDriver;DBXSybaseASADriver;DBXSybaseASEDriver;dsnap;dsnapcon;dsnapxml;emsedge;emshosting;FireDACADSDriver;FireDACASADriver;FireDACCommonODBC;FireDACDb2Driver;FireDACDBXDriver;FireDACDSDriver;FireDACInfxDriver;FireDACMongoDBDriver;FireDACMSAccDriver;FireDACMSSQLDriver;FireDACMySQLDriver;FireDACODBCDriver;FireDACOracleDriver;FireDACPgDriver;FireDACTDataDriver;fmx;fmxase;fmxdae;fmxFireDAC;fmxobj;FMXTee;FmxTeeUI;ibmonitor;ibxbindings;ibxpress;IndyCore;IndyIPClient;IndyIPCommon;IndyIPServer;IndyProtocols;IndySystem;inetdb;inetdbxpress;Intraweb;rtl;svn;Tee;TeeDB;TeeUI;tethering;vcl;vclactnband;vcldb;vcldsnap;vclFireDAC;vclib;vclie;vclimg;VCLRESTComponents;VclSmp;vcltouch;vclwinx;vclx;xmlrtl;$(PackageImports)</PackageImports>
@@ -122,14 +122,13 @@
         <TASM_Debugging>None</TASM_Debugging>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <VerInfo_Build>330</VerInfo_Build>
+        <VerInfo_Build>341</VerInfo_Build>
         <VerInfo_MinorVer>22</VerInfo_MinorVer>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Keys>CompanyName=TDBware;FileDescription=Control your Pentax camera;FileVersion=1.22.0.330;InternalName=pktriggercord-cli;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=;ProductName=Raw2Jpeg;ProductVersion=1.22;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=TDBware;FileDescription=Control your Pentax camera;FileVersion=1.22.0.341;InternalName=pktriggercord-cli;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=;ProductName=Raw2Jpeg;ProductVersion=1.22;Comments=</VerInfo_Keys>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <Manifest_File>None</Manifest_File>
         <Debugger_RunParams>-o ab</Debugger_RunParams>
-        <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <Debugger_RunParams>-o ab</Debugger_RunParams>

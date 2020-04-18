@@ -40,15 +40,13 @@
 #else
 #include <unistd.h>
 #include <getopt.h>
+#include <sys/time.h>
 #endif
 #include <fcntl.h>
 #include <ctype.h>
 #include <time.h>
 #include <stdarg.h>
 #include <math.h>
-#ifndef RAD10
-#include <sys/time.h>
-#endif
 
 #include "pslr.h"
 #include "pktriggercord-servermode.h"

@@ -30,6 +30,9 @@
 #include <windows.h>
 #include <utime.h>
 #include "tdbtimes.h"
+#else
+#include <sys/time.h>
+#include <unistd.h>
 #endif
 #ifndef WIN32
 #include <sys/socket.h>
@@ -38,14 +41,8 @@
 #endif
 
 #include <stdio.h>
-#ifndef RAD10
-#include <sys/time.h>
-#endif
 #include <stdlib.h>
 
-#ifndef RAD10
-#include <unistd.h>
-#endif
 
 #include "pslr.h"
 #include "pslr_lens.h"

@@ -43,6 +43,8 @@
 #include <unistd.h>
 #endif
 #include "js0n.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "pslr_model.h"
 #include "pslr.h"
@@ -51,6 +53,17 @@ static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
 static int first = 1;
 static char *jsontext=NULL;
 static int jsonsize;
+
+static int dir_exists(char *dir)
+{
+    int res = 0;
+    struct stat info;
+
+    if ( (stat(dir, &info) == 0) && (info.st_mode & S_IFDIR) ) {
+        res = 1;
+    }
+    return res;
+}
 
 static void ipslr_status_diff(uint8_t *buf) {
     int n;
@@ -780,16 +793,14 @@ static
 char *read_json_file(int *jsonsize) {
     int jsonfd = open("pentax_settings.json", O_RDONLY);
     if (jsonfd == -1) {
-#ifndef RAD10
         // cannot find in the current directory, also checking PKTDATADIR
-        jsonfd = open(PKTDATADIR "/pentax_settings.json", O_RDONLY);
+        if (dir_exists(PKTDATADIR)) {
+            jsonfd = open(PKTDATADIR "/pentax_settings.json", O_RDONLY);
+        }
         if (jsonfd == -1) {
-#endif
             fprintf(stderr, "Cannot open pentax_settings.json file\n");
             return NULL;
-#ifndef RAD10
         }
-#endif
     }
     *jsonsize = lseek(jsonfd, 0, SEEK_END);
     lseek(jsonfd, 0, SEEK_SET);
