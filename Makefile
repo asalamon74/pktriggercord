@@ -12,6 +12,7 @@ MAN1DIR = $(MANDIR)/man1
 LIN_CFLAGS = $(CFLAGS)
 LIN_LDFLAGS = $(LDFLAGS)
 
+MAJORVERSION=0
 VERSION=0.85.01
 VERSIONCODE=$(shell echo $(VERSION) | sed s/\\.//g | sed s/^0// )
 # variables for RPM creation
@@ -40,12 +41,13 @@ LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK
 default: cli pktriggercord
 all: srczip rpm win pktriggercord_commandline.html
 cli: pktriggercord-cli
+lib: libpktriggercord.so.$(VERSION)
 
 MANS = pktriggercord-cli.1 pktriggercord.1
 SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
 OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c  pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
@@ -56,8 +58,15 @@ WINDIR=$(TARDIR)-win
 
 pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
 
-pktriggercord-cli: pktriggercord-cli.c $(OBJS)
+pktriggercord-cli: pktriggercord-cli.c $(OBJS) libpktriggercord.o
 	$(CC) $(LIN_CFLAGS) $^ -DVERSION='"$(VERSION)"' -o $@ $(LIN_LDFLAGS) -L.
+
+libpktriggercord.so: libpktriggercord.so.$(VERSION)
+	ldconfig -v -n .
+	ln -s libpktriggercord.so.$(MAJORVERSION) libpktriggercord.so
+
+libpktriggercord.so.$(VERSION): $(OBJS) libpktriggercord.o
+	$(CC) $(LIN_CFLAGS) -shared -Wl,-soname,lib$(NAME).so.$(MAJORVERSION) $^ -o $@ $(LIN_LDFLAGS) -L.
 
 pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
 
@@ -93,7 +102,7 @@ install: pktriggercord-cli pktriggercord
 	fi
 
 clean:
-	rm -f pktriggercord pktriggercord-cli *.o $(JSONDIR)/*.o
+	rm -f pktriggercord pktriggercord-cli *.o $(JSONDIR)/*.o *.so*
 	rm -f pktriggercord.exe pktriggercord-cli.exe
 	rm -f *.orig
 
