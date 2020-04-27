@@ -209,7 +209,7 @@ winexternal: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 	$(WINGCC) $(WIN_CFLAGS) -c $< -o $(JSONDIR)/js0n.o
 
 win-cli:winobjs winexternal pktriggercord-cli.c pktriggercord_commandline.html
-	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' pktriggercord-cli.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) -L.
+	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' pktriggercord-cli.c libpktriggercord.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) -L.
 	mkdir -p $(WINDIR)
 	cp pktriggercord-cli.exe Changelog COPYING pktriggercord_commandline.html $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
