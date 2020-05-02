@@ -31,8 +31,6 @@ ANDROID_PROJECT_NAME = PkTriggerCord
 ANDROID_PACKAGE = info.melda.sala.pktriggercord
 APK_FILE = $(PROJECT_NAME)-debug.apk
 
-TARGET_LIB = libpktriggercord.so.$(VERSION)
-
 MANS = pktriggercord-cli.1 pktriggercord.1
 SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode libpktriggercord
 OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
@@ -45,12 +43,16 @@ LOCALMINGW=i686-w64-mingw32
 WINGCC=i686-w64-mingw32-gcc
 WINDIR=$(TARDIR)-win
 
-LOCAL_CFLAGS = $(CFLAGS)
-LOCAL_LDFLAGS = $(LDFLAGS)
+LOCAL_CFLAGS=$(CFLAGS)
+LOCAL_LDFLAGS=$(LDFLAGS)
 
-GUI_LDFLAGS=$(LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
-GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
+CLI_CFLAGS=$(LOCAL_CFLAGS)
+CLI_LDFLAGS=$(LOCAL_LDFLAGS)
+
+GUI_CFLAGS=$(LOCAL_CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
 #-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+GUI_LDFLAGS=$(LOCAL_LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
+
 
 #variables modification for Windows cross compilation
 ifeq ($(ARCH),Win32)
@@ -58,17 +60,20 @@ ifeq ($(ARCH),Win32)
 	AR=i686-w64-mingw32-ar
 
 	LOCAL_CFLAGS+= -mms-bitfields -I$(LOCALMINGW)/include/gtk-2.0/ -I$(LOCALMINGW)/lib/gtk-2.0/include/ -I$(LOCALMINGW)/include/atk-1.0/ -I$(LOCALMINGW)/include/cairo/ -I$(LOCALMINGW)/include/gdk-pixbuf-2.0/ -I$(LOCALMINGW)/include/pango-1.0/
-	GUI_CFLAGS=$(LOCAL_CFLAGS) -I$(LOCALMINGW)/include/glib-2.0 -I$(LOCALMINGW)/lib/glib-2.0/include
-	GUI_LDFLAGS=-L$(LOCALMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0	
 
-	TARGET_LIB = libpktriggercord-$(VERSION).dll
+	GUI_CFLAGS=$(LOCAL_CFLAGS) -I$(LOCALMINGW)/include/glib-2.0 -I$(LOCALMINGW)/lib/glib-2.0/include
+	GUI_LDFLAGS=-L$(LOCALMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
+
+	#some build of MinGW enforce this. Some doesn't. Ensure consistent behaviour
+	CLI_LDFLAGS+= -Wl,--force-exe-suffix
+	GUI_LDFLAGS+= -Wl,--force-exe-suffix
 endif
 
 default: cli gui lib
 all: srczip rpm win pktriggercord_commandline.html
 cli: pktriggercord-cli
 gui: pktriggercord
-lib: $(TARGET_LIB)
+lib: libpktriggercord.so.$(VERSION)
 
 pslr.o: pslr_enum.o pslr_scsi.o libpktriggercord.o pslr.c
 
@@ -81,11 +86,14 @@ libpktriggercord.so: libpktriggercord.so.$(VERSION)
 	ldconfig -v -n .
 	ln -s libpktriggercord.so.$(MAJORVERSION) libpktriggercord.so
 
-$(TARGET_LIB): libpktriggercord.a
+libpktriggercord.so.$(VERSION): libpktriggercord.a
 	$(CC) $(LOCAL_CFLAGS) -shared -Wl,--whole-archive,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -Wl,--no-whole-archive -o $@ $(LOCAL_LDFLAGS) -L.
+ifeq ($(ARCH),Win32)
+	mv $@ libpktriggercord-$(VERSION).dll
+endif
 
 pktriggercord-cli: libpktriggercord.a
-	$(CC) $(LOCAL_CFLAGS) pktriggercord-cli.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(LOCAL_LDFLAGS) -L.
+	$(CC) $(CLI_CFLAGS) pktriggercord-cli.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(CLI_LDFLAGS) -L.
 
 ifeq ($(ARCH),Win32)
 pktriggercord: windownload
