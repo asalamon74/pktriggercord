@@ -1,5 +1,8 @@
 /old_releases
 *.o
+*.so
+*.so.*
+*.a
 /pktriggercord
 /pktriggercord-cli
 *~
@@ -23,3 +26,4 @@ libpktriggercord.dll
 .#*
 *.orig
 /i686-w64-mingw32
+

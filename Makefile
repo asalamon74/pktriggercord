@@ -34,17 +34,17 @@ ANDROID_PROJECT_NAME = PkTriggerCord
 ANDROID_PACKAGE = info.melda.sala.pktriggercord
 APK_FILE = $(PROJECT_NAME)-debug.apk
 
-LIN_GUI_LDFLAGS=$(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
+LIN_GUI_LDFLAGS=$(LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
 LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
 #-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
 default: cli pktriggercord
 all: srczip rpm win pktriggercord_commandline.html
 cli: pktriggercord-cli
-lib: libpktriggercord.so.$(VERSION)
+lib: libpktriggercord.so
 
 MANS = pktriggercord-cli.1 pktriggercord.1
-SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
+SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode libpktriggercord
 OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
 WIN_DLLS_DIR=win_dlls
 SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c  pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
@@ -56,19 +56,25 @@ WINGCC=i686-w64-mingw32-gcc
 WINMINGW=/usr/i686-w64-mingw32/sys-root/mingw
 WINDIR=$(TARDIR)-win
 
-pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
+pslr.o: pslr_enum.o pslr_scsi.o libpktriggercord.o pslr.c
 
-pktriggercord-cli: pktriggercord-cli.c $(OBJS) libpktriggercord.o
-	$(CC) $(LIN_CFLAGS) $^ -DVERSION='"$(VERSION)"' -o $@ $(LIN_LDFLAGS) -L.
+pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
+
+libpktriggercord.a: $(OBJS) 
+	$(AR) $(ARFLAGS) $@ $^
 
 libpktriggercord.so: libpktriggercord.so.$(VERSION)
 	ldconfig -v -n .
 	ln -s libpktriggercord.so.$(MAJORVERSION) libpktriggercord.so
 
-libpktriggercord.so.$(VERSION): $(OBJS) libpktriggercord.o
-	$(CC) $(LIN_CFLAGS) -shared -Wl,-soname,lib$(NAME).so.$(MAJORVERSION) $^ -o $@ $(LIN_LDFLAGS) -L.
+libpktriggercord.so.$(VERSION): libpktriggercord.a
+	$(CC) $(LIN_CFLAGS) -shared -Wl,--whole-archive,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -Wl,--no-whole-archive -o $@ $(LIN_LDFLAGS) -L.
 
-pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
+pktriggercord-cli: libpktriggercord.a
+	$(CC) $(LIN_CFLAGS) pktriggercord-cli.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(LIN_LDFLAGS) -L.
+
+pktriggercord: libpktriggercord.a
+	$(CC) $(LIN_GUI_CFLAGS) pktriggercord.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(LIN_GUI_LDFLAGS) -L.
 
 $(JSONDIR)/js0n.o: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 	$(CC) $(LIN_CFLAGS) -fPIC -c $< -o $@
@@ -77,9 +83,6 @@ external: $(JSONDIR)/js0n.o
 
 %.o: %.c %.h external
 	$(CC) $(LIN_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
-
-pktriggercord: pktriggercord.c $(OBJS)
-	$(CC) $(LIN_GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" $^ $(LIN_LDFLAGS) -o $@ $(LIN_GUI_LDFLAGS) -L.
 
 install: pktriggercord-cli pktriggercord
 	install -d $(DESTDIR)/$(PREFIX)/bin
@@ -102,7 +105,7 @@ install: pktriggercord-cli pktriggercord
 	fi
 
 clean:
-	rm -f pktriggercord pktriggercord-cli *.o $(JSONDIR)/*.o *.so* *.dll
+	rm -f pktriggercord pktriggercord-cli *.o *.a $(JSONDIR)/*.o *.so* *.dll
 	rm -f pktriggercord.exe pktriggercord-cli.exe
 	rm -f *.orig
 
