@@ -2,7 +2,7 @@ JSONDIR=src/external/js0n
 
 PREFIX ?= /usr/local
 PKTDATADIR = $(PREFIX)/share/pktriggercord
-CFLAGS ?= -O3 -g -Wall -I$(JSONDIR)
+CFLAGS ?= -O3 -g -Wall -fvisibility=hidden -I$(JSONDIR)
 # -Wextra
 LDFLAGS ?= -lm
 
