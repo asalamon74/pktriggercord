@@ -45,11 +45,11 @@ LOCALMINGW=i686-w64-mingw32
 WINGCC=i686-w64-mingw32-gcc
 WINDIR=$(TARDIR)-win
 
-LIN_CFLAGS = $(CFLAGS)
-LIN_LDFLAGS = $(LDFLAGS)
+LOCAL_CFLAGS = $(CFLAGS)
+LOCAL_LDFLAGS = $(LDFLAGS)
 
-LIN_GUI_LDFLAGS=$(LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
-LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
+GUI_LDFLAGS=$(LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
+GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
 #-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
 #variables modification for Windows cross compilation
@@ -57,9 +57,9 @@ ifeq ($(ARCH),Win32)
 	CC=i686-w64-mingw32-gcc
 	AR=i686-w64-mingw32-ar
 
-	LIN_CFLAGS+= -mms-bitfields -I$(LOCALMINGW)/include/gtk-2.0/ -I$(LOCALMINGW)/lib/gtk-2.0/include/ -I$(LOCALMINGW)/include/atk-1.0/ -I$(LOCALMINGW)/include/cairo/ -I$(LOCALMINGW)/include/gdk-pixbuf-2.0/ -I$(LOCALMINGW)/include/pango-1.0/
-	LIN_GUI_CFLAGS=$(LIN_CFLAGS) -I$(LOCALMINGW)/include/glib-2.0 -I$(LOCALMINGW)/lib/glib-2.0/include
-	LIN_GUI_LDFLAGS=-L$(LOCALMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0	
+	LOCAL_CFLAGS+= -mms-bitfields -I$(LOCALMINGW)/include/gtk-2.0/ -I$(LOCALMINGW)/lib/gtk-2.0/include/ -I$(LOCALMINGW)/include/atk-1.0/ -I$(LOCALMINGW)/include/cairo/ -I$(LOCALMINGW)/include/gdk-pixbuf-2.0/ -I$(LOCALMINGW)/include/pango-1.0/
+	GUI_CFLAGS=$(LOCAL_CFLAGS) -I$(LOCALMINGW)/include/glib-2.0 -I$(LOCALMINGW)/lib/glib-2.0/include
+	GUI_LDFLAGS=-L$(LOCALMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0	
 
 	TARGET_LIB = libpktriggercord-$(VERSION).dll
 endif
@@ -82,25 +82,25 @@ libpktriggercord.so: libpktriggercord.so.$(VERSION)
 	ln -s libpktriggercord.so.$(MAJORVERSION) libpktriggercord.so
 
 $(TARGET_LIB): libpktriggercord.a
-	$(CC) $(LIN_CFLAGS) -shared -Wl,--whole-archive,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -Wl,--no-whole-archive -o $@ $(LIN_LDFLAGS) -L.
+	$(CC) $(LOCAL_CFLAGS) -shared -Wl,--whole-archive,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -Wl,--no-whole-archive -o $@ $(LOCAL_LDFLAGS) -L.
 
 pktriggercord-cli: libpktriggercord.a
-	$(CC) $(LIN_CFLAGS) pktriggercord-cli.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(LIN_LDFLAGS) -L.
+	$(CC) $(LOCAL_CFLAGS) pktriggercord-cli.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(LOCAL_LDFLAGS) -L.
 
 ifeq ($(ARCH),Win32)
 pktriggercord: windownload
 endif
 
 pktriggercord: libpktriggercord.a
-	$(CC) $(LIN_GUI_CFLAGS) pktriggercord.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(LIN_GUI_LDFLAGS) -L.
+	$(CC) $(GUI_CFLAGS) pktriggercord.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(GUI_LDFLAGS) -L.
 
 $(JSONDIR)/js0n.o: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
-	$(CC) $(LIN_CFLAGS) -fPIC -c $< -o $@
+	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
 
 external: $(JSONDIR)/js0n.o
 
 %.o: %.c %.h external
-	$(CC) $(LIN_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
+	$(CC) $(LOCAL_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
 
 install: pktriggercord-cli pktriggercord
 	install -d $(DESTDIR)/$(PREFIX)/bin
