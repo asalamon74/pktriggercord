@@ -67,25 +67,5 @@
 #endif
 
 extern bool debug;
-extern bool warnings;
-
-extern bool bulb_timer_before;
-extern bool astrotracer_before;
-
-
-int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status, user_file_format filefmt, int jpeg_stars);
-void save_memory(pslr_handle_t camhandle, int fd, uint32_t length);
-
-void print_status_info( pslr_handle_t h, pslr_status status );
-void print_settings_info( pslr_handle_t h, pslr_settings settings );
-
-int open_file(char* output_file, int frameNo, user_file_format_t ufft);
-void warning_message( const char* message, ... );
-
-void process_wbadj( const char* argv0, const char chr, uint32_t adj, uint32_t *wbadj_mg, uint32_t *wbadj_ba );
-
-void bulb_old(pslr_handle_t camhandle, pslr_rational_t shutter_speed, struct timeval prev_time);
-void bulb_new(pslr_handle_t camhandle, pslr_rational_t shutter_speed);
-void bulb_new_cleanup(pslr_handle_t camhandle);
 
 #endif
