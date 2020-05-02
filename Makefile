@@ -147,10 +147,6 @@ rpm: srcrpm
 	rpmbuild -ba $(SPECFILE)
 	cp $(TOPDIR)/RPMS/$(ARCH)/pktriggercord-$(VERSION)-1.$(ARCH).rpm .
 
-WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/
-WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include
-WIN_LDFLAGS=-L$(WINMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
-
 deb: srczip
 	rm -f pktriggercord*orig.tar.gz
 	rm -f pktriggercord*debian.tar.gz
@@ -204,6 +200,10 @@ windownload:
 
 localwin: WINMINGW=$(LOCALMINGW)
 localwin: WINGCC=$(LOCALMINGW)/mingw32/bin/i686-w64-mingw32-gcc
+
+WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/
+WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include
+WIN_LDFLAGS=-L$(WINMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
 
 winobjs:$(SRCOBJNAMES:=.c) 
 	$(foreach srcfile, $(SRCOBJNAMES:=.c), $(WINGCC) -DVERSION='"$(VERSION)"' -DPKTDATADIR=\".\" $(WIN_CFLAGS) -c $(srcfile);)
