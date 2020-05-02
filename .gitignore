@@ -1,13 +1,12 @@
 /old_releases
 *.o
-*.so
-*.so.*
+*.so*
 *.a
 /pktriggercord
 /pktriggercord-cli
 *~
 *.exe
-libpktriggercord.dll
+*.dll
 /pktriggercord_commandline.html
 /pktriggercord-*-win
 /pktriggercord-*-win.zip

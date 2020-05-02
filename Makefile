@@ -9,9 +9,6 @@ LDFLAGS ?= -lm
 MANDIR = $(PREFIX)/share/man
 MAN1DIR = $(MANDIR)/man1
 
-LIN_CFLAGS = $(CFLAGS)
-LIN_LDFLAGS = $(LDFLAGS)
-
 MAJORVERSION=0
 VERSION=0.85.01
 VERSIONCODE=$(shell echo $(VERSION) | sed s/\\.//g | sed s/^0// )
@@ -25,7 +22,7 @@ DEBFULLNAME="Andras Salamon"
 
 # variables for RPM/DEB creation
 DESTDIR ?=
-ARCH=$(shell uname -m)
+ARCH ?= $(shell uname -m)
 
 #variables for Android
 ANDROID=android
@@ -34,14 +31,7 @@ ANDROID_PROJECT_NAME = PkTriggerCord
 ANDROID_PACKAGE = info.melda.sala.pktriggercord
 APK_FILE = $(PROJECT_NAME)-debug.apk
 
-LIN_GUI_LDFLAGS=$(LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
-LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
-#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
-
-default: cli pktriggercord
-all: srczip rpm win pktriggercord_commandline.html
-cli: pktriggercord-cli
-lib: libpktriggercord.so
+TARGET_LIB = libpktriggercord.so.$(VERSION)
 
 MANS = pktriggercord-cli.1 pktriggercord.1
 SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode libpktriggercord
@@ -53,8 +43,32 @@ SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
 LOCALMINGW=i686-w64-mingw32
 WINGCC=i686-w64-mingw32-gcc
-WINMINGW=/usr/i686-w64-mingw32/sys-root/mingw
 WINDIR=$(TARDIR)-win
+
+LIN_CFLAGS = $(CFLAGS)
+LIN_LDFLAGS = $(LDFLAGS)
+
+LIN_GUI_LDFLAGS=$(LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
+LIN_GUI_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
+#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+
+#variables modification for Windows cross compilation
+ifeq ($(ARCH),Win32)
+	CC=i686-w64-mingw32-gcc
+	AR=i686-w64-mingw32-ar
+
+	LIN_CFLAGS+= -mms-bitfields -I$(LOCALMINGW)/include/gtk-2.0/ -I$(LOCALMINGW)/lib/gtk-2.0/include/ -I$(LOCALMINGW)/include/atk-1.0/ -I$(LOCALMINGW)/include/cairo/ -I$(LOCALMINGW)/include/gdk-pixbuf-2.0/ -I$(LOCALMINGW)/include/pango-1.0/
+	LIN_GUI_CFLAGS=$(LIN_CFLAGS) -I$(LOCALMINGW)/include/glib-2.0 -I$(LOCALMINGW)/lib/glib-2.0/include
+	LIN_GUI_LDFLAGS=-L$(LOCALMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0	
+
+	TARGET_LIB = libpktriggercord-$(VERSION).dll
+endif
+
+default: cli gui lib
+all: srczip rpm win pktriggercord_commandline.html
+cli: pktriggercord-cli
+gui: pktriggercord
+lib: $(TARGET_LIB)
 
 pslr.o: pslr_enum.o pslr_scsi.o libpktriggercord.o pslr.c
 
@@ -67,11 +81,15 @@ libpktriggercord.so: libpktriggercord.so.$(VERSION)
 	ldconfig -v -n .
 	ln -s libpktriggercord.so.$(MAJORVERSION) libpktriggercord.so
 
-libpktriggercord.so.$(VERSION): libpktriggercord.a
+$(TARGET_LIB): libpktriggercord.a
 	$(CC) $(LIN_CFLAGS) -shared -Wl,--whole-archive,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -Wl,--no-whole-archive -o $@ $(LIN_LDFLAGS) -L.
 
 pktriggercord-cli: libpktriggercord.a
 	$(CC) $(LIN_CFLAGS) pktriggercord-cli.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(LIN_LDFLAGS) -L.
+
+ifeq ($(ARCH),Win32)
+pktriggercord: windownload
+endif
 
 pktriggercord: libpktriggercord.a
 	$(CC) $(LIN_GUI_CFLAGS) pktriggercord.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(LIN_GUI_LDFLAGS) -L.
@@ -105,8 +123,10 @@ install: pktriggercord-cli pktriggercord
 	fi
 
 clean:
-	rm -f pktriggercord pktriggercord-cli *.o *.a $(JSONDIR)/*.o *.so* *.dll
-	rm -f pktriggercord.exe pktriggercord-cli.exe
+	rm -f *.o *.a $(JSONDIR)/*.o
+	rm -f pktriggercord pktriggercord-cli *.so*
+	rm -f pktriggercord.exe pktriggercord-cli.exe *.dll
+	rm -f pktriggercord_commandline.html
 	rm -f *.orig
 
 uninstall:
@@ -195,45 +215,16 @@ windownload:
 	unzip -o $(LOCALMINGW)/download/gdk-pixbuf-dev_2.24.0-1_win32.zip -d $(LOCALMINGW)
 	unzip -o $(LOCALMINGW)/download/gdk-pixbuf_2.24.0-1_win32.zip -d $(LOCALMINGW)
 	unzip -o $(LOCALMINGW)/download/cairo-dev_1.10.2-2_win32.zip -d $(LOCALMINGW)
-	wget -N https://downloads.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/rubenvb/gcc-4.7-release/i686-w64-mingw32-gcc-4.7.4-release-linux64_rubenvb.tar.xz -P $(LOCALMINGW)/download
-	tar xJf $(LOCALMINGW)/download/i686-w64-mingw32-gcc-4.7.4-release-linux64_rubenvb.tar.xz -C $(LOCALMINGW)
 
-localwin: WINMINGW=$(LOCALMINGW)
-localwin: WINGCC=$(LOCALMINGW)/mingw32/bin/i686-w64-mingw32-gcc
-
-WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/
-WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include
-WIN_LDFLAGS=-L$(WINMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
-
-winobjs:$(SRCOBJNAMES:=.c) 
-	$(foreach srcfile, $(SRCOBJNAMES:=.c), $(WINGCC) -DVERSION='"$(VERSION)"' -DPKTDATADIR=\".\" $(WIN_CFLAGS) -c $(srcfile);)
-
-winexternal: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
-	$(WINGCC) $(WIN_CFLAGS) -c $< -o $(JSONDIR)/js0n.o
-
-win-cli:winobjs winexternal pktriggercord-cli.c pktriggercord_commandline.html
-	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' pktriggercord-cli.c libpktriggercord.c $(OBJS) -o pktriggercord-cli.exe $(WIN_CFLAGS) -L.
+windist: pktriggercord_commandline.html
+	rm -rf $(WINDIR)
 	mkdir -p $(WINDIR)
-	cp pktriggercord-cli.exe Changelog COPYING pktriggercord_commandline.html $(WINDIR)
+	cp $(TARGET_LIB) pktriggercord-cli.exe pktriggercord.exe $(WINDIR)
+	cp Changelog COPYING pktriggercord_commandline.html pktriggercord.ui pentax_settings.json $(WINDIR)
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
-
-win-lib: winobjs winexternal
-	$(WINGCC) -mms-bitfields libpktriggercord.c $(OBJS) -shared -o libpktriggercord.dll $(WIN_CFLAGS) -L.
-	mkdir -p $(WINDIR)
-	cp libpktriggercord.dll Changelog COPYING $(WIN_DLLS_DIR)/libgcc_s_sjlj-1.dll $(WINDIR)
-
-win-gui: winobjs
-	$(WINGCC) -mms-bitfields -DVERSION='"$(VERSION)"' -DPKTDATADIR=\".\" pktriggercord.c $(OBJS) -o pktriggercord.exe $(WIN_GUI_CFLAGS) $(WIN_LDFLAGS) -L.
-	mkdir -p $(WINDIR)
-	cp pktriggercord.exe pktriggercord.ui pentax_settings.json Changelog COPYING $(WINDIR)
-	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
-
-win: win-cli win-gui win-lib
 	rm -f $(WINDIR).zip
 	zip -rj $(WINDIR).zip $(WINDIR)
 	rm -r $(WINDIR)
-
-localwin: windownload win
 
 androidclean:
 	cd $(ANDROID_DIR) && ./gradlew clean
