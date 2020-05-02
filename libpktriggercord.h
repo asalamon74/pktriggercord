@@ -68,25 +68,25 @@
 
 // Generic helper definitions for shared library support
 #ifdef WIN32
-    #define PK_HELPER_LIB_IMPORT    __declspec(dllimport)
-    #define PK_HELPER_LIB_EXPORT    __declspec(dllexport)
-    #define PK_HELPER_LOCAL
+#define PK_HELPER_LIB_IMPORT    __declspec(dllimport)
+#define PK_HELPER_LIB_EXPORT    __declspec(dllexport)
+#define PK_HELPER_LOCAL
 #else
-    #define PK_HELPER_LIB_IMPORT    __attribute__ ((visibility ("default")))
-    #define PK_HELPER_LIB_EXPORT    __attribute__ ((visibility ("default")))
-    #define PK_HELPER_LOCAL         __attribute__ ((visibility ("hidden")))
+#define PK_HELPER_LIB_IMPORT    __attribute__ ((visibility ("default")))
+#define PK_HELPER_LIB_EXPORT    __attribute__ ((visibility ("default")))
+#define PK_HELPER_LOCAL         __attribute__ ((visibility ("hidden")))
 #endif
 
 #ifdef PK_LIB // defined if pktriggercord is compiled as a shared lib
-    #ifdef PK_LIB_EXPORTS // defined if building the shared lib
-        #define PK_API      PK_HELPER_LIB_EXPORT
-    #else
-        #define PK_API      PK_HELPER_LIB_IMPORT
-    #endif
-    #define PK_API_LOCAL    PK_HELPER_LOCAL
+#ifdef PK_LIB_EXPORTS // defined if building the shared lib
+#define PK_API          PK_HELPER_LIB_EXPORT
+#else
+#define PK_API          PK_HELPER_LIB_IMPORT
+#endif
+#define PK_API_LOCAL    PK_HELPER_LOCAL
 #else // building or using as a static lib
-    #define PK_API
-    #define PK_API_LOCAL
+#define PK_API
+#define PK_API_LOCAL
 #endif
 
 extern bool debug;
