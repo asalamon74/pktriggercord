@@ -79,7 +79,7 @@ pslr.o: pslr_enum.o pslr_scsi.o libpktriggercord.o pslr.c
 
 pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
 
-libpktriggercord.a: $(OBJS) 
+libpktriggercord.a: $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 
 libpktriggercord.so: libpktriggercord.so.$(VERSION)
