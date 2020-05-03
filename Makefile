@@ -70,7 +70,9 @@ ifeq ($(ARCH),Win32)
 endif
 
 default: cli gui lib
-all: srczip rpm win pktriggercord_commandline.html
+ifneq ($(ARCH),Win32)
+all: srczip rpm pktriggercord_commandline.html
+endif
 cli: pktriggercord-cli
 gui: pktriggercord
 lib: libpktriggercord.so.$(VERSION)
@@ -165,6 +167,7 @@ srczip: clean
 	tar cf - $(TARDIR) | gzip > $(SRCZIP)
 	rm -rf $(TARDIR)
 
+ifneq ($(ARCH),Win32)
 srcrpm: srczip
 	install $(SPECFILE) $(TOPDIR)/SPECS/
 	install $(SRCZIP) $(TOPDIR)/SOURCES/
@@ -193,6 +196,7 @@ deb: srczip
 remotedeb:
 	git ls-files | tar Tzcf - - | ssh pi@raspberrypi "rm -rf /tmp/pktriggercord && cd /tmp && mkdir pktriggercord && tar xzfv - -C pktriggercord && cd pktriggercord && make clean deb"
 	scp pi@raspberrypi:/tmp/pktriggercord/pktriggercord_*.deb .
+endif
 
 
 # converting lens info from exiftool
