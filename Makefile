@@ -234,12 +234,12 @@ windownload:
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo_1.10.2-2_win32.zip -P $(LOCALMINGW)/download
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libffi_3.0.6-1_win32.zip -P $(LOCALMINGW)/download
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.4.12-1_win32.zip -P $(LOCALMINGW)/download
-	unzip -o $(LOCALMINGW)/download/glib_2.28.8-1_win32.zip -d $(LOCALMINGW)/dll -j bin/libgio-2.0-0.dll bin/libglib-2.0-0.dll bin/libgmodule-2.0-0.dll bin/libgobject-2.0-0.dll
-	unzip -o $(LOCALMINGW)/download/pango_1.29.4-1_win32.zip -d $(LOCALMINGW)/dll -j bin/libpango-1.0-0.dll bin/libpangowin32-1.0-0.dll bin/libpangocairo-1.0-0.dll
-	unzip -o $(LOCALMINGW)/download/cairo_1.10.2-2_win32.zip -d $(LOCALMINGW)/dll -j bin/libcairo-2.dll
-	unzip -o $(LOCALMINGW)/download/atk_1.32.0-2_win32.zip -d $(LOCALMINGW)/dll -j bin/libatk-1.0-0.dll
-	unzip -o $(LOCALMINGW)/download/libffi_3.0.6-1_win32.zip -d $(LOCALMINGW)/dll -j bin/libffi-5.dll
-	unzip -o $(LOCALMINGW)/download/libpng_1.4.12-1_win32.zip -d $(LOCALMINGW)/dll -j bin/libpng14-14.dll
+	unzip -j -o $(LOCALMINGW)/download/glib_2.28.8-1_win32.zip -d $(LOCALMINGW)/dll bin/libgio-2.0-0.dll bin/libglib-2.0-0.dll bin/libgmodule-2.0-0.dll bin/libgobject-2.0-0.dll
+	unzip -j -o $(LOCALMINGW)/download/pango_1.29.4-1_win32.zip -d $(LOCALMINGW)/dll bin/libpango-1.0-0.dll bin/libpangowin32-1.0-0.dll bin/libpangocairo-1.0-0.dll
+	unzip -j -o $(LOCALMINGW)/download/cairo_1.10.2-2_win32.zip -d $(LOCALMINGW)/dll bin/libcairo-2.dll
+	unzip -j -o $(LOCALMINGW)/download/atk_1.32.0-2_win32.zip -d $(LOCALMINGW)/dll bin/libatk-1.0-0.dll
+	unzip -j -o $(LOCALMINGW)/download/libffi_3.0.6-1_win32.zip -d $(LOCALMINGW)/dll bin/libffi-5.dll
+	unzip -j -o $(LOCALMINGW)/download/libpng_1.4.12-1_win32.zip -d $(LOCALMINGW)/dll bin/libpng14-14.dll
 	cp $(LOCALMINGW)/bin/libgtk-win32-2.0-0.dll $(LOCALMINGW)/dll/
 
 ifeq ($(ARCH),Win32)
