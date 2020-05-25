@@ -31,9 +31,9 @@
 
 int servermode_socket(int servermode_timeout);
 
-pslr_handle_t camera_connect( char *model, char *device, int timeout, char *error_message );
+pslr_handle_t pslr_camera_connect( char *model, char *device, int timeout, char *error_message );
 
-void camera_close(pslr_handle_t camhandle);
+void pslr_camera_close(pslr_handle_t camhandle);
 
 double timeval_diff_sec(struct timeval *t2, struct timeval *t1);
 

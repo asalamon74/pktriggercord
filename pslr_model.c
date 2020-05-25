@@ -140,7 +140,7 @@ void set_uint32_be(uint32_t v, uint8_t *buf) {
     buf[3] = v;
 }
 
-char *shexdump(uint8_t *buf, uint32_t bufLen) {
+char *pslr_hexdump(uint8_t *buf, uint32_t bufLen) {
     char *ret = malloc(4*bufLen);
     uint32_t i;
     sprintf(ret,"%s","");
@@ -163,13 +163,13 @@ char *shexdump(uint8_t *buf, uint32_t bufLen) {
 }
 
 void hexdump(uint8_t *buf, uint32_t bufLen) {
-    char *dmp = shexdump(buf, bufLen);
+    char *dmp = pslr_hexdump(buf, bufLen);
     printf("%s",dmp);
     free(dmp);
 }
 
 void hexdump_debug(uint8_t *buf, uint32_t bufLen) {
-    char *dmp = shexdump(buf, bufLen);
+    char *dmp = pslr_hexdump(buf, bufLen);
     DPRINT("%s",dmp);
     free(dmp);
 }
@@ -204,7 +204,7 @@ int _get_user_jpeg_stars( ipslr_model_info_t *model, int hwqual ) {
     }
 }
 
-int get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars) {
+int pslr_get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars) {
     if ( model->id == 0x12f71 ) {
         // K5IIs hack
         // TODO: test it
@@ -775,7 +775,7 @@ void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     // 4= remote, 5= remote 3s delay
 }
 
-pslr_setting_def_t *find_setting_by_name (pslr_setting_def_t *array, int array_length, char *name) {
+pslr_setting_def_t *pslr_find_setting_by_name (pslr_setting_def_t *array, int array_length, char *name) {
     if (array == NULL || array_length == 0) {
         return NULL;
     }
@@ -999,7 +999,7 @@ ipslr_model_info_t camera_models[] = {
     { 0x1322c, "KP",          false, false, true,  true,  false, true,  456,   3, {24, 14, 6, 2}, 9, 6000, 100, 819200, 100, 819200, PSLR_JPEG_IMAGE_TONE_AUTO, true,  27, ipslr_status_parse_k70}
 };
 
-ipslr_model_info_t *find_model_by_id( uint32_t id ) {
+ipslr_model_info_t *pslr_find_model_by_id( uint32_t id ) {
     int i;
     for ( i = 0; i<sizeof (camera_models) / sizeof (camera_models[0]); i++) {
         if ( camera_models[i].id == id ) {

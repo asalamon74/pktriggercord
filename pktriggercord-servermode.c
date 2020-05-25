@@ -52,12 +52,12 @@ double timeval_diff_sec(struct timeval *t2, struct timeval *t1) {
     return (t2->tv_usec - t1->tv_usec) / 1000000.0 + (t2->tv_sec - t1->tv_sec);
 }
 
-void camera_close(pslr_handle_t camhandle) {
+void pslr_camera_close(pslr_handle_t camhandle) {
     pslr_disconnect(camhandle);
     pslr_shutdown(camhandle);
 }
 
-pslr_handle_t camera_connect( char *model, char *device, int timeout, char *error_message ) {
+pslr_handle_t pslr_camera_connect( char *model, char *device, int timeout, char *error_message ) {
     struct timeval prev_time;
     struct timeval current_time;
     pslr_handle_t camhandle;
@@ -220,13 +220,13 @@ int servermode_socket(int servermode_timeout) {
             DPRINT(":%s:\n",client_message);
             if ( !strcmp(client_message, "stopserver" ) ) {
                 if ( camhandle ) {
-                    camera_close(camhandle);
+                    pslr_camera_close(camhandle);
                 }
                 write_socket_answer("0\n");
                 exit(0);
             } else if ( !strcmp(client_message, "disconnect" ) ) {
                 if ( camhandle ) {
-                    camera_close(camhandle);
+                    pslr_camera_close(camhandle);
                 }
                 write_socket_answer("0\n");
             } else if ( (arg = is_string_prefix( client_message, "echo")) != NULL ) {
@@ -239,7 +239,7 @@ int servermode_socket(int servermode_timeout) {
             } else if ( !strcmp(client_message, "connect") ) {
                 if ( camhandle ) {
                     write_socket_answer("0\n");
-                } else if ( (camhandle = camera_connect( NULL, NULL, -1, buf ))  ) {
+                } else if ( (camhandle = pslr_camera_connect( NULL, NULL, -1, buf ))  ) {
                     write_socket_answer("0\n");
                 } else {
                     write_socket_answer(buf);
@@ -255,12 +255,12 @@ int servermode_socket(int servermode_timeout) {
                 }
             } else if ( !strcmp(client_message, "get_camera_name") ) {
                 if ( check_camera(camhandle) ) {
-                    sprintf(buf, "%d %s\n", 0, pslr_camera_name(camhandle));
+                    sprintf(buf, "%d %s\n", 0, pslr_get_camera_name(camhandle));
                     write_socket_answer(buf);
                 }
-            } else if ( !strcmp(client_message, "get_lens_name") ) {
+            } else if ( !strcmp(client_message, "pslr_get_lens_name") ) {
                 if ( check_camera(camhandle) ) {
-                    sprintf(buf, "%d %s\n", 0, get_lens_name(status.lens_id1, status.lens_id2));
+                    sprintf(buf, "%d %s\n", 0, pslr_get_lens_name(status.lens_id1, status.lens_id2));
                     write_socket_answer(buf);
                 }
             } else if ( !strcmp(client_message, "get_current_shutter_speed") ) {
@@ -270,7 +270,7 @@ int servermode_socket(int servermode_timeout) {
                 }
             } else if ( !strcmp(client_message, "get_current_aperture") ) {
                 if ( check_camera(camhandle) ) {
-                    sprintf(buf, "%d %s\n", 0, format_rational( status.current_aperture, "%.1f"));
+                    sprintf(buf, "%d %s\n", 0, pslr_format_rational( status.current_aperture, "%.1f"));
                     write_socket_answer(buf);
                 }
             } else if ( !strcmp(client_message, "get_current_iso") ) {
