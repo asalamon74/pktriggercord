@@ -107,9 +107,7 @@ pktriggercord: libpktriggercord.a
 $(JSONDIR)/js0n.o: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
 
-external: $(JSONDIR)/js0n.o
-
-%.o: %.c %.h external
+%.o: %.c %.h $(JSONDIR)/js0n.o
 	$(CC) $(LOCAL_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
 
 install: pktriggercord-cli pktriggercord
