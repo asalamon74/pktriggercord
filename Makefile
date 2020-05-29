@@ -60,9 +60,9 @@ ifeq ($(ARCH),Win32)
 	CC=i686-w64-mingw32-gcc
 	AR=i686-w64-mingw32-ar
 
-	LOCAL_CFLAGS+= -mms-bitfields -I$(LOCALMINGW)/include/gtk-2.0/ -I$(LOCALMINGW)/lib/gtk-2.0/include/ -I$(LOCALMINGW)/include/atk-1.0/ -I$(LOCALMINGW)/include/cairo/ -I$(LOCALMINGW)/include/gdk-pixbuf-2.0/ -I$(LOCALMINGW)/include/pango-1.0/
+	LOCAL_CFLAGS+= -mms-bitfields
 
-	GUI_CFLAGS=$(LOCAL_CFLAGS) -I$(LOCALMINGW)/include/glib-2.0 -I$(LOCALMINGW)/lib/glib-2.0/include
+	GUI_CFLAGS=$(LOCAL_CFLAGS) -I$(LOCALMINGW)/include/gtk-2.0/ -I$(LOCALMINGW)/lib/gtk-2.0/include/ -I$(LOCALMINGW)/include/atk-1.0/ -I$(LOCALMINGW)/include/cairo/ -I$(LOCALMINGW)/include/gdk-pixbuf-2.0/ -I$(LOCALMINGW)/include/pango-1.0/ -I$(LOCALMINGW)/include/glib-2.0 -I$(LOCALMINGW)/lib/glib-2.0/include
 	GUI_LDFLAGS=-L$(LOCALMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
 
 	#some build of MinGW enforce this. Some doesn't. Ensure consistent behaviour
