@@ -43,7 +43,7 @@ LOCALMINGW=i686-w64-mingw32
 WINGCC=i686-w64-mingw32-gcc
 WINDIR=$(TARDIR)-win
 
-LOCAL_CFLAGS=$(CFLAGS)
+LOCAL_CFLAGS=$(CFLAGS) -DPK_LIB_STATIC
 LOCAL_LDFLAGS=$(LDFLAGS)
 
 CLI_CFLAGS=$(LOCAL_CFLAGS)
@@ -76,11 +76,18 @@ default: cli gui lib
 ifneq ($(ARCH),Win32)
 all: srczip rpm pktriggercord_commandline.html
 endif
-cli: pktriggercord-cli
-gui: pktriggercord
+cli: check-flags pktriggercord-cli
+gui: check-flags pktriggercord
 
 lib: LOCAL_CFLAGS += -DPK_LIB_EXPORTS
-lib: $(LIB_TARGET)
+lib: check-flags $(LIB_TARGET)
+
+check-flags: CHECK_FLAGS=$(CC) $(LOCAL_CFLAGS)
+check-flags:
+	echo "$(CHECK_FLAGS)" > build-current.log
+	cmp --silent build-current.log build-previous.log || { echo "Compilation options are different, clean is needed"; $(MAKE) clean; }
+	rm -f build-current.log
+	echo "$(CHECK_FLAGS)" > build-previous.log
 
 pslr.o: pslr_enum.o pslr_scsi.o libpktriggercord.o pslr.c
 
@@ -96,7 +103,7 @@ libpktriggercord.so: libpktriggercord.so.$(VERSION)
 libpktriggercord-$(VERSION).dll: libpktriggercord.so.$(VERSION)
 	cp $< $@
 
-libpktriggercord.so.$(VERSION): libpktriggercord.a
+libpktriggercord.so.$(VERSION): $(OBJS)
 	$(CC) $(LOCAL_CFLAGS) -shared -Wl,--whole-archive,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -Wl,--no-whole-archive -o $@ $(LOCAL_LDFLAGS) -L.
 
 pktriggercord-cli: libpktriggercord.a
@@ -141,6 +148,7 @@ clean:
 	rm -f pktriggercord.exe pktriggercord-cli.exe *.dll
 	rm -f pktriggercord_commandline.html
 	rm -f *.orig
+	rm -f *.log
 
 uninstall:
 	rm -f $(PREFIX)/bin/pktriggercord $(PREFIX)/bin/pktriggercord-cli
@@ -282,4 +290,6 @@ androidrelease:
 astyle:
 	astyle --options=astylerc *.h *.c
 
-.PHONY: android androidrelease
+.SILENT: check-flags
+
+.PHONY: android androidrelease check-flags

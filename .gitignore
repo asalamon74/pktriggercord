@@ -24,4 +24,5 @@
 /android/build/
 .#*
 *.orig
+*.log
 /i686-w64-mingw32
