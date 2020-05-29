@@ -78,6 +78,8 @@ all: srczip rpm pktriggercord_commandline.html
 endif
 cli: pktriggercord-cli
 gui: pktriggercord
+
+lib: LOCAL_CFLAGS += -DPK_LIB_EXPORTS
 lib: $(LIB_TARGET)
 
 pslr.o: pslr_enum.o pslr_scsi.o libpktriggercord.o pslr.c

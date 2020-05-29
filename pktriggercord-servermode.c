@@ -46,6 +46,8 @@
 
 #include "pslr.h"
 #include "pslr_lens.h"
+#include "libpktriggercord.h"
+#include "pktriggercord-servermode.h"
 
 double timeval_diff_sec(struct timeval *t2, struct timeval *t1) {
     //DPRINT("tv2 %ld %ld t1 %ld %ld\n", t2->tv_sec, t2->tv_usec, t1->tv_sec, t1->tv_usec);

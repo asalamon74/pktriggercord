@@ -57,9 +57,6 @@
 #include <stdarg.h>
 #include <math.h>
 
-#include "pslr.h"
-#include "pktriggercord-servermode.h"
-
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
 #else
@@ -77,17 +74,26 @@
 #define PK_HELPER_LOCAL         __attribute__ ((visibility ("hidden")))
 #endif
 
-#ifdef PK_LIB // defined if pktriggercord is compiled as a shared lib
-#ifdef PK_LIB_EXPORTS // defined if building the shared lib
+#ifdef PK_LIB_EXPORTS
+// defined if pktriggercord is compiled as a shared lib
 #define PK_API          PK_HELPER_LIB_EXPORT
-#else
-#define PK_API          PK_HELPER_LIB_IMPORT
-#endif
 #define PK_API_LOCAL    PK_HELPER_LOCAL
-#else // building or using as a static lib
-#define PK_API
-#define PK_API_LOCAL
-#endif
+#else // PK_LIB_EXPORTS
+#ifdef PK_LIB_STATIC
+// defined if pktriggercord is compiled or used as a static lib
+#define PK_API          
+#define PK_API_LOCAL    
+#else // PK_LIB_STATIC
+// defined if pktriggercord is used as a shared lib.
+// This is the default, non specified option so that an external code does not
+// need to know about this mechanics and can just import and use the header
+#define PK_API          PK_HELPER_LIB_IMPORT
+#define PK_API_LOCAL    PK_HELPER_LOCAL
+#endif // PK_LIB_STATIC
+#endif // PK_LIB_EXPORTS
+
+#include "pslr.h"
+#include "pktriggercord-servermode.h"
 
 extern bool debug;
 

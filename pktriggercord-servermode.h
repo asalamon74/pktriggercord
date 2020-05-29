@@ -29,11 +29,13 @@
 #ifndef PKTRIGGERCORD_SERVERMODE_H
 #define PKTRIGGERCORD_SERVERMODE_H
 
+#include "libpktriggercord.h"
+
 int servermode_socket(int servermode_timeout);
 
-pslr_handle_t pslr_camera_connect( char *model, char *device, int timeout, char *error_message );
+PK_API pslr_handle_t pslr_camera_connect( char *model, char *device, int timeout, char *error_message );
 
-void pslr_camera_close(pslr_handle_t camhandle);
+PK_API void pslr_camera_close(pslr_handle_t camhandle);
 
 double timeval_diff_sec(struct timeval *t2, struct timeval *t1);
 
