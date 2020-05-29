@@ -53,6 +53,7 @@ GUI_CFLAGS=$(LOCAL_CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DG
 #-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 GUI_LDFLAGS=$(LOCAL_LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
 
+LIB_TARGET=libpktriggercord.so
 
 #variables modification for Windows cross compilation
 ifeq ($(ARCH),Win32)
@@ -67,6 +68,8 @@ ifeq ($(ARCH),Win32)
 	#some build of MinGW enforce this. Some doesn't. Ensure consistent behaviour
 	CLI_LDFLAGS+= -Wl,--force-exe-suffix
 	GUI_LDFLAGS+= -Wl,--force-exe-suffix
+
+	LIB_TARGET=libpktriggercord-$(VERSION).dll
 endif
 
 default: cli gui lib
@@ -75,7 +78,7 @@ all: srczip rpm pktriggercord_commandline.html
 endif
 cli: pktriggercord-cli
 gui: pktriggercord
-lib: libpktriggercord.so.$(VERSION)
+lib: $(LIB_TARGET)
 
 pslr.o: pslr_enum.o pslr_scsi.o libpktriggercord.o pslr.c
 
@@ -88,11 +91,11 @@ libpktriggercord.so: libpktriggercord.so.$(VERSION)
 	ldconfig -v -n .
 	ln -s libpktriggercord.so.$(MAJORVERSION) libpktriggercord.so
 
+libpktriggercord-$(VERSION).dll: libpktriggercord.so.$(VERSION)
+	cp $< $@
+
 libpktriggercord.so.$(VERSION): libpktriggercord.a
 	$(CC) $(LOCAL_CFLAGS) -shared -Wl,--whole-archive,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -Wl,--no-whole-archive -o $@ $(LOCAL_LDFLAGS) -L.
-ifeq ($(ARCH),Win32)
-	mv $@ libpktriggercord-$(VERSION).dll
-endif
 
 pktriggercord-cli: libpktriggercord.a
 	$(CC) $(CLI_CFLAGS) pktriggercord-cli.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(CLI_LDFLAGS) -L.
