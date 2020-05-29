@@ -207,7 +207,9 @@ pktriggercord_commandline.html: pktriggercord-cli.1
 	cat $< | sed s/\\\\-/-/g | groff -man -Thtml -mwww -P "-lr" > $@
 
 # Windows cross-compile
-windownload:
+windownload: $(LOCALMINGW)/download
+
+$(LOCALMINGW)/download:
 	mkdir -p $(LOCALMINGW)/download
 	mkdir -p $(LOCALMINGW)/dll
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+_2.24.10-1_win32.zip -P $(LOCALMINGW)/download
