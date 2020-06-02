@@ -36,26 +36,7 @@
 #ifndef LIBPKTRIGGERCORD_H
 #define LIBPKTRIGGERCORD_H
 
-#include <stdbool.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdio.h>
-#ifdef RAD10
-#include <utime.h>
-#include <io.h>
-#include "tdbtimes.h"
-#include "getopt.h"
-#else
-#include <unistd.h>
-#include <getopt.h>
-#include <sys/time.h>
-#endif
-#include <fcntl.h>
-#include <ctype.h>
-#include <time.h>
-#include <stdarg.h>
-#include <math.h>
+
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY

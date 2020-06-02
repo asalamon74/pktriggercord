@@ -27,6 +27,26 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdio.h>
+#ifdef RAD10
+#include <utime.h>
+#include <io.h>
+#include "tdbtimes.h"
+#include "getopt.h"
+#else
+#include <unistd.h>
+#include <getopt.h>
+#include <sys/time.h>
+#endif
+#include <fcntl.h>
+#include <ctype.h>
+#include <stdarg.h>
+#include <math.h>
+
 #include "libpktriggercord.h"
 
 extern bool debug;

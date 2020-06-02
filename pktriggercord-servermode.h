@@ -29,6 +29,13 @@
 #ifndef PKTRIGGERCORD_SERVERMODE_H
 #define PKTRIGGERCORD_SERVERMODE_H
 
+#ifdef RAD10
+#include <utime.h>
+#else
+#include <sys/time.h>
+#endif
+#include <time.h>
+
 #include "libpktriggercord.h"
 
 int servermode_socket(int servermode_timeout);
