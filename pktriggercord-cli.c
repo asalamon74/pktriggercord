@@ -305,7 +305,7 @@ char *copyright_version(char *name, char *version) {
     sprintf(ret, "%s %s\n\n\%s\
 License LGPLv3: GNU LGPL version 3 <http://gnu.org/licenses/lgpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n", name, version, copyright() );
+There is NO WARRANTY, to the extent permitted by law.\n", name, version, pslr_copyright() );
     return ret;
 }
 

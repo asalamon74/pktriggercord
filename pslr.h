@@ -228,7 +228,7 @@ char *pslr_format_rational( pslr_rational_t rational, char * fmt );
 
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4);
 
-char *copyright(void);
+char *pslr_copyright(void);
 
 void write_debug( const char* message, ... );
 

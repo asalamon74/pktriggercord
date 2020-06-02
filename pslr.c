@@ -1805,7 +1805,7 @@ static int read_result(FDTYPE fd, uint8_t *buf, uint32_t n) {
     return PSLR_OK;
 }
 
-char *copyright() {
+char *pslr_copyright() {
     char *ret = malloc(sizeof(char)*1024);
     sprintf(ret, "Copyright (C) 2011-2019 Andras Salamon\n\
 \n\
