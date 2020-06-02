@@ -36,36 +36,9 @@
 #ifndef LIBPKTRIGGERCORD_H
 #define LIBPKTRIGGERCORD_H
 
-// Generic helper definitions for shared library support
-#ifdef WIN32
-#define PK_HELPER_LIB_IMPORT    __declspec(dllimport)
-#define PK_HELPER_LIB_EXPORT    __declspec(dllexport)
-#define PK_HELPER_LOCAL
-#else
-#define PK_HELPER_LIB_IMPORT    __attribute__ ((visibility ("default")))
-#define PK_HELPER_LIB_EXPORT    __attribute__ ((visibility ("default")))
-#define PK_HELPER_LOCAL         __attribute__ ((visibility ("hidden")))
-#endif
-
-#ifdef PK_LIB_EXPORTS
-// defined if pktriggercord is compiled as a shared lib
-#define PK_API          PK_HELPER_LIB_EXPORT
-#define PK_API_LOCAL    PK_HELPER_LOCAL
-#else // PK_LIB_EXPORTS
-#ifdef PK_LIB_STATIC
-// defined if pktriggercord is compiled or used as a static lib
-#define PK_API          
-#define PK_API_LOCAL    
-#else // PK_LIB_STATIC
-// defined if pktriggercord is used as a shared lib.
-// This is the default, non specified option so that an external code does not
-// need to know about this mechanics and can just import and use the header
-#define PK_API          PK_HELPER_LIB_IMPORT
-#define PK_API_LOCAL    PK_HELPER_LOCAL
-#endif // PK_LIB_STATIC
-#endif // PK_LIB_EXPORTS
-
+#include "pslr_shared.h"
 #include "pslr.h"
+#include "pslr_lens.h"
 #include "pktriggercord-servermode.h"
 
 extern bool debug;

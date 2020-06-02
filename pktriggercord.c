@@ -37,9 +37,7 @@
 #include <getopt.h>
 #include <sys/time.h>
 
-#include "pslr.h"
-#include "pslr_lens.h"
-#include "pktriggercord-servermode.h"
+#include "libpktriggercord.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY

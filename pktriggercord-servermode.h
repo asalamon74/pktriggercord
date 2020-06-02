@@ -36,7 +36,7 @@
 #endif
 #include <time.h>
 
-#include "libpktriggercord.h"
+#include "pslr_shared.h"
 
 int servermode_socket(int servermode_timeout);
 
