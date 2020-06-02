@@ -104,7 +104,7 @@ libpktriggercord-$(VERSION).dll: libpktriggercord.so.$(VERSION)
 	cp $< $@
 
 libpktriggercord.so.$(VERSION): $(OBJS)
-	$(CC) $(LOCAL_CFLAGS) -shared -Wl,--whole-archive,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -Wl,--no-whole-archive -o $@ $(LOCAL_LDFLAGS) -L.
+	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -o $@ $(LOCAL_LDFLAGS) -L.
 
 pktriggercord-cli: libpktriggercord.a
 	$(CC) $(CLI_CFLAGS) pktriggercord-cli.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(CLI_LDFLAGS) -L.
