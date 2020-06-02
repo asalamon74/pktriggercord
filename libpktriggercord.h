@@ -36,14 +36,6 @@
 #ifndef LIBPKTRIGGERCORD_H
 #define LIBPKTRIGGERCORD_H
 
-
-
-#ifdef WIN32
-#define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
-#else
-#define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC
-#endif
-
 // Generic helper definitions for shared library support
 #ifdef WIN32
 #define PK_HELPER_LIB_IMPORT    __declspec(dllimport)

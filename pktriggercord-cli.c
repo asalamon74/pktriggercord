@@ -49,6 +49,12 @@
 
 #include "libpktriggercord.h"
 
+#ifdef WIN32
+#define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
+#else
+#define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC
+#endif
+
 extern bool debug;
 bool warnings = false;
 
