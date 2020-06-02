@@ -34,8 +34,11 @@ APK_FILE = $(PROJECT_NAME)-debug.apk
 MANS = pktriggercord-cli.1 pktriggercord.1
 SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode libpktriggercord
 OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
+# building lib requires recompilation, so we use different objets
+LIB_OBJS=$(OBJS:.o=.ol)
+
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c  pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c pslr_shared.h exiftool_pentax_lens.txt pktriggercord.c  pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
@@ -53,7 +56,10 @@ GUI_CFLAGS=$(LOCAL_CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DG
 #-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 GUI_LDFLAGS=$(LOCAL_LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
 
+CLI_TARGET=pktriggercord-cli
+GUI_TARGET=pktriggercord
 LIB_TARGET=libpktriggercord.so
+LIB_FILE=libpktriggercord.so.$(VERSION)
 
 #variables modification for Windows cross compilation
 ifeq ($(ARCH),Win32)
@@ -69,57 +75,52 @@ ifeq ($(ARCH),Win32)
 	CLI_LDFLAGS+= -Wl,--force-exe-suffix
 	GUI_LDFLAGS+= -Wl,--force-exe-suffix
 
+	CLI_TARGET=pktriggercord-cli.exe
+	GUI_TARGET=pktriggercord.exe
 	LIB_TARGET=libpktriggercord-$(VERSION).dll
+	LIB_FILE=$(LIB_TARGET)
 endif
 
 default: cli gui lib
 ifneq ($(ARCH),Win32)
 all: srczip rpm pktriggercord_commandline.html
 endif
-cli: check-flags pktriggercord-cli
-gui: check-flags pktriggercord
+cli: $(CLI_TARGET)
+gui: $(GUI_TARGET)
 
 lib: LOCAL_CFLAGS += -DPK_LIB_EXPORTS
-lib: check-flags $(LIB_TARGET)
+lib: $(LIB_TARGET)
 
-check-flags: CHECK_FLAGS=$(CC) $(LOCAL_CFLAGS)
-check-flags:
-	echo "$(CHECK_FLAGS)" > build-current.log
-	cmp --silent build-current.log build-previous.log || { echo "Compilation options are different, clean is needed"; $(MAKE) clean; }
-	rm -f build-current.log
-	echo "$(CHECK_FLAGS)" > build-previous.log
+pslr.o%: pslr_enum.o$* pslr_scsi.o$* libpktriggercord.o$* pslr.c
 
-pslr.o: pslr_enum.o pslr_scsi.o libpktriggercord.o pslr.c
-
-pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
+pslr_scsi.o%: $(wildcard pslr_scsi_*.c)
 
 libpktriggercord.a: $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 
-libpktriggercord.so: libpktriggercord.so.$(VERSION)
-	ldconfig -v -n .
-	ln -s libpktriggercord.so.$(MAJORVERSION) libpktriggercord.so
+libpktriggercord.so: libpktriggercord.so.$(MAJORVERSION)
+	ln -s $< $@
 
-libpktriggercord-$(VERSION).dll: libpktriggercord.so.$(VERSION)
-	cp $< $@
+libpktriggercord.so.$(MAJORVERSION): libpktriggercord.so.$(VERSION) 
+	ln -s $< $@
 
-libpktriggercord.so.$(VERSION): $(OBJS)
+$(LIB_FILE): $(LIB_OBJS)
 	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -o $@ $(LOCAL_LDFLAGS) -L.
 
-pktriggercord-cli: libpktriggercord.a
-	$(CC) $(CLI_CFLAGS) pktriggercord-cli.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(CLI_LDFLAGS) -L.
+$(CLI_TARGET): pktriggercord-cli.c libpktriggercord.a
+	$(CC) $(CLI_CFLAGS) $< -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(CLI_LDFLAGS) -L.
 
 ifeq ($(ARCH),Win32)
-pktriggercord: windownload
+$(GUI_TARGET): $(LOCALMINGW)/bin $(LOCALMINGW)/dll
 endif
 
-pktriggercord: libpktriggercord.a
-	$(CC) $(GUI_CFLAGS) pktriggercord.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(GUI_LDFLAGS) -L.
+$(GUI_TARGET): pktriggercord.c libpktriggercord.a
+	$(CC) $(GUI_CFLAGS) $< -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(GUI_LDFLAGS) -L.
 
-$(JSONDIR)/js0n.o: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
+$(JSONDIR)/js0n.o $(JSONDIR)/js0n.ol: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
 
-%.o: %.c %.h $(JSONDIR)/js0n.o
+%.o %.ol: %.c %.h
 	$(CC) $(LOCAL_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
 
 install: pktriggercord-cli pktriggercord
@@ -143,7 +144,7 @@ install: pktriggercord-cli pktriggercord
 	fi
 
 clean:
-	rm -f *.o *.a $(JSONDIR)/*.o
+	rm -f *.o* *.a $(JSONDIR)/*.o*
 	rm -f pktriggercord pktriggercord-cli *.so*
 	rm -f pktriggercord.exe pktriggercord-cli.exe *.dll
 	rm -f pktriggercord_commandline.html
@@ -220,11 +221,8 @@ pktriggercord_commandline.html: pktriggercord-cli.1
 	cat $< | sed s/\\\\-/-/g | groff -man -Thtml -mwww -P "-lr" > $@
 
 # Windows cross-compile
-windownload: $(LOCALMINGW)/download
-
 $(LOCALMINGW)/download:
 	mkdir -p $(LOCALMINGW)/download
-	mkdir -p $(LOCALMINGW)/dll
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+_2.24.10-1_win32.zip -P $(LOCALMINGW)/download
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+-dev_2.24.10-1_win32.zip -P $(LOCALMINGW)/download
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.28/glib-dev_2.28.8-1_win32.zip -P $(LOCALMINGW)/download
@@ -233,6 +231,15 @@ $(LOCALMINGW)/download:
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gdk-pixbuf/2.24/gdk-pixbuf-dev_2.24.0-1_win32.zip -P $(LOCALMINGW)/download
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gdk-pixbuf/2.24/gdk-pixbuf_2.24.0-1_win32.zip -P $(LOCALMINGW)/download
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo-dev_1.10.2-2_win32.zip -P $(LOCALMINGW)/download
+
+	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.28/glib_2.28.8-1_win32.zip -P $(LOCALMINGW)/download
+	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/atk/1.32/atk_1.32.0-2_win32.zip -P $(LOCALMINGW)/download
+	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/pango/1.29/pango_1.29.4-1_win32.zip -P $(LOCALMINGW)/download
+	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo_1.10.2-2_win32.zip -P $(LOCALMINGW)/download
+	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libffi_3.0.6-1_win32.zip -P $(LOCALMINGW)/download
+	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.4.12-1_win32.zip -P $(LOCALMINGW)/download
+
+$(LOCALMINGW)/bin: $(LOCALMINGW)/download
 	unzip -o $(LOCALMINGW)/download/gtk+_2.24.10-1_win32.zip -d $(LOCALMINGW)
 	unzip -o $(LOCALMINGW)/download/gtk+-dev_2.24.10-1_win32.zip -d $(LOCALMINGW)
 	unzip -o $(LOCALMINGW)/download/glib-dev_2.28.8-1_win32.zip -d $(LOCALMINGW)
@@ -241,22 +248,20 @@ $(LOCALMINGW)/download:
 	unzip -o $(LOCALMINGW)/download/gdk-pixbuf-dev_2.24.0-1_win32.zip -d $(LOCALMINGW)
 	unzip -o $(LOCALMINGW)/download/gdk-pixbuf_2.24.0-1_win32.zip -d $(LOCALMINGW)
 	unzip -o $(LOCALMINGW)/download/cairo-dev_1.10.2-2_win32.zip -d $(LOCALMINGW)
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.28/glib_2.28.8-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/atk/1.32/atk_1.32.0-2_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/pango/1.29/pango_1.29.4-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo_1.10.2-2_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libffi_3.0.6-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.4.12-1_win32.zip -P $(LOCALMINGW)/download
+
+$(LOCALMINGW)/dll: $(LOCALMINGW)/download $(LOCALMINGW)/bin
 	unzip -j -o $(LOCALMINGW)/download/glib_2.28.8-1_win32.zip -d $(LOCALMINGW)/dll bin/libgio-2.0-0.dll bin/libglib-2.0-0.dll bin/libgmodule-2.0-0.dll bin/libgobject-2.0-0.dll
 	unzip -j -o $(LOCALMINGW)/download/pango_1.29.4-1_win32.zip -d $(LOCALMINGW)/dll bin/libpango-1.0-0.dll bin/libpangowin32-1.0-0.dll bin/libpangocairo-1.0-0.dll
 	unzip -j -o $(LOCALMINGW)/download/cairo_1.10.2-2_win32.zip -d $(LOCALMINGW)/dll bin/libcairo-2.dll
 	unzip -j -o $(LOCALMINGW)/download/atk_1.32.0-2_win32.zip -d $(LOCALMINGW)/dll bin/libatk-1.0-0.dll
 	unzip -j -o $(LOCALMINGW)/download/libffi_3.0.6-1_win32.zip -d $(LOCALMINGW)/dll bin/libffi-5.dll
 	unzip -j -o $(LOCALMINGW)/download/libpng_1.4.12-1_win32.zip -d $(LOCALMINGW)/dll bin/libpng14-14.dll
+	
+	mkdir -p $(LOCALMINGW)/dll
 	cp $(LOCALMINGW)/bin/libgtk-win32-2.0-0.dll $(LOCALMINGW)/dll/
 
 ifeq ($(ARCH),Win32)
-dist: pktriggercord_commandline.html cli gui lib
+dist: pktriggercord_commandline.html $(CLI_TARGET) $(GUI_TARGET) $(LIB_TARGET)
 	rm -rf $(WINDIR)
 	mkdir -p $(WINDIR)
 	cp libpktriggercord-$(VERSION).dll pktriggercord-cli.exe pktriggercord.exe $(WINDIR)
@@ -290,6 +295,4 @@ androidrelease:
 astyle:
 	astyle --options=astylerc *.h *.c
 
-.SILENT: check-flags
-
-.PHONY: android androidrelease check-flags
+.PHONY: android androidrelease
