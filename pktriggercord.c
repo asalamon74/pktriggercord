@@ -284,11 +284,11 @@ int common_init(void) {
 
     GtkComboBox *pw = (GtkComboBox*)GW("file_format_combo");
 
-    int numfileformats = sizeof(file_formats) / sizeof (file_formats[0]);
+    int numfileformats = sizeof(pslr_user_file_formats) / sizeof (pslr_user_file_formats[0]);
     char **fileformatnames = malloc( numfileformats * sizeof(char*) );
     int i;
     for (i = 0; i<numfileformats; i++) {
-        fileformatnames[i] = strdup( file_formats[i].file_format_name );
+        fileformatnames[i] = strdup( pslr_user_file_formats[i].file_format_name );
     }
 
     combobox_append( pw, fileformatnames, numfileformats );
@@ -407,10 +407,10 @@ void camera_specific_init() {
     char **imagetones = malloc( max_supported_image_tone * sizeof(char*) );
     int i;
     for (i = 0; i<max_supported_image_tone; i++) {
-        DPRINT("get tone %s\n", get_pslr_jpeg_image_tone_str( i ) );
-        imagetones[i] = malloc( strlen( get_pslr_jpeg_image_tone_str( i ))+1);
-        memset(imagetones[i], '\0', strlen( get_pslr_jpeg_image_tone_str( i ))+1);
-        strncpy( imagetones[i], get_pslr_jpeg_image_tone_str( i ), strlen( get_pslr_jpeg_image_tone_str( i ) ));
+        DPRINT("get tone %s\n", pslr_get_jpeg_image_tone_str( i ) );
+        imagetones[i] = malloc( strlen( pslr_get_jpeg_image_tone_str( i ))+1);
+        memset(imagetones[i], '\0', strlen( pslr_get_jpeg_image_tone_str( i ))+1);
+        strncpy( imagetones[i], pslr_get_jpeg_image_tone_str( i ), strlen( pslr_get_jpeg_image_tone_str( i ) ));
     }
     combobox_append( pw, imagetones, max_supported_image_tone );
 
@@ -420,7 +420,7 @@ void camera_specific_init() {
     pslr_get_settings_json(camhandle, &settings);
 
     if (pslr_get_model_bufmask_single(camhandle) && settings.one_push_bracketing.pslr_setting_status == PSLR_SETTING_STATUS_READ && settings.one_push_bracketing.value) {
-        pslr_write_setting_by_name(camhandle, "one_push_bracketing", 0);
+        pslr_set_setting_by_name(camhandle, "one_push_bracketing", 0);
         settings.one_push_bracketing.value=false;
         need_one_push_bracketing_cleanup = true;
     }
@@ -574,7 +574,7 @@ static void init_jpeg_scales(pslr_status *st_new) {
         GtkTreeModel *jpeg_quality_model = gtk_combo_box_get_model(GTK_COMBO_BOX(pw));
         gint jpeg_quality_num = gtk_tree_model_iter_n_children( jpeg_quality_model, NULL );
         ipslr_handle_t *p = (ipslr_handle_t *)camhandle;
-        int hw_jpeg_quality = get_hw_jpeg_quality(p->model, st_new->jpeg_quality);
+        int hw_jpeg_quality = pslr_get_hw_jpeg_quality(p->model, st_new->jpeg_quality);
         if ( st_new->jpeg_quality >= jpeg_quality_num ) {
             hw_jpeg_quality = 0;
         }
@@ -610,7 +610,7 @@ static void init_user_mode_combo(pslr_status *st_new, pslr_status *st_old) {
 static void init_file_format_combo(pslr_status *st_new) {
     GtkWidget *pw = GW("file_format_combo");
     if (st_new) {
-        int val = get_user_file_format(st_new);
+        int val = pslr_get_user_file_format(st_new);
         gtk_combo_box_set_active(GTK_COMBO_BOX(pw), val);
     }
     gtk_widget_set_sensitive(pw, st_new != NULL);
@@ -698,7 +698,7 @@ static void update_widgets_after_connect(void) {
         camera_specific_init();
         DPRINT("after camera_specific_init\n");
         const char *name;
-        name = pslr_camera_name(camhandle);
+        name = pslr_get_camera_name(camhandle);
         snprintf(buf, sizeof(buf), "Connected: %s", name);
         buf[sizeof(buf)-1] = '\0';
         gtk_statusbar_pop(statusbar, sbar_connect_ctx);
@@ -785,7 +785,7 @@ static void update_focus_label(void) {
 static void update_lens_label(void) {
     gchar buf[256];
     if (status_new) {
-        sprintf(buf, "%s", get_lens_name(status_new->lens_id1, status_new->lens_id2));
+        sprintf(buf, "%s", pslr_get_lens_name(status_new->lens_id1, status_new->lens_id2));
         gtk_label_set_text(GTK_LABEL(GW("label_lens")), buf);
     }
 }
@@ -916,7 +916,7 @@ static int find_newest_picture(int new_pictures) {
 static int auto_save_pictures(pslr_status *st_new, int new_pictures) {
     int i;
     bool deleted;
-    int format = get_user_file_format(st_new);
+    int format = pslr_get_user_file_format(st_new);
 
 
     /* auto-save check buffers */
@@ -1062,7 +1062,7 @@ static bool auto_save_check(int format, int buffer) {
     gtk_statusbar_push(statusbar, sbar_download_ctx, "Auto-saving");
     wait_for_gtk_events_pending();
 
-    snprintf(filename, sizeof(filename), "%s-%04d.%s", filebase, counter, file_formats[format].extension);
+    snprintf(filename, sizeof(filename), "%s-%04d.%s", filebase, counter, pslr_user_file_formats[format].extension);
     DPRINT("Save buffer %d\n", buffer);
     gtk_progress_bar_set_text(pbar, filename);
     save_buffer(buffer, filename);
@@ -1192,7 +1192,7 @@ G_MODULE_EXPORT void menu_about_activate_cb(GtkAction *action, gpointer user_dat
     DPRINT("menu about.\n");
     pw = GW("about_dialog");
     gtk_about_dialog_set_version( GTK_ABOUT_DIALOG(pw), VERSION);
-    gtk_about_dialog_set_copyright( GTK_ABOUT_DIALOG(pw), copyright());
+    gtk_about_dialog_set_copyright( GTK_ABOUT_DIALOG(pw), pslr_copyright());
     gtk_dialog_run(GTK_DIALOG(pw));
     gtk_widget_hide(pw);
 }
@@ -1362,7 +1362,7 @@ G_MODULE_EXPORT gboolean main_drawing_area_button_press_event_cb(GtkAction *acti
                 gdk_window_invalidate_rect(gtk_widget_get_window(pw), &allocation, FALSE);
                 wait_for_gtk_events_pending();
                 if (status_new && status_new->af_point_select == PSLR_AF_POINT_SEL_SELECT) {
-                    ret = pslr_select_af_point(camhandle, 1 << i);
+                    ret = pslr_set_selected_af_point(camhandle, 1 << i);
                     if (ret != PSLR_OK) {
                         DPRINT("Could not select AF point %d\n", i);
                     }
@@ -1513,17 +1513,17 @@ G_MODULE_EXPORT void shutter_press(GtkAction *action) {
             }
         } else {
             if (pslr_has_setting_by_name(camhandle, "bulb_timer")) {
-                pslr_write_setting_by_name(camhandle, "bulb_timer", 1);
+                pslr_set_setting_by_name(camhandle, "bulb_timer", 1);
             } else if (pslr_has_setting_by_name(camhandle, "astrotracer")) {
-                pslr_write_setting_by_name(camhandle, "astrotracer", 1);
+                pslr_set_setting_by_name(camhandle, "astrotracer", 1);
             } else {
                 fprintf(stderr, "New bulb mode is not supported for this camera model\n");
                 return;
             }
             if (pslr_has_setting_by_name(camhandle, "bulb_timer_sec")) {
-                pslr_write_setting_by_name(camhandle, "bulb_timer_sec", shutter_speed);
+                pslr_set_setting_by_name(camhandle, "bulb_timer_sec", shutter_speed);
             } else if (pslr_has_setting_by_name(camhandle, "astrotracer_timer_sec")) {
-                pslr_write_setting_by_name(camhandle, "astrotracer_timer_sec", shutter_speed);
+                pslr_set_setting_by_name(camhandle, "astrotracer_timer_sec", shutter_speed);
             } else {
                 fprintf(stderr, "New bulb mode is not supported for this camera model\n");
                 return;
@@ -1561,7 +1561,7 @@ G_MODULE_EXPORT void status_button_clicked_cb(GtkAction *action) {
 
     pslr_get_status(camhandle, &st);
 
-    char *collected_status = collect_status_info(  camhandle, st );
+    char *collected_status = pslr_get_status_info(  camhandle, st );
     GtkLabel *label = GTK_LABEL(GW("status_label"));
 
     char *markup = g_markup_printf_escaped ("<tt>%s</tt>", collected_status);
@@ -1581,7 +1581,7 @@ G_MODULE_EXPORT void status_hex_button_clicked_cb(GtkAction *action) {
     int status_bufsize = pslr_get_model_status_buffer_size( camhandle );
     uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
     pslr_get_status_buffer(camhandle, status_buffer);
-    char *collected_status_hex = shexdump( status_buffer, status_bufsize > 0 ? status_bufsize : MAX_STATUS_BUF_SIZE);
+    char *collected_status_hex = pslr_hexdump( status_buffer, status_bufsize > 0 ? status_bufsize : MAX_STATUS_BUF_SIZE);
     GtkLabel *label = GTK_LABEL(GW("status_label"));
 
     char *markup = g_markup_printf_escaped ("<tt>%s</tt>", collected_status_hex);
@@ -1598,7 +1598,7 @@ G_MODULE_EXPORT void settings_button_clicked_cb(GtkAction *action) {
     DPRINT("Settings");
     GtkWidget *pw;
 
-    char *collected_settings = collect_settings_info(  camhandle, settings );
+    char *collected_settings = pslr_get_settings_info(  camhandle, settings );
     GtkLabel *label = GTK_LABEL(GW("status_label"));
 
     char *markup = g_markup_printf_escaped ("<tt>%s</tt>", collected_settings);
@@ -1649,7 +1649,7 @@ static gboolean added_quit(gpointer data) {
     if (camhandle) {
 
         if (need_one_push_bracketing_cleanup) {
-            pslr_write_setting_by_name(camhandle, "one_push_bracketing", 1);
+            pslr_set_setting_by_name(camhandle, "one_push_bracketing", 1);
         }
 
         pslr_disconnect(camhandle);
@@ -1951,7 +1951,7 @@ G_MODULE_EXPORT void ec_scale_value_changed_cb(GtkAction *action, gpointer user_
         return;
     }
     if (status_new->ec.nom != new_ec.nom || status_new->ec.denom != new_ec.denom) {
-        ret = pslr_set_ec(camhandle, new_ec);
+        ret = plsr_set_expose_compensation(camhandle, new_ec);
         if (ret != PSLR_OK) {
             DPRINT("Set EC failed: %d\n", ret);
         }
@@ -2235,7 +2235,7 @@ G_MODULE_EXPORT void preview_save_as_cb(GtkAction *action) {
                 filename = malloc(strlen(sel_filename)+10);
                 pw = GW("file_format_combo");
                 int filefmt = gtk_combo_box_get_active(GTK_COMBO_BOX(pw));
-                sprintf(filename, "%s.%s", sel_filename, file_formats[filefmt].extension);
+                sprintf(filename, "%s.%s", sel_filename, pslr_user_file_formats[filefmt].extension);
             }
             DPRINT("Save to: %s\n", filename);
             gtk_progress_bar_set_text(pbar, filename);
