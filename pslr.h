@@ -36,6 +36,7 @@
 #ifndef PSLR_H
 #define PSLR_H
 
+#include "pslr_shared.h"
 #include "pslr_enum.h"
 #include "pslr_scsi.h"
 #include "pslr_model.h"
@@ -118,113 +119,112 @@ typedef void (*pslr_progress_callback_t)(uint32_t current, uint32_t total);
 
 void sleep_sec(double sec);
 
-pslr_handle_t pslr_init(char *model, char *device);
-int pslr_connect(pslr_handle_t h);
-int pslr_disconnect(pslr_handle_t h);
-int pslr_shutdown(pslr_handle_t h);
-const char *pslr_model(uint32_t id);
+PK_API pslr_handle_t pslr_init(char *model, char *device);
+PK_API int pslr_connect(pslr_handle_t h);
+PK_API int pslr_disconnect(pslr_handle_t h);
+PK_API int pslr_shutdown(pslr_handle_t h);
 
-int pslr_shutter(pslr_handle_t h);
-int pslr_focus(pslr_handle_t h);
+PK_API int pslr_shutter(pslr_handle_t h);
+PK_API int pslr_focus(pslr_handle_t h);
 
-int pslr_get_status(pslr_handle_t h, pslr_status *sbuf);
-int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf);
-int pslr_get_settings_json(pslr_handle_t h, pslr_settings *ps);
-int pslr_get_settings_buffer(pslr_handle_t h, uint8_t *st_buf);
+PK_API int pslr_get_status(pslr_handle_t h, pslr_status *sbuf);
+PK_API int pslr_get_status_buffer(pslr_handle_t h, uint8_t *st_buf);
+PK_API int pslr_get_settings_json(pslr_handle_t h, pslr_settings *ps);
+PK_API int pslr_get_settings_buffer(pslr_handle_t h, uint8_t *st_buf);
 
-char *pslr_get_status_info( pslr_handle_t h, pslr_status status );
-char *pslr_get_settings_info( pslr_handle_t h, pslr_settings settings );
+PK_API char *pslr_get_status_info( pslr_handle_t h, pslr_status status );
+PK_API char *pslr_get_settings_info( pslr_handle_t h, pslr_settings settings );
 
-int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution,
+PK_API int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution,
                     uint8_t **pdata, uint32_t *pdatalen);
 
-int pslr_set_progress_callback(pslr_handle_t h, pslr_progress_callback_t cb,
+PK_API int pslr_set_progress_callback(pslr_handle_t h, pslr_progress_callback_t cb,
                                uintptr_t user_data);
 
-int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value);
-int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value);
-int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint32_t auto_max_value);
-int plsr_set_expose_compensation(pslr_handle_t h, pslr_rational_t value);
+PK_API int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value);
+PK_API int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value);
+PK_API int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint32_t auto_max_value);
+PK_API int plsr_set_expose_compensation(pslr_handle_t h, pslr_rational_t value);
 
-int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode);
-int pslr_set_white_balance_adjustment(pslr_handle_t h, pslr_white_balance_mode_t wb_mode, uint32_t wbadj_mg, uint32_t wbadj_ba);
-int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value);
-int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value);
-int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode);
-int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode);
-int pslr_set_af_point_sel(pslr_handle_t h, pslr_af_point_sel_t af_point_sel);
-int pslr_set_ae_metering_mode(pslr_handle_t h, pslr_ae_metering_t ae_metering_mode);
-int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space);
+PK_API int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode);
+PK_API int pslr_set_white_balance_adjustment(pslr_handle_t h, pslr_white_balance_mode_t wb_mode, uint32_t wbadj_mg, uint32_t wbadj_ba);
+PK_API int pslr_set_flash_mode(pslr_handle_t h, pslr_flash_mode_t value);
+PK_API int pslr_set_flash_exposure_compensation(pslr_handle_t h, pslr_rational_t value);
+PK_API int pslr_set_drive_mode(pslr_handle_t h, pslr_drive_mode_t drive_mode);
+PK_API int pslr_set_af_mode(pslr_handle_t h, pslr_af_mode_t af_mode);
+PK_API int pslr_set_af_point_sel(pslr_handle_t h, pslr_af_point_sel_t af_point_sel);
+PK_API int pslr_set_ae_metering_mode(pslr_handle_t h, pslr_ae_metering_t ae_metering_mode);
+PK_API int pslr_set_color_space(pslr_handle_t h, pslr_color_space_t color_space);
 
-int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars);
-int pslr_set_jpeg_resolution(pslr_handle_t h, int megapixel);
-int pslr_set_jpeg_image_tone(pslr_handle_t h, pslr_jpeg_image_tone_t image_mode);
+PK_API int pslr_set_jpeg_stars(pslr_handle_t h, int jpeg_stars);
+PK_API int pslr_set_jpeg_resolution(pslr_handle_t h, int megapixel);
+PK_API int pslr_set_jpeg_image_tone(pslr_handle_t h, pslr_jpeg_image_tone_t image_mode);
 
-int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness);
-int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast);
-int pslr_set_jpeg_saturation(pslr_handle_t h, int32_t saturation);
-int pslr_set_jpeg_hue(pslr_handle_t h, int32_t hue);
+PK_API int pslr_set_jpeg_sharpness(pslr_handle_t h, int32_t sharpness);
+PK_API int pslr_set_jpeg_contrast(pslr_handle_t h, int32_t contrast);
+PK_API int pslr_set_jpeg_saturation(pslr_handle_t h, int32_t saturation);
+PK_API int pslr_set_jpeg_hue(pslr_handle_t h, int32_t hue);
 
-int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format);
-int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format);
-int pslr_set_user_file_format(pslr_handle_t h, user_file_format uff);
-user_file_format pslr_get_user_file_format( pslr_status *st );
+PK_API int pslr_set_image_format(pslr_handle_t h, pslr_image_format_t format);
+PK_API int pslr_set_raw_format(pslr_handle_t h, pslr_raw_format_t format);
+PK_API int pslr_set_user_file_format(pslr_handle_t h, user_file_format uff);
+PK_API user_file_format pslr_get_user_file_format( pslr_status *st );
 
-int pslr_delete_buffer(pslr_handle_t h, int bufno);
+PK_API int pslr_delete_buffer(pslr_handle_t h, int bufno);
 
-int pslr_green_button(pslr_handle_t h);
+PK_API int pslr_green_button(pslr_handle_t h);
 
 int pslr_button_test(pslr_handle_t h, int bno, int arg);
 
-int pslr_ae_lock(pslr_handle_t h, bool lock);
+PK_API int pslr_ae_lock(pslr_handle_t h, bool lock);
 
-int pslr_dust_removal(pslr_handle_t h);
+PK_API int pslr_dust_removal(pslr_handle_t h);
 
-int pslr_bulb(pslr_handle_t h, bool on );
+PK_API int pslr_bulb(pslr_handle_t h, bool on );
 
-int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution);
-uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size);
-uint32_t pslr_fullmemory_read(pslr_handle_t h, uint8_t *buf, uint32_t offset, uint32_t size);
-void pslr_buffer_close(pslr_handle_t h);
-uint32_t pslr_buffer_get_size(pslr_handle_t h);
+PK_API int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution);
+PK_API uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size);
+PK_API uint32_t pslr_fullmemory_read(pslr_handle_t h, uint8_t *buf, uint32_t offset, uint32_t size);
+PK_API void pslr_buffer_close(pslr_handle_t h);
+PK_API uint32_t pslr_buffer_get_size(pslr_handle_t h);
 
-int pslr_set_exposure_mode(pslr_handle_t h, pslr_exposure_mode_t mode);
-int pslr_set_selected_af_point(pslr_handle_t h, uint32_t point);
+PK_API int pslr_set_exposure_mode(pslr_handle_t h, pslr_exposure_mode_t mode);
+PK_API int pslr_set_selected_af_point(pslr_handle_t h, uint32_t point);
 
-const char *pslr_get_camera_name(pslr_handle_t h);
-int pslr_get_model_max_jpeg_stars(pslr_handle_t h);
-int pslr_get_model_jpeg_property_levels(pslr_handle_t h);
-int pslr_get_model_status_buffer_size(pslr_handle_t h);
-int pslr_get_model_fastest_shutter_speed(pslr_handle_t h);
-int pslr_get_model_base_iso_min(pslr_handle_t h);
-int pslr_get_model_base_iso_max(pslr_handle_t h);
-int pslr_get_model_extended_iso_min(pslr_handle_t h);
-int pslr_get_model_extended_iso_max(pslr_handle_t h);
-int *pslr_get_model_jpeg_resolutions(pslr_handle_t h);
-bool pslr_get_model_only_limited(pslr_handle_t h);
-bool pslr_get_model_has_jpeg_hue(pslr_handle_t h);
-bool pslr_get_model_need_exposure_conversion(pslr_handle_t h);
-pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h);
-bool pslr_get_model_has_settings_parser(pslr_handle_t h);
-int pslr_get_model_af_point_num(pslr_handle_t h);
-bool pslr_get_model_old_bulb_mode(pslr_handle_t h);
-bool pslr_get_model_bufmask_single(pslr_handle_t h);
+PK_API const char *pslr_get_camera_name(pslr_handle_t h);
+PK_API int pslr_get_model_max_jpeg_stars(pslr_handle_t h);
+PK_API int pslr_get_model_jpeg_property_levels(pslr_handle_t h);
+PK_API int pslr_get_model_status_buffer_size(pslr_handle_t h);
+PK_API int pslr_get_model_fastest_shutter_speed(pslr_handle_t h);
+PK_API int pslr_get_model_base_iso_min(pslr_handle_t h);
+PK_API int pslr_get_model_base_iso_max(pslr_handle_t h);
+PK_API int pslr_get_model_extended_iso_min(pslr_handle_t h);
+PK_API int pslr_get_model_extended_iso_max(pslr_handle_t h);
+PK_API int *pslr_get_model_jpeg_resolutions(pslr_handle_t h);
+PK_API bool pslr_get_model_only_limited(pslr_handle_t h);
+PK_API bool pslr_get_model_has_jpeg_hue(pslr_handle_t h);
+PK_API bool pslr_get_model_need_exposure_conversion(pslr_handle_t h);
+PK_API pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h);
+PK_API bool pslr_get_model_has_settings_parser(pslr_handle_t h);
+PK_API int pslr_get_model_af_point_num(pslr_handle_t h);
+PK_API bool pslr_get_model_old_bulb_mode(pslr_handle_t h); //TODO : needs to be refactored so differences between old and new mode can be abstracted
+PK_API bool pslr_get_model_bufmask_single(pslr_handle_t h);
 
-pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
-int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
+PK_API pslr_buffer_type pslr_get_jpeg_buffer_type(pslr_handle_t h, int quality);
+PK_API int pslr_get_jpeg_resolution(pslr_handle_t h, int hwres);
 
-int pslr_get_datetime(pslr_handle_t *h, int *year, int *month, int *day, int *hour, int *min, int *sec);
+PK_API int pslr_get_datetime(pslr_handle_t *h, int *year, int *month, int *day, int *hour, int *min, int *sec);
 
-int pslr_get_dspinfo(pslr_handle_t *h, char *firmware);
+PK_API int pslr_get_dspinfo(pslr_handle_t *h, char *firmware);
 
 int pslr_get_setting(pslr_handle_t *h, int offset, uint32_t *value);
 int pslr_set_setting(pslr_handle_t *h, int offset, uint32_t value);
-int pslr_set_setting_by_name(pslr_handle_t *h, char *name, uint32_t value);
-bool pslr_has_setting_by_name(pslr_handle_t *h, char *name);
-int pslr_get_settings(pslr_handle_t *h);
+PK_API int pslr_set_setting_by_name(pslr_handle_t *h, char *name, uint32_t value); //TODO : if we offer set_setting_by_name, we should offer get_setting_by_name
+PK_API bool pslr_has_setting_by_name(pslr_handle_t *h, char *name);
+PK_API int pslr_get_settings(pslr_handle_t *h);
 
 pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp );
-char *pslr_format_rational( pslr_rational_t rational, char * fmt );
+PK_API char *pslr_format_rational( pslr_rational_t rational, char * fmt );
 
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4);
 

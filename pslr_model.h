@@ -194,7 +194,7 @@ struct ipslr_handle {
 
 ipslr_model_info_t *pslr_find_model_by_id( uint32_t id );
 
-int pslr_get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars);
+PK_API int pslr_get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars);
 
 uint32_t get_uint32_be(uint8_t *buf);
 uint32_t get_uint32_le(uint8_t *buf);
@@ -205,7 +205,7 @@ typedef uint32_t (*get_uint32_func)(uint8_t *buf);
 typedef uint16_t (*get_uint16_func)(const uint8_t *buf);
 typedef int32_t (*get_int32_func)(uint8_t *buf);
 
-char *pslr_hexdump(uint8_t *buf, uint32_t bufLen);
+PK_API char *pslr_hexdump(uint8_t *buf, uint32_t bufLen);
 void hexdump(uint8_t *buf, uint32_t bufLen);
 void hexdump_debug(uint8_t *buf, uint32_t bufLen);
 const char* int_to_binary( uint16_t x );
