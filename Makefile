@@ -105,7 +105,7 @@ libpktriggercord.so.$(MAJORVERSION): libpktriggercord.so.$(VERSION)
 	ln -s $< $@
 
 $(LIB_FILE): $(LIB_OBJS)
-	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION),$^ -o $@ $(LOCAL_LDFLAGS) -L.
+	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION) $^ -o $@ $(LOCAL_LDFLAGS) -L.
 
 $(CLI_TARGET): pktriggercord-cli.c libpktriggercord.a
 	$(CC) $(CLI_CFLAGS) $< -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(CLI_LDFLAGS) -L.
@@ -117,10 +117,16 @@ endif
 $(GUI_TARGET): pktriggercord.c libpktriggercord.a
 	$(CC) $(GUI_CFLAGS) $< -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(GUI_LDFLAGS) -L.
 
-$(JSONDIR)/js0n.o $(JSONDIR)/js0n.ol: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
+$(JSONDIR)/js0n.o: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
 
-%.o %.ol: %.c %.h
+%.o: %.c %.h
+	$(CC) $(LOCAL_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
+
+$(JSONDIR)/js0n.ol: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
+	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
+
+%.ol: %.c %.h
 	$(CC) $(LOCAL_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
 
 install: pktriggercord-cli pktriggercord
@@ -261,7 +267,7 @@ $(LOCALMINGW)/dll: $(LOCALMINGW)/download $(LOCALMINGW)/bin
 	cp $(LOCALMINGW)/bin/libgtk-win32-2.0-0.dll $(LOCALMINGW)/dll/
 
 ifeq ($(ARCH),Win32)
-dist: pktriggercord_commandline.html $(CLI_TARGET) $(GUI_TARGET) $(LIB_TARGET)
+dist: pktriggercord_commandline.html cli gui lib
 	rm -rf $(WINDIR)
 	mkdir -p $(WINDIR)
 	cp libpktriggercord-$(VERSION).dll pktriggercord-cli.exe pktriggercord.exe $(WINDIR)
