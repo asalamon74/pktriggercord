@@ -44,6 +44,7 @@
 #include <stdlib.h>
 
 #include "pslr_shared.h"
+#include "pslr_log.h"
 #include "pslr.h"
 #include "pslr_lens.h"
 #include "pktriggercord-servermode.h"

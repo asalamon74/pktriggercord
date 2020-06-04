@@ -1,9 +1,9 @@
 /*
     pkTriggerCord
     Remote control of Pentax DSLR cameras.
-    Copyright (C) 2011-2019 Andras Salamon <andras.salamon@melda.info>
+    Copyright (C) 2011-2020 Andras Salamon <andras.salamon@melda.info>
 
-    based on:
+    which is based on:
 
     pslr-shoot
 
@@ -27,6 +27,34 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "libpktriggercord.h"
+#include <stdio.h>
+#include <stdarg.h>
 
-bool debug = false;
+#include "pslr_log.h"
+
+pslr_verbosity_t verbosity_level = PSLR_ERROR;
+
+void pslr_set_verbosity(pslr_verbosity_t verbosity) {
+    verbosity_level = verbosity;
+}
+
+pslr_verbosity_t pslr_get_verbosity() {
+    return verbosity_level;
+}
+
+bool pslr_verbosity_enabled(pslr_verbosity_t level) {
+    return level >= verbosity_level;
+}
+
+void pslr_write_log(pslr_verbosity_t level, const char* message, ...) {
+    // immediatly returns for disabled log levels
+    if(!pslr_verbosity_enabled(level)) {
+        return;
+    }
+
+    // Write to stderr
+    va_list argp;
+    va_start(argp, message);
+    vfprintf( stderr, message, argp );
+    va_end(argp);
+}

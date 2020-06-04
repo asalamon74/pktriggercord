@@ -32,7 +32,7 @@ ANDROID_PACKAGE = info.melda.sala.pktriggercord
 APK_FILE = $(PROJECT_NAME)-debug.apk
 
 MANS = pktriggercord-cli.1 pktriggercord.1
-SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode libpktriggercord
+SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_log pslr_lens pslr_model pktriggercord-servermode
 OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
 # building lib requires recompilation, so we use different objets
 LIB_OBJS=$(OBJS:.o=.ol)
@@ -91,7 +91,7 @@ gui: $(GUI_TARGET)
 lib: LOCAL_CFLAGS += -DPK_LIB_EXPORTS
 lib: $(LIB_TARGET)
 
-pslr.o%: pslr_enum.o$* pslr_scsi.o$* libpktriggercord.o$* pslr.c
+pslr.o%: pslr_enum.o$* pslr_scsi.o$* pslr.c
 
 pslr_scsi.o%: $(wildcard pslr_scsi_*.c)
 

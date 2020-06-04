@@ -36,8 +36,9 @@
 #endif
 #include <unistd.h>
 #include <dirent.h>
-#include "pslr_model.h"
 
+#include "pslr_log.h"
+#include "pslr_model.h"
 #include "pslr_scsi.h"
 
 static const int MAX_DEVICE_NUM = 256;

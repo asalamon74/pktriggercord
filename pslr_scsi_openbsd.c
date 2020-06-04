@@ -32,8 +32,9 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <stdlib.h>
-#include "pslr_model.h"
 
+#include "pslr_log.h"
+#include "pslr_model.h"
 #include "pslr_scsi.h"
 
 #include <assert.h>

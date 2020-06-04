@@ -33,6 +33,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#include "pslr_log.h"
 #include "pslr_scsi.h"
 
 #define IOCTL_SCSI_PASS_THROUGH_DIRECT  0x4D014

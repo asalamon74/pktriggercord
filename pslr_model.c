@@ -47,6 +47,7 @@
 #include <sys/stat.h>
 
 #include "pslr_model.h"
+#include "pslr_log.h"
 #include "pslr.h"
 
 static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
@@ -222,7 +223,7 @@ int pslr_get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars) {
 static
 void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
     memset(status, 0, sizeof (*status));
@@ -268,7 +269,7 @@ static
 void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
     memset(status, 0, sizeof (*status));
@@ -427,7 +428,7 @@ static
 void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -446,7 +447,7 @@ void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -462,7 +463,7 @@ void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -481,7 +482,7 @@ void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -502,7 +503,7 @@ void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -522,7 +523,7 @@ void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -538,7 +539,7 @@ void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -557,7 +558,7 @@ void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -575,7 +576,7 @@ void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k3(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -592,7 +593,7 @@ void ipslr_status_parse_k3(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_ks1(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -610,7 +611,7 @@ void ipslr_status_parse_ks1(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -654,7 +655,7 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -724,7 +725,7 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
