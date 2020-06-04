@@ -40,7 +40,7 @@
         int __r;                                \
         __r = (x);                                                      \
         if (__r != PSLR_OK) {                                           \
-            fprintf(stderr, "%s:%d:%s failed: %d\n", __FILE__, __LINE__, #x, __r); \
+            pslr_write_log(PSLR_ERROR, "%s:%d:%s failed: %d\n", __FILE__, __LINE__, #x, __r); \
             return __r;                                                 \
         }                                                               \
     } while (0)

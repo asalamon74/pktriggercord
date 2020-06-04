@@ -48,7 +48,7 @@ bool pslr_verbosity_enabled(pslr_verbosity_t level) {
 
 void pslr_write_log(pslr_verbosity_t level, const char* message, ...) {
     // immediatly returns for disabled log levels
-    if(!pslr_verbosity_enabled(level)) {
+    if (!pslr_verbosity_enabled(level)) {
         return;
     }
 

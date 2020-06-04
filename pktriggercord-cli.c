@@ -265,7 +265,7 @@ int open_file(char* output_file, int frameNo, user_file_format_t ufft) {
         snprintf(fileName, 256, "%.*s-%04d.%s", prefix_length, output_file, frameNo, ufft.extension);
         ofd = open(fileName, FILE_ACCESS, 0664);
         if (ofd == -1) {
-            fprintf(stderr, "Could not open %s\n", output_file);
+            pslr_write_log(PSLR_ERROR, "Could not open %s\n", output_file);
             return -1;
         }
     }
@@ -330,7 +330,7 @@ void bulb_new(pslr_handle_t camhandle, pslr_rational_t shutter_speed) {
     } else if (pslr_has_setting_by_name(camhandle, "astrotracer")) {
         pslr_set_setting_by_name(camhandle, "astrotracer", 1);
     } else {
-        fprintf(stderr, "New bulb mode is not supported for this camera model\n");
+        pslr_write_log(PSLR_ERROR, "New bulb mode is not supported for this camera model\n");
     }
     int bulb_sec = (int)(shutter_speed.nom / shutter_speed.denom);
     if (pslr_has_setting_by_name(camhandle, "bulb_timer_sec")) {
@@ -338,7 +338,7 @@ void bulb_new(pslr_handle_t camhandle, pslr_rational_t shutter_speed) {
     } else if (pslr_has_setting_by_name(camhandle, "astrotracer_timer_sec")) {
         pslr_set_setting_by_name(camhandle, "astrotracer_timer_sec", bulb_sec);
     } else {
-        fprintf(stderr, "New bulb mode is not supported for this camera model\n");
+        pslr_write_log(PSLR_ERROR, "New bulb mode is not supported for this camera model\n");
     }
     pslr_shutter(camhandle);
 }
@@ -776,13 +776,13 @@ int main(int argc, char **argv) {
         servermode_socket(servermode_timeout);
         exit(0);
 #else
-        fprintf(stderr, "Servermode is not supported in Windows\n");
+        pslr_write_log(PSLR_ERROR, "Servermode is not supported in Windows\n");
         exit(-1);
 #endif
     }
 
     if (!output_file && !output_file_stdout && frames > 0) {
-        fprintf(stderr, "Should specify output filename (use '-o -' if you really want to output to stdout)\n");
+        pslr_write_log(PSLR_ERROR, "Should specify output filename (use '-o -' if you really want to output to stdout)\n");
         exit(-1);
     }
 
@@ -807,7 +807,7 @@ int main(int argc, char **argv) {
     if ( dump_memory_size > 0 ) {
         int dfd = open(DUMP_FILE_NAME, FILE_ACCESS, 0664);
         if (dfd == -1) {
-            fprintf(stderr, "Could not open %s\n", DUMP_FILE_NAME);
+            pslr_write_log(PSLR_ERROR, "Could not open %s\n", DUMP_FILE_NAME);
             return -1;
         } else {
             printf("Dumping system memory to %s\n", DUMP_FILE_NAME);
