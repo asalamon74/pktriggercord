@@ -54,8 +54,8 @@
 #else // PK_LIB_EXPORTS
 #ifdef PK_LIB_STATIC
 // defined if pktriggercord is compiled or used as a static lib
-#define PK_API          
-#define PK_API_LOCAL    
+#define PK_API
+#define PK_API_LOCAL
 #else // PK_LIB_STATIC
 // defined if pktriggercord is used as a shared lib.
 // This is the default, non specified option so that an external code does not

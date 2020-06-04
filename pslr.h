@@ -136,10 +136,10 @@ PK_API char *pslr_get_status_info( pslr_handle_t h, pslr_status status );
 PK_API char *pslr_get_settings_info( pslr_handle_t h, pslr_settings settings );
 
 PK_API int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resolution,
-                    uint8_t **pdata, uint32_t *pdatalen);
+                           uint8_t **pdata, uint32_t *pdatalen);
 
 PK_API int pslr_set_progress_callback(pslr_handle_t h, pslr_progress_callback_t cb,
-                               uintptr_t user_data);
+                                      uintptr_t user_data);
 
 PK_API int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value);
 PK_API int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value);

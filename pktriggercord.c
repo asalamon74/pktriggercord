@@ -173,11 +173,11 @@ static const int iso_tbl_1[] = {
 
 static const int ec_tbl_1_3[] = {
     -30, -27, -23, -20, -17, -13, -10, -7, -3, 0, 3, 7, 10, 13, 17, 20, 23, 27, 30
-    };
+};
 
 static const int ec_tbl_1_2[]= {
     -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 30
-    };
+};
 
 static pslr_handle_t camhandle;
 static bool handle_af_points;
