@@ -91,9 +91,13 @@ gui: $(GUI_TARGET)
 lib: LOCAL_CFLAGS += -DPK_LIB_EXPORTS
 lib: $(LIB_TARGET)
 
-pslr.o%: pslr_enum.o$* pslr_scsi.o$* pslr.c
+pslr.o: pslr_enum.o pslr_scsi.o pslr.c
 
-pslr_scsi.o%: $(wildcard pslr_scsi_*.c)
+pslr_scsi.o: $(wildcard pslr_scsi_*.c)
+
+pslr.ol: pslr_enum.ol pslr_scsi.ol pslr.c
+
+pslr_scsi.ol: $(wildcard pslr_scsi_*.c)
 
 libpktriggercord.a: $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
