@@ -248,6 +248,7 @@ $(LOCALMINGW)/download:
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo_1.10.2-2_win32.zip -P $(LOCALMINGW)/download
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libffi_3.0.6-1_win32.zip -P $(LOCALMINGW)/download
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.4.12-1_win32.zip -P $(LOCALMINGW)/download
+	wget -N https://ftp.gnome.org/pub/GNOME/binaries/win32/dependencies/zlib_1.2.5-2_win32.zip -P $(LOCALMINGW)/download
 
 $(LOCALMINGW)/bin: $(LOCALMINGW)/download
 	unzip -o $(LOCALMINGW)/download/gtk+_2.24.10-1_win32.zip -d $(LOCALMINGW)
@@ -258,17 +259,23 @@ $(LOCALMINGW)/bin: $(LOCALMINGW)/download
 	unzip -o $(LOCALMINGW)/download/gdk-pixbuf-dev_2.24.0-1_win32.zip -d $(LOCALMINGW)
 	unzip -o $(LOCALMINGW)/download/gdk-pixbuf_2.24.0-1_win32.zip -d $(LOCALMINGW)
 	unzip -o $(LOCALMINGW)/download/cairo-dev_1.10.2-2_win32.zip -d $(LOCALMINGW)
+	
 
 $(LOCALMINGW)/dll: $(LOCALMINGW)/download $(LOCALMINGW)/bin
+	mkdir -p $(LOCALMINGW)/dll
 	unzip -j -o $(LOCALMINGW)/download/glib_2.28.8-1_win32.zip -d $(LOCALMINGW)/dll bin/libgio-2.0-0.dll bin/libglib-2.0-0.dll bin/libgmodule-2.0-0.dll bin/libgobject-2.0-0.dll
 	unzip -j -o $(LOCALMINGW)/download/pango_1.29.4-1_win32.zip -d $(LOCALMINGW)/dll bin/libpango-1.0-0.dll bin/libpangowin32-1.0-0.dll bin/libpangocairo-1.0-0.dll
 	unzip -j -o $(LOCALMINGW)/download/cairo_1.10.2-2_win32.zip -d $(LOCALMINGW)/dll bin/libcairo-2.dll
 	unzip -j -o $(LOCALMINGW)/download/atk_1.32.0-2_win32.zip -d $(LOCALMINGW)/dll bin/libatk-1.0-0.dll
 	unzip -j -o $(LOCALMINGW)/download/libffi_3.0.6-1_win32.zip -d $(LOCALMINGW)/dll bin/libffi-5.dll
 	unzip -j -o $(LOCALMINGW)/download/libpng_1.4.12-1_win32.zip -d $(LOCALMINGW)/dll bin/libpng14-14.dll
+	unzip -j -o $(LOCALMINGW)/download/zlib_1.2.5-2_win32.zip -d $(LOCALMINGW)/dll bin/zlib1.dll
 	
-	mkdir -p $(LOCALMINGW)/dll
+	cp $(LOCALMINGW)/bin/libgdk-win32-2.0-0.dll $(LOCALMINGW)/dll/
 	cp $(LOCALMINGW)/bin/libgtk-win32-2.0-0.dll $(LOCALMINGW)/dll/
+	cp $(LOCALMINGW)/bin/libgdk_pixbuf-2.0-0.dll $(LOCALMINGW)/dll/
+	cp $(WIN_DLLS_DIR)/libpng16-16.dll $(LOCALMINGW)/dll/
+	cp $(WIN_DLLS_DIR)/libintl-8.dll $(LOCALMINGW)/dll/intl.dll
 
 ifeq ($(ARCH),Win32)
 dist: pktriggercord_commandline.html cli gui lib
@@ -280,7 +287,7 @@ dist: pktriggercord_commandline.html cli gui lib
 	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
 	rm -f $(WINDIR).zip
 	zip -rj $(WINDIR).zip $(WINDIR)
-	rm -r $(WINDIR)
+	# rm -r $(WINDIR)
 else
 dist: rpm
 endif
