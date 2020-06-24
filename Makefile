@@ -80,7 +80,7 @@ GUI_LDFLAGS=$(LOCAL_LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
 
 CLI_TARGET=pktriggercord-cli
 GUI_TARGET=pktriggercord
-LIB_TARGET=libpktriggercord.so
+LIB_TARGET=libpktriggercord.so.$(MAJORVERSION)
 LIB_FILE=libpktriggercord.so.$(VERSION)
 
 #variables modification for Windows cross compilation
@@ -130,9 +130,6 @@ pslr_scsi.ol: $(wildcard pslr_scsi_*.c)
 libpktriggercord.a: $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 
-libpktriggercord.so: libpktriggercord.so.$(MAJORVERSION)
-	ln -sf $< $@
-
 libpktriggercord.so.$(MAJORVERSION): libpktriggercord.so.$(VERSION) 
 	ln -sf $< $@
 
@@ -164,7 +161,7 @@ $(JSONDIR)/js0n.ol: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 %.ol: %.c %.h
 	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
 
-install: pktriggercord-cli pktriggercord
+install: pktriggercord-cli pktriggercord libpktriggercord.so.$(VERSION)
 	install -d $(DESTDIR)/$(PREFIX)/bin
 	install -s -m 0755 pktriggercord-cli $(DESTDIR)/$(PREFIX)/bin/
 	(which setcap && setcap CAP_SYS_RAWIO+eip $(DESTDIR)/$(PREFIX)/bin/pktriggercord-cli) || true
@@ -183,6 +180,9 @@ install: pktriggercord-cli pktriggercord
 	install -m 0644 pktriggercord.ui $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
 	install -m 0644 pentax_settings.json $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
 	fi
+	install -s -m 644 libpktriggercord.so.$(VERSION) $(DESTDIR)/$(PREFIX)/lib/
+	ln -sf libpktriggercord.so.$(VERSION) $(DESTDIR)/$(PREFIX)/lib/libpktriggercord.so.$(MAJORVERSION)
+	ln -sf libpktriggercord.so.$(MAJORVERSION) $(DESTDIR)/$(PREFIX)/lib/libpktriggercord.so
 
 clean:
 	rm -f *.o* *.a $(JSONDIR)/*.o*
@@ -195,6 +195,7 @@ clean:
 uninstall:
 	rm -f $(PREFIX)/bin/pktriggercord $(PREFIX)/bin/pktriggercord-cli
 	rm -rf $(PREFIX)/share/pktriggercord
+	rm -rf $(PREFIX)/lib/libpktriggercord.so*
 	rm -f /etc/udev/pentax.rules
 	rm -f /etc/udev/rules.d/95_pentax.rules
 	rm -f /etc/udev/samsung.rules
