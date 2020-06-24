@@ -35,6 +35,7 @@
 #ifndef PSLR_MODEL_H
 #define PSLR_MODEL_H
 
+#include "pslr_api.h"
 #include "pslr_enum.h"
 #include "pslr_scsi.h"
 
