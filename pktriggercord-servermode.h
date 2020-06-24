@@ -29,11 +29,6 @@
 #ifndef PKTRIGGERCORD_SERVERMODE_H
 #define PKTRIGGERCORD_SERVERMODE_H
 
-
-#include "pslr_shared.h"
-
 int servermode_socket(int servermode_timeout);
-
-
 
 #endif

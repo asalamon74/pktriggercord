@@ -36,7 +36,7 @@
 #ifndef PSLR_H
 #define PSLR_H
 
-#include "pslr_shared.h"
+#include "pslr_api.h"
 #include "pslr_enum.h"
 #include "pslr_scsi.h"
 #include "pslr_model.h"

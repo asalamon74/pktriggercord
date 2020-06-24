@@ -31,7 +31,7 @@
 
 #include <stdint.h>
 
-#include "pslr_shared.h"
+#include "pslr_api.h"
 
 typedef enum {
     PSLR_COLOR_SPACE_SRGB,

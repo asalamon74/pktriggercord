@@ -52,7 +52,7 @@
 
 #include <stdbool.h>
 
-#include "pslr_shared.h"
+#include "pslr_api.h"
 
 typedef enum {
     PSLR_DEBUG,

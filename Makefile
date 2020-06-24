@@ -38,7 +38,7 @@ OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
 LIB_OBJS=$(OBJS:.o=.ol)
 
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pktriggercord-servermode.c pktriggercord-servermode.h pktriggercord-common.c pktriggercord-common.h pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c pslr_shared.h libpktriggercord.h exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pktriggercord-servermode.c pktriggercord-servermode.h pktriggercord-common.c pktriggercord-common.h pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c pslr_api.h libpktriggercord.h exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
