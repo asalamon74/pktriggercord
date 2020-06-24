@@ -32,13 +32,13 @@ ANDROID_PACKAGE = info.melda.sala.pktriggercord
 APK_FILE = $(PROJECT_NAME)-debug.apk
 
 MANS = pktriggercord-cli.1 pktriggercord.1
-SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_log pslr_lens pslr_model pktriggercord-servermode
+SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_log pslr_lens pslr_model pktriggercord-common
 OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
 # building lib requires recompilation, so we use different objets
 LIB_OBJS=$(OBJS:.o=.ol)
 
 WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c pslr_shared.h libpktriggercord.h exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
+SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pktriggercord-servermode.c pktriggercord-servermode.h pktriggercord-common.c pktriggercord-common.h pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c pslr_shared.h libpktriggercord.h exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
 TARDIR = pktriggercord-$(VERSION)
 SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 
@@ -87,8 +87,6 @@ all: srczip rpm pktriggercord_commandline.html
 endif
 cli: $(CLI_TARGET)
 gui: $(GUI_TARGET)
-
-lib: LOCAL_CFLAGS += -DPK_LIB_EXPORTS
 lib: $(LIB_TARGET)
 
 pslr.o: pslr_enum.o pslr_scsi.o pslr.c
@@ -103,16 +101,18 @@ libpktriggercord.a: $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 
 libpktriggercord.so: libpktriggercord.so.$(MAJORVERSION)
-	ln -s $< $@
+	ln -sf $< $@
 
 libpktriggercord.so.$(MAJORVERSION): libpktriggercord.so.$(VERSION) 
-	ln -s $< $@
+	ln -sf $< $@
 
+$(LIB_FILE): LOCAL_CFLAGS += -DPK_LIB_EXPORTS
 $(LIB_FILE): $(LIB_OBJS)
 	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION) $^ -o $@ $(LOCAL_LDFLAGS) -L.
 
-$(CLI_TARGET): pktriggercord-cli.c libpktriggercord.a
-	$(CC) $(CLI_CFLAGS) $< -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -Wl,libpktriggercord.a $(CLI_LDFLAGS) -L.
+$(CLI_TARGET): LOCAL_CFLAGS = $(CFLAGS)
+$(CLI_TARGET): pktriggercord-cli.c pktriggercord-common.c pktriggercord-servermode.c $(LIB_TARGET)
+	$(CC) $(CLI_CFLAGS) pktriggercord-cli.c pktriggercord-common.c pktriggercord-servermode.c -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -o $@ -L. -l:$(LIB_FILE) $(CLI_LDFLAGS)
 
 ifeq ($(ARCH),Win32)
 $(GUI_TARGET): $(LOCALMINGW)/bin $(LOCALMINGW)/dll
