@@ -69,7 +69,7 @@ typedef struct {
 
 extern user_file_format_t pslr_user_file_formats[3];
 
-user_file_format_t *pslr_get_user_file_format_t( user_file_format uff );
+PK_API user_file_format_t *pslr_get_user_file_format_t( user_file_format uff );
 
 // OFF-AUTO: Off-Auto-Aperture
 typedef enum {
@@ -228,7 +228,7 @@ PK_API char *pslr_format_rational( pslr_rational_t rational, char * fmt );
 
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4);
 
-char *pslr_copyright(void);
+PK_API char *pslr_copyright(void);
 
-int pslr_set_debugmode(ipslr_handle_t *p, char debug_mode);
+PK_API int pslr_set_debugmode(ipslr_handle_t *p, char debug_mode);
 #endif
