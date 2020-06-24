@@ -69,7 +69,7 @@ static void ipslr_status_diff(uint8_t *buf) {
     int n;
     int diffs;
     if (first) {
-        hexdump(buf, MAX_STATUS_BUF_SIZE);
+        hexdump_debug(buf, MAX_STATUS_BUF_SIZE);
         memcpy(lastbuf, buf, MAX_STATUS_BUF_SIZE);
         first = 0;
     }
@@ -161,12 +161,6 @@ char *pslr_hexdump(uint8_t *buf, uint32_t bufLen) {
         sprintf(ret+strlen(ret), "\n");
     }
     return ret;
-}
-
-void hexdump(uint8_t *buf, uint32_t bufLen) {
-    char *dmp = pslr_hexdump(buf, bufLen);
-    printf("%s",dmp);
-    free(dmp);
 }
 
 void hexdump_debug(uint8_t *buf, uint32_t bufLen) {

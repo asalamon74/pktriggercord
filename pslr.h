@@ -117,12 +117,14 @@ typedef struct {
 
 typedef void (*pslr_progress_callback_t)(uint32_t current, uint32_t total);
 
-void sleep_sec(double sec);
-
 PK_API pslr_handle_t pslr_init(char *model, char *device);
 PK_API int pslr_connect(pslr_handle_t h);
 PK_API int pslr_disconnect(pslr_handle_t h);
 PK_API int pslr_shutdown(pslr_handle_t h);
+
+PK_API pslr_handle_t pslr_camera_connect( char *model, char *device, int timeout, char *error_message );
+
+PK_API void pslr_camera_close(pslr_handle_t camhandle);
 
 PK_API int pslr_shutter(pslr_handle_t h);
 PK_API int pslr_focus(pslr_handle_t h);

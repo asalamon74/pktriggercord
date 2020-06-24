@@ -51,26 +51,18 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <dirent.h>
-#include <math.h>
 
 #include "pslr.h"
 #include "pslr_log.h"
 #include "pslr_scsi.h"
 #include "pslr_lens.h"
+#include "pktriggercord-common.h"
 
 #define POLL_INTERVAL 50000 /* Number of us to wait when polling */
 #define BLKSZ 65536 /* Block size for downloads; if too big, we get
                      * memory allocation error from sg driver */
 #define BLOCK_RETRY 3 /* Number of retries, since we can occasionally
                        * get SCSI errors when downloading data */
-
-void sleep_sec(double sec) {
-    int i;
-    for (i=0; i<floor(sec); ++i) {
-        usleep(999999); // 1000000 is not working for Windows
-    }
-    usleep(1000000*(sec-floor(sec)));
-}
 
 ipslr_handle_t pslr;
 
@@ -462,6 +454,44 @@ int pslr_shutdown(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     close_drive(&p->fd);
     return PSLR_OK;
+}
+
+void pslr_camera_close(pslr_handle_t camhandle) {
+    pslr_disconnect(camhandle);
+    pslr_shutdown(camhandle);
+}
+
+pslr_handle_t pslr_camera_connect( char *model, char *device, int timeout, char *error_message ) {
+    struct timeval prev_time;
+    struct timeval current_time;
+    pslr_handle_t camhandle;
+    int r;
+
+    gettimeofday(&prev_time, NULL);
+    while (!(camhandle = pslr_init( model, device ))) {
+        gettimeofday(&current_time, NULL);
+        DPRINT("diff: %f\n", timeval_diff_sec(&current_time, &prev_time));
+        if ( timeout == 0 || timeout > timeval_diff_sec(&current_time, &prev_time)) {
+            DPRINT("sleep 1 sec\n");
+            sleep_sec(1);
+        } else {
+            snprintf(error_message, 1000, "%d %ds timeout exceeded\n", 1, timeout);
+            return NULL;
+        }
+    }
+
+    DPRINT("before connect\n");
+    if (camhandle) {
+        if ((r=pslr_connect(camhandle)) ) {
+            if ( r != -1 ) {
+                snprintf(error_message, 1000, "%d Cannot connect to Pentax camera. Please start the program as root.\n",1);
+            } else {
+                snprintf(error_message, 1000, "%d Unknown Pentax camera found.\n",1);
+            }
+            return NULL;
+        }
+    }
+    return camhandle;
 }
 
 int pslr_shutter(pslr_handle_t h) {

@@ -48,6 +48,7 @@
 #include <math.h>
 
 #include "libpktriggercord.h"
+#include "pktriggercord-common.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
@@ -196,6 +197,12 @@ void print_status_info( pslr_handle_t h, pslr_status status ) {
 void print_settings_info( pslr_handle_t h, pslr_settings settings ) {
     printf("\n");
     printf( "%s", pslr_get_settings_info( h, settings ) );
+}
+
+void print_hexdump(uint8_t *buf, uint32_t bufLen) {
+    char *dmp = pslr_hexdump(buf, bufLen);
+    printf("%s",dmp);
+    free(dmp);
 }
 
 void usage(char *name) {
@@ -1001,7 +1008,7 @@ int main(int argc, char **argv) {
                 int status_bufsize = pslr_get_model_status_buffer_size( camhandle );
                 uint8_t status_buffer[MAX_STATUS_BUF_SIZE];
                 pslr_get_status_buffer(camhandle, status_buffer);
-                hexdump( status_buffer, status_bufsize > 0 ? status_bufsize : MAX_STATUS_BUF_SIZE);
+                print_hexdump( status_buffer, status_bufsize > 0 ? status_bufsize : MAX_STATUS_BUF_SIZE);
             }
             print_status_info( camhandle, status );
         }
@@ -1009,7 +1016,7 @@ int main(int argc, char **argv) {
             if (settings_hex) {
                 uint8_t settings_buf[SETTINGS_BUFFER_SIZE];
                 pslr_get_settings_buffer(camhandle, settings_buf);
-                hexdump(settings_buf, SETTINGS_BUFFER_SIZE);
+                print_hexdump(settings_buf, SETTINGS_BUFFER_SIZE);
             }
             if (pslr_get_model_has_settings_parser(camhandle)) {
                 print_settings_info(camhandle, settings);

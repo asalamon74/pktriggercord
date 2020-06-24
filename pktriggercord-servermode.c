@@ -49,49 +49,6 @@
 #include "pslr_lens.h"
 #include "pktriggercord-servermode.h"
 
-double timeval_diff_sec(struct timeval *t2, struct timeval *t1) {
-    //DPRINT("tv2 %ld %ld t1 %ld %ld\n", t2->tv_sec, t2->tv_usec, t1->tv_sec, t1->tv_usec);
-    return (t2->tv_usec - t1->tv_usec) / 1000000.0 + (t2->tv_sec - t1->tv_sec);
-}
-
-void pslr_camera_close(pslr_handle_t camhandle) {
-    pslr_disconnect(camhandle);
-    pslr_shutdown(camhandle);
-}
-
-pslr_handle_t pslr_camera_connect( char *model, char *device, int timeout, char *error_message ) {
-    struct timeval prev_time;
-    struct timeval current_time;
-    pslr_handle_t camhandle;
-    int r;
-
-    gettimeofday(&prev_time, NULL);
-    while (!(camhandle = pslr_init( model, device ))) {
-        gettimeofday(&current_time, NULL);
-        DPRINT("diff: %f\n", timeval_diff_sec(&current_time, &prev_time));
-        if ( timeout == 0 || timeout > timeval_diff_sec(&current_time, &prev_time)) {
-            DPRINT("sleep 1 sec\n");
-            sleep_sec(1);
-        } else {
-            snprintf(error_message, 1000, "%d %ds timeout exceeded\n", 1, timeout);
-            return NULL;
-        }
-    }
-
-    DPRINT("before connect\n");
-    if (camhandle) {
-        if ((r=pslr_connect(camhandle)) ) {
-            if ( r != -1 ) {
-                snprintf(error_message, 1000, "%d Cannot connect to Pentax camera. Please start the program as root.\n",1);
-            } else {
-                snprintf(error_message, 1000, "%d Unknown Pentax camera found.\n",1);
-            }
-            return NULL;
-        }
-    }
-    return camhandle;
-}
-
 #ifndef WIN32
 int client_sock;
 
