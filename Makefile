@@ -37,7 +37,6 @@ OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
 # building lib requires recompilation, so we use different objets
 LIB_OBJS=$(OBJS:.o=.ol)
 
-WIN_DLLS_DIR=win_dlls
 SOURCE_PACKAGE_FILES = \
 	Makefile \
 	Changelog \
@@ -67,6 +66,24 @@ SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
 LOCALMINGW=i686-w64-mingw32
 WINGCC=i686-w64-mingw32-gcc
 WINDIR=$(TARDIR)-win
+GTK_BUNDLE=gtk+-bundle_2.24.10-20120208_win32.zip
+
+# List of all the dll required to run the GUI on Windows
+GUI_WIN_DLLS = \
+	$(LOCALMINGW)/bin/freetype6.dll \
+	$(LOCALMINGW)/bin/libfontconfig-1.dll \
+	$(LOCALMINGW)/bin/libgdk-win32-2.0-0.dll \
+	$(LOCALMINGW)/bin/libgtk-win32-2.0-0.dll \
+	$(LOCALMINGW)/bin/libgdk_pixbuf-2.0-0.dll \
+	$(LOCALMINGW)/bin/libgthread-2.0-0.dll \
+	$(LOCALMINGW)/bin/libpng14-14.dll \
+	$(LOCALMINGW)/bin/libgio-2.0-0.dll $(LOCALMINGW)/bin/libglib-2.0-0.dll $(LOCALMINGW)/bin/libgmodule-2.0-0.dll $(LOCALMINGW)/bin/libgobject-2.0-0.dll \
+	$(LOCALMINGW)/bin/libpango-1.0-0.dll $(LOCALMINGW)/bin/libpangowin32-1.0-0.dll $(LOCALMINGW)/bin/libpangocairo-1.0-0.dll $(LOCALMINGW)/bin/libpangoft2-1.0-0.dll \
+	$(LOCALMINGW)/bin/libcairo-2.dll \
+	$(LOCALMINGW)/bin/libatk-1.0-0.dll \
+	$(LOCALMINGW)/bin/zlib1.dll \
+	$(LOCALMINGW)/bin/intl.dll \
+	$(LOCALMINGW)/bin/libexpat-1.dll
 
 LOCAL_CFLAGS=$(CFLAGS) -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -DPK_LIB_STATIC
 LOCAL_LDFLAGS=$(LDFLAGS)
@@ -133,7 +150,6 @@ libpktriggercord.a: $(OBJS)
 libpktriggercord.so.$(MAJORVERSION): libpktriggercord.so.$(VERSION) 
 	ln -sf $< $@
 
-$(LIB_FILE): LOCAL_CFLAGS += -DPK_LIB_EXPORTS
 $(LIB_FILE): $(LIB_OBJS)
 	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION) $^ -o $@ $(LOCAL_LDFLAGS) -L.
 
@@ -143,11 +159,11 @@ $(CLI_TARGET): pktriggercord-cli.c pslr_utils.c pktriggercord-servermode.c libpk
 		-o $@ -Wl,libpktriggercord.a $(CLI_LDFLAGS) -L.
 
 ifeq ($(ARCH),Win32)
-$(GUI_TARGET): $(LOCALMINGW)/bin $(LOCALMINGW)/dll
+$(GUI_TARGET): $(LOCALMINGW)/include $(LOCALMINGW)/lib
 endif
 
-$(GUI_TARGET): pktriggercord.c libpktriggercord.a
-	$(CC) $(GUI_CFLAGS) $< -o $@ -Wl,libpktriggercord.a $(GUI_LDFLAGS) -L.
+$(GUI_TARGET): pktriggercord.c pslr_utils.c libpktriggercord.a
+	$(CC) $(GUI_CFLAGS) pktriggercord.c pslr_utils.c -o $@ -Wl,libpktriggercord.a $(GUI_LDFLAGS) -L.
 
 $(JSONDIR)/js0n.o: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
@@ -159,7 +175,7 @@ $(JSONDIR)/js0n.ol: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
 	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
 
 %.ol: %.c %.h
-	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
+	$(CC) $(LOCAL_CFLAGS) -DPK_LIB_EXPORTS -fPIC -c $< -o $@
 
 install: pktriggercord-cli pktriggercord libpktriggercord.so.$(VERSION)
 	install -d $(DESTDIR)/$(PREFIX)/bin
@@ -204,8 +220,8 @@ uninstall:
 srczip: clean
 	mkdir -p $(TARDIR)
 	cp -r $(SOURCE_PACKAGE_FILES) $(TARDIR)/
-	mkdir -p $(TARDIR)/$(WIN_DLLS_DIR)
-	cp -r $(WIN_DLLS_DIR)/*.dll $(TARDIR)/$(WIN_DLLS_DIR)/
+	mkdir -p $(TARDIR)/$(GUI_WIN_DLLS_DIR)
+	cp -r $(GUI_WIN_DLLS_DIR)/*.dll $(TARDIR)/$(GUI_WIN_DLLS_DIR)/
 	mkdir -p $(TARDIR)/debian
 	cp -r debian/* $(TARDIR)/debian/
 	mkdir -p $(TARDIR)/android/res
@@ -262,64 +278,32 @@ exiftool_pentax:
 pktriggercord_commandline.html: pktriggercord-cli.1
 	cat $< | sed s/\\\\-/-/g | groff -man -Thtml -mwww -P "-lr" > $@
 
+
 # Windows cross-compile
-$(LOCALMINGW)/download:
-	mkdir -p $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+_2.24.10-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+-dev_2.24.10-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.28/glib-dev_2.28.8-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/atk/1.32/atk-dev_1.32.0-2_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/pango/1.29/pango-dev_1.29.4-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gdk-pixbuf/2.24/gdk-pixbuf-dev_2.24.0-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gdk-pixbuf/2.24/gdk-pixbuf_2.24.0-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo-dev_1.10.2-2_win32.zip -P $(LOCALMINGW)/download
+$(LOCALMINGW)/download: $(LOCALMINGW)/download/$(GTK_BUNDLE)
 
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.28/glib_2.28.8-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/atk/1.32/atk_1.32.0-2_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/pango/1.29/pango_1.29.4-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo_1.10.2-2_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libffi_3.0.6-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.4.12-1_win32.zip -P $(LOCALMINGW)/download
-	wget -N https://ftp.gnome.org/pub/GNOME/binaries/win32/dependencies/zlib_1.2.5-2_win32.zip -P $(LOCALMINGW)/download
+$(LOCALMINGW)/download/$(GTK_BUNDLE):
+	mkdir -p $(LOCALMINGW)/download	
+	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/$(GTK_BUNDLE) -P $(LOCALMINGW)/download
 
-$(LOCALMINGW)/bin: $(LOCALMINGW)/download
-	unzip -o $(LOCALMINGW)/download/gtk+_2.24.10-1_win32.zip -d $(LOCALMINGW)
-	unzip -o $(LOCALMINGW)/download/gtk+-dev_2.24.10-1_win32.zip -d $(LOCALMINGW)
-	unzip -o $(LOCALMINGW)/download/glib-dev_2.28.8-1_win32.zip -d $(LOCALMINGW)
-	unzip -o $(LOCALMINGW)/download/atk-dev_1.32.0-2_win32.zip -d $(LOCALMINGW)
-	unzip -o $(LOCALMINGW)/download/pango-dev_1.29.4-1_win32.zip -d $(LOCALMINGW)
-	unzip -o $(LOCALMINGW)/download/gdk-pixbuf-dev_2.24.0-1_win32.zip -d $(LOCALMINGW)
-	unzip -o $(LOCALMINGW)/download/gdk-pixbuf_2.24.0-1_win32.zip -d $(LOCALMINGW)
-	unzip -o $(LOCALMINGW)/download/cairo-dev_1.10.2-2_win32.zip -d $(LOCALMINGW)
-	
+$(LOCALMINGW)/include $(LOCALMINGW)/lib: $(LOCALMINGW)/download
+	unzip -o $(LOCALMINGW)/download/$(GTK_BUNDLE) -d $(LOCALMINGW) $(@:$(LOCALMINGW)/%=%)/**
 
-$(LOCALMINGW)/dll: $(LOCALMINGW)/download $(LOCALMINGW)/bin
-	mkdir -p $(LOCALMINGW)/dll
-	unzip -j -o $(LOCALMINGW)/download/glib_2.28.8-1_win32.zip -d $(LOCALMINGW)/dll bin/libgio-2.0-0.dll bin/libglib-2.0-0.dll bin/libgmodule-2.0-0.dll bin/libgobject-2.0-0.dll
-	unzip -j -o $(LOCALMINGW)/download/pango_1.29.4-1_win32.zip -d $(LOCALMINGW)/dll bin/libpango-1.0-0.dll bin/libpangowin32-1.0-0.dll bin/libpangocairo-1.0-0.dll
-	unzip -j -o $(LOCALMINGW)/download/cairo_1.10.2-2_win32.zip -d $(LOCALMINGW)/dll bin/libcairo-2.dll
-	unzip -j -o $(LOCALMINGW)/download/atk_1.32.0-2_win32.zip -d $(LOCALMINGW)/dll bin/libatk-1.0-0.dll
-	unzip -j -o $(LOCALMINGW)/download/libffi_3.0.6-1_win32.zip -d $(LOCALMINGW)/dll bin/libffi-5.dll
-	unzip -j -o $(LOCALMINGW)/download/libpng_1.4.12-1_win32.zip -d $(LOCALMINGW)/dll bin/libpng14-14.dll
-	unzip -j -o $(LOCALMINGW)/download/zlib_1.2.5-2_win32.zip -d $(LOCALMINGW)/dll bin/zlib1.dll
-	
-	cp $(LOCALMINGW)/bin/libgdk-win32-2.0-0.dll $(LOCALMINGW)/dll/
-	cp $(LOCALMINGW)/bin/libgtk-win32-2.0-0.dll $(LOCALMINGW)/dll/
-	cp $(LOCALMINGW)/bin/libgdk_pixbuf-2.0-0.dll $(LOCALMINGW)/dll/
-	cp $(WIN_DLLS_DIR)/libpng16-16.dll $(LOCALMINGW)/dll/
-	cp $(WIN_DLLS_DIR)/libintl-8.dll $(LOCALMINGW)/dll/intl.dll
+# Extract all the required dlls at once with a grouped target
+$(GUI_WIN_DLLS) &: $(LOCALMINGW)/download
+	unzip -o $(LOCALMINGW)/download/$(GTK_BUNDLE) -d $(LOCALMINGW) $(GUI_WIN_DLLS:$(LOCALMINGW)/%=%)
+	touch -r $^ $(GUI_WIN_DLLS)
 
 ifeq ($(ARCH),Win32)
-dist: pktriggercord_commandline.html cli gui lib
+dist: pktriggercord_commandline.html cli gui lib $(GUI_WIN_DLLS)
 	rm -rf $(WINDIR)
 	mkdir -p $(WINDIR)
 	cp libpktriggercord-$(VERSION).dll pktriggercord-cli.exe pktriggercord.exe $(WINDIR)
 	cp Changelog COPYING pktriggercord_commandline.html pktriggercord.ui pentax_settings.json $(WINDIR)
-	cp $(LOCALMINGW)/dll/*.dll $(WINDIR)
-	cp $(WIN_DLLS_DIR)/*.dll $(WINDIR)
+	cp $(GUI_WIN_DLLS) $(WINDIR)
 	rm -f $(WINDIR).zip
 	zip -rj $(WINDIR).zip $(WINDIR)
-	# rm -r $(WINDIR)
+	rm -r $(WINDIR)
 else
 dist: rpm
 endif
