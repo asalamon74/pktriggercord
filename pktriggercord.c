@@ -38,6 +38,7 @@
 #include <sys/time.h>
 
 #include "libpktriggercord.h"
+#include "pslr_utils.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
