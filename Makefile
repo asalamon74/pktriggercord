@@ -95,6 +95,8 @@ GUI_CFLAGS=$(LOCAL_CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DG
 #-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 GUI_LDFLAGS=$(LOCAL_LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
 
+LIB_LDFLAGS=$(LOCAL_LDFLAGS)
+
 CLI_TARGET=pktriggercord-cli
 GUI_TARGET=pktriggercord
 LIB_TARGET=libpktriggercord.so.$(MAJORVERSION)
@@ -121,6 +123,7 @@ ifeq ($(ARCH),Win32)
 	#some build of MinGW enforce this. Some doesn't. Ensure consistent behaviour
 	CLI_LDFLAGS+= -Wl,--force-exe-suffix
 	GUI_LDFLAGS+= -Wl,--force-exe-suffix
+	LIB_LDFLAGS+= -static-libgcc
 
 	CLI_TARGET=pktriggercord-cli.exe
 	GUI_TARGET=pktriggercord.exe
@@ -151,7 +154,7 @@ libpktriggercord.so.$(MAJORVERSION): libpktriggercord.so.$(VERSION)
 	ln -sf $< $@
 
 $(LIB_FILE): $(LIB_OBJS)
-	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION) $^ -o $@ $(LOCAL_LDFLAGS) -L.
+	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION) $^ -o $@ $(LIB_LDFLAGS) -L.
 
 $(CLI_TARGET): pktriggercord-cli.c pslr_utils.c pktriggercord-servermode.c libpktriggercord.a
 	$(CC) $(CLI_CFLAGS) \
