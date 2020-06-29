@@ -43,6 +43,7 @@ SOURCE_PACKAGE_FILES = \
 	COPYING \
 	INSTALL \
 	BUGS \
+	README.md \
 	$(MANS) \
 	pentax_scsi_protocol.md \
 	pentax.rules samsung.rules \
