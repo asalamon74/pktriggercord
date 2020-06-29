@@ -156,6 +156,12 @@ libpktriggercord.so.$(MAJORVERSION): libpktriggercord.so.$(VERSION)
 $(LIB_FILE): $(LIB_OBJS)
 	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION) $^ -o $@ $(LIB_LDFLAGS) -L.
 
+pktriggercord-$(VERSION).lib: $(LIB_OBJS)
+	i686-w64-mingw32-dlltool -l pktriggercord-$(MAJORVERSION).lib $(LIB_OBJS)
+
+pktriggercord-$(VERSION).def: $(LIB_OBJS)
+	i686-w64-mingw32-dlltool -z pktriggercord-$(MAJORVERSION).def $(LIB_OBJS)
+
 $(CLI_TARGET): pktriggercord-cli.c pslr_utils.c pktriggercord-servermode.c libpktriggercord.a
 	$(CC) $(CLI_CFLAGS) \
 		pktriggercord-cli.c pslr_utils.c pktriggercord-servermode.c \
@@ -206,7 +212,7 @@ install: pktriggercord-cli pktriggercord libpktriggercord.so.$(VERSION)
 clean:
 	rm -f *.o* *.a $(JSONDIR)/*.o*
 	rm -f pktriggercord pktriggercord-cli *.so*
-	rm -f pktriggercord.exe pktriggercord-cli.exe *.dll
+	rm -f pktriggercord.exe pktriggercord-cli.exe *.dll *.def *.lib
 	rm -f pktriggercord_commandline.html
 	rm -f *.orig
 	rm -f *.log
@@ -298,10 +304,10 @@ $(GUI_WIN_DLLS) &: $(LOCALMINGW)/download
 	touch -r $^ $(GUI_WIN_DLLS)
 
 ifeq ($(ARCH),Win32)
-dist: pktriggercord_commandline.html cli gui lib $(GUI_WIN_DLLS)
+dist: pktriggercord_commandline.html cli gui lib pktriggercord-$(VERSION).lib pktriggercord-$(VERSION).def $(GUI_WIN_DLLS)
 	rm -rf $(WINDIR)
 	mkdir -p $(WINDIR)
-	cp libpktriggercord-$(VERSION).dll pktriggercord-cli.exe pktriggercord.exe $(WINDIR)
+	cp libpktriggercord-$(VERSION).dll pktriggercord-$(MAJORVERSION).lib pktriggercord-$(MAJORVERSION).def pktriggercord-cli.exe pktriggercord.exe $(WINDIR)
 	cp Changelog COPYING pktriggercord_commandline.html pktriggercord.ui pentax_settings.json $(WINDIR)
 	cp $(GUI_WIN_DLLS) $(WINDIR)
 	rm -f $(WINDIR).zip
