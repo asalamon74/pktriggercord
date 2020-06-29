@@ -156,11 +156,11 @@ libpktriggercord.so.$(MAJORVERSION): libpktriggercord.so.$(VERSION)
 $(LIB_FILE): $(LIB_OBJS)
 	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION) $^ -o $@ $(LIB_LDFLAGS) -L.
 
-pktriggercord-$(VERSION).lib: $(LIB_OBJS)
-	i686-w64-mingw32-dlltool -l pktriggercord-$(MAJORVERSION).lib $(LIB_OBJS)
+pktriggercord-$(MAJORVERSION).lib: $(LIB_OBJS)
+	i686-w64-mingw32-dlltool -l $@ $(LIB_OBJS)
 
-pktriggercord-$(VERSION).def: $(LIB_OBJS)
-	i686-w64-mingw32-dlltool -z pktriggercord-$(MAJORVERSION).def $(LIB_OBJS)
+pktriggercord-$(MAJORVERSION).def: $(LIB_OBJS)
+	i686-w64-mingw32-dlltool -z $@ $(LIB_OBJS)
 
 $(CLI_TARGET): pktriggercord-cli.c pslr_utils.c pktriggercord-servermode.c libpktriggercord.a
 	$(CC) $(CLI_CFLAGS) \
