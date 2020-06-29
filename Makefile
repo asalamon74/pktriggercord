@@ -52,7 +52,6 @@ SOURCE_PACKAGE_FILES = \
 	$(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) \
 	pktriggercord-servermode.c pktriggercord-servermode.h \
 	pslr_api.h \
-	pslr_utils.c pslr_utils.h \
 	pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c \
 	libpktriggercord.h \
 	pktriggercord.c \
@@ -230,8 +229,6 @@ uninstall:
 srczip: clean
 	mkdir -p $(TARDIR)
 	cp -r $(SOURCE_PACKAGE_FILES) $(TARDIR)/
-	mkdir -p $(TARDIR)/$(GUI_WIN_DLLS_DIR)
-	cp -r $(GUI_WIN_DLLS_DIR)/*.dll $(TARDIR)/$(GUI_WIN_DLLS_DIR)/
 	mkdir -p $(TARDIR)/debian
 	cp -r debian/* $(TARDIR)/debian/
 	mkdir -p $(TARDIR)/android/res
