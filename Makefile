@@ -304,12 +304,11 @@ $(GUI_WIN_DLLS) &: $(LOCALMINGW)/download
 	touch -r $^ $(GUI_WIN_DLLS)
 
 ifeq ($(ARCH),Win32)
-dist: pktriggercord_commandline.html cli gui lib pktriggercord-$(VERSION).lib pktriggercord-$(VERSION).def $(GUI_WIN_DLLS)
+dist: pktriggercord_commandline.html $(CLI_TARGET) $(GUI_TARGET) $(LIB_FILE) pktriggercord-$(MAJORVERSION).lib pktriggercord-$(MAJORVERSION).def $(GUI_WIN_DLLS)
 	rm -rf $(WINDIR)
 	mkdir -p $(WINDIR)
-	cp libpktriggercord-$(VERSION).dll pktriggercord-$(MAJORVERSION).lib pktriggercord-$(MAJORVERSION).def pktriggercord-cli.exe pktriggercord.exe $(WINDIR)
-	cp Changelog COPYING pktriggercord_commandline.html pktriggercord.ui pentax_settings.json $(WINDIR)
-	cp $(GUI_WIN_DLLS) $(WINDIR)
+	cp $^ $(WINDIR)
+	cp Changelog COPYING pktriggercord.ui pentax_settings.json $(WINDIR)
 	rm -f $(WINDIR).zip
 	zip -rj $(WINDIR).zip $(WINDIR)
 	rm -r $(WINDIR)
