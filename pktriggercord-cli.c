@@ -384,7 +384,8 @@ int main(int argc, char **argv) {
     char *MODESTRING = NULL;
     int resolution = 0;
     int quality = -1;
-    int optc, fd, i;
+    int optc, fd;
+    unsigned int i;
     int wbadj_ss=0;
     pslr_handle_t camhandle;
     pslr_status status;
@@ -535,14 +536,14 @@ int main(int argc, char **argv) {
 
             case 7:
                 color_space = get_pslr_color_space( optarg );
-                if ( color_space == -1 ) {
+                if ( color_space == (pslr_color_space_t)(-1) ) {
                     warning_message("%s: Invalid color space\n", argv[0]);
                 }
                 break;
 
             case 8:
                 af_mode = get_pslr_af_mode( optarg );
-                if ( af_mode == -1 || af_mode == 0 ) {
+                if ( af_mode == (pslr_af_mode_t)(-1) || af_mode == (pslr_af_mode_t)(0) ) {
                     // 0: changing MF does not work
                     warning_message("%s: Invalid af mode\n", argv[0]);
                 }
@@ -550,28 +551,28 @@ int main(int argc, char **argv) {
 
             case 9:
                 ae_metering = get_pslr_ae_metering( optarg );
-                if ( ae_metering == -1 ) {
+                if ( ae_metering == (pslr_ae_metering_t)(-1) ) {
                     warning_message("%s: Invalid ae metering\n", argv[0]);
                 }
                 break;
 
             case 10:
                 flash_mode = get_pslr_flash_mode( optarg );
-                if ( flash_mode == -1 ) {
+                if ( flash_mode == (pslr_flash_mode_t)(-1) ) {
                     warning_message("%s: Invalid flash_mode\n", argv[0]);
                 }
                 break;
 
             case 11:
                 drive_mode = get_pslr_drive_mode( optarg );
-                if ( drive_mode == -1 ) {
+                if ( drive_mode == (pslr_drive_mode_t)(-1) ) {
                     warning_message("%s: Invalid drive_mode\n", argv[0]);
                 }
                 break;
 
             case 12:
                 af_point_sel = get_pslr_af_point_sel( optarg );
-                if ( af_point_sel == -1 ) {
+                if ( af_point_sel == (pslr_af_point_sel_t)(-1) ) {
                     af_point_selected = atoi(optarg);
                     if (af_point_selected != 0) {
                         af_point_sel = PSLR_AF_POINT_SEL_SELECT;
@@ -590,7 +591,7 @@ int main(int argc, char **argv) {
 
             case 14:
                 white_balance_mode = get_pslr_white_balance_mode( optarg );
-                if ( white_balance_mode == -1 ) {
+                if ( white_balance_mode == (pslr_white_balance_mode_t)(-1) ) {
                     warning_message("%s: Invalid white_balance_mode\n", argv[0]);
                 }
                 break;
@@ -843,26 +844,26 @@ int main(int argc, char **argv) {
 
     pslr_get_status(camhandle, &status);
 
-    if ( color_space != -1 ) {
+    if ( color_space != (pslr_color_space_t)(-1) ) {
         pslr_set_color_space( camhandle, color_space );
     }
 
-    if ( af_mode != -1 ) {
+    if ( af_mode != (pslr_af_mode_t)(-1) ) {
         pslr_set_af_mode( camhandle, af_mode );
     }
 
-    if ( af_point_sel != -1 ) {
+    if ( af_point_sel != (pslr_af_point_sel_t)(-1) ) {
         pslr_set_af_point_sel( camhandle, af_point_sel );
         if (af_point_selected != 0) {
             pslr_select_af_point(camhandle, af_point_selected);
         }
     }
 
-    if ( ae_metering != -1 ) {
+    if ( ae_metering != (pslr_ae_metering_t)(-1) ) {
         pslr_set_ae_metering_mode( camhandle, ae_metering );
     }
 
-    if ( flash_mode != -1 ) {
+    if ( flash_mode != (pslr_flash_mode_t)(-1) ) {
         pslr_set_flash_mode( camhandle, flash_mode );
     }
 
@@ -873,16 +874,16 @@ int main(int argc, char **argv) {
         pslr_set_jpeg_image_tone( camhandle, jpeg_image_tone );
     }
 
-    if ( white_balance_mode != -1 ) {
+    if ( white_balance_mode != (pslr_white_balance_mode_t)(-1) ) {
         pslr_set_white_balance( camhandle, white_balance_mode );
         if ( wbadj_ss > 0 ) {
             pslr_set_white_balance_adjustment( camhandle, white_balance_mode, white_balance_adjustment_mg, white_balance_adjustment_ba );
         }
-    } else if ( white_balance_mode == -1 && wbadj_ss > 0 ) {
+    } else if ( white_balance_mode == (pslr_white_balance_mode_t)(-1) && wbadj_ss > 0 ) {
         pslr_set_white_balance_adjustment( camhandle, status.white_balance_mode, white_balance_adjustment_mg, white_balance_adjustment_ba);
     }
 
-    if ( drive_mode != -1 ) {
+    if ( drive_mode != (pslr_drive_mode_t)(-1) ) {
         pslr_set_drive_mode( camhandle, drive_mode );
     }
 
