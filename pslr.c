@@ -1070,7 +1070,7 @@ int pslr_buffer_open(pslr_handle_t h, int bufno, pslr_buffer_type buftype, int b
 
 uint32_t pslr_buffer_read(pslr_handle_t h, uint8_t *buf, uint32_t size) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    int i;
+    uint32_t i;
     uint32_t pos = 0;
     uint32_t seg_offs;
     uint32_t addr;
@@ -1125,7 +1125,7 @@ uint32_t pslr_fullmemory_read(pslr_handle_t h, uint8_t *buf, uint32_t offset, ui
 
 uint32_t pslr_buffer_get_size(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
-    int i;
+    uint32_t i;
     uint32_t len = 0;
     for (i = 0; i < p->segment_count; i++) {
         len += p->segments[i].length;
@@ -1778,10 +1778,10 @@ static int read_result(FDTYPE fd, uint8_t *buf, uint32_t n) {
     DPRINT("[C]\t\t\tread_result(0x%x, size=%d)\n", fd, n);
     uint8_t cmd[8] = {0xf0, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     int r;
-    int i;
+    uint32_t i;
     set_uint32_le(n, &cmd[4]);
     r = scsi_read(fd, cmd, sizeof (cmd), buf, n);
-    if (r != n) {
+    if ((uint32_t)r != n) {
         return PSLR_READ_ERROR;
     }  else {
         //  Print first 32 bytes of the result.
