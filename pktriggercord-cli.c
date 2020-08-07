@@ -384,7 +384,8 @@ int main(int argc, char **argv) {
     char *MODESTRING = NULL;
     int resolution = 0;
     int quality = -1;
-    int optc, fd, i;
+    int optc, fd;
+    unsigned int i;
     int wbadj_ss=0;
     pslr_handle_t camhandle;
     pslr_status status;
