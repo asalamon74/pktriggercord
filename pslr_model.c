@@ -807,7 +807,11 @@ char *read_json_file(int *jsonsize) {
     *jsonsize = lseek(jsonfd, 0, SEEK_END);
     lseek(jsonfd, 0, SEEK_SET);
     char *jsontext=malloc(*jsonsize);
-    read(jsonfd, jsontext, *jsonsize);
+    ssize_t ret = read(jsonfd, jsontext, *jsonsize);
+    if (ret < *jsonsize) {
+        fprintf(stderr, "Could not read pentax_settings.json file\n");
+        return NULL;
+    }
     DPRINT("json text:\n%.*s\n", *jsonsize, jsontext);
     return jsontext;
 }
