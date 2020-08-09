@@ -5,6 +5,7 @@ version 0.85.01
 	Settings reading for K5II (thx blemasle)
 	remote_bulb_mode_press_press setting (thx blemasle)
 	Updating lens info database ( exiftool 11.99 )
+	Testing support for 645Z
 
 version 0.85.00 ( 2019-JAN-27 )
 	K-1 battery fields fix
