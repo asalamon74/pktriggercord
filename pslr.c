@@ -502,7 +502,7 @@ char *get_white_balance_single_adjust_str( uint32_t adjust, char negativeChar, c
     } else if ( adjust > 7 ) {
         snprintf( ret, 4, "%c%d", positiveChar, adjust-7);
     } else {
-        ret = "";
+        strcpy(ret,"");
     }
     return ret;
 }
@@ -513,7 +513,7 @@ char *get_white_balance_adjust_str( uint32_t adjust_mg, uint32_t adjust_ba ) {
     if ( adjust_mg != 7 || adjust_ba != 7 ) {
         snprintf(ret, 8, "%s%s", get_white_balance_single_adjust_str(adjust_mg, 'M', 'G'),get_white_balance_single_adjust_str(adjust_ba, 'B', 'A'));
     } else {
-        ret = "0";
+        strcpy(ret,"0");
     }
     return ret;
 }
