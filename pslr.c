@@ -600,6 +600,7 @@ char *get_special_setting_info( pslr_setting_status_t setting_status) {
             sprintf(strbuffer,"Unknown");
             break;
         default:
+            free(strbuffer);
             return NULL;
     }
     return strbuffer;
