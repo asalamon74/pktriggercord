@@ -679,6 +679,7 @@ int pslr_get_buffer(pslr_handle_t h, int bufno, pslr_buffer_type type, int resol
         bufpos += bytes;
     }
     if ( bufpos != size ) {
+        free(buf);
         return PSLR_READ_ERROR;
     }
     pslr_buffer_close(h);
