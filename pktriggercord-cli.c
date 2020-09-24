@@ -655,7 +655,7 @@ int main(int argc, char **argv) {
             case 't':
                 shutter_speed = parse_shutter_speed(optarg);
                 if (shutter_speed.nom == 0) {
-                    warning_message("%s: Invalid shutter speed value.\n", argv[0]);
+                    warning_message("%s: Invalid shutter speed value: %s\n", argv[0], optarg);
                 }
                 break;
 
