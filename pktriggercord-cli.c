@@ -653,18 +653,8 @@ int main(int argc, char **argv) {
                 break;
 
             case 't':
-                if (sscanf(optarg, "1/%d%c", &shutter_speed.denom, &C) == 1) {
-                    shutter_speed.nom = 1;
-                } else if ((sscanf(optarg, "%f%c", &F, &C)) == 1) {
-                    if (F < 2) {
-                        F = F * 10;
-                        shutter_speed.denom = 10;
-                        shutter_speed.nom = F;
-                    } else {
-                        shutter_speed.denom = 1;
-                        shutter_speed.nom = F;
-                    }
-                } else {
+                shutter_speed = parse_shutter_speed(optarg);
+                if (shutter_speed.nom == 0) {
                     warning_message("%s: Invalid shutter speed value.\n", argv[0]);
                 }
                 break;

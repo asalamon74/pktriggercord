@@ -52,6 +52,25 @@ double timeval_diff_sec(struct timeval *t2, struct timeval *t1) {
     return (t2->tv_usec - t1->tv_usec) / 1000000.0 + (t2->tv_sec - t1->tv_sec);
 }
 
+pslr_rational_t parse_shutter_speed(char *shutter_speed_str) {
+    char C;
+    float F = 0;
+    pslr_rational_t shutter_speed = {0, 0};
+    if (sscanf(shutter_speed_str, "1/%d%c", &shutter_speed.denom, &C) == 1) {
+        shutter_speed.nom = 1;
+    } else if ((sscanf(shutter_speed_str, "%f%c", &F, &C)) == 1) {
+        if (F < 2) {
+            F = F * 10;
+            shutter_speed.denom = 10;
+            shutter_speed.nom = F;
+        } else {
+            shutter_speed.denom = 1;
+            shutter_speed.nom = F;
+        }
+    }
+    return shutter_speed;
+}
+
 void camera_close(pslr_handle_t camhandle) {
     pslr_disconnect(camhandle);
     pslr_shutdown(camhandle);
@@ -150,7 +169,6 @@ int servermode_socket(int servermode_timeout) {
     pslr_handle_t camhandle=NULL;
     pslr_status status;
     char C;
-    float F = 0;
     pslr_rational_t shutter_speed = {0, 0};
     uint32_t iso = 0;
     uint32_t auto_iso_min = 0;
@@ -353,25 +371,11 @@ int servermode_socket(int servermode_timeout) {
                 }
             } else if (  (arg = is_string_prefix( client_message, "set_shutter_speed")) != NULL ) {
                 if ( check_camera(camhandle) ) {
-                    // TODO: merge with pktriggercord-cli shutter speed parse
-                    if (sscanf(arg, "1/%d%c", &shutter_speed.denom, &C) == 1) {
-                        shutter_speed.nom = 1;
-                        sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
-                    } else if ((sscanf(arg, "%f%c", &F, &C)) == 1) {
-                        if (F < 2) {
-                            F = F * 10;
-                            shutter_speed.denom = 10;
-                            shutter_speed.nom = F;
-                        } else {
-                            shutter_speed.denom = 1;
-                            shutter_speed.nom = F;
-                        }
-                        sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
-                    } else {
-                        shutter_speed.nom = 0;
+                    shutter_speed = parse_shutter_speed(arg);
+                    if (shutter_speed.nom == 0) {
                         sprintf(buf,"1 Invalid shutter speed value.\n");
-                    }
-                    if (shutter_speed.nom) {
+                    } else {
+                        sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
                         pslr_set_shutter(camhandle, shutter_speed);
                     }
                     write_socket_answer(buf);
