@@ -375,9 +375,7 @@ pslr_handle_t pslr_init( char *model, char *device ) {
     } else {
         driveNum = 1;
         drives = malloc( driveNum * sizeof(char*) );
-        drives[0] = malloc( strlen( device )+1 );
-        memcpy( drives[0], device, strlen( device ) );
-        drives[0][strlen(device)]='\0';
+        drives[0] = strdup( device );
     }
     DPRINT("driveNum:%d\n",driveNum);
     int i;
