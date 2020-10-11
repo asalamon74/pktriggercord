@@ -288,9 +288,7 @@ int common_init(void) {
     char **fileformatnames = malloc( numfileformats * sizeof(char*) );
     int i;
     for (i = 0; i<numfileformats; i++) {
-        fileformatnames[i] = malloc( strlen(file_formats[i].file_format_name)+1);
-        memset( fileformatnames[i], '\0', strlen(file_formats[i].file_format_name)+1);
-        strncpy( fileformatnames[i], file_formats[i].file_format_name, strlen( file_formats[i].file_format_name ));
+        fileformatnames[i] = strdup( file_formats[i].file_format_name );
     }
 
     combobox_append( pw, fileformatnames, numfileformats );

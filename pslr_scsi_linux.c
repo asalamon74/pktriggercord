@@ -82,8 +82,7 @@ char **get_drives(int *drive_num) {
         if (d) {
             while ( (ent = readdir(d)) ) {
                 if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0 && strncmp(ent->d_name, "loop",4) != 0) {
-                    tmp[j] = malloc( strlen(ent->d_name)+1 );
-                    memcpy(tmp[j], ent->d_name, strlen(ent->d_name)+1);
+                    tmp[j] = strdup( ent->d_name );
                     ++j;
                 }
             }
@@ -96,9 +95,7 @@ char **get_drives(int *drive_num) {
     if (j>0) {
         ret = malloc( j * sizeof(char*) );
         for ( jj=0; jj<j; ++jj ) {
-            ret[jj] = malloc( strlen(tmp[jj])+1 );
-            memcpy( ret[jj], tmp[jj], strlen(tmp[jj]) );
-            ret[jj][strlen(tmp[jj])]='\0';
+            ret[jj] = tmp[jj];
         }
     }
     return ret;
