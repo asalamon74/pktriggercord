@@ -3,8 +3,8 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-28.0.3
-    - android-28
+    - build-tools-29.0.2
+    - android-29
   licenses:
     - 'android-sdk-license-.+'
 addons:
@@ -19,13 +19,7 @@ addons:
     - libgtk2.0
     - libgtk2.0-dev
 before_install:
-  - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
-  - pushd $HOME/android-ndk-root
-  - git checkout 9afc86eae45a544562bc7052ca6f529772754f16 .
-  - popd
-  - export ANDROID_NDK_HOME=$HOME/android-ndk-root
-  - mkdir -p "/usr/local/android-sdk/licenses"
-  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > /usr/local/android-sdk/licenses/android-sdk-license
+  - yes | sdkmanager "platforms;android-29"
 before_script:
   - wget -O astyle_3.1_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%203.1/astyle_3.1_linux.tar.gz/download
   - tar -xf astyle_3.1_linux.tar.gz -C $HOME

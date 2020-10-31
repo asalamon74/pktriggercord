@@ -12,8 +12,8 @@ gradle.projectsEvaluated {
 }
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     externalNativeBuild {
         ndkBuild {
@@ -36,7 +36,7 @@ android {
     defaultConfig {
         applicationId "info.melda.sala.pktriggercord"
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 8501
         versionName "0.85.01"
         setProperty("archivesBaseName", "info.melda.sala.pktriggercord.PkTriggerCord-$versionName" )
@@ -71,7 +71,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.android.support:appcompat-v7:28.0.0'
+    api 'androidx.appcompat:appcompat:1.2.0'
 }
 
 buildscript {
@@ -83,7 +83,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:4.1.0'
     }
 }
 
