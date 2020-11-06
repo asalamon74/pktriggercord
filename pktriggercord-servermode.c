@@ -168,6 +168,7 @@ int servermode_socket(int servermode_timeout) {
     char buf[2100];
     pslr_handle_t camhandle=NULL;
     pslr_status status;
+    pslr_buffer_type buffer_type=PSLR_BUF_DNG;
     char C;
     pslr_rational_t shutter_speed = {0, 0};
     uint32_t iso = 0;
@@ -344,11 +345,20 @@ int servermode_socket(int servermode_timeout) {
                         write_socket_answer_bin(pImage, imageSize);
                     }
                 }
+            } else if (  (arg = is_string_prefix( client_message, "get_buffer_type")) != NULL ) {
+                if ( buffer_type == PSLR_BUF_PEF ) {
+                    sprintf(buf,"0 PEF\n");
+                } else if ( buffer_type == PSLR_BUF_DNG ) {
+                    sprintf(buf,"0 DNG\n");
+                } else {
+                    sprintf(buf,"1 Invalid buffer type.\n");
+                }
+                write_socket_answer(buf);
             } else if (  (arg = is_string_prefix( client_message, "get_buffer")) != NULL ) {
                 int bufno = atoi(arg);
                 if ( check_camera(camhandle) ) {
                     uint32_t imageSize;
-                    if ( pslr_buffer_open(camhandle, bufno, PSLR_BUF_DNG, 0) ) {
+                    if ( pslr_buffer_open(camhandle, bufno, buffer_type, 0) ) {
                         sprintf(buf, "%d\n", 1);
                         write_socket_answer(buf);
                     } else {
@@ -369,6 +379,17 @@ int servermode_socket(int servermode_timeout) {
                         pslr_buffer_close(camhandle);
                     }
                 }
+            } else if (  (arg = is_string_prefix( client_message, "set_buffer_type")) != NULL ) {
+                if ( !strcmp(arg, "PEF") ) {
+                    buffer_type = PSLR_BUF_PEF;
+                    sprintf(buf,"0 PEF\n");
+                } else if ( !strcmp(arg, "DNG") ) {
+                    buffer_type = PSLR_BUF_DNG;
+                    sprintf(buf,"0 DNG\n");
+                } else {
+                    sprintf(buf,"1 Invalid buffer type (must be PEF or DNG).\n");
+                }
+                write_socket_answer(buf);
             } else if (  (arg = is_string_prefix( client_message, "set_shutter_speed")) != NULL ) {
                 if ( check_camera(camhandle) ) {
                     shutter_speed = parse_shutter_speed(arg);
