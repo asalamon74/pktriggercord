@@ -634,21 +634,9 @@ int main(int argc, char **argv) {
                 break;
 
             case 'a':
-                if (sscanf(optarg, "%f%c", &F, &C) != 1) {
-                    F = 0;
-                }
-                /*It's unlikely that you want an f-number > 100, even for a pinhole.
-                 On the other hand, the fastest lens I know of is a f:0.8 Zeiss*/
-                if (F > 100 || F < 0.8) {
+                aperture = parse_aperture(optarg);
+                if (aperture.nom == 0) {
                     warning_message( "%s: Invalid aperture value.\n", argv[0]);
-                }
-                if (F >= 11) {
-                    aperture.nom = F;
-                    aperture.denom = 1;
-                } else {
-                    F = (F * 10.0);
-                    aperture.nom = F;
-                    aperture.denom = 10;
                 }
                 break;
 

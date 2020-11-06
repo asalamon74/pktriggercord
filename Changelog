@@ -7,7 +7,7 @@ version 0.85.01
 	Updating lens info database ( exiftool 11.99 )
 	Testing support for 645Z
 	Better windows cross-compliation (thx blemasle)
-	New servermode subcommands: set_buffer_type, get_buffer_type (thx Yale Kozinski)
+	New servermode subcommands: set_buffer_type, get_buffer_type, set_aperture (thx Yale Kozinski)
 
 version 0.85.00 ( 2019-JAN-27 )
 	K-1 battery fields fix
