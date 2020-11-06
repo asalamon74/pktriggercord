@@ -171,7 +171,7 @@ int servermode_socket(int servermode_timeout) {
     char C;
     pslr_rational_t shutter_speed = {0, 0};
     pslr_rational_t aperture = {0, 0};
-	uint32_t iso = 0;
+    uint32_t iso = 0;
     uint32_t auto_iso_min = 0;
     uint32_t auto_iso_max = 0;
 
@@ -383,14 +383,14 @@ int servermode_socket(int servermode_timeout) {
                 }
             } else if (  (arg = is_string_prefix( client_message, "set_aperture")) != NULL ) {
                 if ( check_camera(camhandle) ) {
-					aperture.nom = atof(arg) * 10 ;
-					aperture.denom = 10 ;
+                    aperture.nom = atof(arg) * 10 ;
+                    aperture.denom = 10 ;
                     if (aperture.nom) {
                         pslr_set_aperture(camhandle, aperture);
-						sprintf(buf, "%d %.1f\n", 0, aperture.nom / 10.0);
+                        sprintf(buf, "%d %.1f\n", 0, aperture.nom / 10.0);
                     } else {
-                      	aperture.nom = 0;
-                      	sprintf(buf,"1 Invalid aperture value.\n");
+                        aperture.nom = 0;
+                        sprintf(buf,"1 Invalid aperture value.\n");
                     }
                     write_socket_answer(buf);
                 }
