@@ -383,8 +383,8 @@ int servermode_socket(int servermode_timeout) {
                 }
             } else if (  (arg = is_string_prefix( client_message, "set_aperture")) != NULL ) {
                 if ( check_camera(camhandle) ) {
-                    aperture.nom = atof(arg) * 10 ;
-                    aperture.denom = 10 ;
+                    aperture.nom = atof(arg) * 10;
+                    aperture.denom = 10;
                     if (aperture.nom) {
                         pslr_set_aperture(camhandle, aperture);
                         sprintf(buf, "%d %.1f\n", 0, aperture.nom / 10.0);
