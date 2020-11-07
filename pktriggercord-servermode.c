@@ -381,10 +381,10 @@ int servermode_socket(int servermode_timeout) {
                     }
                 }
             } else if (  (arg = is_string_prefix( client_message, "set_buffer_type")) != NULL ) {
-                if( !strcmp(arg, "PEF") ) {
+                if ( !strcmp(arg, "PEF") ) {
                     buffer_type = PSLR_BUF_PEF;
                     sprintf(buf,"0 PEF\n");
-                } else if( !strcmp(arg, "DNG") ) {
+                } else if ( !strcmp(arg, "DNG") ) {
                     buffer_type = PSLR_BUF_DNG;
                     sprintf(buf,"0 DNG\n");
                 } else {
