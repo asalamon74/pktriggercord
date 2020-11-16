@@ -36,6 +36,7 @@
 #include <unistd.h>
 #endif
 
+#include "pslr.h"
 #include "pslr_utils.h"
 
 double timeval_diff_sec(struct timeval *t2, struct timeval *t1) {
@@ -49,4 +50,23 @@ void sleep_sec(double sec) {
         usleep(999999); // 1000000 is not working for Windows
     }
     usleep(1000000*(sec-floor(sec)));
+}
+
+pslr_rational_t parse_shutter_speed(char *shutter_speed_str) {
+    char C;
+    float F = 0;
+    pslr_rational_t shutter_speed = {0, 0};
+    if (sscanf(shutter_speed_str, "%d/%d%c", &shutter_speed.nom, &shutter_speed.denom, &C) == 2) {
+        // noop
+    } else if ((sscanf(shutter_speed_str, "%d%c", &shutter_speed.nom, &C)) == 1) {
+        shutter_speed.denom = 1;
+    } else if ((sscanf(shutter_speed_str, "%f%c", &F, &C)) == 1) {
+        F = F * 1000;
+        shutter_speed.denom = 1000;
+        shutter_speed.nom = F;
+    } else {
+        shutter_speed.nom = 0;
+        shutter_speed.denom = 0;
+    }
+    return shutter_speed;
 }
