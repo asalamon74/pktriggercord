@@ -7,6 +7,8 @@
 *~
 *.exe
 *.dll
+*.def
+*.lib
 /pktriggercord_commandline.html
 /pktriggercord-*-win
 /pktriggercord-*-win.zip
