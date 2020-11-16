@@ -46,6 +46,7 @@
 #include "pslr_log.h"
 #include "pslr.h"
 #include "pslr_lens.h"
+#include "pslr_utils.h"
 #include "pktriggercord-servermode.h"
 
 #ifndef WIN32
