@@ -287,7 +287,7 @@ int common_init(void) {
     char **fileformatnames = malloc( numfileformats * sizeof(char*) );
     int i;
     for (i = 0; i<numfileformats; i++) {
-        fileformatnames[i] = strdup( file_formats[i].file_format_name );
+        fileformatnames[i] = strdup( pslr_user_file_formats[i].file_format_name );
     }
 
     combobox_append( pw, fileformatnames, numfileformats );

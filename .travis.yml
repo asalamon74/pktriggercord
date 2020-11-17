@@ -15,6 +15,7 @@ addons:
     - gcc-mingw-w64-i686
     - wine
     - groff
+    - libgtk2.0-dev
 before_install:
   - yes | sdkmanager "platforms;android-29"
 before_script:
