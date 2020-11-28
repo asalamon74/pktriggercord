@@ -28,7 +28,8 @@ before_script:
 script:
   - if [[ -n $(make astyle | grep Formatted) ]]; then echo "Code formatting error. Please check astyle"; exit 1; fi
   - make android
-  - make localwin
+  - make ARCH=Win32
+  - make ARCH=Win32 dist
   - make srczip
   - make clean
   - make
