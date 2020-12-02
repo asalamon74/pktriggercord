@@ -48,6 +48,24 @@
 #include "pslr_lens.h"
 #include "pslr_utils.h"
 #include "pktriggercord-servermode.h"
+pslr_rational_t parse_aperture(char *aperture_str) {
+    char C;
+    float F = 0;
+    pslr_rational_t aperture = {0, 0};
+    if (sscanf(aperture_str, "%f%c", &F, &C) != 1) {
+        F = 0;
+    }
+    /*It's unlikely that you want an f-number > 100, even for a pinhole.
+     On the other hand, the fastest lens I know of is a f:0.8 Zeiss*/
+    if (F > 100 || F < 0.8) {
+        F = 0;
+    }
+    aperture.nom = F * 10;
+    aperture.denom = 10;
+
+    return aperture;
+}
+
 
 #ifndef WIN32
 int client_sock;
@@ -108,8 +126,10 @@ int servermode_socket(int servermode_timeout) {
     char buf[2100];
     pslr_handle_t camhandle=NULL;
     pslr_status status;
+    pslr_buffer_type buffer_type=PSLR_BUF_DNG;
     char C;
     pslr_rational_t shutter_speed = {0, 0};
+    pslr_rational_t aperture = {0, 0};
     uint32_t iso = 0;
     uint32_t auto_iso_min = 0;
     uint32_t auto_iso_max = 0;
@@ -284,11 +304,20 @@ int servermode_socket(int servermode_timeout) {
                         write_socket_answer_bin(pImage, imageSize);
                     }
                 }
+            } else if (  (arg = is_string_prefix( client_message, "get_buffer_type")) != NULL ) {
+                if ( buffer_type == PSLR_BUF_PEF ) {
+                    sprintf(buf,"0 PEF\n");
+                } else if ( buffer_type == PSLR_BUF_DNG ) {
+                    sprintf(buf,"0 DNG\n");
+                } else {
+                    sprintf(buf,"1 Invalid buffer type.\n");
+                }
+                write_socket_answer(buf);
             } else if (  (arg = is_string_prefix( client_message, "get_buffer")) != NULL ) {
                 int bufno = atoi(arg);
                 if ( check_camera(camhandle) ) {
                     uint32_t imageSize;
-                    if ( pslr_buffer_open(camhandle, bufno, PSLR_BUF_DNG, 0) ) {
+                    if ( pslr_buffer_open(camhandle, bufno, buffer_type, 0) ) {
                         sprintf(buf, "%d\n", 1);
                         write_socket_answer(buf);
                     } else {
@@ -309,6 +338,17 @@ int servermode_socket(int servermode_timeout) {
                         pslr_buffer_close(camhandle);
                     }
                 }
+            } else if (  (arg = is_string_prefix( client_message, "set_buffer_type")) != NULL ) {
+                if ( !strcmp(arg, "PEF") ) {
+                    buffer_type = PSLR_BUF_PEF;
+                    sprintf(buf,"0 PEF\n");
+                } else if ( !strcmp(arg, "DNG") ) {
+                    buffer_type = PSLR_BUF_DNG;
+                    sprintf(buf,"0 DNG\n");
+                } else {
+                    sprintf(buf,"1 Invalid buffer type (must be PEF or DNG).\n");
+                }
+                write_socket_answer(buf);
             } else if (  (arg = is_string_prefix( client_message, "set_shutter_speed")) != NULL ) {
                 if ( check_camera(camhandle) ) {
                     shutter_speed = parse_shutter_speed(arg);
@@ -317,6 +357,17 @@ int servermode_socket(int servermode_timeout) {
                     } else {
                         sprintf(buf, "%d %d %d\n", 0, shutter_speed.nom, shutter_speed.denom);
                         pslr_set_shutter(camhandle, shutter_speed);
+                    }
+                    write_socket_answer(buf);
+                }
+            } else if (  (arg = is_string_prefix( client_message, "set_aperture")) != NULL ) {
+                if ( check_camera(camhandle) ) {
+                    aperture = parse_aperture(arg);
+                    if (aperture.nom == 0) {
+                        sprintf(buf,"1 Invalid aperture value.\n");
+                    } else {
+                        pslr_set_aperture(camhandle, aperture);
+                        sprintf(buf, "%d %.1f\n", 0, aperture.nom / 10.0);
                     }
                     write_socket_answer(buf);
                 }

@@ -12,3 +12,6 @@ make cli
 If you'd like to debug the program you don't have to recompile
 just use --debug switch
 
+To crosscompile the Windows version:
+
+ARCH=Win32 make dist

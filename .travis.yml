@@ -27,7 +27,7 @@ script:
   - if [[ -n $(make astyle | grep Formatted) ]]; then echo "Code formatting error. Please check astyle"; exit 1; fi
   - make android
   - make ARCH=Win32
-  - make dist ARCH=Win32
+  - make ARCH=Win32 dist
   - make srczip
   - make clean
   - make
