@@ -2,23 +2,14 @@ JSONDIR=src/external/js0n
 
 PREFIX ?= /usr/local
 PKTDATADIR = $(PREFIX)/share/pktriggercord
-CFLAGS ?= -O3 -g -Wall -I$(JSONDIR)
+CFLAGS ?= -O3 -g -Wall -fvisibility=hidden -I$(JSONDIR)
 # -Wextra
 LDFLAGS ?= -lm
 
 MANDIR = $(PREFIX)/share/man
 MAN1DIR = $(MANDIR)/man1
 
-LOCAL_CFLAGS = $(CFLAGS)
-LOCAL_LDFLAGS = $(LDFLAGS)
-
-CLI_CFLAGS=$(LOCAL_CFLAGS)
-CLI_LDFLAGS=$(LOCAL_LDFLAGS)
-
-GUI_CFLAGS=$(LOCAL_CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
-#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
-GUI_LDFLAGS=$(LOCAL_LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
-
+MAJORVERSION=0
 VERSION=0.85.01
 VERSIONCODE=$(shell echo $(VERSION) | sed s/\\.//g | sed s/^0// )
 # variables for RPM creation
@@ -40,8 +31,76 @@ ANDROID_PROJECT_NAME = PkTriggerCord
 ANDROID_PACKAGE = info.melda.sala.pktriggercord
 APK_FILE = $(PROJECT_NAME)-debug.apk
 
+MANS = pktriggercord-cli.1 pktriggercord.1
+SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_log pslr_lens pslr_model pslr_utils
+OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
+# building lib requires recompilation, so we use different objets
+LIB_OBJS=$(OBJS:.o=.ol)
+
+SOURCE_PACKAGE_FILES = \
+	Makefile \
+	Changelog \
+	COPYING \
+	INSTALL \
+	BUGS \
+	README.md \
+	$(MANS) \
+	pentax_scsi_protocol.md \
+	pentax.rules samsung.rules \
+	exiftool_pentax_lens.txt \
+	pentax_settings.json \
+	$(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) \
+	pktriggercord-servermode.c pktriggercord-servermode.h \
+	pslr_api.h \
+	pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c \
+	libpktriggercord.h \
+	pktriggercord.c \
+	pktriggercord-cli.c \
+	pktriggercord.ui \
+	$(SPECFILE) \
+	android_scsi_sg.h rad10/ src/
+
+TARDIR = pktriggercord-$(VERSION)
+SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
+
+LOCALMINGW=i686-w64-mingw32
+WINGCC=i686-w64-mingw32-gcc
+WINDIR=$(TARDIR)-win
+GTK_BUNDLE=gtk+-bundle_2.24.10-20120208_win32.zip
+
+# List of all the dll required to run the GUI on Windows
+GUI_WIN_DLLS = \
+	$(LOCALMINGW)/bin/freetype6.dll \
+	$(LOCALMINGW)/bin/libfontconfig-1.dll \
+	$(LOCALMINGW)/bin/libgdk-win32-2.0-0.dll \
+	$(LOCALMINGW)/bin/libgtk-win32-2.0-0.dll \
+	$(LOCALMINGW)/bin/libgdk_pixbuf-2.0-0.dll \
+	$(LOCALMINGW)/bin/libgthread-2.0-0.dll \
+	$(LOCALMINGW)/bin/libpng14-14.dll \
+	$(LOCALMINGW)/bin/libgio-2.0-0.dll $(LOCALMINGW)/bin/libglib-2.0-0.dll $(LOCALMINGW)/bin/libgmodule-2.0-0.dll $(LOCALMINGW)/bin/libgobject-2.0-0.dll \
+	$(LOCALMINGW)/bin/libpango-1.0-0.dll $(LOCALMINGW)/bin/libpangowin32-1.0-0.dll $(LOCALMINGW)/bin/libpangocairo-1.0-0.dll $(LOCALMINGW)/bin/libpangoft2-1.0-0.dll \
+	$(LOCALMINGW)/bin/libcairo-2.dll \
+	$(LOCALMINGW)/bin/libatk-1.0-0.dll \
+	$(LOCALMINGW)/bin/zlib1.dll \
+	$(LOCALMINGW)/bin/intl.dll \
+	$(LOCALMINGW)/bin/libexpat-1.dll
+
+LOCAL_CFLAGS=$(CFLAGS) -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" -DPK_LIB_STATIC
+LOCAL_LDFLAGS=$(LDFLAGS)
+
+CLI_CFLAGS=$(LOCAL_CFLAGS)
+CLI_LDFLAGS=$(LOCAL_LDFLAGS)
+
+GUI_CFLAGS=$(LOCAL_CFLAGS) $(shell pkg-config --cflags gtk+-2.0 gmodule-2.0) -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE
+#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+GUI_LDFLAGS=$(LOCAL_LDFLAGS) $(shell pkg-config --libs gtk+-2.0 gmodule-2.0)
+
+LIB_LDFLAGS=$(LOCAL_LDFLAGS)
+
 CLI_TARGET=pktriggercord-cli
 GUI_TARGET=pktriggercord
+LIB_TARGET=libpktriggercord.so.$(MAJORVERSION)
+LIB_FILE=libpktriggercord.so.$(VERSION)
 
 #variables modification for Windows cross compilation
 ifeq ($(ARCH),Win32)
@@ -64,78 +123,70 @@ ifeq ($(ARCH),Win32)
 	#some build of MinGW enforce this. Some doesn't. Ensure consistent behaviour
 	CLI_LDFLAGS+= -Wl,--force-exe-suffix
 	GUI_LDFLAGS+= -Wl,--force-exe-suffix
+	LIB_LDFLAGS+= -static-libgcc
 
 	CLI_TARGET=pktriggercord-cli.exe
 	GUI_TARGET=pktriggercord.exe
+	LIB_TARGET=libpktriggercord-$(VERSION).dll
+	LIB_FILE=$(LIB_TARGET)
 endif
 
-default: cli gui
+default: cli gui lib
 ifneq ($(ARCH),Win32)
-all: srczip rpm win pktriggercord_commandline.html
+all: srczip rpm pktriggercord_commandline.html
 endif
 cli: $(CLI_TARGET)
 gui: $(GUI_TARGET)
+lib: $(LIB_TARGET)
 
-MANS = pktriggercord-cli.1 pktriggercord.1
-SRCOBJNAMES = pslr pslr_enum pslr_scsi pslr_lens pslr_model pktriggercord-servermode
-OBJS = $(SRCOBJNAMES:=.o) $(JSONDIR)/js0n.o
-WIN_DLLS_DIR=win_dlls
-SOURCE_PACKAGE_FILES = Makefile Changelog COPYING INSTALL BUGS $(MANS) pentax_scsi_protocol.md pentax.rules samsung.rules $(SRCOBJNAMES:=.h) $(SRCOBJNAMES:=.c) pslr_scsi_linux.c pslr_scsi_win.c pslr_scsi_openbsd.c exiftool_pentax_lens.txt pktriggercord.c pktriggercord-cli.c pktriggercord.ui pentax_settings.json $(SPECFILE) android_scsi_sg.h rad10/ src/
-TARDIR = pktriggercord-$(VERSION)
-SRCZIP = pkTriggerCord-$(VERSION).src.tar.gz
+pslr.o: pslr_enum.o pslr_scsi.o pslr.c
 
-LOCALMINGW=i686-w64-mingw32
-WINGCC=i686-w64-mingw32-gcc
-WINMINGW=/usr/i686-w64-mingw32/sys-root/mingw
-WINDIR=$(TARDIR)-win
-GTK_BUNDLE=gtk+-bundle_2.24.10-20120208_win32.zip
+pslr_scsi.o: $(wildcard pslr_scsi_*.c)
 
-# List of all the dll required to run the GUI on Windows
-GUI_WIN_DLLS = \
-	$(LOCALMINGW)/bin/freetype6.dll \
-	$(LOCALMINGW)/bin/libfontconfig-1.dll \
-	$(LOCALMINGW)/bin/libgdk-win32-2.0-0.dll \
-	$(LOCALMINGW)/bin/libgtk-win32-2.0-0.dll \
-	$(LOCALMINGW)/bin/libgdk_pixbuf-2.0-0.dll \
-	$(LOCALMINGW)/bin/libgthread-2.0-0.dll \
-	$(LOCALMINGW)/bin/libpng14-14.dll \
-	$(LOCALMINGW)/bin/libgio-2.0-0.dll \
-	$(LOCALMINGW)/bin/libglib-2.0-0.dll \
-	$(LOCALMINGW)/bin/libgmodule-2.0-0.dll \
-	$(LOCALMINGW)/bin/libgobject-2.0-0.dll \
-	$(LOCALMINGW)/bin/libpango-1.0-0.dll \
-	$(LOCALMINGW)/bin/libpangowin32-1.0-0.dll \
-	$(LOCALMINGW)/bin/libpangocairo-1.0-0.dll \
-	$(LOCALMINGW)/bin/libpangoft2-1.0-0.dll \
-	$(LOCALMINGW)/bin/libcairo-2.dll \
-	$(LOCALMINGW)/bin/libatk-1.0-0.dll \
-	$(LOCALMINGW)/bin/zlib1.dll \
-	$(LOCALMINGW)/bin/intl.dll \
-	$(LOCALMINGW)/bin/libexpat-1.dll
+pslr.ol: pslr_enum.ol pslr_scsi.ol pslr.c
 
-pslr.o: pslr_enum.o pslr_scsi.o pslr.c pslr.h
+pslr_scsi.ol: $(wildcard pslr_scsi_*.c)
 
-$(CLI_TARGET): pktriggercord-cli.c $(OBJS)
-	$(CC) $(CLI_CFLAGS) $^ -DVERSION='"$(VERSION)"' -o $@ $(CLI_LDFLAGS) -L.
+libpktriggercord.a: $(OBJS)
+	$(AR) $(ARFLAGS) $@ $^
 
-pslr_scsi.o: pslr_scsi_win.c pslr_scsi_linux.c pslr_scsi_openbsd.c
+libpktriggercord.so.$(MAJORVERSION): libpktriggercord.so.$(VERSION) 
+	ln -sf $< $@
 
-$(JSONDIR)/js0n.o: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
-	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
+$(LIB_FILE): $(LIB_OBJS)
+	$(CC) $(LOCAL_CFLAGS) -shared -Wl,-soname,libpktriggercord.so.$(MAJORVERSION) $^ -o $@ $(LIB_LDFLAGS) -L.
 
-external: $(JSONDIR)/js0n.o
+pktriggercord-$(MAJORVERSION).lib: $(LIB_OBJS)
+	i686-w64-mingw32-dlltool -l $@ $(LIB_OBJS)
 
-%.o: %.c %.h external
-	$(CC) $(LOCAL_CFLAGS) -DPKTDATADIR=\"$(PKTDATADIR)\" -fPIC -c $< -o $@
+pktriggercord-$(MAJORVERSION).def: $(LIB_OBJS)
+	i686-w64-mingw32-dlltool -z $@ $(LIB_OBJS)
+
+$(CLI_TARGET): pktriggercord-cli.c pslr_utils.c pktriggercord-servermode.c libpktriggercord.a
+	$(CC) $(CLI_CFLAGS) \
+		pktriggercord-cli.c pslr_utils.c pktriggercord-servermode.c \
+		-o $@ -Wl,libpktriggercord.a $(CLI_LDFLAGS) -L.
 
 ifeq ($(ARCH),Win32)
 $(GUI_TARGET): $(LOCALMINGW)/include $(LOCALMINGW)/lib
 endif
 
-$(GUI_TARGET): pktriggercord.c $(OBJS)
-	$(CC) $(GUI_CFLAGS) -DVERSION='"$(VERSION)"' -DPKTDATADIR=\"$(PKTDATADIR)\" pktriggercord.c $(OBJS) -o $@ $(GUI_LDFLAGS) -L.
+$(GUI_TARGET): pktriggercord.c pslr_utils.c libpktriggercord.a
+	$(CC) $(GUI_CFLAGS) pktriggercord.c pslr_utils.c -o $@ -Wl,libpktriggercord.a $(GUI_LDFLAGS) -L.
 
-install: pktriggercord-cli pktriggercord
+$(JSONDIR)/js0n.o: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
+	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
+
+%.o: %.c %.h
+	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
+
+$(JSONDIR)/js0n.ol: $(JSONDIR)/js0n.c $(JSONDIR)/js0n.h
+	$(CC) $(LOCAL_CFLAGS) -fPIC -c $< -o $@
+
+%.ol: %.c %.h
+	$(CC) $(LOCAL_CFLAGS) -DPK_LIB_EXPORTS -fPIC -c $< -o $@
+
+install: pktriggercord-cli pktriggercord libpktriggercord.so.$(VERSION)
 	install -d $(DESTDIR)/$(PREFIX)/bin
 	install -s -m 0755 pktriggercord-cli $(DESTDIR)/$(PREFIX)/bin/
 	(which setcap && setcap CAP_SYS_RAWIO+eip $(DESTDIR)/$(PREFIX)/bin/pktriggercord-cli) || true
@@ -154,15 +205,22 @@ install: pktriggercord-cli pktriggercord
 	install -m 0644 pktriggercord.ui $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
 	install -m 0644 pentax_settings.json $(DESTDIR)/$(PREFIX)/share/pktriggercord/ ; \
 	fi
+	install -s -m 644 libpktriggercord.so.$(VERSION) $(DESTDIR)/$(PREFIX)/lib/
+	ln -sf libpktriggercord.so.$(VERSION) $(DESTDIR)/$(PREFIX)/lib/libpktriggercord.so.$(MAJORVERSION)
+	ln -sf libpktriggercord.so.$(MAJORVERSION) $(DESTDIR)/$(PREFIX)/lib/libpktriggercord.so
 
 clean:
-	rm -f pktriggercord pktriggercord-cli *.o $(JSONDIR)/*.o
-	rm -f pktriggercord.exe pktriggercord-cli.exe
+	rm -f *.o* *.a $(JSONDIR)/*.o*
+	rm -f pktriggercord pktriggercord-cli *.so*
+	rm -f pktriggercord.exe pktriggercord-cli.exe *.dll *.def *.lib
+	rm -f pktriggercord_commandline.html
 	rm -f *.orig
+	rm -f *.log
 
 uninstall:
 	rm -f $(PREFIX)/bin/pktriggercord $(PREFIX)/bin/pktriggercord-cli
 	rm -rf $(PREFIX)/share/pktriggercord
+	rm -rf $(PREFIX)/lib/libpktriggercord.so*
 	rm -f /etc/udev/pentax.rules
 	rm -f /etc/udev/rules.d/95_pentax.rules
 	rm -f /etc/udev/samsung.rules
@@ -171,8 +229,6 @@ uninstall:
 srczip: clean
 	mkdir -p $(TARDIR)
 	cp -r $(SOURCE_PACKAGE_FILES) $(TARDIR)/
-	mkdir -p $(TARDIR)/$(WIN_DLLS_DIR)
-	cp -r $(WIN_DLLS_DIR)/*.dll $(TARDIR)/$(WIN_DLLS_DIR)/
 	mkdir -p $(TARDIR)/debian
 	cp -r debian/* $(TARDIR)/debian/
 	mkdir -p $(TARDIR)/android/res
@@ -188,6 +244,7 @@ srczip: clean
 	tar cf - $(TARDIR) | gzip > $(SRCZIP)
 	rm -rf $(TARDIR)
 
+ifneq ($(ARCH),Win32)
 srcrpm: srczip
 	install $(SPECFILE) $(TOPDIR)/SPECS/
 	install $(SRCZIP) $(TOPDIR)/SOURCES/
@@ -197,10 +254,6 @@ srcrpm: srczip
 rpm: srcrpm
 	rpmbuild -ba $(SPECFILE)
 	cp $(TOPDIR)/RPMS/$(ARCH)/pktriggercord-$(VERSION)-1.$(ARCH).rpm .
-
-WIN_CFLAGS=$(CFLAGS) -I$(WINMINGW)/include/gtk-2.0/ -I$(WINMINGW)/lib/gtk-2.0/include/ -I$(WINMINGW)/include/atk-1.0/ -I$(WINMINGW)/include/cairo/ -I$(WINMINGW)/include/gdk-pixbuf-2.0/ -I$(WINMINGW)/include/pango-1.0/
-WIN_GUI_CFLAGS=$(WIN_CFLAGS) -I$(WINMINGW)/include/glib-2.0 -I$(WINMINGW)/lib/glib-2.0/include
-WIN_LDFLAGS=-L$(WINMINGW)/lib -lgtk-win32-2.0 -lgdk-win32-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lgio-2.0
 
 deb: srczip
 	rm -f pktriggercord*orig.tar.gz
@@ -220,6 +273,7 @@ deb: srczip
 remotedeb:
 	git ls-files | tar Tzcf - - | ssh pi@raspberrypi "rm -rf /tmp/pktriggercord && cd /tmp && mkdir pktriggercord && tar xzfv - -C pktriggercord && cd pktriggercord && make clean deb"
 	scp pi@raspberrypi:/tmp/pktriggercord/pktriggercord_*.deb .
+endif
 
 
 # converting lens info from exiftool
@@ -231,11 +285,12 @@ exiftool_pentax:
 pktriggercord_commandline.html: pktriggercord-cli.1
 	cat $< | sed s/\\\\-/-/g | groff -man -Thtml -mwww -P "-lr" > $@
 
+
 # Windows cross-compile
 $(LOCALMINGW)/download: $(LOCALMINGW)/download/$(GTK_BUNDLE)
 
 $(LOCALMINGW)/download/$(GTK_BUNDLE):
-	mkdir -p $(LOCALMINGW)/download
+	mkdir -p $(LOCALMINGW)/download	
 	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/$(GTK_BUNDLE) -P $(LOCALMINGW)/download
 
 $(LOCALMINGW)/include $(LOCALMINGW)/lib: $(LOCALMINGW)/download
@@ -247,7 +302,7 @@ $(GUI_WIN_DLLS) &: $(LOCALMINGW)/download
 	touch -r $^ $(GUI_WIN_DLLS)
 
 ifeq ($(ARCH),Win32)
-dist: pktriggercord_commandline.html $(GUI_WIN_DLLS) $(CLI_TARGET) $(GUI_TARGET)
+dist: pktriggercord_commandline.html $(CLI_TARGET) $(GUI_TARGET) $(LIB_FILE) pktriggercord-$(MAJORVERSION).lib pktriggercord-$(MAJORVERSION).def $(GUI_WIN_DLLS)
 	rm -rf $(WINDIR)
 	mkdir -p $(WINDIR)
 	cp $^ $(WINDIR)

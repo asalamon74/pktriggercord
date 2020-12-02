@@ -11,7 +11,9 @@ LOCAL_SRC_FILES := ../../src/external/js0n/js0n.c \
 	../../pslr_lens.c \
 	../../pslr_model.c \
 	../../pslr_scsi.c \
+	../../pslr_log.c \
 	../../pslr.c \
+	../../pslr_utils.c \
 	../../pktriggercord-servermode.c \
 	../../pktriggercord-cli.c
 DEFINES 	:= -DANDROID -DVERSION=\"$(VERSION)\" -DPKTDATADIR=\".\"

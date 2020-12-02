@@ -1,15 +1,22 @@
 /*
+    Header file for libpktriggercord
+    Shared library wrapper for pkTriggerCord
+    Copyright (c) 2020 Karl Rees
+
+    for:
+
     pkTriggerCord
+    Remote control of Pentax DSLR cameras.
     Copyright (C) 2011-2019 Andras Salamon <andras.salamon@melda.info>
-    Remote control of Pentax DSLR cameras.
 
-    based on:
+    which is based on:
 
-    PK-Remote
-    Remote control of Pentax DSLR cameras.
-    Copyright (C) 2008 Pontus Lidman <pontus@lysator.liu.se>
+    pslr-shoot
 
-    Pentax lens database comes from ExifTool ( http://www.sno.phy.queensu.ca/~phil/exiftool/ )
+    Command line remote control of Pentax DSLR cameras.
+    Copyright (C) 2009 Ramiro Barreiro <ramiro_barreiro69@yahoo.es>
+    With fragments of code from PK-Remote by Pontus Lidman.
+    <https://sourceforge.net/projects/pkremote>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -26,26 +33,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef LIBPKTRIGGERCORD_H
+#define LIBPKTRIGGERCORD_H
+
+#include "pslr_api.h"
+#include "pslr_log.h"
+#include "pslr.h"
 #include "pslr_lens.h"
+#include "pktriggercord-servermode.h"
 
-#include <stdio.h>
-
-static const struct {
-    uint32_t id1;
-    uint32_t id2;
-    const char *name;
-} lens_id[] = {
-#include "exiftool_pentax_lens.txt"
-};
-
-const char *pslr_get_lens_name( uint32_t id1, uint32_t id2) {
-    int lens_num = sizeof(lens_id)/sizeof(lens_id[0]);
-    int i;
-    for ( i=0; i<lens_num; ++i ) {
-        if ( lens_id[i].id1 == id1 &&
-                lens_id[i].id2 == id2 ) {
-            return lens_id[i].name;
-        }
-    }
-    return "";
-}
+#endif

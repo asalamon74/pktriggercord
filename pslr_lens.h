@@ -30,5 +30,8 @@
 
 #include <stdint.h>
 
-const char *get_lens_name( uint32_t id1, uint32_t id2);
+#include "pslr_api.h"
+
+PK_API const char *pslr_get_lens_name( uint32_t id1, uint32_t id2);
+
 #endif

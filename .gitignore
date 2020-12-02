@@ -1,11 +1,16 @@
 /old_releases
 *.o*
+*.so*
 *.a
 /pktriggercord
 /pktriggercord-cli
 *~
 *.exe
+*.dll
+*.def
+*.lib
 /pktriggercord_commandline.html
+/pktriggercord-*-win
 /pktriggercord-*-win.zip
 /pkTriggerCord-*.src.tar.gz
 /pktriggercord-*.rpm
@@ -21,4 +26,5 @@
 /android/build/
 .#*
 *.orig
+*.log
 /i686-w64-mingw32
