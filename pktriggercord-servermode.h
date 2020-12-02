@@ -31,5 +31,4 @@
 
 int servermode_socket(int servermode_timeout);
 
-pslr_rational_t parse_aperture(char *aperture_str);
 #endif

@@ -52,6 +52,24 @@ void sleep_sec(double sec) {
     usleep(1000000*(sec-floor(sec)));
 }
 
+pslr_rational_t parse_aperture(char *aperture_str) {
+    char C;
+    float F = 0;
+    pslr_rational_t aperture = {0, 0};
+    if (sscanf(aperture_str, "%f%c", &F, &C) != 1) {
+        F = 0;
+    }
+    /*It's unlikely that you want an f-number > 100, even for a pinhole.
+     On the other hand, the fastest lens I know of is a f:0.8 Zeiss*/
+    if (F > 100 || F < 0.8) {
+        F = 0;
+    }
+    aperture.nom = F * 10;
+    aperture.denom = 10;
+
+    return aperture;
+}
+
 pslr_rational_t parse_shutter_speed(char *shutter_speed_str) {
     char C;
     float F = 0;

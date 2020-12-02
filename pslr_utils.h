@@ -43,5 +43,6 @@
 double timeval_diff_sec(struct timeval *t2, struct timeval *t1);
 void sleep_sec(double sec);
 pslr_rational_t parse_shutter_speed(char *shutter_speed_str);
+pslr_rational_t parse_aperture(char *aperture_str);
 
 #endif
