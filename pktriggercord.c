@@ -601,7 +601,8 @@ static void init_user_mode_combo(pslr_status *st_new, pslr_status *st_old) {
     GtkWidget *pw = GW("user_mode_combo");
     if (st_new) {
         if (!st_old || st_old->exposure_mode != st_new->exposure_mode) {
-            gtk_combo_box_set_active(GTK_COMBO_BOX(pw), st_new->exposure_mode);
+            pslr_gui_exposure_mode_t mode = pslr_convert_exposure_mode_to_gui(st_new->exposure_mode);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(pw), mode);
         }
     }
     gtk_widget_set_sensitive(pw, st_new != NULL && st_new->user_mode_flag);
@@ -721,7 +722,7 @@ static void update_aperture_label(void) {
 
 static void update_shutter_speed_widgets(void) {
     gchar buf[256];
-    if (status_new && (status_new->exposure_mode == PSLR_GUI_EXPOSURE_MODE_B)) {
+    if (status_new && (status_new->exposure_mode == PSLR_EXPOSURE_MODE_B || status_new->exposure_mode == PSLR_EXPOSURE_MODE_B_OFFAUTO)) {
         sprintf(buf, "BULB");
         gtk_label_set_text(GTK_LABEL(GW("label_shutter")), buf);
         /* inhibit shutter exposure slide */
@@ -1483,7 +1484,7 @@ G_MODULE_EXPORT void shutter_press(GtkAction *action) {
     }
     DPRINT("Shutter press.\n");
     pslr_get_status(camhandle, &status);
-    if (status.exposure_mode == PSLR_GUI_EXPOSURE_MODE_B) {
+    if (status.exposure_mode == PSLR_EXPOSURE_MODE_B || status.exposure_mode == PSLR_EXPOSURE_MODE_B_OFFAUTO) {
         GtkWidget * pw;
         pw = GW("bulb_exp_value");
         bulb_exp_str = gtk_entry_get_text(GTK_ENTRY(pw));
@@ -2302,13 +2303,16 @@ G_MODULE_EXPORT void file_format_combo_changed_cb(GtkAction *action, gpointer us
 G_MODULE_EXPORT void user_mode_combo_changed_cb(GtkAction *action, gpointer user_data) {
     DPRINT("user_mode_combo_changed_cb\n");
     pslr_gui_exposure_mode_t val = gtk_combo_box_get_active(GTK_COMBO_BOX(GW("user_mode_combo")));
+    pslr_exposure_mode_t mode;
     if (!status_new) {
         return;
     }
     assert(val >= 0);
     assert(val < PSLR_GUI_EXPOSURE_MODE_MAX);
-    if (status_new == NULL || val != status_new->exposure_mode ) {
-        pslr_set_exposure_mode(camhandle, val);
+
+    mode = pslr_convert_exposure_mode_from_gui(val);
+    if (status_new == NULL || mode != status_new->exposure_mode ) {
+        pslr_set_exposure_mode(camhandle, mode);
     }
 }
 

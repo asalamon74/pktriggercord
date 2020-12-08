@@ -204,7 +204,6 @@ int pslr_get_model_extended_iso_max(pslr_handle_t h);
 int *pslr_get_model_jpeg_resolutions(pslr_handle_t h);
 bool pslr_get_model_only_limited(pslr_handle_t h);
 bool pslr_get_model_has_jpeg_hue(pslr_handle_t h);
-bool pslr_get_model_need_exposure_conversion(pslr_handle_t h);
 pslr_jpeg_image_tone_t pslr_get_model_max_supported_image_tone(pslr_handle_t h);
 bool pslr_get_model_has_settings_parser(pslr_handle_t h);
 int pslr_get_model_af_point_num(pslr_handle_t h);
@@ -224,7 +223,9 @@ int pslr_write_setting_by_name(pslr_handle_t *h, char *name, uint32_t value);
 bool pslr_has_setting_by_name(pslr_handle_t *h, char *name);
 int pslr_read_settings(pslr_handle_t *h);
 
-pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp );
+pslr_gui_exposure_mode_t pslr_convert_exposure_mode_to_gui( pslr_exposure_mode_t exp );
+pslr_exposure_mode_t pslr_convert_exposure_mode_from_gui( pslr_gui_exposure_mode_t exp );
+
 char *format_rational( pslr_rational_t rational, char * fmt );
 
 int pslr_test( pslr_handle_t h, bool cmd9_wrap, int subcommand, int argnum,  int arg1, int arg2, int arg3, int arg4);

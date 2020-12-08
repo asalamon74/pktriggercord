@@ -329,8 +329,7 @@ user_file_format get_user_file_format( pslr_status *st ) {
     }
 }
 
-// most of the cameras require this exposure mode conversion step
-pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
+pslr_gui_exposure_mode_t pslr_convert_exposure_mode_to_gui( pslr_exposure_mode_t exp ) {
     switch ( exp ) {
 
         case PSLR_EXPOSURE_MODE_GREEN:
@@ -356,6 +355,33 @@ pslr_gui_exposure_mode_t exposure_mode_conversion( pslr_exposure_mode_t exp ) {
             return PSLR_GUI_EXPOSURE_MODE_X;
         case PSLR_EXPOSURE_MODE_MAX:
             return PSLR_GUI_EXPOSURE_MODE_MAX;
+    }
+    return 0;
+}
+
+pslr_exposure_mode_t pslr_convert_exposure_mode_from_gui( pslr_gui_exposure_mode_t exp ) {
+    switch ( exp ) {
+
+        case PSLR_GUI_EXPOSURE_MODE_GREEN:
+            return PSLR_EXPOSURE_MODE_GREEN;
+        case PSLR_GUI_EXPOSURE_MODE_P:
+            return PSLR_EXPOSURE_MODE_P;
+        case PSLR_GUI_EXPOSURE_MODE_SV:
+            return PSLR_EXPOSURE_MODE_SV;
+        case PSLR_GUI_EXPOSURE_MODE_TV:
+            return PSLR_EXPOSURE_MODE_TV;
+        case PSLR_GUI_EXPOSURE_MODE_AV:
+            return PSLR_EXPOSURE_MODE_AV;
+        case PSLR_GUI_EXPOSURE_MODE_TAV:
+            return PSLR_EXPOSURE_MODE_TAV;
+        case PSLR_GUI_EXPOSURE_MODE_M:
+            return PSLR_EXPOSURE_MODE_M;
+        case PSLR_GUI_EXPOSURE_MODE_B:
+            return PSLR_EXPOSURE_MODE_B;
+        case PSLR_GUI_EXPOSURE_MODE_X:
+            return PSLR_EXPOSURE_MODE_X;
+        case PSLR_GUI_EXPOSURE_MODE_MAX:
+            return PSLR_EXPOSURE_MODE_MAX;
     }
     return 0;
 }
@@ -988,10 +1014,6 @@ int pslr_set_exposure_mode(pslr_handle_t h, pslr_exposure_mode_t mode) {
         return PSLR_PARAM;
     }
 
-    if ( p->model->need_exposure_mode_conversion ) {
-        mode = exposure_mode_conversion( mode );
-    }
-
     return ipslr_handle_command_x18( p, true, X18_EXPOSURE_MODE, 2, 1, mode, 0);
 }
 
@@ -1176,11 +1198,6 @@ bool pslr_get_model_has_jpeg_hue(pslr_handle_t h) {
     return p->model->has_jpeg_hue;
 }
 
-bool pslr_get_model_need_exposure_conversion(pslr_handle_t h) {
-    ipslr_handle_t *p = (ipslr_handle_t *) h;
-    return p->model->need_exposure_mode_conversion;
-}
-
 int pslr_get_model_fastest_shutter_speed(pslr_handle_t h) {
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return p->model->fastest_shutter_speed;
@@ -1333,9 +1350,6 @@ static int ipslr_status_full(ipslr_handle_t *p, pslr_status *status) {
     } else {
         // everything OK
         (*p->model->status_parser_function)(p, status);
-        if ( p->model->need_exposure_mode_conversion ) {
-            status->exposure_mode = exposure_mode_conversion( status->exposure_mode );
-        }
         if ( p->model->bufmask_command ) {
             uint32_t x, y;
             int ret;

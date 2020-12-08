@@ -925,12 +925,12 @@ int main(int argc, char **argv) {
         DPRINT("shutter_speed.nom=%d\n", shutter_speed.nom);
         DPRINT("shutter_speed.denom=%d\n", shutter_speed.denom);
 
-        if (shutter_speed.nom <= 0 || (shutter_speed.nom > 30 && status.exposure_mode != PSLR_GUI_EXPOSURE_MODE_B ) || shutter_speed.denom <= 0 || shutter_speed.denom > pslr_get_model_fastest_shutter_speed(camhandle)) {
+        if (shutter_speed.nom <= 0 || (shutter_speed.nom > 30 && status.exposure_mode != PSLR_EXPOSURE_MODE_B && status.exposure_mode != PSLR_EXPOSURE_MODE_B_OFFAUTO) || shutter_speed.denom <= 0 || shutter_speed.denom > pslr_get_model_fastest_shutter_speed(camhandle)) {
             warning_message("%s: Invalid shutter speed value.\n", argv[0]);
         }
 
         pslr_set_shutter(camhandle, shutter_speed);
-    } else if ( status.exposure_mode == PSLR_GUI_EXPOSURE_MODE_B ) {
+    } else if ( status.exposure_mode == PSLR_EXPOSURE_MODE_B || status.exposure_mode == PSLR_EXPOSURE_MODE_B_OFFAUTO ) {
         warning_message("%s: Shutter speed not specified in Bulb mode. Using 30s.\n", argv[0]);
         shutter_speed.nom = 30;
         shutter_speed.denom = 1;
@@ -1096,7 +1096,7 @@ int main(int argc, char **argv) {
                 printf("Taking picture %d/%d\n", frameNo+1, frames);
                 fflush(stdout);
             }
-            if ( status.exposure_mode ==  PSLR_GUI_EXPOSURE_MODE_B ) {
+            if ( status.exposure_mode == PSLR_EXPOSURE_MODE_B || status.exposure_mode == PSLR_EXPOSURE_MODE_B_OFFAUTO ) {
                 if (pslr_get_model_old_bulb_mode(camhandle)) {
                     bulb_old(camhandle, shutter_speed, prev_time);
                 } else {
