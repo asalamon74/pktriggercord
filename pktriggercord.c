@@ -39,6 +39,7 @@
 
 #include "pslr.h"
 #include "pslr_lens.h"
+#include "pslr_log.h"
 #include "pktriggercord-servermode.h"
 
 #ifdef WIN32
@@ -1102,7 +1103,7 @@ static bool auto_save_check(int format, int buffer) {
     if (old_path) {
         ssize_t r = chdir(old_path);
         if (r != 0) {
-            fprintf(stderr, "chdir(old_path) failed");
+            pslr_write_log(PSLR_ERROR, "chdir(old_path) failed");
         }
 
         free(old_path);
@@ -1517,7 +1518,7 @@ G_MODULE_EXPORT void shutter_press(GtkAction *action) {
             } else if (pslr_has_setting_by_name(camhandle, "astrotracer")) {
                 pslr_set_setting_by_name(camhandle, "astrotracer", 1);
             } else {
-                fprintf(stderr, "New bulb mode is not supported for this camera model\n");
+                pslr_write_log(PSLR_ERROR, "New bulb mode is not supported for this camera model\n");
                 return;
             }
             if (pslr_has_setting_by_name(camhandle, "bulb_timer_sec")) {
@@ -1525,7 +1526,7 @@ G_MODULE_EXPORT void shutter_press(GtkAction *action) {
             } else if (pslr_has_setting_by_name(camhandle, "astrotracer_timer_sec")) {
                 pslr_set_setting_by_name(camhandle, "astrotracer_timer_sec", shutter_speed);
             } else {
-                fprintf(stderr, "New bulb mode is not supported for this camera model\n");
+                pslr_write_log(PSLR_ERROR, "New bulb mode is not supported for this camera model\n");
                 return;
             }
             gettimeofday(&expected_bulb_end_time, NULL);
@@ -2121,7 +2122,7 @@ static pslr_buffer_type get_image_type_based_on_ui() {
 static void save_buffer_single(const char *filename, const pslr_buffer_type imagetype) {
     int fd;
     if ((imagetype == PSLR_BUF_PEF || imagetype == PSLR_BUF_DNG)) {
-        fprintf(stderr, "Cannot download RAW images for this model if preview is already visible");
+        pslr_write_log(PSLR_ERROR, "Cannot download RAW images for this model if preview is already visible");
     } else {
         fd = open(filename, FILE_ACCESS, 0664);
         if (fd == -1) {

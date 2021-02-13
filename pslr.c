@@ -54,6 +54,7 @@
 #include <math.h>
 
 #include "pslr.h"
+#include "pslr_log.h"
 #include "pslr_scsi.h"
 #include "pslr_lens.h"
 
@@ -1813,21 +1814,4 @@ Based on:\n\
 pslr-shoot (C) 2009 Ramiro Barreiro\n\
 PK-Remote (C) 2008 Pontus Lidman \n\n");
     return ret;
-}
-
-void write_debug( const char* message, ... ) {
-
-    // Be sure debug is really on as DPRINT doesn't know
-    //
-    if ( !debug ) {
-        return;
-    }
-
-    // Write to stderr
-    //
-    va_list argp;
-    va_start(argp, message);
-    vfprintf( stderr, message, argp );
-    va_end(argp);
-    return;
 }

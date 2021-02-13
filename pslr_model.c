@@ -47,6 +47,7 @@
 #include <sys/stat.h>
 
 #include "pslr_model.h"
+#include "pslr_log.h"
 #include "pslr.h"
 
 static uint8_t lastbuf[MAX_STATUS_BUF_SIZE];
@@ -222,7 +223,7 @@ int pslr_get_hw_jpeg_quality( ipslr_model_info_t *model, int user_jpeg_stars) {
 static
 void ipslr_status_parse_k10d(ipslr_handle_t  *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
     memset(status, 0, sizeof (*status));
@@ -268,7 +269,7 @@ static
 void ipslr_status_parse_k20d(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
     memset(status, 0, sizeof (*status));
@@ -427,7 +428,7 @@ static
 void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -446,7 +447,7 @@ void ipslr_status_parse_kx(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -462,7 +463,7 @@ void ipslr_status_parse_kr(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -481,7 +482,7 @@ void ipslr_status_parse_k5(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -502,7 +503,7 @@ void ipslr_status_parse_k30(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -522,7 +523,7 @@ void ipslr_status_parse_k01(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -538,7 +539,7 @@ void ipslr_status_parse_k50(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -557,7 +558,7 @@ void ipslr_status_parse_k500(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -575,7 +576,7 @@ void ipslr_status_parse_km(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k3(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -595,7 +596,7 @@ void ipslr_status_parse_k3(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_ks1(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -613,7 +614,7 @@ void ipslr_status_parse_ks1(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -657,7 +658,7 @@ void ipslr_status_parse_k1(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -727,7 +728,7 @@ void ipslr_status_parse_k70(ipslr_handle_t *p, pslr_status *status) {
 static
 void ipslr_status_parse_k200d(ipslr_handle_t *p, pslr_status *status) {
     uint8_t *buf = p->status_buffer;
-    if ( debug ) {
+    if ( PSLR_DEBUG_ENABLED ) {
         ipslr_status_diff(buf);
     }
 
@@ -800,7 +801,7 @@ char *read_json_file(int *jsonsize) {
             jsonfd = open(PKTDATADIR "/pentax_settings.json", O_RDONLY);
         }
         if (jsonfd == -1) {
-            fprintf(stderr, "Cannot open pentax_settings.json file\n");
+            pslr_write_log(PSLR_ERROR, "Cannot open pentax_settings.json file\n");
             return NULL;
         }
     }
@@ -826,12 +827,12 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
     size_t json_part_length;
     const char *json_part;
     if (!(json_part = js0n(cameraid, strlen(cameraid), jsontext, jsonsize, &json_part_length))) {
-        fprintf(stderr, "JSON: Cannot find camera model\n");
+        pslr_write_log(PSLR_ERROR, "JSON: Cannot find camera model\n");
         return NULL;
     }
 
     if (!(json_part = js0n("fields", strlen("fields"), json_part, json_part_length, &json_part_length))) {
-        fprintf(stderr, "JSON: No fields defined for the camera model\n");
+        pslr_write_log(PSLR_ERROR, "JSON: No fields defined for the camera model\n");
         return NULL;
     }
     int ai=0;
@@ -842,7 +843,7 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
         const char *camera_field_name_ptr;
         char *camera_field_name;
         if (!(camera_field_name_ptr=js0n( "name", strlen("name"), json_array_part, json_array_part_length, &name_length))) {
-            fprintf(stderr, "No name is defined\n");
+            pslr_write_log(PSLR_ERROR, "No name is defined\n");
             return NULL;
         } else {
             camera_field_name=malloc(name_length+1);
@@ -852,7 +853,7 @@ pslr_setting_def_t *setting_file_process(const char *cameraid, int *def_num) {
         const char *camera_field_type_ptr;
         char *camera_field_type;
         if (!(camera_field_type_ptr=js0n( "type", strlen("type"), json_array_part, json_array_part_length, &type_length))) {
-            fprintf(stderr, "No type is defined\n");
+            pslr_write_log(PSLR_ERROR, "No type is defined\n");
             return NULL;
         } else {
             camera_field_type=malloc(type_length+1);
@@ -942,7 +943,7 @@ void ipslr_settings_parser_json(const char *cameraid, ipslr_handle_t *p, pslr_se
         } else if (strcmp(def.type, "uint16") == 0) {
             uint16_setting = ipslr_settings_parse_uint16(buf, &def);
         } else {
-            fprintf(stderr, "Invalid json type: %s\n", def.type);
+            pslr_write_log(PSLR_ERROR, "Invalid json type: %s\n", def.type);
         }
         if (strcmp(def.name, "bulb_mode_press_press") == 0) {
             settings->bulb_mode_press_press = bool_setting;

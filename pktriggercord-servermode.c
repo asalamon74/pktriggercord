@@ -43,9 +43,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+#include "pslr_log.h"
 #include "pslr.h"
 #include "pslr_lens.h"
+#include "pktriggercord-servermode.h"
 
 double timeval_diff_sec(struct timeval *t2, struct timeval *t1) {
     //DPRINT("tv2 %ld %ld t1 %ld %ld\n", t2->tv_sec, t2->tv_usec, t1->tv_sec, t1->tv_usec);
@@ -197,12 +198,12 @@ int servermode_socket(int servermode_timeout) {
     //Create socket
     socket_desc = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_desc == -1) {
-        fprintf(stderr, "Could not create socket");
+        pslr_write_log(PSLR_ERROR, "Could not create socket");
     }
 
     int enable = 1;
     if (setsockopt(socket_desc, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
-        fprintf(stderr, "setsockopt(SO_REUSEADDR) failed");
+        pslr_write_log(PSLR_ERROR, "setsockopt(SO_REUSEADDR) failed");
     }
     DPRINT("Socket created\n");
 
@@ -213,7 +214,7 @@ int servermode_socket(int servermode_timeout) {
 
     //Bind
     if ( bind(socket_desc,(struct sockaddr *)&server, sizeof(server)) < 0) {
-        fprintf(stderr, "bind failed. Error");
+        pslr_write_log(PSLR_ERROR, "bind failed. Error");
         return 1;
     }
     DPRINT("bind done\n");
@@ -241,7 +242,7 @@ int servermode_socket(int servermode_timeout) {
         } else if (retval) {
             client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
             if (client_sock < 0) {
-                fprintf(stderr, "accept failed");
+                pslr_write_log(PSLR_ERROR, "accept failed");
                 return 1;
             }
             DPRINT("Connection accepted\n");
@@ -458,7 +459,7 @@ int servermode_socket(int servermode_timeout) {
             DPRINT("Client disconnected\n");
             fflush(stdout);
         } else if (read_size == -1) {
-            fprintf(stderr, "recv failed\n");
+            pslr_write_log(PSLR_ERROR, "recv failed\n");
         }
     }
     return 0;

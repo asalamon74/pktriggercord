@@ -7,6 +7,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := pktriggercord-cli
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../src/external/js0n/
 LOCAL_SRC_FILES := ../../src/external/js0n/js0n.c \
+	../../pslr_log.c \
 	../../pslr_enum.c \
 	../../pslr_lens.c \
 	../../pslr_model.c \
