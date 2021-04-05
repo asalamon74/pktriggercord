@@ -33,7 +33,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <math.h>
 #include <getopt.h>
 #include <sys/time.h>
 
@@ -41,6 +40,7 @@
 #include "pslr_lens.h"
 #include "pslr_log.h"
 #include "pktriggercord-servermode.h"
+#include "pslr_utils.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY

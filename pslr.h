@@ -116,8 +116,6 @@ typedef struct {
 
 typedef void (*pslr_progress_callback_t)(uint32_t current, uint32_t total);
 
-void sleep_sec(double sec);
-
 pslr_handle_t pslr_init(char *model, char *device);
 int pslr_connect(pslr_handle_t h);
 int pslr_disconnect(pslr_handle_t h);

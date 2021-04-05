@@ -40,17 +40,15 @@
 #else
 #include <unistd.h>
 #include <getopt.h>
-#include <sys/time.h>
 #endif
 #include <fcntl.h>
 #include <ctype.h>
-#include <time.h>
 #include <stdarg.h>
-#include <math.h>
 
 #include "pslr.h"
 #include "pktriggercord-servermode.h"
 #include "pslr_log.h"
+#include "pslr_utils.h"
 
 #ifdef WIN32
 #define FILE_ACCESS O_WRONLY | O_CREAT | O_TRUNC | O_BINARY

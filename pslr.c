@@ -51,26 +51,18 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <dirent.h>
-#include <math.h>
 
 #include "pslr.h"
 #include "pslr_log.h"
 #include "pslr_scsi.h"
 #include "pslr_lens.h"
+#include "pslr_utils.h"
 
 #define POLL_INTERVAL 50000 /* Number of us to wait when polling */
 #define BLKSZ 65536 /* Block size for downloads; if too big, we get
                      * memory allocation error from sg driver */
 #define BLOCK_RETRY 3 /* Number of retries, since we can occasionally
                        * get SCSI errors when downloading data */
-
-void sleep_sec(double sec) {
-    int i;
-    for (i=0; i<floor(sec); ++i) {
-        usleep(999999); // 1000000 is not working for Windows
-    }
-    usleep(1000000*(sec-floor(sec)));
-}
 
 ipslr_handle_t pslr;
 

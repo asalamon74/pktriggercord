@@ -1,6 +1,6 @@
 /*
     pkTriggerCord
-    Copyright (C) 2011-2019 Andras Salamon <andras.salamon@melda.info>
+    Copyright (C) 2011-2020 Andras Salamon <andras.salamon@melda.info>
     Remote control of Pentax DSLR cameras.
 
     based on:
@@ -26,13 +26,23 @@
     and GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PKTRIGGERCORD_SERVERMODE_H
-#define PKTRIGGERCORD_SERVERMODE_H
 
-int servermode_socket(int servermode_timeout);
+#ifndef PKTRIGGERCORD_COMMON_H
+#define PKTRIGGERCORD_COMMON_H
 
-pslr_handle_t pslr_camera_connect( char *model, char *device, int timeout, char *error_message );
+#ifdef RAD10
+#include <utime.h>
+#else
+#include <sys/time.h>
+#endif
+#include <time.h>
+#include <math.h>
 
-void pslr_camera_close(pslr_handle_t camhandle);
+#include "pslr_model.h"
+
+double timeval_diff_sec(struct timeval *t2, struct timeval *t1);
+void sleep_sec(double sec);
+pslr_rational_t parse_shutter_speed(char *shutter_speed_str);
+pslr_rational_t parse_aperture(char *aperture_str);
 
 #endif

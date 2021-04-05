@@ -46,49 +46,8 @@
 #include "pslr_log.h"
 #include "pslr.h"
 #include "pslr_lens.h"
+#include "pslr_utils.h"
 #include "pktriggercord-servermode.h"
-
-double timeval_diff_sec(struct timeval *t2, struct timeval *t1) {
-    //DPRINT("tv2 %ld %ld t1 %ld %ld\n", t2->tv_sec, t2->tv_usec, t1->tv_sec, t1->tv_usec);
-    return (t2->tv_usec - t1->tv_usec) / 1000000.0 + (t2->tv_sec - t1->tv_sec);
-}
-
-pslr_rational_t parse_shutter_speed(char *shutter_speed_str) {
-    char C;
-    float F = 0;
-    pslr_rational_t shutter_speed = {0, 0};
-    if (sscanf(shutter_speed_str, "%d/%d%c", &shutter_speed.nom, &shutter_speed.denom, &C) == 2) {
-        // noop
-    } else if ((sscanf(shutter_speed_str, "%d%c", &shutter_speed.nom, &C)) == 1) {
-        shutter_speed.denom = 1;
-    } else if ((sscanf(shutter_speed_str, "%f%c", &F, &C)) == 1) {
-        F = F * 1000;
-        shutter_speed.denom = 1000;
-        shutter_speed.nom = F;
-    } else {
-        shutter_speed.nom = 0;
-        shutter_speed.denom = 0;
-    }
-    return shutter_speed;
-}
-
-pslr_rational_t parse_aperture(char *aperture_str) {
-    char C;
-    float F = 0;
-    pslr_rational_t aperture = {0, 0};
-    if (sscanf(aperture_str, "%f%c", &F, &C) != 1) {
-        F = 0;
-    }
-    /*It's unlikely that you want an f-number > 100, even for a pinhole.
-     On the other hand, the fastest lens I know of is a f:0.8 Zeiss*/
-    if (F > 100 || F < 0.8) {
-        F = 0;
-    }
-    aperture.nom = F * 10;
-    aperture.denom = 10;
-
-    return aperture;
-}
 
 void pslr_camera_close(pslr_handle_t camhandle) {
     pslr_disconnect(camhandle);
