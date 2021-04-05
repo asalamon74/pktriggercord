@@ -68,7 +68,7 @@ typedef struct {
 
 extern user_file_format_t pslr_user_file_formats[3];
 
-user_file_format_t *pslr_pslr_get_user_file_format_t( user_file_format uff );
+user_file_format_t *pslr_get_user_file_format_t( user_file_format uff );
 
 // OFF-AUTO: Off-Auto-Aperture
 typedef enum {

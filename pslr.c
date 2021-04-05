@@ -287,7 +287,7 @@ int pslr_set_debugmode(ipslr_handle_t *p, char debug_mode) {
 
 /* ************* End enabling/disabling debug mode ************ */
 
-user_file_format_t *pslr_pslr_get_user_file_format_t( user_file_format uff ) {
+user_file_format_t *pslr_get_user_file_format_t( user_file_format uff ) {
     unsigned int i;
     for (i = 0; i<sizeof(pslr_user_file_formats) / sizeof(pslr_user_file_formats[0]); i++) {
         if (pslr_user_file_formats[i].uff == uff) {

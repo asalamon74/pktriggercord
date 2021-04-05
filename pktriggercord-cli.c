@@ -1023,7 +1023,7 @@ int main(int argc, char **argv) {
     }
 
     double waitsec=0;
-    user_file_format_t ufft = *pslr_pslr_get_user_file_format_t(uff);
+    user_file_format_t ufft = *pslr_get_user_file_format_t(uff);
     int bracket_count = status.auto_bracket_picture_count;
     if ( bracket_count < 1 || status.auto_bracket_mode == 0 ) {
         bracket_count = 1;
