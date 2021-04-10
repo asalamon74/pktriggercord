@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/asalamon74/pktriggercord.svg?branch=master)](https://travis-ci.org/asalamon74/pktriggercord)  [![GitHub release](https://img.shields.io/github/release/asalamon74/pktriggercord.svg)](https://github.com/asalamon74/pktriggercord/releases)
+[![Build Status](https://travis-ci.com/asalamon74/pktriggercord.svg?branch=master)](https://travis-ci.com/asalamon74/pktriggercord)
+[![GitHub release](https://img.shields.io/github/release/asalamon74/pktriggercord.svg)](https://github.com/asalamon74/pktriggercord/releases)
 [![Packaging status](https://repology.org/badge/tiny-repos/pktriggercord.svg)](https://repology.org/metapackage/pktriggercord/versions)
 [![CodeFactor](https://www.codefactor.io/repository/github/asalamon74/pktriggercord/badge)](https://www.codefactor.io/repository/github/asalamon74/pktriggercord)
 
