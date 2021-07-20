@@ -113,6 +113,7 @@ static struct option const longopts[] = {
     {"read_firmware_version", no_argument, NULL, 27},
     {"settings_hex", no_argument, NULL, 28},
     {"dump_memory", required_argument, NULL, 29},
+    {"counter", required_argument, NULL, 30},
     {"settings", no_argument, NULL, 'S'},
     { NULL, 0, NULL, 0}
 };
@@ -238,6 +239,7 @@ void usage(char *name) {
       --dump_memory SIZE                dumps the internal memory of the camera to pentax_dump.dat file. Size is in bytes, but can be specified using K, M, and G modifiers.\n\
       --dust_removal                    dust removal\n\
   -F, --frames=NUMBER                   number of frames\n\
+      --counter=NUMBER                  number to start the filename frame counter at\n\
   -d, --delay=SECONDS                   delay between the frames (seconds)\n\
       --file_format=FORMAT              valid values: PEF, DNG, JPEG\n\
   -o, --output_file=FILE                send output to FILE\n\
@@ -382,6 +384,7 @@ int main(int argc, char **argv) {
     uint32_t auto_iso_min = 0;
     uint32_t auto_iso_max = 0;
     int frames = 0;
+    int counter = 0;
     int delay = 0;
     int timeout = 0;
     bool auto_focus = false;
@@ -747,6 +750,17 @@ int main(int argc, char **argv) {
                 }
                 DPRINT("DUMP_MEMORY_SIZE: %u\n",dump_memory_size);
                 break;
+            
+            case 30:
+                counter = atoi(optarg);
+                if (counter > 9999) {
+                    pslr_write_log(PSLR_WARNING, "%s: Counter starts too high.\n", argv[0]);
+                    counter = 0;
+                } else if (frames && counter + frames > 9999) {
+                    pslr_write_log(PSLR_WARNING, "%s: Taking too many frames, counter too high.\n", argv[0]);
+                    frames = 10000 - counter;
+                }
+                break;
         }
     }
 
@@ -1103,7 +1117,7 @@ int main(int argc, char **argv) {
             int bracket_download = pslr_get_model_bufmask_single(camhandle) ? 1 : (bracket_index+1 < bracket_count ? bracket_index+1 : bracket_count);
             int buffer_index;
             for ( buffer_index = 0; buffer_index < bracket_download; ++buffer_index ) {
-                fd = open_file(output_file, frameNo-bracket_download+buffer_index+1, ufft);
+                fd = open_file(output_file, counter+frameNo-bracket_download+buffer_index+1, ufft);
                 while ( save_buffer(camhandle, buffer_index, fd, &status, uff, quality) ) {
                     usleep(10000);
                 }
