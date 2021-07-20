@@ -8,6 +8,7 @@ version 0.85.01
 	Testing support for 645Z
 	Better windows cross-compliation (thx blemasle)
 	New servermode subcommands: set_buffer_type, get_buffer_type, set_aperture (thx Yale Kozinski)
+	Add file_num_start option (thx colbyyh2)
 
 version 0.85.00 ( 2019-JAN-27 )
 	K-1 battery fields fix
