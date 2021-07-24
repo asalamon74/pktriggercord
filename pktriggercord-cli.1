@@ -40,7 +40,8 @@ pktriggercord-cli - command-line Pentax DSLR tethering software
 | \fB\-\-noshutter\fR | \fB\-\-servermode\fR
 [ \fB\-\-servermode_timeout \fISECONDS\fR]  |
 \fB\-\-pentax_debug_mode\fI VALUE\fR]
-[ \fB\-\-file_format\fI FORMAT\fR ] [ \fB\-\-output_file\fI FILENAME\fR ] 
+[ \fB\-\-file_format\fI FORMAT\fR ] [ \fB\-\-output_file\fI FILENAME\fR ]
+.OP \-\-file_num_start NUMBER 
 .OP \-\-debug 
 .YS
 .PP
@@ -264,6 +265,11 @@ Specify flash exposure compensation value.
 .RS 4
 Specify the name of the output file prefix. Frame number and
 extension will be automatically added. Use '-' to output to stdout\.
+.RE
+.PP
+\fB\-\-file_num_start\fR \fINUMBER\fR
+.RS 4
+Specify what number to start at when adding the frame number to a file. Valid values are 0-9999\.
 .RE
 .PP
 \fB\-\-file_format\fR \fIFORMAT\fR
