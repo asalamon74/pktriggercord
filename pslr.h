@@ -142,7 +142,7 @@ int pslr_set_progress_callback(pslr_handle_t h, pslr_progress_callback_t cb,
 int pslr_set_shutter(pslr_handle_t h, pslr_rational_t value);
 int pslr_set_aperture(pslr_handle_t h, pslr_rational_t value);
 int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint32_t auto_max_value);
-int plsr_set_expose_compensation(pslr_handle_t h, pslr_rational_t value);
+int pslr_set_expose_compensation(pslr_handle_t h, pslr_rational_t value);
 
 int pslr_set_white_balance(pslr_handle_t h, pslr_white_balance_mode_t wb_mode);
 int pslr_set_white_balance_adjustment(pslr_handle_t h, pslr_white_balance_mode_t wb_mode, uint32_t wbadj_mg, uint32_t wbadj_ba);
