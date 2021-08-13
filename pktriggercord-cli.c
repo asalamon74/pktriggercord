@@ -153,7 +153,7 @@ int save_buffer(pslr_handle_t camhandle, int bufno, int fd, pslr_status *status,
             DPRINT("write(buf): Nothing has been written to buf.\n");
         } else if (r == -1) {
             perror("write(buf)");
-        } else if (r < bytes) {
+        } else if ((uint32_t)r < bytes) {
             DPRINT("write(buf): only write %zu bytes, should be %d bytes.\n", r, bytes);
         }
         current += bytes;
@@ -182,7 +182,7 @@ void save_memory(pslr_handle_t camhandle, int fd, uint32_t length) {
             DPRINT("write(buf): Nothing has been written to buf.\n");
         } else if (r == -1) {
             perror("write(buf)");
-        } else if (r < bytes) {
+        } else if ((uint32_t)r < bytes) {
             DPRINT("write(buf): only write %zu bytes, should be %d bytes.\n", r, bytes);
         }
         current += bytes;
@@ -897,7 +897,7 @@ int main(int argc, char **argv) {
     }
 
     if ( ec.denom ) {
-        plsr_set_expose_compensation( camhandle, ec );
+        pslr_set_expose_compensation( camhandle, ec );
     }
 
     if ( fec.denom ) {

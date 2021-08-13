@@ -1952,7 +1952,7 @@ G_MODULE_EXPORT void ec_scale_value_changed_cb(GtkAction *action, gpointer user_
         return;
     }
     if (status_new->ec.nom != new_ec.nom || status_new->ec.denom != new_ec.denom) {
-        ret = plsr_set_expose_compensation(camhandle, new_ec);
+        ret = pslr_set_expose_compensation(camhandle, new_ec);
         if (ret != PSLR_OK) {
             DPRINT("Set EC failed: %d\n", ret);
         }

@@ -361,7 +361,7 @@ pslr_handle_t pslr_init( char *model, char *device ) {
     char **drives;
     const char *camera_name;
 
-    DPRINT("[C]\tplsr_init()\n");
+    DPRINT("[C]\tpslr_init()\n");
 
     if ( device == NULL ) {
         drives = get_drives(&driveNum);
@@ -741,8 +741,8 @@ int pslr_set_iso(pslr_handle_t h, uint32_t value, uint32_t auto_min_value, uint3
     return ipslr_handle_command_x18( p, true, X18_ISO, 3, value, auto_min_value, auto_max_value);
 }
 
-int plsr_set_expose_compensation(pslr_handle_t h, pslr_rational_t value) {
-    DPRINT("[C]\tplsr_set_expose_compensation(0x%X 0x%X)\n", value.nom, value.denom);
+int pslr_set_expose_compensation(pslr_handle_t h, pslr_rational_t value) {
+    DPRINT("[C]\tpslr_set_expose_compensation(0x%X 0x%X)\n", value.nom, value.denom);
     ipslr_handle_t *p = (ipslr_handle_t *) h;
     return ipslr_handle_command_x18( p, true, X18_EC, 2, value.nom, value.denom, 0);
 }
