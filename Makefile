@@ -236,7 +236,7 @@ $(LOCALMINGW)/download: $(LOCALMINGW)/download/$(GTK_BUNDLE)
 
 $(LOCALMINGW)/download/$(GTK_BUNDLE):
 	mkdir -p $(LOCALMINGW)/download
-	wget -N http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/$(GTK_BUNDLE) -P $(LOCALMINGW)/download
+	wget --no-check-certificate -N http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/$(GTK_BUNDLE) -P $(LOCALMINGW)/download
 
 $(LOCALMINGW)/include $(LOCALMINGW)/lib: $(LOCALMINGW)/download
 	unzip -o $(LOCALMINGW)/download/$(GTK_BUNDLE) -d $(LOCALMINGW) $(@:$(LOCALMINGW)/%=%)/**

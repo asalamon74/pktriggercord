@@ -21,7 +21,7 @@ addons:
 before_install:
   - yes | sdkmanager "platforms;android-29"
 before_script:
-  - wget -O astyle_3.1_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%203.1/astyle_3.1_linux.tar.gz/download
+  - wget --no-check-certificate -O astyle_3.1_linux.tar.gz http://sourceforge.net/projects/astyle/files/astyle/astyle%203.1/astyle_3.1_linux.tar.gz/download
   - tar -xf astyle_3.1_linux.tar.gz -C $HOME
   - make -C $HOME/astyle/build/gcc
   - make -C $HOME/astyle/build/gcc prefix=$HOME install
