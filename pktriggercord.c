@@ -2129,7 +2129,12 @@ static void save_buffer_single(const char *filename, const pslr_buffer_type imag
             perror("could not open target");
             return;
         }
-        write(fd, pLastPreviewImage, lastPreviewImageSize);
+        ssize_t wr = write(fd, pLastPreviewImage, lastPreviewImageSize);
+        if (wr < 0) {
+            perror("could not write to target");
+        } else if (wr != lastPreviewImageSize) {
+            fprintf(stderr, "short write to target");
+        }
         wait_for_gtk_events_pending();
         close(fd);
     }
