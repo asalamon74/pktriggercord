@@ -415,7 +415,7 @@ int main(int argc, char **argv) {
     int servermode_timeout = 30;
     int modify_debug_mode=0;
     char debug_mode=0;
-    bool dangerous=0;
+    //bool dangerous=0;
     bool read_datetime=false;
     bool read_firmware_version=false;
     bool settings_info = false;
@@ -710,7 +710,7 @@ int main(int argc, char **argv) {
                 break;
 
             case 25:
-                dangerous = true;
+                //dangerous = true;
                 break;
 
             case 26:
